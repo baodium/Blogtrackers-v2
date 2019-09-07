@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 114.759 126.993">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fff;
+      }
+
+      .cls-2, .cls-3 {
+        fill: none;
+        stroke: #17394c;
+        stroke-linecap: round;
+      }
+
+      .cls-2 {
+        stroke-width: 5px;
+      }
+
+      .cls-3 {
+        stroke-linejoin: round;
+        stroke-width: 3px;
+        fill-rule: evenodd;
+      }
+    </style>
+  </defs>
+  <g id="Group_731" data-name="Group 731" transform="translate(-618.192 -961.316)">
+    <ellipse id="Ellipse_719" data-name="Ellipse 719" class="cls-1" cx="57.379" cy="57.379" rx="57.379" ry="57.379" transform="translate(618.192 961.316)"/>
+    <path id="Path_662" data-name="Path 662" class="cls-2" d="M-12667.5-9682.8a35.545,35.545,0,0,1,20.722-26.258c18.646-8.483.382-10.966-6.862-25.711s1.563-37.806,25.646-37.806,29.965,24.888,24.31,37.806-20.487,16.737-11.173,22.14,22.511,10.883,24.32,29.829" transform="translate(13304 10757.159)"/>
+    <path id="Heart" class="cls-3" d="M26.414,2.318a7.706,7.706,0,0,0-10.969,0L14.366,3.4,13.287,2.318A7.756,7.756,0,0,0,2.318,13.287L14.366,25.335,26.414,13.287a7.706,7.706,0,0,0,0-10.969" transform="translate(661.134 1061.475)"/>
+  </g>
+</svg>
