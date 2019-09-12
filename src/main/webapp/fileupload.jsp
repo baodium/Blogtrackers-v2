@@ -21,7 +21,8 @@
   
    String filePath = path;//"c:/apache-tomcat/"; 
    String contentType = request.getContentType();
-
+System.out.println(contentType);
+   
    if ((contentType.indexOf("multipart/form-data") >= 0)) {
 
       DiskFileItemFactory factory = new DiskFileItemFactory();

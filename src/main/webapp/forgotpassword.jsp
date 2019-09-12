@@ -131,7 +131,7 @@
 </body>
 <script>
 <% if(!success_message.equals("")){ 
-	 session.invalidate();  
+	 /* session.invalidate();   */
 	 System.out.println(session.getId());
 	/* response.sendRedirect("profile.jsp");  */
 	%>

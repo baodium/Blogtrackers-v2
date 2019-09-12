@@ -56,7 +56,7 @@ public class Blogsite extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{ 
-		 Blogs bs = new Blogs();  
+		 Blogs bs = new Blogs();
 		 
 		 PrintWriter pww = response.getWriter();
 		 HttpSession session = request.getSession();

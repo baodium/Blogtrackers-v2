@@ -1,12 +1,12 @@
 <%@page import="authentication.*"%>
 <%
-	/* Object email = (null == session.getAttribute("email")) ? "" : session.getAttribute("email"); */
+	Object email = (null == session.getAttribute("email")) ? "" : session.getAttribute("email");
 	/* System.out.println("Email is " + email); */
 	/* 	if (email != null && email != "") {
 			response.sendRedirect("dashboard.jsp");
 		} */
 
-	Object email = request.getAttribute("email");
+	/* Object email = request.getAttribute("email"); */
 	System.out.println("Email is " + email);
 %>
 

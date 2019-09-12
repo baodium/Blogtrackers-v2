@@ -23,7 +23,6 @@
 	//response.sendRedirect("login.jsp");
 	//}else{
 
-	AutomatedCrawlerConnect automatedCrawler = new AutomatedCrawlerConnect();
 
 	ArrayList<?> userinfo = new ArrayList();//null;
 	String profileimage = "";
@@ -65,6 +64,29 @@
 			if (f.exists() && !f.isDirectory()) {
 				profileimage = "images/profile_images/" + userinfo.get(2).toString() + ".jpg";
 			}
+
+			File path_new = new File(application.getRealPath("/").replace('/', '/') + "images/profile_images");
+			if (path_new.exists()) {
+				String t = "/images/profile_images";
+				int p = userpic.indexOf(t);
+				if (p != -1) {
+
+					System.out.println("pic path---" + userpic);
+					System.out.println("path exists---" + userpic.substring(0, p));
+					String path_update = userpic.substring(0, p);
+					if (!path_update.equals(path_new.toString())) {
+						profileimage = "images/profile_images/" + userinfo.get(2).toString() + ".jpg";
+						/* profileimage=userpic.replace(userpic.substring(0, p), path_new.toString()); */
+						String new_file_path = path_new.toString().replace("\\images\\profile_images", "") + "/"
+								+ profileimage;
+						System.out.println("ready to be updated--" + new_file_path);
+						/* new DbConnection().updateTable("UPDATE usercredentials SET profile_picture  = '" + pass + "' WHERE Email = '" + email + "'"); */
+
+					}
+				}
+			} else {
+				System.out.println("path doesnt exist");
+			}
 		} catch (Exception e) {
 		}
 
@@ -81,6 +103,31 @@
 		}
 		results_blogadded = new_blog._fetchBlog(userid);
 
+	}
+	
+	
+	AutomatedCrawlerConnect automatedCrawler = new AutomatedCrawlerConnect();
+	ArrayList<?> userinfo_crawler = new ArrayList();
+	String id_crawler = "";
+	String username_crawler = "";
+	String name_crawler = "";
+	String email_crawler = "";
+	userinfo_crawler = automatedCrawler.query("SELECT * FROM users where Email = '" + email + "'");
+	/* 	 */
+	if (userinfo_crawler.size() < 1) {
+		username_crawler = "";
+		name_crawler = "";
+	}else {
+		userinfo_crawler = (ArrayList<?>) userinfo_crawler.get(0);
+		try {
+			username_crawler = (null == userinfo_crawler.get(1)) ? "" : userinfo_crawler.get(1).toString();
+			name_crawler = (null == userinfo_crawler.get(2)) ? "" : (userinfo_crawler.get(2).toString());
+			email_crawler = (null == userinfo_crawler.get(3)) ? "" : userinfo_crawler.get(3).toString();
+			id_crawler = (null == userinfo_crawler.get(0)) ? "" : userinfo_crawler.get(0).toString();
+			System.out.println("user_crawler--"+id_crawler);
+			
+		} catch (Exception e) {
+		}
 	}
 %>
 <!DOCTYPE html>
@@ -372,18 +419,18 @@
 					<th></th>
 				</tr>
 			</thead>
-			<tbody id ="tbody">
+			<tbody id="tbody">
 				<%
-				 
-					JSONArray std = (JSONArray)request.getAttribute("seun");
-				try{ 
-					for (int k = 0; k < std.length(); k++) {%>
-				
+					JSONArray std = (JSONArray) request.getAttribute("seun");
+					try {
+						for (int k = 0; k < std.length(); k++) {
+				%>
 
-				
-				 
-				
-					<%--/* if (results_blogadded.size() > 0) {
+
+
+
+
+				<%--/* if (results_blogadded.size() > 0) {
 						for (int k = 0; k < results_blogadded.size(); k++) {
 							ArrayList blog = (ArrayList) results_blogadded.get(k);
 							String id = (String) blog.get(0);
@@ -397,21 +444,22 @@
 							} else {
 								statusstyle = "defaultstatus";
 							}  --%>
-				
+
 				<tr class="<%%>">
 					<td class="text-left pl0 blogcount"><%=k + 1%></td>
 					<td class="text-primary text-left nameofblog"><%=std.get(k)%></td>
 					<td class="text-primary text-left blogstatus">not_crawled</td>
 					<td class="text-primary text-left"></td>
 					<td class="text-primary text-left"></td>
-					<td class="text-primary text-center"><i id="<%=k+1%>"
+					<td class="text-primary text-center"><i id="<%=k + 1%>"
 						class="text-primary icontrackersize cursor-pointer deleteblog deletebtn text-center"
 						data-toggle="tooltip" data-placement="top" title="Delete Blog"></i></td>
 					<%-- <td class="text-center"><i class="text-primary icontrackersize cursor-pointer deleteblog text-center" onclick= "<% new_blog._deleteBlog(username, Integer.parseInt(id)); %>" data-toggle="tooltip" id="<%=id%>_select" data-placement="top" title="Delete Blog"></i></td> --%>
 				</tr>
 				<%
 					}
-				}catch(Exception e){}
+					} catch (Exception e) {
+					}
 				%>
 			</tbody>
 		</table>
@@ -568,7 +616,12 @@ $(document).ready(function() {
 	$(document).ready(function () {
 
 	    $("#selected_file").change(function (event) {
-
+	    	
+	    	console.log("")
+	    	
+var f= $('#file-form')
+var formData = $(f).serialize();
+console.log('f--'+formData)
 	        //stop submit the form, we will post it manually.
 	        event.preventDefault();
 

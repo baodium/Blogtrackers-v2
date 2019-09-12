@@ -13,15 +13,15 @@
 Object email = (null == session.getAttribute("email")) ? "" : session.getAttribute("email");
 Object error_message = (null == session.getAttribute("error_message")) ? "" : session.getAttribute("error_message");
 Object success_message = (null == session.getAttribute("success_message")) ? "" : session.getAttribute("success_message");
-String p = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
+String pi = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
 
 System.out.println("INDEX--" + request.getHeader("referer"));
 
-if(request.getHeader("referer").equals(null)){
+/*  if(request.getHeader("referer").equals(null)){
 	session.invalidate();
 	response.sendRedirect("login.jsp");
-}
-/* else if(!request.getHeader("referer").equals(p +"/")){
+} */
+/* else if(!request.getHeader("referer").equals(p +"/")){*/
 	/* session.invalidate(); */
 	/* response.sendRedirect(p +"/"); 
 
@@ -36,13 +36,15 @@ String date_modified = "";
 userinfo = DbConnection.query("SELECT * FROM usercredentials where Email = '"+email+"'");
 if (userinfo.size()<1) {
 	//response.sendRedirect("login.jsp");
-}else if(!request.getHeader("referer").equals(p +"/forgotpassword.jsp") || !request.getHeader("referer").equals(p +"/ChangePassword.jsp") || ! request.getHeader("referer").equals(p+"/")){
+}
+else{
+/* else if(!request.getHeader("referer").equals(p +"/forgotpassword.jsp") || !request.getHeader("referer").equals(p +"/ChangePassword.jsp") || ! request.getHeader("referer").equals(p+"/")){ */
 	/* System.out.println("success__ 1--" + success_message); */
 	/* System.out.println("COMI"+request.getHeader("referer"));
 	System.out.println(p +"/forgotpassword.jsp");
 	System.out.println(!request.getHeader("referer").equals(p +"/forgotpassword.jsp")); */
 	System.out.println("INDEX--" + request.getHeader("referer"));
-	System.out.println("INDEX--" + p+"/");
+	System.out.println("INDEX--" + pi+"/");
 userinfo = (ArrayList<?>)userinfo.get(0);
 try{
 	username = (null==userinfo.get(0))?"":userinfo.get(0).toString();
@@ -65,8 +67,30 @@ try{
 	}
 		
 		File f = new File(filename);
+		File path_new = new File(application.getRealPath("/").replace('/', '/') + "images/profile_images"); 
 		if(f.exists() && !f.isDirectory()) { 
 			profileimage = "images/profile_images/"+userinfo.get(2).toString()+".jpg";
+		}
+		if (path_new.exists()) {
+			String t = "/images/profile_images";
+			int p=userpic.indexOf(t);
+			if (p != -1) {
+				
+				System.out.println("pic path---"+userpic);
+				System.out.println("path exists---"+userpic.substring(0, p));
+				String path_update=userpic.substring(0, p);
+				if (!path_update.equals(path_new.toString())) {
+					profileimage = "images/profile_images/" + userinfo.get(2).toString() + ".jpg";
+					/* profileimage=userpic.replace(userpic.substring(0, p), path_new.toString()); */
+					String new_file_path = path_new.toString().replace("\\images\\profile_images", "")+"/"+profileimage;
+					System.out.println("ready to be updated--"+ new_file_path);
+					/* new DbConnection().updateTable("UPDATE usercredentials SET profile_picture  = '" + pass + "' WHERE Email = '" + email + "'"); */
+					
+					
+				}
+			}				
+		}else{
+			System.out.println("path doesnt exist");
 		}
 	}catch(Exception e){
 		profileimage = "images/default-avatar.png";

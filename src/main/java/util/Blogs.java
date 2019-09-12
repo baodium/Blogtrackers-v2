@@ -215,10 +215,13 @@ public class Blogs extends DbConnection{
 
 	public ArrayList _fetch(String ids) throws Exception {
 		ArrayList result = new ArrayList();
+		
 		String[] args = ids.split(",");
 
 		JSONArray pars = new JSONArray(); 
+		
 		ArrayList<String> ar = new ArrayList<String>();	
+		
 		for(int i=0; i<args.length; i++){
 			pars.put(args[i].replaceAll(" ", ""));
 		}
@@ -229,6 +232,7 @@ public class Blogs extends DbConnection{
 		JSONObject jsonObj = new JSONObject(que);
 
 		String url = base_url+"_search?size=10000";
+		System.out.print("testque--"+this._getResult(url, jsonObj).size());
 		return this._getResult(url, jsonObj);
 
 	}
