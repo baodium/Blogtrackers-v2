@@ -129,7 +129,6 @@
 		} catch (Exception e) {
 		}
 	}
-	/* comment */
 %>
 <!DOCTYPE html>
 <html>
@@ -421,7 +420,7 @@
 				</tr>
 			</thead>
 			<tbody id="tbody">
-				<%
+				<%-- <%
 					JSONArray std = (JSONArray) request.getAttribute("seun");
 					try {
 						for (int k = 0; k < std.length(); k++) {
@@ -431,7 +430,7 @@
 
 
 
-				<%--/* if (results_blogadded.size() > 0) {
+				/* if (results_blogadded.size() > 0) {
 						for (int k = 0; k < results_blogadded.size(); k++) {
 							ArrayList blog = (ArrayList) results_blogadded.get(k);
 							String id = (String) blog.get(0);
@@ -444,7 +443,7 @@
 								statusstyle = "errorstatus";
 							} else {
 								statusstyle = "defaultstatus";
-							}  --%>
+							} 
 
 				<tr class="<%%>">
 					<td class="text-left pl0 blogcount"><%=k + 1%></td>
@@ -455,13 +454,13 @@
 					<td class="text-primary text-center"><i id="<%=k + 1%>"
 						class="text-primary icontrackersize cursor-pointer deleteblog deletebtn text-center"
 						data-toggle="tooltip" data-placement="top" title="Delete Blog"></i></td>
-					<%-- <td class="text-center"><i class="text-primary icontrackersize cursor-pointer deleteblog text-center" onclick= "<% new_blog._deleteBlog(username, Integer.parseInt(id)); %>" data-toggle="tooltip" id="<%=id%>_select" data-placement="top" title="Delete Blog"></i></td> --%>
+					<td class="text-center"><i class="text-primary icontrackersize cursor-pointer deleteblog text-center" onclick= "<% new_blog._deleteBlog(username, Integer.parseInt(id)); %>" data-toggle="tooltip" id="<%=id%>_select" data-placement="top" title="Delete Blog"></i></td>
 				</tr>
 				<%
 					}
 					} catch (Exception e) {
 					}
-				%>
+				%> --%>
 			</tbody>
 		</table>
 	</div>
