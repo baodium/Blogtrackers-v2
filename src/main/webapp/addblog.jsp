@@ -106,14 +106,14 @@
 	}
 	
 	
-	AutomatedCrawlerConnect automatedCrawler = new AutomatedCrawlerConnect();
+/* 	AutomatedCrawlerConnect automatedCrawler = new AutomatedCrawlerConnect();
 	ArrayList<?> userinfo_crawler = new ArrayList();
 	String id_crawler = "";
 	String username_crawler = "";
 	String name_crawler = "";
 	String email_crawler = "";
 	userinfo_crawler = automatedCrawler.query("SELECT * FROM users where Email = '" + email + "'");
-	/* 	 */
+	
 	if (userinfo_crawler.size() < 1) {
 		username_crawler = "";
 		name_crawler = "";
@@ -128,8 +128,9 @@
 			
 		} catch (Exception e) {
 		}
-	}
+	} */
 %>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -420,6 +421,52 @@
 				</tr>
 			</thead>
 			<tbody id="tbody">
+			<%
+			try{
+
+				if (results_blogadded.size() > 0) {
+					for (int k = 0; k < results_blogadded.size(); k++) {
+						ArrayList blog = (ArrayList) results_blogadded.get(k);
+						String id = (String) blog.get(0);
+						String blogname = (String) blog.get(2);
+						String status = (String) blog.get(3);
+						String statusstyle = "";
+						if (status.equalsIgnoreCase("crawled")) {
+							statusstyle = "table-success";
+						} else if (status.equalsIgnoreCase("crawling")) {
+							statusstyle = "table-warning";
+						}
+						else if (status.equalsIgnoreCase("not_crawled")) {
+							statusstyle = "table-info";
+						}
+						else if (status.equalsIgnoreCase("not_crawlable")) {
+							statusstyle = "table-danger";
+						}else {
+							statusstyle = "defaultstatus";
+						}
+			
+			
+			 %>
+
+		<tr class="<%=statusstyle%>">
+			<td class="text-left pl0 blogcount"><%=k + 1%></td>
+			<td class="text-primary text-left nameofblog"><%=blogname%></td>
+			<td class="text-primary text-left blogstatus"><%=status %></td>
+			<td class="text-primary text-left"></td>
+			<td class="text-primary text-left"></td>
+			<td class="text-primary text-center"><i id="<%=k + 1%>"
+				class="text-primary icontrackersize cursor-pointer deleteblog deletebtn text-center"
+				data-toggle="tooltip" data-placement="top" title="Delete Blog"></i></td>
+			<%-- <td class="text-center"><i class="text-primary icontrackersize cursor-pointer deleteblog text-center" onclick= "<% new_blog._deleteBlog(username, Integer.parseInt(id)); %>" data-toggle="tooltip" id="<%=id%>_select" data-placement="top" title="Delete Blog"></i></td> --%>
+		</tr>
+		
+			<%}
+				}}
+			catch (Exception e) {
+			}
+			
+			%>
+			
 				<%-- <%
 					JSONArray std = (JSONArray) request.getAttribute("seun");
 					try {
@@ -430,35 +477,7 @@
 
 
 
-				/* if (results_blogadded.size() > 0) {
-						for (int k = 0; k < results_blogadded.size(); k++) {
-							ArrayList blog = (ArrayList) results_blogadded.get(k);
-							String id = (String) blog.get(0);
-							String blogname = (String) blog.get(2);
-							String status = (String) blog.get(3);
-							String statusstyle = "";
-							if (status.equalsIgnoreCase("complete")) {
-								statusstyle = "successstatus";
-							} else if (status.equalsIgnoreCase("error")) {
-								statusstyle = "errorstatus";
-							} else {
-								statusstyle = "defaultstatus";
-							} 
-
-				<tr class="<%%>">
-					<td class="text-left pl0 blogcount"><%=k + 1%></td>
-					<td class="text-primary text-left nameofblog"><%=std.get(k)%></td>
-					<td class="text-primary text-left blogstatus">not_crawled</td>
-					<td class="text-primary text-left"></td>
-					<td class="text-primary text-left"></td>
-					<td class="text-primary text-center"><i id="<%=k + 1%>"
-						class="text-primary icontrackersize cursor-pointer deleteblog deletebtn text-center"
-						data-toggle="tooltip" data-placement="top" title="Delete Blog"></i></td>
-					<td class="text-center"><i class="text-primary icontrackersize cursor-pointer deleteblog text-center" onclick= "<% new_blog._deleteBlog(username, Integer.parseInt(id)); %>" data-toggle="tooltip" id="<%=id%>_select" data-placement="top" title="Delete Blog"></i></td>
-				</tr>
-				<%
-					}
-					} catch (Exception e) {
+				/*  catch (Exception e) {
 					}
 				%> --%>
 			</tbody>
@@ -618,10 +637,7 @@ $(document).ready(function() {
 	    $("#selected_file").change(function (event) {
 	    	
 	    	console.log("")
-	    	
-var f= $('#file-form')
-var formData = $(f).serialize();
-console.log('f--'+formData)
+
 	        //stop submit the form, we will post it manually.
 	        event.preventDefault();
 
@@ -665,14 +681,14 @@ console.log('f--'+formData)
 	                //$("#result").text(data);
 	                
 	                console.log("TYPE : ", typeof data);
-	                console.log("LENGTH : ", data.length);
+	                console.log("LENGTH : ", data.url.length);
 	                console.log("DATA : ", data);
-	                console.log("first data : ", data[0]);
+	                console.log("status data : ", data.status);
 	                //$(".submitbtn").prop("disabled", false);
 	                var table_data =''
-	                for(var i = 0; i < data.length; i++){
+	                for(var i = 0; i < data.url.length; i++){
 	                	statusstyle = "";
-	                	status="not_crawled"
+	                	status=data.status[i]
 						if (status=="Crawled") {
 							statusstyle = "successstatus";
 						} else if (status=="not_crawled") {
@@ -684,15 +700,17 @@ console.log('f--'+formData)
 						
 	                	table_data +="<tr class="+statusstyle+">"
 	                	table_data +='<td>'+(i+1)+'</td>'
-	                	table_data +='<td>'+data[i]+'</td>'
+	                	table_data +='<td>'+data.url[i]+'</td>'
 	                	table_data +='<td>'+status+'</td>'
 	                	table_data +='<td>'+'</td>'
 	                	table_data +='<td>'+'</td>'
+	                	
 	                	table_data +='</tr>'
 	                	console.log(data[i]);
 	                }
 	                
-					$('#tbody').html(table_data);
+					 $('#tbody').append(table_data); 
+					/* document.getElementById("tbody").appendChild(table_data); */
 	            },
 	            error: function (e) {
 

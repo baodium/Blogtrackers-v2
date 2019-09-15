@@ -75,9 +75,7 @@
 						/* profileimage=userpic.replace(userpic.substring(0, p), path_new.toString()); */
 						String new_file_path = path_new.toString().replace("\\images\\profile_images", "")+"/"+profileimage;
 						System.out.println("ready to be updated--"+ new_file_path);
-						/*new DbConnection().updateTable("UPDATE usercredentials SET profile_picture  = '" + pass + "' WHERE Email = '" + email + "'"); */
-						
-						
+						/*new DbConnection().updateTable("UPDATE usercredentials SET profile_picture  = '" + pass + "' WHERE Email = '" + email + "'"); */											
 					}
 				}else{
 					path_new.mkdirs();
