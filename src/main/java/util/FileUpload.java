@@ -38,9 +38,18 @@ public class FileUpload extends HttpServlet {
 			throws ServletException, IOException {
 		ServletFileUpload upload = new ServletFileUpload(new DiskFileItemFactory());
 		PrintWriter out = response.getWriter();
+		
+		JSONObject json_type = new JSONObject();
+		
 		JSONObject json = new JSONObject();
+		JSONObject json_exists = new JSONObject();
+		
 		JSONArray array_url = new JSONArray();
+		JSONArray array_url_exists = new JSONArray();
+		
 		JSONArray array_status = new JSONArray();
+		JSONArray array_status_exists = new JSONArray();
+		
 		HttpSession session = request.getSession();
 		String fileStatus="";
 		
@@ -108,13 +117,31 @@ public class FileUpload extends HttpServlet {
 							
 							fileStatus = new_blog._addBlog(userid, st, status);
 							
-							
+							if (fileStatus.indexOf("already exists") != -1) {
+								array_url_exists.put(st);
+								array_status_exists.put("already exists");
+								String typ = "exists";
+							} else if (fileStatus.indexOf("success") != -1){
+								array_url.put(st);
+								array_status.put("not_crawled");
+								String typ = "success";
+							}
 							
 						} else {
 							System.out.println("2--"+st);
 							String userid = (null == session.getAttribute("username"))? "" : session.getAttribute("username").toString();
 							String status = "not_crawled";
 							fileStatus = new_blog._addBlog(userid, st, status);
+							
+							if (fileStatus.indexOf("already exists") != -1) {
+								array_url_exists.put(st);
+								array_status_exists.put("already exists");
+								String typ = "exists";
+							} else if (fileStatus.indexOf("success") != -1){
+								array_url.put(st);
+								array_status.put("not_crawled");
+								String typ = "success";
+							}
 						}
 						}catch(Exception e) {
 							System.out.println(e);
