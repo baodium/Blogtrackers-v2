@@ -11,8 +11,6 @@
 <%
 
 Object email = (null == session.getAttribute("email")) ? "" : session.getAttribute("email");
-<<<<<<< HEAD
-=======
 Object error_message = (null == session.getAttribute("error_message")) ? "" : session.getAttribute("error_message");
 Object success_message = (null == session.getAttribute("success_message")) ? "" : session.getAttribute("success_message");
 String pi = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
@@ -29,7 +27,6 @@ System.out.println("INDEX--" + request.getHeader("referer"));
 
 /* System.out.println("success__ 1--" + success_message); */
 
->>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 ArrayList<?> userinfo = new ArrayList();
 String profileimage= "";
 String username ="";
@@ -39,9 +36,6 @@ String date_modified = "";
 userinfo = DbConnection.query("SELECT * FROM usercredentials where Email = '"+email+"'");
 if (userinfo.size()<1) {
 	//response.sendRedirect("login.jsp");
-<<<<<<< HEAD
-}else{
-=======
 }
 else{
 /* else if(!request.getHeader("referer").equals(p +"/forgotpassword.jsp") || !request.getHeader("referer").equals(p +"/ChangePassword.jsp") || ! request.getHeader("referer").equals(p+"/")){ */
@@ -51,7 +45,6 @@ else{
 	System.out.println(!request.getHeader("referer").equals(p +"/forgotpassword.jsp")); */
 	System.out.println("INDEX--" + request.getHeader("referer"));
 	System.out.println("INDEX--" + pi+"/");
->>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 userinfo = (ArrayList<?>)userinfo.get(0);
 try{
 	username = (null==userinfo.get(0))?"":userinfo.get(0).toString();
@@ -74,11 +67,6 @@ try{
 	}
 		
 		File f = new File(filename);
-<<<<<<< HEAD
-		if(f.exists() && !f.isDirectory()) { 
-			profileimage = "images/profile_images/"+userinfo.get(2).toString()+".jpg";
-		}
-=======
 		File path_new = new File(application.getRealPath("/").replace('/', '/') + "images/profile_images"); 
 		if(f.exists() && !f.isDirectory()) { 
 			profileimage = "images/profile_images/"+userinfo.get(2).toString()+".jpg";
@@ -104,7 +92,6 @@ try{
 		}else{
 			System.out.println("path doesnt exist");
 		}
->>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 	}catch(Exception e){
 		profileimage = "images/default-avatar.png";
 	}
@@ -137,16 +124,6 @@ try{
 <link rel="stylesheet" href="assets/css/daterangepicker.css" />
 
   <link rel="stylesheet" href="assets/css/style.css" />
-<<<<<<< HEAD
-  
-  <link rel="stylesheet" href="assets/css/custom.css" />
-  
-  <link rel="stylesheet" href="assets/css/hover.css" />
-  
-  
-  
-=======
->>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
   <!--end of bootstrap -->
   <script src="assets/js/jquery-3.2.1.slim.min.js"></script>
 <script src="assets/js/popper.min.js" ></script>
@@ -384,11 +361,7 @@ try{
 <p class="text-center text-primary textwhy mb10">Actionable Insights</p>
 <p class="text-center text-primary p20 pt0 pb0">Track Blogs at your tips.</p></div>
 
-<<<<<<< HEAD
-<div class="col-md-3"><p class="text-center"><i class="navbar-brand text-primary icontrackersize plugin-icon pt10"></i></p>
-=======
 <div class="col-md-3"><p class="text-center"><i class="navbar-brand text-primary icontrackersize insights pt10"></i></p>
->>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 <p class="text-center text-primary textwhy mb10">Blogtrackers plugin</p>
 <p class="text-center text-primary p20 pt0 pb0">Sign up to download.</p></div>
 
@@ -403,12 +376,7 @@ try{
 ass="text-center text-primary p40 pt10 pb10">Blogtrackers helps sociologists to track and analyze blogs of particular interests by designing and integrating unique features. </p> -->
 </div>
 
-<<<<<<< HEAD
-<!-- START OLD -->
-<!-- <div id="featuresslides" class="carousel slide" data-ride="carousel">
-=======
 <div id="featuresslides" class="carousel slide" data-ride="carousel">
->>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
   <div class="carousel-inner">
     <div class="carousel-item active">
      <div class="offset-md-2 col-md-8 offset-md-2">
@@ -458,61 +426,9 @@ ass="text-center text-primary p40 pt10 pb10">Blogtrackers helps sociologists to 
     <span class="carousel-control-next-icon nextfeatures" aria-hidden="true"></span>
     <span class="sr-only">Next</span>
   </a>
-<<<<<<< HEAD
-</div> -->
-
-<!-- END OLD-->
-
-
-<!-- START NEW -->
-
-
-
-
-<div class="row" style="padding-bottom: 30px; padding-top: 30px;">
-
-    <div class="hover-desc col-md-2 hvr-bob"><p class="text-center"><i class="navbar-brand text-primary icontrackersize sentiment-analysis pt10"></i></p>
-    <p class="text-center text-primary textwhy mb10">Sentiments Analysis</p>
-    <p class="text-center text-primary p20 pt0 pb0">Analyze General Perception</p>
-    </div>
-
-    <div class="hover-desc col-md-2 hvr-bob"><p class="text-center"><i class="navbar-brand text-primary icontrackersize network-analysis pt10"></i></p>
-    <p class="text-center text-primary textwhy mb10">Network Analysis Trend</p>
-    <p class="text-center text-primary p20 pt0 pb0">Analyze Trends on Graphs</p></div>
-
-    <div class="hover-desc col-md-2 hvr-bob"><p class="text-center"><i class="navbar-brand text-primary icontrackersize cross-analysis pt10"></i></p>
-    <p class="text-center text-primary textwhy mb10">Cross Media Analysis</p>
-    <p class="text-center text-primary p20 pt0 pb0">Analyze Social Media.</p></div>
-
-    <div class="hover-desc col-md-2 hvr-bob"><p class="text-center"><i class="navbar-brand text-primary icontrackersize data pt10"></i></p>
-    <p class="text-center text-primary textwhy mb10">Posting Frequency</p>
-    <p class="text-center text-primary p20 pt0 pb0">Analyze Traffic Pattern</p></div>
-
-    <div class="hover-desc col-md-2 hvr-bob"><p class="text-center"><i class="navbar-brand text-primary icontrackersize data-analytics pt10"></i></p>
-    <p class="text-center text-primary textwhy mb10">Keyword Trends</p>
-    <p class="text-center text-primary p20 pt0 pb0">Search Top Keywords</p></div>
-
-    <div class="hover-desc col-md-2 hvr-bob"><p class="text-center"><i class="navbar-brand text-primary icontrackersize planning pt10"></i></p>
-    <p class="text-center text-primary textwhy mb10">Influence Analysis</p>
-    <p class="text-center text-primary p20 pt0 pb0">Check Influence of Blogs, Posts and Bloggers</p></div>
-
 </div>
 
 
-
-
-
-
-
-
-<!-- END NEW -->
-
-
-=======
-</div>
-
-
->>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 <!-- <div class="row mt100 mb100">
 <div class="col-md-4 borderleftprimary">
 <h1 class="text-primary headertextwhatcanyoudo">Traffic <br/>Pattern Analysis</h1>

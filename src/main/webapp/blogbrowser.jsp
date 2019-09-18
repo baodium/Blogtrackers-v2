@@ -62,9 +62,6 @@ if(userpic.indexOf("http")>-1){
 		profileimage = "images/profile_images/"+userinfo.get(2).toString()+".jpg";
 	}
 	
-<<<<<<< HEAD
-
-=======
 	File path_new = new File(application.getRealPath("/").replace('/', '/') + "images/profile_images"); 
 	if (path_new.exists()) {
 		String t = "/images/profile_images";
@@ -87,7 +84,6 @@ if(userpic.indexOf("http")>-1){
 	}else{
 		System.out.println("path doesnt exist");
 	}
->>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 }catch(Exception e){}
 	
 }
@@ -106,11 +102,7 @@ if(term.equals("")){
 }else{
 	results = post._search(term,"0",sort);
 }
-<<<<<<< HEAD
-
-=======
 System.out.println("result--"+results);
->>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 String total = NumberFormat.getNumberInstance(Locale.US).format(Integer.parseInt(post._getTotal()));
 //NumberFormat.getNumberInstance(Locale.US).format(Integer.parseInt(post._getTotal()));
 
@@ -398,7 +390,7 @@ if(results.size()>0){
 	String bresu =null;
 	JSONObject bobj =null;
 	
-
+//test
 		for(int i=0; i< results.size(); i++){
 
 			 String blogtitle="";		

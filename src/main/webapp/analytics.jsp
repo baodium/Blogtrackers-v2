@@ -48,8 +48,6 @@ File f = new File(filename);
 if(f.exists() && !f.isDirectory()) { 
 	profileimage = "images/profile_images/"+userinfo.get(2).toString()+".jpg";
 }
-<<<<<<< HEAD
-=======
 File path_new = new File(application.getRealPath("/").replace('/', '/') + "images/profile_images"); 
 if (path_new.exists()) {
 	String t = "/images/profile_images";
@@ -72,7 +70,6 @@ if (path_new.exists()) {
 }else{
 	System.out.println("path doesnt exist");
 }
->>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 }catch(Exception e){}
 
 String[] user_name = name.split(" ");

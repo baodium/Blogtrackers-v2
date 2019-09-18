@@ -52,11 +52,6 @@ if(userpic.indexOf("http")>-1){
 
 
 File f = new File(filename);
-<<<<<<< HEAD
-if(f.exists() && !f.isDirectory()) { 
-	profileimage = "images/profile_images/"+userinfo.get(2).toString()+".jpg";
-}
-=======
 File path_new = new File(application.getRealPath("/").replace('/', '/') + "images/profile_images"); 
 if(f.exists() && !f.isDirectory()) { 
 	profileimage = "images/profile_images/"+userinfo.get(2).toString()+".jpg";
@@ -83,7 +78,6 @@ if (path_new.exists()) {
 }else{
 	System.out.println("path doesnt exist");
 }
->>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 }catch(Exception e){}
 
 
@@ -181,11 +175,7 @@ if (path_new.exists()) {
 
    <div class="col-lg-3">
   	 <% if(userinfo.size()>0){ %>
-<<<<<<< HEAD
-  		
-=======
   		col-lg-2 col-md-12 notificationpanel
->>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 	  <ul class="nav navbar-nav" style="display:block;">
 		  <li class="dropdown dropdown-user cursor-pointer float-right">
 		  <a class="dropdown-toggle " id="profiletoggle" data-toggle="dropdown">

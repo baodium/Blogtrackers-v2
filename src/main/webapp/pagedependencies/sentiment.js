@@ -43,10 +43,7 @@ function loadChart(postid,color){
 		{   
 			//console.log(response);
 			$("#mainCarInd").delay(3000).html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />").delay(2000).html(response);
-<<<<<<< HEAD
-=======
 			alert('here')
->>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 			/* $.getScript("assets/js/generic.js", function(data, textStatus, jqxhr) {	
 			  });*/
 		}
@@ -77,11 +74,7 @@ function loadPost(date){
 		},
 		success: function(response)
 		{   
-<<<<<<< HEAD
-			//console.log(response);
-=======
 
->>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 			/* $.getScript("assets/js/toastr.js", function(data, textStatus, jqxhr) {
 				 loadCSS("assets/css/toastr.css");
 				 toastr.error("Tracker Creation Canceled","Action Succesful");
@@ -94,11 +87,8 @@ function loadPost(date){
 			color = "#0080CC";
 			var post_id = $(first).attr("id");
 			console.log(post_id);
-<<<<<<< HEAD
-=======
 			alert('the date')
 			console.log(response);
->>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 			try{
 			loadChart(post_id,color);
 			}catch(e){

@@ -1,7 +1,4 @@
 /* Preloader */
-<<<<<<< HEAD
-
-=======
 .valid {
   color: green;
 }
@@ -20,7 +17,6 @@
   left: -35px;
   content: "x";
 	}
->>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 table.dataTable thead .sorting:before, table.dataTable thead .sorting_asc:before, table.dataTable thead .sorting_desc:before, table.dataTable thead .sorting_asc_disabled:before, table.dataTable thead .sorting_desc_disabled:before {
     left: 10em !important;
 }

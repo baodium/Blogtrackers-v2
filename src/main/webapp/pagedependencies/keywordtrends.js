@@ -59,10 +59,7 @@ if(!valuetocheck.test(eachvalue) && e.target.value !== "")
 })
 
 function loadStat(term){
-<<<<<<< HEAD
-=======
 	alert('this is load stat')
->>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 	$(".blog-mentioned").html("<img src='images/loading.gif' />");
 	$(".post-mentioned").html("<img src='images/loading.gif' />");
 	$(".blogger-mentioned").html("<img src='images/loading.gif' />");
@@ -106,10 +103,7 @@ function loadStat(term){
 }
 
 function loadChart(term){
-<<<<<<< HEAD
-=======
 	alert('this is load chart')
->>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 	$("#main-chart").html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />");
 	$.ajax({
 		url: app_url+"subpages/keywordtrendchart.jsp",
@@ -140,10 +134,7 @@ function loadChart(term){
 
 
 function loadTable(date_start,date_end){
-<<<<<<< HEAD
-=======
 	alert('this is load table')
->>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 	$("#post-list").html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />");
 	$("#blogpost_detail").html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />");
 		
@@ -160,21 +151,13 @@ function loadTable(date_start,date_end){
 			},
 			error: function(response)
 			{						
-<<<<<<< HEAD
-				console.log(response);		
-=======
 				console.log(response);	
 				
->>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 			},
 			success: function(response)
 			{   
 				//$("#combined-div").html(response);
-<<<<<<< HEAD
-				
-=======
 				alert('this is load table')
->>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 				$("#combined-div").delay(3000).html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />").delay(2000).html(response);
 				
 				//$.getScript("assets/js/jquery-3.2.1.slim.min.js", function(data, textStatus, jqxhr) {	 });

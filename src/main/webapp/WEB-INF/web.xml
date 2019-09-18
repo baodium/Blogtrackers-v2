@@ -15,15 +15,12 @@
 		<description></description>
 		<servlet-class>handler.CreateTracker</servlet-class>
 	</servlet>
-<<<<<<< HEAD
-=======
 	<servlet>
 		<servlet-name>FileUpload</servlet-name>
 		<display-name>FileUpload</display-name>
 		<description></description>
 		<servlet-class>util.FileUpload</servlet-class>
 	</servlet>
->>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 	<servlet-mapping>
 		<servlet-name>AddBlog</servlet-name>
 		<url-pattern>/AddBlog</url-pattern>
@@ -32,13 +29,10 @@
 		<servlet-name>CreateTracker</servlet-name>
 		<url-pattern>/CreateTracker</url-pattern>
 	</servlet-mapping>
-<<<<<<< HEAD
-=======
 	<servlet-mapping>
 		<servlet-name>FileUpload</servlet-name>
 		<url-pattern>/FileUpload</url-pattern>
 	</servlet-mapping>
->>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 <error-page>
     <error-code>404</error-code>
     <location>/404.html</location>
