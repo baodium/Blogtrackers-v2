@@ -287,7 +287,7 @@ if(ids.length()>0 && post._getBlogPostById(ids) !=""){
 									String[] ddtm = dtt2.split(" ");
 									dtmodified = ddtm[0];
 								}
-
+//u
 								if (!query.equals("")) {
 									blogs = blg._fetch(query);
 
