@@ -653,7 +653,7 @@
 						<h5 class="text-primary mb0">
 							<i class="fas fa-user icondash"></i>Bloggers
 						</h5>
-						<h3 class="text-blue mb0 countdash dash-label blogger-count"><%=NumberFormat.getNumberInstance(Locale.US).format(new Double(totalbloggers).intValue())%></h3>
+						<h3 class="text-blue mb0 countdash dash-label blogger-count"><%try{NumberFormat.getNumberInstance(Locale.US).format(new Double(totalbloggers).intValue());}catch(Exception e){}%></h3>
 					</div>
 				</div>
 			</div>
