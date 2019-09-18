@@ -645,7 +645,7 @@ Design is not just what it looks like and feels like. Design is how it works.
 
 <div class="bg-primary">
 <div class="container-fluid pb10 pt10">
-<p class="mb0 text-center copyrighttext text-white">Copyright &copy; 2018, COSMOS. All Rights Reserved.</p>
+<p class="mb0 text-center copyrighttext text-white">Copyright &copy; 2019, COSMOS. All Rights Reserved.</p>
 </div>
 </div>
 </a>
