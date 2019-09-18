@@ -20,7 +20,7 @@ String username ="";
 String name="";
 String phone="";
 String date_modified = "";
-
+//you are 
 Weblog new_blog = new Weblog();
 ArrayList results_blogadded = null;
 
