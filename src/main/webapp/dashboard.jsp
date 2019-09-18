@@ -18,7 +18,7 @@
 <%@page import="java.time.LocalDateTime"%>
 
 <%
-	System.out.println("COMI----"+request.getHeader("referer"));
+	
 
 	Object email = (null == session.getAttribute("email")) ? "" : session.getAttribute("email");
 	Object tid = (null == request.getParameter("tid")) ? "" : request.getParameter("tid");
@@ -64,6 +64,7 @@
 		String ids = "";
 		String trackername = "";
 		if (detail.size() > 0) {
+			
 			//String res = detail.get(0).toString();
 			ArrayList resp = (ArrayList<?>) detail.get(0);
 			String tracker_userid = resp.get(1).toString();
@@ -217,8 +218,9 @@
 			
 			//Our New Code
 			Liwc liwc = new Liwc();
+			System.out.println("COMI----"+request.getHeader("referer"));
 			String totalbloggers = bloggerss._getBloggerById(ids);
-
+			
 
 			ArrayList locations = blog._getLocation(ids);
 			//System.out.println("all blog location");
