@@ -1527,11 +1527,19 @@ $(function () {
          	[<%for (int q = 0; q < yearsarray.length(); q++) {
 						String yer = yearsarray.get(q).toString();
 						int vlue = Integer.parseInt(graphyearsneg.get(yer).toString());%>{"date":"<%=yer%>","close":<%=vlue%>},
+<<<<<<< HEAD
       		<%}%>],
       		[<%for (int q = 0; q < yearsarray.length(); q++) {
 						String yer = yearsarray.get(q).toString();
 						int vlue = Integer.parseInt(graphyearspos.get(yer).toString());%>{"date":"<%=yer%>","close":<%=vlue%>},
   		<%}%>]     	
+=======
+      		<%} System.out.println("!111!!"+yearsarray);%>],
+      		[<%for (int q = 0; q < yearsarray.length(); q++) {
+						String yer = yearsarray.get(q).toString();
+						int vlue = Integer.parseInt(graphyearspos.get(yer).toString());%>{"date":"<%=yer%>","close":<%=vlue%>},
+  		<%} System.out.println("!222!!"+yearsarray);%>]     	
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
          	];
          //console.log(data);
          // data = [];
@@ -1769,7 +1777,11 @@ $(function () {
                             	  
                             	 // console.log("point clicked");
                             	 // console.log(d.date);
+<<<<<<< HEAD
                             	  
+=======
+                            	  /* alert('i am '); */
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
                               });
                                                  svg.call(tip)
                       }
@@ -1836,8 +1848,14 @@ $(function () {
                                      .on("mouseover",tip.show)
                                      .on("mouseout",tip.hide)
                                      .on("click",function(d){
+<<<<<<< HEAD
                                     	 
                                     	// console.log("The clicked date is "+d.date);
+=======
+                                    	 //seun
+                                    	// console.log("The clicked date is "+d.date);
+                                    	alert('thi ');
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
                                     	 loadPost(d.date);
                                      }); 
                                                         svg.call(tip)

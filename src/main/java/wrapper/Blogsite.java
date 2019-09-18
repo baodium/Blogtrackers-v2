@@ -41,7 +41,10 @@ public class Blogsite extends HttpServlet {
 	 */
 	public Blogsite() {
 		super();
+<<<<<<< HEAD
 
+=======
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 	}
 
 	/**
@@ -57,7 +60,11 @@ public class Blogsite extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{ 
+<<<<<<< HEAD
 		 Blogs bs = new Blogs();  
+=======
+		 Blogs bs = new Blogs();
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 		 
 		 PrintWriter pww = response.getWriter();
 		 HttpSession session = request.getSession();

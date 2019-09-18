@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
     <wb-module deploy-name="Blogtrackers">
+<<<<<<< HEAD
         <wb-resource deploy-path="/" source-path="/target/m2e-wtp/web-resources"/>
+=======
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
         <wb-resource deploy-path="/" source-path="/src/main/webapp" tag="defaultRootSource"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
         <property name="context-root" value="Blogtrackers"/>

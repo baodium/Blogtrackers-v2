@@ -1,0 +1,150 @@
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Blogtrackers - Sentiment Analysis</title>
+  <link rel="shortcut icon" href="images/favicons/favicon-48x48.png">
+  <link rel="apple-touch-icon" href="images/favicons/favicon-48x48.png">
+  <link rel="apple-touch-icon" sizes="96x96" href="images/favicons/favicon-96x96.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="images/favicons/favicon-144x144.png">
+  <!-- start of bootsrap -->
+  <script type="text/javascript" src="assets/vendors/d3/d3.min.js"></script>
+  <script src="assets/vendors/wordcloud/d3.layout.cloud.js"></script>
+  <script type="text/javascript" src="assets/vendors/d3/d3_tooltip.js"></script>
+  <script src="assets/vendors/radarchart/radarChart.js"></script>
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:600,700" rel="stylesheet">
+  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap-grid.css" />
+  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.css" />
+  <link rel="stylesheet" href="assets/fonts/fontawesome/css/fontawesome-all.css" />
+  <link rel="stylesheet" href="assets/fonts/iconic/css/open-iconic.css" />
+  <link rel="stylesheet" href="assets/vendors/bootstrap-daterangepicker/daterangepicker.css" />
+  <link rel="stylesheet" href="assets/css/table.css" />
+  <link rel="stylesheet" href="assets/vendors/DataTables/dataTables.bootstrap4.min.css" />
+
+  <link rel="stylesheet" href="assets/css/daterangepicker.css" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+
+  <!--end of bootsrap -->
+  <script src="assets/js/jquery-3.2.1.slim.min.js"></script>
+  <script src="assets/js/popper.min.js"></script>
+  <script src="pagedependencies/googletagmanagerscript.js"></script>
+</head>
+<body>
+  <div id="chart"></div>
+  <script>
+//     function csvJSON(csv) {
+
+//       var lines = csv.split("\n");
+
+//       var result = [];
+
+//       var headers = lines[0].split(",");
+
+//       for (var i = 1; i < lines.length; i++) {
+
+//         var obj = {};
+//         var currentline = lines[i].split(",");
+
+//         for (var j = 0; j < headers.length; j++) {
+//           obj[headers[j]] = currentline[j];
+//         }
+
+//         result.push(obj);
+
+//       }
+
+//       //return result; //JavaScript object
+//       return JSON.stringify(result); //JSON
+//     }
+
+// csvJSON('keyword for zerohedge.csv')
+
+wrdcnt=[{"term":"trump","sum(frequency)":"194556"},{"term":"market","sum(frequency)":"183232"},{"term":"year","sum(frequency)":"182068"},{"term":"time","sum(frequency)":"158371"},{"term":"people","sum(frequency)":"142801"},{"term":"government","sum(frequency)":"126454"},{"term":"years","sum(frequency)":"120322"},{"term":"president","sum(frequency)":"115264"},{"term":"bank","sum(frequency)":"100141"},{"term":"state","sum(frequency)":"98086"},{"term":"back","sum(frequency)":"93897"},{"term":"growth","sum(frequency)":"91185"},{"term":"markets","sum(frequency)":"89386"},{"term":"debt","sum(frequency)":"88279"},{"term":"financial","sum(frequency)":"88255"},{"term":"world","sum(frequency)":"87860"},{"term":"economic","sum(frequency)":"87526"},{"term":"money","sum(frequency)":"85218"},{"term":"week","sum(frequency)":"84278"},{"term":"fed","sum(frequency)":"83987"},{"term":"china","sum(frequency)":"82480"},{"term":"it’s","sum(frequency)":"82434"},{"term":"long","sum(frequency)":"81585"},{"term":"percent","sum(frequency)":"80241"},{"term":"day","sum(frequency)":"80233"},{"term":"data","sum(frequency)":"79937"},{"term":"billion","sum(frequency)":"79553"},{"term":"rate","sum(frequency)":"78985"},{"term":"economy","sum(frequency)":"77511"},{"term":"oil","sum(frequency)":"77424"},{"term":"rates","sum(frequency)":"75114"},{"term":"banks","sum(frequency)":"74737"},{"term":"policy","sum(frequency)":"74624"},{"term":"prices","sum(frequency)":"73132"},{"term":"global","sum(frequency)":"71187"},{"term":"high","sum(frequency)":"70373"},{"term":"central","sum(frequency)":"69735"},{"term":"end","sum(frequency)":"69346"},{"term":"make","sum(frequency)":"69286"},{"term":"tax","sum(frequency)":"68144"},{"term":"higher","sum(frequency)":"67592"},{"term":"states","sum(frequency)":"67036"},{"term":"million","sum(frequency)":"66631"},{"term":"risk","sum(frequency)":"65166"},{"term":"month","sum(frequency)":"64546"},{"term":"trade","sum(frequency)":"64124"},{"term":"price","sum(frequency)":"63868"},{"term":"russia","sum(frequency)":"63160"},{"term":"today","sum(frequency)":"62226"},{"term":"war","sum(frequency)":"61821"},{"term":""}]
+
+// console.log(wrds)
+    var text_string = "Of course that’s your contention. You’re a first year grad student. You just got finished readin’ some Marxian historian, Pete Garrison probably. You’re gonna be convinced of that ’til next month when you get to James Lemon and then you’re gonna be talkin’ about how the economies of Virginia and Pennsylvania were entrepreneurial and capitalist way back in 1740. That’s gonna last until next year. You’re gonna be in here regurgitating Gordon Wood, talkin’ about, you know, the Pre-Revolutionary utopia and the capital-forming effects of military mobilization… ‘Wood drastically underestimates the impact of social distinctions predicated upon wealth, especially inherited wealth.’ You got that from Vickers, Work in Essex County, page 98, right? Yeah, I read that, too. Were you gonna plagiarize the whole thing for us? Do you have any thoughts of your own on this matter? Or do you, is that your thing? You come into a bar. You read some obscure passage and then pretend, you pawn it off as your own, as your own idea just to impress some girls and embarrass my friend? See, the sad thing about a guy like you is in 50 years, you’re gonna start doin’ some thinkin’ on your own and you’re gonna come up with the fact that there are two certainties in life. One: don’t do that. And two: you dropped a hundred and fifty grand on a fuckin’ education you coulda got for a dollar fifty in late charges at the public library.";
+
+    drawWordCloud(wrdcnt);
+
+    function drawWordCloud(text_string) {
+      // var common = "poop,i,me,my,myself,we,us,our,ours,ourselves,you,your,yours,yourself,yourselves,he,him,his,himself,she,her,hers,herself,it,its,itself,they,them,their,theirs,themselves,what,which,who,whom,whose,this,that,these,those,am,is,are,was,were,be,been,being,have,has,had,having,do,does,did,doing,will,would,should,can,could,ought,i'm,you're,he's,she's,it's,we're,they're,i've,you've,we've,they've,i'd,you'd,he'd,she'd,we'd,they'd,i'll,you'll,he'll,she'll,we'll,they'll,isn't,aren't,wasn't,weren't,hasn't,haven't,hadn't,doesn't,don't,didn't,won't,wouldn't,shan't,shouldn't,can't,cannot,couldn't,mustn't,let's,that's,who's,what's,here's,there's,when's,where's,why's,how's,a,an,the,and,but,if,or,because,as,until,while,of,at,by,for,with,about,against,between,into,through,during,before,after,above,below,to,from,up,upon,down,in,out,on,off,over,under,again,further,then,once,here,there,when,where,why,how,all,any,both,each,few,more,most,other,some,such,no,nor,not,only,own,same,so,than,too,very,say,says,said,shall";
+
+      // var word_count = {};
+
+      // var words = text_string.split(/[ '\-\(\)\*":;\[\]|{},.!?]+/);
+
+      // // console.log(word)
+      // // console.log(typeof words)
+      // if (words.length == 1) {
+      //   word_count[words[0]] = 1;
+
+      // } else {
+      //   words.forEach(function (word) {
+      //     var word = word.toLowerCase();
+      //     if (word != "" && common.indexOf(word) == -1 && word.length > 1) {
+      //       if (word_count[word]) {
+      //         word_count[word]++;
+      //       } else {
+      //         word_count[word] = 1;
+      //       }
+      //     }
+      //   })
+      // }
+      // console.log(word_count)
+      word_count={}
+for(var i =0 ; i<wrdcnt.length; i++){
+//  console.log(wrdcnt[i])
+word_count[wrdcnt[i].term]=wrdcnt[i]['sum(frequency)']
+}
+      var svg_location = "#chart";
+      var width = $(document).width();
+      var height = $(document).height();
+
+      var fill = d3.scale.category20();
+
+      var word_entries = d3.entries(word_count);
+
+      var xScale = d3.scale.linear()
+        .domain([0, d3.max(word_entries, function (d) {
+          return d.value;
+        })
+        ])
+        .range([10, 100]);
+
+      d3.layout.cloud().size([width, height])
+        .timeInterval(20)
+        .words(word_entries)
+        .fontSize(function (d) { return xScale(+d.value); })
+        .text(function (d) { return d.key; })
+        .rotate(function () { return ~~(Math.random() * 2) * 90; })
+        .font("Impact")
+        .on("end", draw)
+        .start();
+
+      function draw(words) {
+        d3.select(svg_location).append("svg")
+          .attr("width", width)
+          .attr("height", height)
+          .append("g")
+          .attr("transform", "translate(" + [width >> 1, height >> 1] + ")")
+          .selectAll("text")
+          .data(words)
+          .enter().append("text")
+          .style("font-size", function (d) { return xScale(d.value) + "px"; })
+          .style("font-family", "Impact")
+          .style("fill", function (d, i) { return fill(i); })
+          .attr("text-anchor", "middle")
+          .attr("transform", function (d) {
+            return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+          })
+          .text(function (d) { return d.key; });
+      }
+
+      d3.layout.cloud().stop();
+    }
+  </script>
+</body>
+
+</html>

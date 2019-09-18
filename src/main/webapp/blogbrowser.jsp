@@ -62,7 +62,32 @@ if(userpic.indexOf("http")>-1){
 		profileimage = "images/profile_images/"+userinfo.get(2).toString()+".jpg";
 	}
 	
+<<<<<<< HEAD
 
+=======
+	File path_new = new File(application.getRealPath("/").replace('/', '/') + "images/profile_images"); 
+	if (path_new.exists()) {
+		String t = "/images/profile_images";
+		int p=userpic.indexOf(t);
+		if (p != -1) {
+			
+			System.out.println("pic path---"+userpic);
+			System.out.println("path exists---"+userpic.substring(0, p));
+			String path_update=userpic.substring(0, p);
+			if (!path_update.equals(path_new.toString())) {
+				profileimage = "images/profile_images/" + userinfo.get(2).toString() + ".jpg";
+				/* profileimage=userpic.replace(userpic.substring(0, p), path_new.toString()); */
+				String new_file_path = path_new.toString().replace("\\images\\profile_images", "")+"/"+profileimage;
+				System.out.println("ready to be updated--"+ new_file_path);
+				/* new DbConnection().updateTable("UPDATE usercredentials SET profile_picture  = '" + pass + "' WHERE Email = '" + email + "'"); */
+				
+				
+			}
+		}				
+	}else{
+		System.out.println("path doesnt exist");
+	}
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 }catch(Exception e){}
 	
 }
@@ -81,7 +106,11 @@ if(term.equals("")){
 }else{
 	results = post._search(term,"0",sort);
 }
+<<<<<<< HEAD
 
+=======
+System.out.println("result--"+results);
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 String total = NumberFormat.getNumberInstance(Locale.US).format(Integer.parseInt(post._getTotal()));
 //NumberFormat.getNumberInstance(Locale.US).format(Integer.parseInt(post._getTotal()));
 

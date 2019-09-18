@@ -4,7 +4,11 @@
 <%@page import="util.*"%>
 <%@page import="util.Blogs"%>
 <%@page import="java.util.ArrayList"%>
+<<<<<<< HEAD
 <%@page import="java.text.NumberFormat" %>
+=======
+<%@page import="java.text.NumberFormat"%>
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="java.util.Date"%>
@@ -35,7 +39,13 @@
 				phone = (null == userinfo.get(6)) ? "" : userinfo.get(6).toString();
 				String userpic = userinfo.get(9).toString();
 				String path = application.getRealPath("/").replace('\\', '/') + "images/profile_images/";
+<<<<<<< HEAD
 				String term =  (null == request.getParameter("term")) ? "" : request.getParameter("term").toString();//.replaceAll("[^a-zA-Z]", " ");
+=======
+				String term = (null == request.getParameter("term"))
+						? ""
+						: request.getParameter("term").toString();//.replaceAll("[^a-zA-Z]", " ");
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 				String filename = userinfo.get(9).toString();
 				profileimage = "images/default-avatar.png";
 				if (userpic.indexOf("http") > -1) {
@@ -45,6 +55,31 @@
 				if (f.exists() && !f.isDirectory()) {
 					profileimage = "images/profile_images/" + userinfo.get(2).toString() + ".jpg";
 				}
+<<<<<<< HEAD
+=======
+				File path_new = new File(application.getRealPath("/").replace('/', '/') + "images/profile_images"); 
+				if (path_new.exists()) {
+					String t = "/images/profile_images";
+					int p=userpic.indexOf(t);
+					if (p != -1) {
+						
+						System.out.println("pic path---"+userpic);
+						System.out.println("path exists---"+userpic.substring(0, p));
+						String path_update=userpic.substring(0, p);
+						if (!path_update.equals(path_new.toString())) {
+							profileimage = "images/profile_images/" + userinfo.get(2).toString() + ".jpg";
+							/* profileimage=userpic.replace(userpic.substring(0, p), path_new.toString()); */
+							String new_file_path = path_new.toString().replace("\\images\\profile_images", "")+"/"+profileimage;
+							System.out.println("ready to be updated--"+ new_file_path);
+							/* new DbConnection().updateTable("UPDATE usercredentials SET profile_picture  = '" + pass + "' WHERE Email = '" + email + "'"); */
+							
+							
+						}
+					}				
+				}else{
+					System.out.println("path doesnt exist");
+				}
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 			} catch (Exception e) {
 			}
 			String[] user_name = name.split(" ");
@@ -52,7 +87,11 @@
 
 			Blogposts post = new Blogposts();
 			Blogger bloggers = new Blogger();
+<<<<<<< HEAD
 			
+=======
+
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 			Blogs blg = new Blogs();
 			String term = (null == request.getParameter("term")) ? "" : request.getParameter("term");
 			ArrayList results = null;
@@ -61,13 +100,20 @@
 			} else {
 				results = tracker._search(term, username);
 			}
+<<<<<<< HEAD
 			String total = results.size()+"";//._getTotal();
+=======
+			String total = results.size() + "";//._getTotal();
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 			ArrayList test = new ArrayList();
 			//tracker._add("hello",test);
 			//pimage = pimage.replace("build/", "");
 			//System.out.println("Result here:"+results);
 			SimpleDateFormat DATE_FORMAT2 = new SimpleDateFormat("yyyy-MM-dd");
+<<<<<<< HEAD
 
+=======
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 %>
 <!DOCTYPE html>
 <html>
@@ -122,10 +168,17 @@
 <script src="pagedependencies/googletagmanagerscript.js"></script>
 </head>
 <body>
+<<<<<<< HEAD
 <%@include file="subpages/loader.jsp" %>
 <noscript>
 <%@include file="subpages/googletagmanagernoscript.jsp" %>
 </noscript>
+=======
+	<%@include file="subpages/loader.jsp"%>
+	<noscript>
+		<%@include file="subpages/googletagmanagernoscript.jsp"%>
+	</noscript>
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 	<div class="modal-notifications">
 		<div class="row">
 			<div class="col-lg-10 closesection"></div>
@@ -149,6 +202,7 @@
 						href="<%=request.getContextPath()%>/notifications.jsp"><h6
 							class="text-primary">
 							Notifications <b id="notificationcount" class="cursor-pointer">12</b>
+<<<<<<< HEAD
 						</h6> </a> --%>  
 		<a class="cursor-pointer profilemenulink" href="<%=request.getContextPath()%>/addblog.jsp"><h6 class="text-primary">Add Blog</h6></a>
 		<a class="cursor-pointer profilemenulink" href="<%=request.getContextPath()%>/profile.jsp"><h6 class="text-primary">Profile</h6></a> 
@@ -157,6 +211,21 @@
 						href="https://addons.mozilla.org/en-US/firefox/addon/blogtrackers/"><h6
 							class="text-primary">Plugin</h6></a>
 		<a class="cursor-pointer profilemenulink" href="<%=request.getContextPath()%>/logout"><h6 class="text-primary">Log Out</h6></a>
+=======
+						</h6> </a> --%>
+					<a class="cursor-pointer profilemenulink"
+						href="<%=request.getContextPath()%>/addblog.jsp"><h6
+							class="text-primary">Add Blog</h6></a> <a
+						class="cursor-pointer profilemenulink"
+						href="<%=request.getContextPath()%>/profile.jsp"><h6
+							class="text-primary">Profile</h6></a> <a
+						class="cursor-pointer profilemenulink"
+						href="https://addons.mozilla.org/en-US/firefox/addon/blogtrackers/"><h6
+							class="text-primary">Plugin</h6></a> <a
+						class="cursor-pointer profilemenulink"
+						href="<%=request.getContextPath()%>/logout"><h6
+							class="text-primary">Log Out</h6></a>
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 				</div>
 			</div>
 
@@ -239,11 +308,20 @@
 		</div>
 
 		<div class="col-md-12 mt0">
+<<<<<<< HEAD
 		<form method="search" method="post" autocomplete="off" action="<%=request.getContextPath()%>/trackerlist.jsp">
 			<input type="search" name="term"
 				class="form-control p30 pt5 pb5 icon-big border-none bottom-border text-center blogbrowsersearch nobackground"
 				placeholder="Search Trackers" />
 				</form>
+=======
+			<form method="search" method="post" autocomplete="off"
+				action="<%=request.getContextPath()%>/trackerlist.jsp">
+				<input type="search" name="term"
+					class="form-control p30 pt5 pb5 icon-big border-none bottom-border text-center blogbrowsersearch nobackground"
+					placeholder="Search Trackers" />
+			</form>
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 		</div>
 
 	</nav>
@@ -252,8 +330,13 @@
 
 		<div class="row mt30">
 			<div class="col-md-12 ">
+<<<<<<< HEAD
 				<h6 class="float-left text-primary"><span id="tracker-total"><%=total%></span>
 					Tracker(s)
+=======
+				<h6 class="float-left text-primary">
+					<span id="tracker-total"><%=total%></span> Tracker(s)
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 				</h6>
 				<!-- <h6 class="float-right text-primary">Recent <i class="fas fa-chevron-down"></i><h6/> -->
 			</div>
@@ -262,7 +345,12 @@
 
 		<div class="card-columns pt0 pb10  mt10 mb40 ">
 
+<<<<<<< HEAD
 			<div class="card noborder curved-card mb30 pt60 pb60 newtrackersection">
+=======
+			<div
+				class="card noborder curved-card mb30 pt60 pb60 newtrackersection">
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 				<div class="card-body">
 					<div class="cursor-pointer">
 						<h4 class="text-primary text-center">
@@ -283,7 +371,11 @@
 							JSONObject obj = null;
 							String query = null;
 							int totalpost = 0;
+<<<<<<< HEAD
 							
+=======
+
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 							String bres = null;
 							JSONObject bresp = null;
 							String bresu = null;
@@ -293,6 +385,7 @@
 							ArrayList resut = new ArrayList();
 
 							for (int i = 0; i < results.size(); i++) {
+<<<<<<< HEAD
 								resut = (ArrayList)results.get(i);
 								
 							
@@ -301,6 +394,15 @@
 							    query = resut.get(5).toString();//obj.get("query").toString();
 								/*
 							    res = results.get(i).toString();
+=======
+								resut = (ArrayList) results.get(i);
+
+								int totalblog = 0;
+								String id = resut.get(0).toString();
+								query = resut.get(5).toString();//obj.get("query").toString();
+								/*
+								res = results.get(i).toString();
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 								resp = new JSONObject(res);
 								resu = resp.get("_source").toString();
 								obj = new JSONObject(resu);
@@ -309,6 +411,7 @@
 								query = query.replaceAll("blogsite_id in ", "");
 								query = query.replaceAll("\\(", "");
 								query = query.replaceAll("\\)", "");
+<<<<<<< HEAD
 								
 								String dtt =resut.get(3).toString();
 								totalpost = 0;
@@ -321,16 +424,37 @@
 								if (!query.equals("") ) {
 									String[] blogCount = query.split(",");
 									
+=======
+
+								String dtt = resut.get(3).toString();
+								totalpost = 0;
+								String dt = "";
+								String bloggerCount = "0";
+								if (!dtt.equals("null")) {
+									String[] ddt = dtt.split(" ");
+									dt = ddt[0];
+								}
+								if (!query.equals("")) {
+									String[] blogCount = query.split(",");
+
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 									totalblog = blogCount.length;
 									bloggerCount = bloggers._getBloggerById(query);
 									/*
 									String stdate = post._getDate(query,"first");
 									String endate = post._getDate(query,"last");
 									
+<<<<<<< HEAD
 
 									Date dstart = new Date();
 									Date today = new Date();
 
+=======
+									
+									Date dstart = new Date();
+									Date today = new Date();
+									
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 									Date nnow = new Date();  
 									
 									try{
@@ -351,6 +475,7 @@
 									String tot = post._searchRangeTotal("date", dst, dend, query);
 									totalpost = Integer.parseInt(tot);
 									*/
+<<<<<<< HEAD
 									System.out.println("quer"+query);
 									if(post._getBlogPostById(query) !=""){
 									totalpost = Integer.parseInt(post._getBlogPostById(query));
@@ -369,10 +494,35 @@
 							title="Proceed to tracker details"><%=resut.get(2).toString()%></h1>
 				
 				</div></a>
+=======
+									System.out.println("quer" + query);
+									if (post._getBlogPostById(query) != "") {
+										totalpost = Integer.parseInt(post._getBlogPostById(query));
+									} else {
+										totalpost = 0;
+									}
+								}
+			%>
+
+			<div class="card noborder curved-card mb30 pt30 zoom">
+				<a
+					href="<%=request.getContextPath()%>/edittracker.jsp?tid=<%=resut.get(0).toString()%>">
+					<div
+						class="text-center mt10 stylebutton6 text-primary m20 mt0 mb0 cursor-pointer">
+
+						<h1
+							class="text-primary text-center pt10 p20 pb10 cursor-pointer bold-text activelink"
+							data-toggle="tooltip" data-placement="top"
+							title="Proceed to tracker details"><%=resut.get(2).toString()%></h1>
+
+					</div>
+				</a>
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 
 				<div class="card-body">
 					<%--  <p class="card-text text-center postdate text-primary"><%=dt%>&nbsp;&nbsp;&nbsp;&nbsp;.&nbsp;&nbsp;&nbsp;&nbsp;</p> --%>
 
+<<<<<<< HEAD
 					
 					<p class="mt10 text-primary text-center">
 
@@ -389,14 +539,34 @@
 						%>
 						
 						<%=description	%>
+=======
+
+					<p class="mt10 text-primary text-center">
+
+						<%
+							String description = String.valueOf(resut.get(6));
+											if (description.equalsIgnoreCase("null") || description.equalsIgnoreCase("")) {
+												description = "No Description";
+											} else {
+												description = description;
+											}
+						%>
+
+						<%=description%>
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 					</p>
 					<div class="text-center mt20">
 						<!-- <button
 >>>>>>> 70e016cc354f58e6fa6e2cb803b9f25c23c1fc9a
 							class="btn btn-default stylebutton6 text-primary p30 pt5 pb5 text-left cursor-pointer-default"
 							style="width: 100%;"> -->
+<<<<<<< HEAD
 							<h1 class="text-success mb0"><%=totalblog%></h1>
 							<h5 class="text-primary">Blogs</h5>
+=======
+						<h1 class="text-success mb0"><%=totalblog%></h1>
+						<h5 class="text-primary">Blogs</h5>
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 						<!-- </button> -->
 
 					</div>
@@ -405,12 +575,18 @@
 						<!-- <button
 							class="btn btn-default stylebutton6 text-primary p30 pt5 pb5 text-left cursor-pointer-default"
 							style="width: 100%;"> -->
+<<<<<<< HEAD
 							<h1 class="text-success mb0"><%=NumberFormat.getNumberInstance(Locale.US).format(totalpost)%></h1>
 							<h5 class="text-primary">Posts</h5>
+=======
+						<h1 class="text-success mb0"><%=NumberFormat.getNumberInstance(Locale.US).format(totalpost)%></h1>
+						<h5 class="text-primary">Posts</h5>
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 						<!-- </button> -->
 
 
 					</div>
+<<<<<<< HEAD
 						<div class="text-center mt10">
 						<!-- <button
 							class="btn btn-default stylebutton6 text-primary p30 pt5 pb5 text-left cursor-pointer-default"
@@ -418,6 +594,15 @@
 							
 							 <h1 class="text-success mb0"><%=NumberFormat.getNumberInstance(Locale.US).format(Integer.parseInt(bloggerCount))%></h1> 
 							<h5 class="text-primary">Bloggers</h5>
+=======
+					<div class="text-center mt10">
+						<!-- <button
+							class="btn btn-default stylebutton6 text-primary p30 pt5 pb5 text-left cursor-pointer-default"
+							style="width: 100%;"> -->
+
+						<h1 class="text-success mb0"><%=NumberFormat.getNumberInstance(Locale.US).format(Integer.parseInt(bloggerCount))%></h1>
+						<h5 class="text-primary">Bloggers</h5>
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 						<!-- </button> -->
 
 
@@ -436,18 +621,36 @@
 							href="<%=request.getContextPath()%>/dashboard.jsp?tid=<%=resut.get(0).toString()%>"><i
 							class="navbar-brand text-primary icontrackersize cursor-pointer proceedtoanalytics"
 							data-toggle="tooltip" data-placement="top"
+<<<<<<< HEAD
 							title="Proceed to Analytics"></i></a> 
 			<a href="<%=request.getContextPath()%>/edittracker.jsp?tid=<%=resut.get(0).toString()%>" style="margin-left:25px;"><i	class="text-primary icontrackersize cursor-pointer edittracker" data-toggle="tooltip" data-placement="top" 	title="Edit Tracker"></i></a> 
 			<i class="text-primary icontrackersize cursor-pointer deletetracker trackerdelete"
 							data-toggle="tooltip" data-placement="top" title="Delete Tracker" id="<%=resut.get(0).toString()%>">
 							<input type="hidden" name="tid" value="<%=resut.get(0).toString()%>" class="tid" />
 							</i>
+=======
+							title="Proceed to Analytics"></i></a> <a
+							href="<%=request.getContextPath()%>/edittracker.jsp?tid=<%=resut.get(0).toString()%>"
+							style="margin-left: 25px;"><i
+							class="text-primary icontrackersize cursor-pointer edittracker"
+							data-toggle="tooltip" data-placement="top" title="Edit Tracker"></i></a>
+						<i
+							class="text-primary icontrackersize cursor-pointer deletetracker trackerdelete"
+							data-toggle="tooltip" data-placement="top" title="Delete Tracker"
+							id="<%=resut.get(0).toString()%>"> <input type="hidden"
+							name="tid" value="<%=resut.get(0).toString()%>" class="tid" />
+						</i>
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 					</div>
 				</div>
 			</div>
 			<%
 				}
+<<<<<<< HEAD
 			}
+=======
+						}
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 			%>
 		</div>
 
@@ -465,6 +668,7 @@
 
 
 
+<<<<<<< HEAD
 <script type="text/javascript" src="assets/js/jquery-1.11.3.min.js"></script>
  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src="assets/bootstrap/js/bootstrap.js">
@@ -536,6 +740,100 @@ $(document).ready(function() {
 <!-- <script src="pagedependencies/edittracker.js?v=12"></script>-->
 
 <script src="assets/js/generic.js">
+=======
+	<script type="text/javascript" src="assets/js/jquery-1.11.3.min.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	<script src="assets/bootstrap/js/bootstrap.js">
+		
+	</script>
+	<script type="text/javascript"
+		src="assets/vendors/tags/tagsinput.min.js"></script>
+	<script type="text/javascript"
+		src="assets/vendors/tags/tokenfield.min.js"></script>
+	<script type="text/javascript" src="assets/vendors/ui/prism.min.js"></script>
+	<script type="text/javascript"
+		src="assets/vendors/typeahead/typeahead.bundle.min.js"></script>
+	<script type="text/javascript" src="assets/js/form_tags_input.js"></script>
+	<script type="text/javascript"
+		src="assets/vendors/blockui/blockui.min.js"></script>
+
+	<script type="text/javascript" src="assets/js/toastr.js"></script>
+
+	<script>
+		$(document)
+				.ready(
+						function() {
+							$(function() {
+								$('[data-toggle="tooltip"]').tooltip()
+							})
+
+							var newtrackersection = '<div class="card noborder curved-card mb30 pt60 pb60 newtrackersection"><div class="card-body"><div class="cursor-pointer"><h4 class="text-primary text-center"><i class="addnewtracker" data-toggle="tooltip" data-placement="top" title="Add New Tracker"></i></h4></div></div></div>';
+
+							// add new tracker code snippets
+							$('.addnewtracker')
+									.on(
+											"click",
+											function(e) {
+												e.preventDefault();
+												$('.newtrackersection')
+														.remove();
+												$('.tooltip').hide();
+												var trackersetupform = "";
+												trackersetupform += '<div class="card noborder curved-card mb30 pt20 pb20"><div class="card-body"><div class="trackerclose"><i class="lnr lnr-cross closetracker text-primary cursor-pointer" data-toggle="tooltip" data-placement="top" title="Cancel New Tracker"></i></div><div class="cursor-pointer mt20"><textarea class="form-control newtrackername text-primary text-center" placeholder="Tracker Name" rows="2"></textarea></div><div class="cursor-pointer mt20"><textarea class="form-control newtrackerdescription text-primary text-center" placeholder="Description" rows="1"></textarea></div>';
+												//trackersetupform += '<div class="form-group mt20 trackerpage"><label class="text-primary">Add Blog</label><input type="text" class="form-control tokenfield-primary" value="" placeholder="Add Blog" /></div><div class="text-center"><i type="submit" class="fas fa-check text-success createtracker mr20 cursor-pointer" data-toggle="tooltip" data-placement="top" title="Create Tracker"></i> <i class="fas fa-trash-alt text-primary canceltracker cursor-pointer" data-toggle="tooltip" data-placement="top" title="Delete Tracker"></i></div></div></div>';
+												//trackersetupform += '<div class="text-center mt30"><i type="submit" class="text-success createtracker mr20 cursor-pointer" data-toggle="tooltip" data-placement="top" title="Create Tracker"></i> <i class="text-primary canceltracker cursor-pointer" data-toggle="tooltip" data-placement="top" title="Delete Tracker"></i></div></div></div>';
+
+												trackersetupform += '<div class="text-center mt30"><i type="submit" class="text-success createtracker cursor-pointer" data-toggle="tooltip" data-placement="top" title="Create Tracker"></i> </div></div></div>';
+
+												$('.card-columns').prepend(
+														trackersetupform);
+
+												// load the script for form tag input
+												$
+														.getScript(
+																"assets/js/form_tags_input.js",
+																function(
+																		data,
+																		textStatus,
+																		jqxhr) {
+																	/*  console.log(data); //data returned
+																	 console.log(textStatus); //success
+																	 console.log(jqxhr.status); //200
+																	 console.log('Load was performed.'); */
+																});
+
+												// create a tracker script
+												$
+														.getScript(
+																"pagedependencies/createtracker.js?v=1299",
+																function(
+																		data,
+																		textStatus,
+																		jqxhr) {
+
+																});
+
+											});
+
+							/// refresh a tracker
+							$.getScript("pagedependencies/refreshtracker.js",
+									function(data, textStatus, jqxhr) {
+
+									});
+						});
+	</script>
+	<script src="js/jscookie.js">
+		
+	</script>
+
+	<script src="pagedependencies/deletetracker.js?v=900">
+		
+	</script>
+
+	<!-- <script src="pagedependencies/edittracker.js?v=12"></script>-->
+
+	<script src="assets/js/generic.js">
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 </script>
 
 </body>

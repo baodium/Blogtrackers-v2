@@ -1,9 +1,19 @@
 <%@page import="authentication.*"%>
 <%@page import="java.util.*"%>
 <%
+<<<<<<< HEAD
 	Object error_message = (null == session.getAttribute("error_message")) ? "" : session.getAttribute("error_message");
 	Object success_message = (null == session.getAttribute("success_message")) ? "" : session.getAttribute("success_message");
 	
+=======
+
+	Object email = (null == session.getAttribute("email")) ? "" : session.getAttribute("email");
+	Object error_message = (null == session.getAttribute("error_message")) ? "" : session.getAttribute("error_message");
+	Object success_message = (null == session.getAttribute("success_message")) ? "" : session.getAttribute("success_message");
+	String p = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
+
+	System.out.println("FORGOT--" + request.getHeader("referer"));
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 %>
 <!DOCTYPE html>
 <html>
@@ -109,7 +119,11 @@
 							<h5 class="content-group pt20"><%=success_message%></h5>
 						</div>
 						
+<<<<<<< HEAD
 						<a href="<%=request.getContextPath()%>/login.jsp" class="btn bg-blue-400 btn-block">Click here to proceed <i class="icon-arrow-left52 position-right"></i></a>
+=======
+						<a href="<%=request.getContextPath()%>/ChangePassword.jsp" class="btn bg-blue-400 btn-block">Click here to proceed <i class="icon-arrow-left52 position-right"></i></a>
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
                                 </div>
                                 
                 <% } %>
@@ -126,10 +140,28 @@
 
 </body>
 <script>
+<<<<<<< HEAD
 <% if(!success_message.equals("")){ %>
 toastr.success('<%=success_message%>','Success','hideDuration:10000');
 <%} else if(!error_message.equals("")) {%>
 toastr.error('<%=error_message%>','Error','hideDuration:10000');
 <%}%>
+=======
+<% if(!success_message.equals("")){ 
+	 /* session.invalidate();   */
+	 System.out.println(session.getId());
+	/* response.sendRedirect("profile.jsp");  */
+	%>
+alert('this is you')
+toastr.success('<%=success_message%>','Success','hideDuration:10000');
+<%} else if(!error_message.equals("")) {%>
+//alert('this is you2')
+toastr.error('<%=error_message%>','Error','hideDuration:10000');
+<%}%>
+$(document).ready(function () {
+	email = $('#email').val();
+})
+
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 </script>
 </html>

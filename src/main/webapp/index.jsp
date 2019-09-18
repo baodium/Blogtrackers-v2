@@ -11,6 +11,25 @@
 <%
 
 Object email = (null == session.getAttribute("email")) ? "" : session.getAttribute("email");
+<<<<<<< HEAD
+=======
+Object error_message = (null == session.getAttribute("error_message")) ? "" : session.getAttribute("error_message");
+Object success_message = (null == session.getAttribute("success_message")) ? "" : session.getAttribute("success_message");
+String pi = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
+
+System.out.println("INDEX--" + request.getHeader("referer"));
+
+/*  if(request.getHeader("referer").equals(null)){
+	session.invalidate();
+	response.sendRedirect("login.jsp");
+} */
+/* else if(!request.getHeader("referer").equals(p +"/")){*/
+	/* session.invalidate(); */
+	/* response.sendRedirect(p +"/"); 
+
+/* System.out.println("success__ 1--" + success_message); */
+
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 ArrayList<?> userinfo = new ArrayList();
 String profileimage= "";
 String username ="";
@@ -20,7 +39,19 @@ String date_modified = "";
 userinfo = DbConnection.query("SELECT * FROM usercredentials where Email = '"+email+"'");
 if (userinfo.size()<1) {
 	//response.sendRedirect("login.jsp");
+<<<<<<< HEAD
 }else{
+=======
+}
+else{
+/* else if(!request.getHeader("referer").equals(p +"/forgotpassword.jsp") || !request.getHeader("referer").equals(p +"/ChangePassword.jsp") || ! request.getHeader("referer").equals(p+"/")){ */
+	/* System.out.println("success__ 1--" + success_message); */
+	/* System.out.println("COMI"+request.getHeader("referer"));
+	System.out.println(p +"/forgotpassword.jsp");
+	System.out.println(!request.getHeader("referer").equals(p +"/forgotpassword.jsp")); */
+	System.out.println("INDEX--" + request.getHeader("referer"));
+	System.out.println("INDEX--" + pi+"/");
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 userinfo = (ArrayList<?>)userinfo.get(0);
 try{
 	username = (null==userinfo.get(0))?"":userinfo.get(0).toString();
@@ -43,9 +74,37 @@ try{
 	}
 		
 		File f = new File(filename);
+<<<<<<< HEAD
 		if(f.exists() && !f.isDirectory()) { 
 			profileimage = "images/profile_images/"+userinfo.get(2).toString()+".jpg";
 		}
+=======
+		File path_new = new File(application.getRealPath("/").replace('/', '/') + "images/profile_images"); 
+		if(f.exists() && !f.isDirectory()) { 
+			profileimage = "images/profile_images/"+userinfo.get(2).toString()+".jpg";
+		}
+		if (path_new.exists()) {
+			String t = "/images/profile_images";
+			int p=userpic.indexOf(t);
+			if (p != -1) {
+				
+				System.out.println("pic path---"+userpic);
+				System.out.println("path exists---"+userpic.substring(0, p));
+				String path_update=userpic.substring(0, p);
+				if (!path_update.equals(path_new.toString())) {
+					profileimage = "images/profile_images/" + userinfo.get(2).toString() + ".jpg";
+					/* profileimage=userpic.replace(userpic.substring(0, p), path_new.toString()); */
+					String new_file_path = path_new.toString().replace("\\images\\profile_images", "")+"/"+profileimage;
+					System.out.println("ready to be updated--"+ new_file_path);
+					/* new DbConnection().updateTable("UPDATE usercredentials SET profile_picture  = '" + pass + "' WHERE Email = '" + email + "'"); */
+					
+					
+				}
+			}				
+		}else{
+			System.out.println("path doesnt exist");
+		}
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 	}catch(Exception e){
 		profileimage = "images/default-avatar.png";
 	}
@@ -78,6 +137,7 @@ try{
 <link rel="stylesheet" href="assets/css/daterangepicker.css" />
 
   <link rel="stylesheet" href="assets/css/style.css" />
+<<<<<<< HEAD
   
   <link rel="stylesheet" href="assets/css/custom.css" />
   
@@ -85,6 +145,8 @@ try{
   
   
   
+=======
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
   <!--end of bootstrap -->
   <script src="assets/js/jquery-3.2.1.slim.min.js"></script>
 <script src="assets/js/popper.min.js" ></script>
@@ -322,7 +384,11 @@ try{
 <p class="text-center text-primary textwhy mb10">Actionable Insights</p>
 <p class="text-center text-primary p20 pt0 pb0">Track Blogs at your tips.</p></div>
 
+<<<<<<< HEAD
 <div class="col-md-3"><p class="text-center"><i class="navbar-brand text-primary icontrackersize plugin-icon pt10"></i></p>
+=======
+<div class="col-md-3"><p class="text-center"><i class="navbar-brand text-primary icontrackersize insights pt10"></i></p>
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 <p class="text-center text-primary textwhy mb10">Blogtrackers plugin</p>
 <p class="text-center text-primary p20 pt0 pb0">Sign up to download.</p></div>
 
@@ -337,8 +403,12 @@ try{
 ass="text-center text-primary p40 pt10 pb10">Blogtrackers helps sociologists to track and analyze blogs of particular interests by designing and integrating unique features. </p> -->
 </div>
 
+<<<<<<< HEAD
 <!-- START OLD -->
 <!-- <div id="featuresslides" class="carousel slide" data-ride="carousel">
+=======
+<div id="featuresslides" class="carousel slide" data-ride="carousel">
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
   <div class="carousel-inner">
     <div class="carousel-item active">
      <div class="offset-md-2 col-md-8 offset-md-2">
@@ -388,6 +458,7 @@ ass="text-center text-primary p40 pt10 pb10">Blogtrackers helps sociologists to 
     <span class="carousel-control-next-icon nextfeatures" aria-hidden="true"></span>
     <span class="sr-only">Next</span>
   </a>
+<<<<<<< HEAD
 </div> -->
 
 <!-- END OLD-->
@@ -437,6 +508,11 @@ ass="text-center text-primary p40 pt10 pb10">Blogtrackers helps sociologists to 
 <!-- END NEW -->
 
 
+=======
+</div>
+
+
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 <!-- <div class="row mt100 mb100">
 <div class="col-md-4 borderleftprimary">
 <h1 class="text-primary headertextwhatcanyoudo">Traffic <br/>Pattern Analysis</h1>

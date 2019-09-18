@@ -422,7 +422,12 @@ if(ids.length()>0 && post._getBlogPostById(ids) !=""){
 		</thead>
 		<tbody>		
 		<!-- <div id="bloglist"> -->
+<<<<<<< HEAD
 		<% if (new_results.size() > 0) {
+=======
+		
+		<% try{if (new_results.size() > 0) {
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 			String blogsite_name ="";
 			String totalposts ="";
 
@@ -457,7 +462,11 @@ if(ids.length()>0 && post._getBlogPostById(ids) !=""){
 			<td class="text-center"><%=v1.get(3) %></td>
 			<td><i class="text-primary icontrackersize cursor-pointer deleteblog text-center" data-toggle="tooltip" id="<%=v1.get(0)%>_select" data-placement="top" title="Delete Blog"></i></td>
 			</tr>
+<<<<<<< HEAD
 		<% }} %>
+=======
+		<% }} }catch(Exception e){}%>
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 		</tbody>
 		
 		</table>

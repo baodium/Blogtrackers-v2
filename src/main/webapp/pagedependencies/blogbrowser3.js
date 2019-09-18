@@ -3,9 +3,15 @@ var selected_blogs = new Array();
 var looper = 0;
 var viewtype = Cookies.get("viewtype");
 $(document).ready(function() {
+<<<<<<< HEAD
 //type of view
 // default view is unknown	
 //Cookies.set('viewtype',"",{path:'/'})
+=======
+// type of view
+// default view is unknown
+// Cookies.set('viewtype',"",{path:'/'})
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 
 // show the grid
 if(viewtype == null || viewtype === "" || viewtype==="grid")
@@ -21,7 +27,11 @@ if(viewtype === "list" )
 	$(".gridlook").addClass("hidden");	
 }
 console.log(viewtype);
+<<<<<<< HEAD
 //end
+=======
+// end
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 $('#listtoggle').on("click",() => {
 Cookies.set('viewtype',"list",{path:'/'})
 viewtype = Cookies.get("viewtype");
@@ -35,6 +45,7 @@ Cookies.set('viewtype',"grid",{path:'/'})
 viewtype = Cookies.get("viewtype");
 $('.listlook').addClass("hidden");
 $(".gridlook").removeClass("hidden");
+<<<<<<< HEAD
 ///console.log(viewtype);
 })
 
@@ -43,6 +54,16 @@ $(".gridlook").removeClass("hidden");
 	//console.log(typeof(Cookies.get('allfavoritesblogs')));
 	Cookies.set('selectedblogs', "", {path : '/'});	
 	//console.log(theme);
+=======
+// /console.log(viewtype);
+})
+
+// console.log(viewtype);
+	var loggedinstatus = Cookies.get("loggedinstatus");
+	// console.log(typeof(Cookies.get('allfavoritesblogs')));
+	Cookies.set('selectedblogs', "", {path : '/'});	
+	// console.log(theme);
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 	// tracking blogcount
 	
 	// tracker selected count
@@ -50,12 +71,20 @@ $(".gridlook").removeClass("hidden");
 	var trackscount = blgs.length;
 	var trackerselectedcount = 0;
 	
+<<<<<<< HEAD
 //  show tooltip
+=======
+// show tooltip
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
   $(function () {
     $('[data-toggle="tooltip"]').tooltip()
   })
 
+<<<<<<< HEAD
  //tracker list handler  
+=======
+ // tracker list handler
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 $('.blogindividual').on("mouseenter",function(){
 $(this).find(".checkblog").removeClass("hidden");
 });
@@ -96,7 +125,11 @@ $('.blogindividual').on("click",function(e){
 // end of blog individual
 
 
+<<<<<<< HEAD
 //tracker list handler
+=======
+// tracker list handler
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 $('.trackerindividual').on("mouseenter",function(){
 	$(this).find(".checktracker").removeClass("hidden");
 });
@@ -153,7 +186,11 @@ $('.trackerindividual').on("click",function(e){
 
 
 
+<<<<<<< HEAD
 //tracker list handler
+=======
+// tracker list handler
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 $('.trackerindividual2').on("mouseenter",function(){
 $(this).find(".checktracker2").removeClass("hidden");
 });
@@ -279,7 +316,11 @@ var allblogasstring =  "";
 // on load handler
 $(window).on("load",function(e){
 loggedin = Cookies.get('loggedinstatus');
+<<<<<<< HEAD
 //console.log(loggedin);
+=======
+// console.log(loggedin);
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 if(loggedin === "false")
 {
 cookieblogs = Cookies.get('allfavoritesblogs');
@@ -291,13 +332,22 @@ for(eachblog in blogpostids)
 element = $("#blogpostt_"+blogpostids[eachblog]);
 element.removeClass("far");
 element.addClass("fas");
+<<<<<<< HEAD
 //console.log(blogpostids[eachblog]);	
+=======
+// console.log(blogpostids[eachblog]);
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 }
 }
 
 
+<<<<<<< HEAD
 //console.log(blogpostids);
 //console.log("Cookie on window load "+ cookieblogs);
+=======
+// console.log(blogpostids);
+// console.log("Cookie on window load "+ cookieblogs);
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 }
 })
 // handler for each favorites
@@ -306,17 +356,30 @@ $(document).on("click",".favoritestoggle",function(e){
 isFavorites = $(this).hasClass('far');
 if(isFavorites) // if it is favorites
 {
+<<<<<<< HEAD
 // grab the individual id	
+=======
+// grab the individual id
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 blogpostidtoadd = $(this).attr("id").split("_")[1];
 // checks if element exist in the array
 if(!blogpostids.includes(blogpostidtoadd))
 {
+<<<<<<< HEAD
 //console.log(blogpostids.includes(blogpostidtoadd))
 // push the new element in the array
 blogpostids.push(blogpostidtoadd);
 //join together as string
 cookieblogs = Cookies.get('allfavoritesblogs');
 //console.log(cookieblogs);
+=======
+// console.log(blogpostids.includes(blogpostidtoadd))
+// push the new element in the array
+blogpostids.push(blogpostidtoadd);
+// join together as string
+cookieblogs = Cookies.get('allfavoritesblogs');
+// console.log(cookieblogs);
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 if(cookieblogs === "")
 {
 	allblogasstring = blogpostids.join(",");	
@@ -330,20 +393,29 @@ $.ajax({
 	method:"POST",
 	data:{
 	action:"addtofavorites",
+<<<<<<< HEAD
 	//allblogpost:allblogasstring
+=======
+	// allblogpost:allblogasstring
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 	bloposttoadd:blogpostidtoadd
 	},
 	error:function(response){
 		
 	},
 	success:function(response){
+<<<<<<< HEAD
 		//console.log(response)
+=======
+		// console.log(response)
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 	if(response === "addedtofavorites")
 		{
 		toastr.success('Added to Favorites','Success');
 		}
 	if(response === "notloggedin")
 		{
+<<<<<<< HEAD
 		//console.log(response);
 		//console.log(loggedinstatus);
 		// set a cookie for blog
@@ -352,6 +424,17 @@ $.ajax({
 		
 		}
 	//console.log(response)	
+=======
+		// console.log(response);
+		// console.log(loggedinstatus);
+		// set a cookie for blog
+		Cookies.set('allfavoritesblogs', allblogasstring , {path : '/'});	
+		// console.log("Cookies string added after click
+		// "+Cookies.get('allfavoritesblogs'));
+		
+		}
+	// console.log(response)
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 	}
 		
 	});
@@ -359,7 +442,11 @@ $.ajax({
 $(this).removeClass("far fa-heart").addClass("fas fa-heart");
 $(this).attr("data-original-title","Remove from Favorites");
 
+<<<<<<< HEAD
 //console.log("You Added to favorites")
+=======
+// console.log("You Added to favorites")
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 // add an jax to favorites the post
 
 }
@@ -372,6 +459,7 @@ if(blogpostids.includes(blogpostidtoadd))
 {
 blogpostids.splice(blogpostids.indexOf(blogpostidtoadd),1)
 allblogasstring = blogpostids.join(",");
+<<<<<<< HEAD
 //ajax function to remove from favorites
 //console.log(blogpostids.indexOf(blogpostidtoadd))
 //console.log("After remove")
@@ -381,13 +469,28 @@ allblogasstring = blogpostids.join(",");
 
 }
 //console.log("You removed from favorites")
+=======
+// ajax function to remove from favorites
+// console.log(blogpostids.indexOf(blogpostidtoadd))
+// console.log("After remove")
+// console.log(blogpostids);
+// console.log(blogpostids.includes(blogpostidtoadd))
+
+
+}
+// console.log("You removed from favorites")
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 // add an ajax to unfavorite the post
 $.ajax({
 	url:app_url+"favorites",
 	method:"POST",
 	data:{
 	action:"removefromfavorites",
+<<<<<<< HEAD
 	//allblogpost:allblogasstring
+=======
+	// allblogpost:allblogasstring
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 	bloposttoadd:blogpostidtoadd
 	},
 	error:function(response){
@@ -400,6 +503,7 @@ $.ajax({
 	}
 	if(response === "notloggedin")
 	{
+<<<<<<< HEAD
 	//console.log(response);
 	//console.log(loggedinstatus);
 	// set a cookie for blog
@@ -409,6 +513,18 @@ $.ajax({
 	//console.log(Cookies.get('allfavoritesblogs'));
 	}
 	//console.log(response);
+=======
+	// console.log(response);
+	// console.log(loggedinstatus);
+	// set a cookie for blog
+	Cookies.set('allfavoritesblogs', allblogasstring , {path : '/'});
+	// console.log("Remove after blog deleted
+	// "+Cookies.get('allfavoritesblogs'));
+	// console.log(blogpostids);
+	// console.log(Cookies.get('allfavoritesblogs'));
+	}
+	// console.log(response);
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 	}
 });
 }
@@ -417,7 +533,11 @@ $.ajax({
 // end of handler for favorites
 
 
+<<<<<<< HEAD
 //select a blog to track
+=======
+// select a blog to track
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 $(document).on("click",".trackblog",function(e){
 // check the status if the blog is tracked
 var blog_id = "";
@@ -432,7 +552,11 @@ var trackingblog = false;
 var allsel = $("#selected_blogs_").val();
 var selected_blogs = allsel.split(",");
 isblogselected = $(".blog_id_"+blog_id).hasClass("text-selected");
+<<<<<<< HEAD
 //console.log("blog is selected " + isblogselected);
+=======
+// console.log("blog is selected " + isblogselected);
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 if(!isblogselected)
 {
 	if(jQuery.inArray(blog_id,selected_blogs) == -1 && blog_id!=""){
@@ -446,6 +570,7 @@ else if(isblogselected)
 	trackingblog=true;
 }
 
+<<<<<<< HEAD
 /*if(jQuery.inArray(blog_id,selected_blogs) == -1 && blog_id!=""){
 	trackingblog=false;
 }else{
@@ -458,6 +583,19 @@ if(!trackingblog)
 // if the blog is being tracked
 //$(this).addClass("text-success");
 // remember check what is selected selected	
+=======
+/*
+ * if(jQuery.inArray(blog_id,selected_blogs) == -1 && blog_id!=""){
+ * trackingblog=false; }else{ trackingblog=true; }
+ */
+
+// trackingblog = $(this).hasClass("text-success");
+if(!trackingblog)
+{
+// if the blog is being tracked
+// $(this).addClass("text-success");
+// remember check what is selected selected
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 	
 $(".curve_"+blog_id+" td").addClass("border-selected");
 $(".curve_"+blog_id+" td .myposttitle a").addClass("text-selected");
@@ -476,9 +614,15 @@ $(this).attr("data-original-title","Remove Blog from Tracker");
 
 
 
+<<<<<<< HEAD
       //console.log("Added blog to be tracked");
 		
        //console.log("Let's see: "+jQuery.inArray(blog_id,selected_blogs));
+=======
+      // console.log("Added blog to be tracked");
+		
+       // console.log("Let's see: "+jQuery.inArray(blog_id,selected_blogs));
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
       // console.log("Changed Array: "+selected_blogs);
 		if((jQuery.inArray(blog_id,selected_blogs) >= -1) && blog_id!=""){
 				    // the element is not in the array
@@ -487,6 +631,7 @@ $(this).attr("data-original-title","Remove Blog from Tracker");
 				blogname = $(".blogname-"+blog_id);
 				blogname = $(blogname)[0];
 				blogname = $(blogname).text();
+<<<<<<< HEAD
 				// fix break number one; 
 				$("#selected_blog_list").append('<button class="col-md-9 btn text-left text-white bold-text blogselection mt10 pt10 pb10 blogg_'+blog_id+'" id="blogg_'+blog_id+'">'+blogname+'<i class="fas fa-trash float-right hidden deleteblog" id="'+blog_id+'"></i></button>');
 				/*
@@ -494,12 +639,26 @@ $(this).attr("data-original-title","Remove Blog from Tracker");
 					
 				});
 				*/
+=======
+				// fix break number one;
+				$("#selected_blog_list").append('<button class="col-md-9 btn text-left text-white bold-text blogselection mt10 pt10 pb10 blogg_'+blog_id+'" id="blogg_'+blog_id+'">'+blogname+'<i class="fas fa-trash float-right hidden deleteblog" id="'+blog_id+'"></i></button>');
+				/*
+				 * $.getScript( app_url+"pagedependencies/blogbrowser.js",
+				 * function( data, textStatus, jqxhr ) {
+				 * 
+				 * });
+				 */
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 				$(".blog_id_"+blog_id).addClass("text-selected");
 				looper++;
 				trackscount++;
 				
 				var blgs = $(".blogselection");
+<<<<<<< HEAD
 				//console.log("total here"+blgs.length);
+=======
+				// console.log("total here"+blgs.length);
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 				trackscount = blgs.length;
 				$(".total_selected").text(blgs.length);
 				
@@ -525,16 +684,28 @@ $(this).attr("data-original-title","Remove Blog from Tracker");
 				// set a cookie for the selected blog to make it easier
 				Cookies.set('selectedblogs', all_blogs, {path : '/'});
 				// retrieve the value of the theme cookie
+<<<<<<< HEAD
 				//console.log(Cookies.get('selectedblogs'));
 				//var alltheselectedblogcookie =  Cookies.get('selectedblogs');
 				$("#selected_blogs_").val(all_blogs);
 				//console.log("selected blogs here:"+all_blogs);
+=======
+				// console.log(Cookies.get('selectedblogs'));
+				// var alltheselectedblogcookie = Cookies.get('selectedblogs');
+				$("#selected_blogs_").val(all_blogs);
+				// console.log("selected blogs here:"+all_blogs);
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 				setSelected(all_blogs);
 		};
 
 
+<<<<<<< HEAD
 //console.log(selected_blogs);
 //console.log(blog_id);
+=======
+// console.log(selected_blogs);
+// console.log(blog_id);
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 
 // add an ajax to add blog to tracker
 
@@ -545,7 +716,11 @@ $('.tracksection').show();
 else if(trackingblog)
 {
 // if the blog is being tracked
+<<<<<<< HEAD
 //$(this).removeClass("text-success");
+=======
+// $(this).removeClass("text-success");
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 	$(".curve_"+blog_id+" td").removeClass("border-selected");
 	$(".curve_"+blog_id+" td .myposttitle a").removeClass("text-selected");
 	
@@ -562,11 +737,19 @@ $(this).attr("data-original-title","Add Blog from Tracker");
 
 console.log("Removed blog to be tracked");
 removeBlog(this,blog_id,selected_blogs);
+<<<<<<< HEAD
 //trackscount--;
 
 var blgs = $(".blogselection");
 //console.log("total here"+blgs.length);
 //trackscount = blgs.length;
+=======
+// trackscount--;
+
+var blgs = $(".blogselection");
+// console.log("total here"+blgs.length);
+// trackscount = blgs.length;
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 $(".total_selected").text(blgs.length);
 
 
@@ -618,7 +801,11 @@ function removeBlog(element,blog_id,selected_blogs){
 			selected_blogs.splice(index, 1);
 			Cookies.set('selectedblogs', selected_blogs, {path : '/'});
 			// clear the cookie
+<<<<<<< HEAD
 			//Cookies.clear('selectedblogs');
+=======
+			// Cookies.clear('selectedblogs');
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 			console.log(Cookies.get('selectedblogs'));
 			if(trackscount > 0)
 			{
@@ -627,7 +814,11 @@ function removeBlog(element,blog_id,selected_blogs){
 		}
 		$(".total_selected").text(selected_blogs.length);		
 			$(".blogg_"+blog_id).remove();
+<<<<<<< HEAD
 		//trackscount--;
+=======
+		// trackscount--;
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 		var blgs = $(".blogselection");
 		$(".total_selected").text(blgs.length);
 		$(".blog_id_"+blog_id).removeClass("text-selected");
@@ -657,9 +848,15 @@ $('.trackcreationsection1').removeClass('hidden');
 });
 
 
+<<<<<<< HEAD
 // show the create tracker from dialog handler 
 $('.createtrackerbtn').on("click", function(){
 	//console.log(typeof loggedinstatus)
+=======
+// show the create tracker from dialog handler
+$('.createtrackerbtn').on("click", function(){
+	// console.log(typeof loggedinstatus)
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 	if(loggedinstatus === "true")
 	{
 	$('.trackcreationsection2').removeClass('hidden');
@@ -672,14 +869,22 @@ $('.createtrackerbtn').on("click", function(){
 
 });
 
+<<<<<<< HEAD
 // cancel tracker creattion 
+=======
+// cancel tracker creattion
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 $('.canceltrackercreation').on("click", function(e){
 e.preventDefault();	
 $('.trackcreationsection2').addClass("hidden");
 $('.trackcreationsection1').removeClass('hidden');	
 })
 
+<<<<<<< HEAD
 //handles the creation of the tracker
+=======
+// handles the creation of the tracker
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 $('.trackercreatebutton').on('click', function(){
 
 // handle the creation of the tracker right here
@@ -728,10 +933,17 @@ else
 	   		 }
 	     });
 	   	 
+<<<<<<< HEAD
 	   //	console.log("Allblogs here:"+all_blogs);return false;
 	   	$('.trackercreatebutton').val("creating tracker");
 	   	$('.trackercreatebutton').attr("disabled",true);
    	 //If at least a tracker is selected, update tracker else create tracker
+=======
+	   // console.log("Allblogs here:"+all_blogs);return false;
+	   	$('.trackercreatebutton').val("creating tracker");
+	   	$('.trackercreatebutton').attr("disabled",true);
+   	 // If at least a tracker is selected, update tracker else create tracker
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 		$.ajax({
 			url: app_url+'tracker',
 			method: 'POST',
@@ -748,7 +960,11 @@ else
 			success: function(response)
 			{   
 				console.log(response);
+<<<<<<< HEAD
 				//if(response.indexOf("success")>-1){
+=======
+				// if(response.indexOf("success")>-1){
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 				if(response!="error creating tracker" && response!="tracker already exist"){
 					toastr.success('Tracker successfully created and Updated!','Success');
 					$('.trackcreationsection2').addClass("hidden");
@@ -768,7 +984,11 @@ else
 					$('.trackerlist').html(response);
 					}
 					});
+<<<<<<< HEAD
 					//location.href=app_url+"blogbrowser.jsp";
+=======
+					// location.href=app_url+"blogbrowser.jsp";
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 				}else{
 					toastr.error(response,'Error');
 					$('.trackercreatebutton').val("Create");
@@ -780,18 +1000,32 @@ else
 });
 
 $('#sortbyselect').on("change",function(e){
+<<<<<<< HEAD
 	//console.log("changed");
 	//console.log($('#sortbyselect').val());
 	$("#sortby").val($('#sortbyselect').val());
 	//$("#sortform").submit();
+=======
+	// console.log("changed");
+	// console.log($('#sortbyselect').val());
+	$("#sortby").val($('#sortbyselect').val());
+	// $("#sortform").submit();
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 	$('form#sortform').submit();
 });
 
 
+<<<<<<< HEAD
 //onload function to select again tracked blog
 
 $(window).on("load",function(){
 	//console.log(Cookies.get('selectedblogs'));	
+=======
+// onload function to select again tracked blog
+
+$(window).on("load",function(){
+	// console.log(Cookies.get('selectedblogs'));
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 });
 });
 
@@ -845,9 +1079,16 @@ function updateTracker(element,type){
 
 						$("#added-info").removeClass("no-display");
 
+<<<<<<< HEAD
 						//setTimeout(function(){location.href = "edittracker.jsp?tid="+id ;},2000);
 
 						//location.href=app_url+"blogbrowser.jsp";
+=======
+						// setTimeout(function(){location.href =
+						// "edittracker.jsp?tid="+id ;},2000);
+
+						// location.href=app_url+"blogbrowser.jsp";
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 					}else{
 						if(type=="update"){
 							Cookies.clear('selectedblogs', "", {path : '/'});

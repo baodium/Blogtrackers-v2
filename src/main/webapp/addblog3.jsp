@@ -20,7 +20,11 @@ String username ="";
 String name="";
 String phone="";
 String date_modified = "";
+<<<<<<< HEAD
 //you are 
+=======
+
+>>>>>>> 3688e1076356d7a3f4bcbfa338de1444845d71d7
 Weblog new_blog = new Weblog();
 ArrayList results_blogadded = null;
 
