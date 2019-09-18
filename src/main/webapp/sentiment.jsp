@@ -1629,7 +1629,7 @@ $(function () {
             // Initialize tooltip
             //svg.call(tip);
 
-
+//se
            // Pull out values
            // data.forEach(function(d) {
            //     d.frequency = +d.close;
