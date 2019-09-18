@@ -29,16 +29,5 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/oljohnson/Desktop/Tomcat Server/lib/servlet-api.jar">
-		<attributes>
-			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/oljohnson/Desktop/Tomcat Server/lib/tomcat-api.jar">
-		<attributes>
-			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/oljohnson/Downloads/java-json.jar (1)/java-json.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

@@ -102,7 +102,7 @@ if(term.equals("")){
 }else{
 	results = post._search(term,"0",sort);
 }
-
+System.out.println("result--"+results);
 String total = NumberFormat.getNumberInstance(Locale.US).format(Integer.parseInt(post._getTotal()));
 //NumberFormat.getNumberInstance(Locale.US).format(Integer.parseInt(post._getTotal()));
 

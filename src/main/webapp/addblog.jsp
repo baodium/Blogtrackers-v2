@@ -23,7 +23,6 @@
 	//response.sendRedirect("login.jsp");
 	//}else{
 
-
 	ArrayList<?> userinfo = new ArrayList();//null;
 	String profileimage = "";
 	String username = "";
@@ -33,6 +32,7 @@
 
 	Weblog new_blog = new Weblog();
 	ArrayList results_blogadded = null;
+	
 
 	userinfo = new DbConnection().query("SELECT * FROM usercredentials where Email = '" + email + "'");
 	if (userinfo.size() < 1) {
@@ -102,33 +102,32 @@
 
 		}
 		results_blogadded = new_blog._fetchBlog(userid);
-
+		
 	}
-	
-	
-/* 	AutomatedCrawlerConnect automatedCrawler = new AutomatedCrawlerConnect();
-	ArrayList<?> userinfo_crawler = new ArrayList();
-	String id_crawler = "";
-	String username_crawler = "";
-	String name_crawler = "";
-	String email_crawler = "";
-	userinfo_crawler = automatedCrawler.query("SELECT * FROM users where Email = '" + email + "'");
-	
-	if (userinfo_crawler.size() < 1) {
-		username_crawler = "";
-		name_crawler = "";
-	}else {
-		userinfo_crawler = (ArrayList<?>) userinfo_crawler.get(0);
-		try {
-			username_crawler = (null == userinfo_crawler.get(1)) ? "" : userinfo_crawler.get(1).toString();
-			name_crawler = (null == userinfo_crawler.get(2)) ? "" : (userinfo_crawler.get(2).toString());
-			email_crawler = (null == userinfo_crawler.get(3)) ? "" : userinfo_crawler.get(3).toString();
-			id_crawler = (null == userinfo_crawler.get(0)) ? "" : userinfo_crawler.get(0).toString();
-			System.out.println("user_crawler--"+id_crawler);
-			
-		} catch (Exception e) {
-		}
-	} */
+
+	/* 	AutomatedCrawlerConnect automatedCrawler = new AutomatedCrawlerConnect();
+		ArrayList<?> userinfo_crawler = new ArrayList();
+		String id_crawler = "";
+		String username_crawler = "";
+		String name_crawler = "";
+		String email_crawler = "";
+		userinfo_crawler = automatedCrawler.query("SELECT * FROM users where Email = '" + email + "'");
+		
+		if (userinfo_crawler.size() < 1) {
+			username_crawler = "";
+			name_crawler = "";
+		}else {
+			userinfo_crawler = (ArrayList<?>) userinfo_crawler.get(0);
+			try {
+				username_crawler = (null == userinfo_crawler.get(1)) ? "" : userinfo_crawler.get(1).toString();
+				name_crawler = (null == userinfo_crawler.get(2)) ? "" : (userinfo_crawler.get(2).toString());
+				email_crawler = (null == userinfo_crawler.get(3)) ? "" : userinfo_crawler.get(3).toString();
+				id_crawler = (null == userinfo_crawler.get(0)) ? "" : userinfo_crawler.get(0).toString();
+				System.out.println("user_crawler--"+id_crawler);
+				
+			} catch (Exception e) {
+			}
+		} */
 %>
 
 <!DOCTYPE html>
@@ -421,52 +420,76 @@
 				</tr>
 			</thead>
 			<tbody id="tbody">
-			<%
-			try{
+				<%
+					try {
+						
+						if (results_blogadded.size() > 0) {
+							for (int k = 0; k < results_blogadded.size(); k++) {
 
-				if (results_blogadded.size() > 0) {
-					for (int k = 0; k < results_blogadded.size(); k++) {
-						ArrayList blog = (ArrayList) results_blogadded.get(k);
-						String id = (String) blog.get(0);
-						String blogname = (String) blog.get(2);
-						String status = (String) blog.get(3);
-						String statusstyle = "";
-						if (status.equalsIgnoreCase("crawled")) {
-							statusstyle = "table-success";
-						} else if (status.equalsIgnoreCase("crawling")) {
-							statusstyle = "table-warning";
-						}
-						else if (status.equalsIgnoreCase("not_crawled")) {
-							statusstyle = "table-info";
-						}
-						else if (status.equalsIgnoreCase("not_crawlable")) {
-							statusstyle = "table-danger";
-						}else {
-							statusstyle = "defaultstatus";
-						}
-			
-			//testing git
-			 %>
+								ArrayList blog = (ArrayList) results_blogadded.get(k);
+								String total_post = "";
+								String last_crawled = "";
+								
+								String id = (String) blog.get(0);
+								String blogname = (String) blog.get(2);
+								
+								ArrayList results_blogs = null;
+								/* ArrayList results_blogfinder = null;
+								results_blogfinder = new_blog._fetchPipeline("https://tacticalinvestor.com/blog/");
+								results_blogfinder = (ArrayList<?>) results_blogfinder.get(0); */
+								
+								 
+								/* ArrayList results_blogs.get(0); */
+								try{
+									results_blogs = new_blog._fetchCrawlerBlogs(blogname);
+									results_blogs = (ArrayList<?>) results_blogs.get(0);
+									total_post = (null == results_blogs.get(15)) ? "--" : (results_blogs.get(15).toString());
+									last_crawled = (null == results_blogs.get(10)) ? "--" : (results_blogs.get(10).toString());
+									System.out.println("blogs"+ total_post);
+									}catch(Exception e){
+										total_post = "--";
+										last_crawled = "--";
+									}
+								
+								/* ArrayList results_b = (ArrayList<?>) results_blogs.get(0);  */
+								
+								
+								String status = (String) blog.get(3);
+								String statusstyle = "";
+								if (status.equalsIgnoreCase("crawled")) {
+									statusstyle = "table-success";
+								} else if (status.equalsIgnoreCase("crawling")) {
+									statusstyle = "table-warning";
+								} else if (status.equalsIgnoreCase("not_crawled")) {
+									statusstyle = "table-info";
+								} else if (status.equalsIgnoreCase("not_crawlable")) {
+									statusstyle = "table-danger";
+								} else {
+									statusstyle = "defaultstatus";
+								}
 
-		<tr class="<%=statusstyle%>">
-			<td class="text-left pl0 blogcount"><%=k + 1%></td>
-			<td class="text-primary text-left nameofblog"><%=blogname%></td>
-			<td class="text-primary text-left blogstatus"><%=status %></td>
-			<td class="text-primary text-left"></td>
-			<td class="text-primary text-left"></td>
-			<td class="text-primary text-center"><i id="<%=k + 1%>"
-				class="text-primary icontrackersize cursor-pointer deleteblog deletebtn text-center"
-				data-toggle="tooltip" data-placement="top" title="Delete Blog"></i></td>
-			<%-- <td class="text-center"><i class="text-primary icontrackersize cursor-pointer deleteblog text-center" onclick= "<% new_blog._deleteBlog(username, Integer.parseInt(id)); %>" data-toggle="tooltip" id="<%=id%>_select" data-placement="top" title="Delete Blog"></i></td> --%>
-		</tr>
-		
-			<%}
-				}}
-			catch (Exception e) {
-			}
-			
-			%>
-			
+								//testing git
+				%>
+
+				<tr class="<%=statusstyle%>">
+					<td class="text-left pl0 blogcount"><%=k + 1%></td>
+					<td class="text-primary text-left nameofblog"><%=blogname%></td>
+					<td class="text-primary text-left blogstatus"><%=status%></td>
+					<td class="text-primary text-left"><%=total_post%></td>
+					<td class="text-primary text-left"><%=last_crawled%></td>
+					<td class="text-primary text-center"><i id="<%=k + 1%>"
+						class="text-primary icontrackersize cursor-pointer deleteblog deletebtn text-center"
+						data-toggle="tooltip" data-placement="top" title="Delete Blog"></i></td>
+					<%-- <td class="text-center"><i class="text-primary icontrackersize cursor-pointer deleteblog text-center" onclick= "<% new_blog._deleteBlog(username, Integer.parseInt(id)); %>" data-toggle="tooltip" id="<%=id%>_select" data-placement="top" title="Delete Blog"></i></td> --%>
+				</tr>
+
+				<%
+					}
+						}
+					} catch (Exception e) {
+					}
+				%>
+
 				<%-- <%
 					JSONArray std = (JSONArray) request.getAttribute("seun");
 					try {
@@ -680,37 +703,60 @@ $(document).ready(function() {
 	            	$("#selected_file").val('')
 	                //$("#result").text(data);
 	                
-	                console.log("TYPE : ", typeof data);
-	                console.log("LENGTH : ", data.url.length);
 	                console.log("DATA : ", data);
-	                console.log("status data : ", data.status);
-	                //$(".submitbtn").prop("disabled", false);
-	                var table_data =''
-	                for(var i = 0; i < data.url.length; i++){
-	                	statusstyle = "";
-	                	status=data.status[i]
-						if (status=="Crawled") {
-							statusstyle = "successstatus";
-						} else if (status=="not_crawled") {
-							statusstyle = "errorstatus";
-						} else {
-							statusstyle = "defaultstatus";
-						}
-						
-						
-	                	table_data +="<tr class="+statusstyle+">"
-	                	table_data +='<td>'+(i+1)+'</td>'
-	                	table_data +='<td>'+data.url[i]+'</td>'
-	                	table_data +='<td>'+status+'</td>'
-	                	table_data +='<td>'+'</td>'
-	                	table_data +='<td>'+'</td>'
-	                	
-	                	table_data +='</tr>'
-	                	console.log(data[i]);
-	                }
 	                
-					 $('#tbody').append(table_data); 
-					/* document.getElementById("tbody").appendChild(table_data); */
+	                
+	                
+	                		
+	                if("success" in data){	         
+	                	var table_data =''
+	                		"success" in data ? console.log('success_key exists') : console.log('unknown key')
+	    	                for(var i = 0; i < data.success.url.length; i++){
+	    	                	console.log(i)
+
+	    	                	statusstyle = "";
+	    	                	status=data.success.status[i]
+	    						if (status=="crawled"){
+	    							statusstyle = "table-success";
+	    						} else if (status=="crawling") {
+	    							statusstyle = "table-warning";
+	    						}
+	    						else if (status=="not_crawled") {
+	    							statusstyle = "table-info";
+	    						}
+	    						else if (status=="not_crawlable") {
+	    							statusstyle = "table-danger";
+	    						}else {
+	    							statusstyle = "defaultstatus";
+	    						}
+	    						
+	    	                	
+	    	                	table_data +="<tr class="+statusstyle+">"
+	    	                	/* (null == userinfo.get(6)) ? "" : userinfo.get(6).toString(); */
+	    	                	/* try{results_blogadded.size();}catch(Exception e){} */
+	    	                	table_data +='<td>'+(<%results_blogadded.size();%>+i+1)+'</td>'
+	    	                	table_data +='<td>'+data.success.url[i]+'</td>'
+	    	                	table_data +='<td>'+status+'</td>'
+	    	                	table_data +='<td>'+'</td>'
+	    	                	table_data +='<td>'+'</td>'
+	    	                	table_data +='<td>'+'</td>'
+	    	                	table_data +='</tr>'
+	    	                	console.log(data[i]);
+	    	                }
+	    	                
+	    					 $('#tbody').append(table_data); 
+	    					/* document.getElementById("tbody").appendChild(table_data); */
+	                }
+	                if("exists" in data){
+	                	"exists" in data ? console.log('exists_key exists') : console.log('exists key not found')
+	                	toastr.error('Blog already exists', 'Error','hideDuration:10000');
+	                }
+	                if("error" in data){
+	                	"error" in data ? console.log('error_key exists') : console.log('error key not found')
+	                	toastr.error('Invalid Blog URL', 'Invalid','hideDuration:10000');
+	                }
+	                //$(".submitbtn").prop("disabled", false);
+	                
 	            },
 	            error: function (e) {
 

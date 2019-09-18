@@ -2,6 +2,7 @@ package util;
 
 import java.util.ArrayList;
 import java.net.URI;
+import java.net.URISyntaxException;
 
 import authentication.*;
 
@@ -12,6 +13,9 @@ public class Weblog {
 		String dup2 = "";
 		String dup3 = "";
 		String dup4 = "";
+
+		DbConnection Db = new DbConnection();
+		ArrayList<?> bloggers = new ArrayList();
 
 		String maindomain = "";
 		try {
@@ -33,19 +37,25 @@ public class Weblog {
 		}
 
 		System.out.println("main" + maindomain);
-		System.out.println("dup1" + dup1);
+		System.out.println("dup1" + dup1.length());
 		System.out.println("dup2" + dup2);
 		System.out.println("dup3" + dup3);
 
-		ArrayList bloggers = new DbConnection()
-				.query("SELECT * FROM user_blog WHERE userid='" + username + "' AND (url like'" + dup1
-						+ "%' OR url like'" + dup2 + "%' OR url like'" + dup3 + "%' OR url like'" + dup4 + "%' )");
+		if (dup1.length() == 0 || dup2.length() == 0 || dup3.length() == 0 || dup4.length() == 0) {
+			bloggers = Db.query("SELECT * FROM user_blog WHERE userid='" + username + "' AND (url like'" + dup1
+					+ "' OR url like'" + dup2 + "' OR url like'" + dup3 + "' OR url like'" + dup4 + "' )");
+		}else {
+			bloggers = Db.query("SELECT * FROM user_blog WHERE userid='" + username + "' AND (url like'" + dup1
+					+ "%' OR url like'" + dup2 + "%' OR url like'" + dup3 + "%' OR url like'" + dup4 + "%' )");
+		}
+
 		System.out.println("blogger--" + bloggers);
 		System.out.println("blog--" + blog);
 		if (bloggers.size() > 0) {
 			return blog + "already exists";
 		} else {
-			if (!(blog == null || blog == "")) {
+			if (!(blog == null || blog == "") && maindomain.length() != 0) {
+
 
 				System.out.println(
 						"username is " + username + "blog of the owner is " + blog + "Crawling status is " + status);
@@ -58,9 +68,10 @@ public class Weblog {
 					return "success";
 				}
 			}
-			return "error";
+			
 		}
 		// return "Error while adding blog";
+		return "error";
 	}
 
 	public ArrayList _fetchBlog(String username) {
@@ -79,7 +90,13 @@ public class Weblog {
 		return bloggers_pipeline;
 	}
 	
-	
+	public ArrayList _fetchCrawlerBlogs(String blogsite_name) {
+		// System.out.println(username);
+		ArrayList bloggers_blogs = new AutomatedCrawlerConnect()
+				.query("SELECT * FROM blogsites WHERE blogsite_url='" + blogsite_name + "'");
+		System.out.println(bloggers_blogs.size());
+		return bloggers_blogs;
+	}
 
 	public boolean _deleteBlog(String username, String id) {
 		boolean deleted = new DbConnection()
