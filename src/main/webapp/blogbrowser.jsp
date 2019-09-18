@@ -390,7 +390,7 @@ if(results.size()>0){
 	String bresu =null;
 	JSONObject bobj =null;
 	
-
+//test
 		for(int i=0; i< results.size(); i++){
 
 			 String blogtitle="";		
