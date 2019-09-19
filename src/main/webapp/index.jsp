@@ -127,73 +127,7 @@ try{
 	<link href=“assets/css/hover.css” rel=“stylesheet” media=“all”>
 	<link href=“assets/css/custom.css” rel=“stylesheet” media=“all”>
 	<style>
-	.hover-desc:hover{
-
--webkit-box-shadow: 1px 13px 20px -2px rgba(0,0,0,0.48);
--moz-box-shadow: 1px 13px 20px -2px rgba(0,0,0,0.48);
-box-shadow: 1px 13px 20px -2px rgba(0,0,0,0.48);
-
-}
-
-.sentiment-analysis
-{
-background-image: url(images/svgs/sentiment.svg);
-background-repeat: no-repeat;
-min-height: 115px;
-width: 115px;
-display: inline-block;
-background-position: center center; 
-}
-
-.cross-analysis
-{
-background-image: url(images/svgs/networking.svg);
-background-repeat: no-repeat;
-min-height: 115px;
-width: 115px;
-display: inline-block;
-background-position: center center; 
-}
-
-.network-analysis
-{
-background-image: url(images/svgs/analysis.svg);
-background-repeat: no-repeat;
-min-height: 115px;
-width: 115px;
-display: inline-block;
-background-position: center center; 
-}
-
-.data-analytics
-{
-background-image: url(images/svgs/data-analytics.svg);
-background-repeat: no-repeat;
-min-height: 115px;
-width: 115px;
-display: inline-block;
-background-position: center center; 
-}
-
-.data
-{
-background-image: url(images/svgs/data.svg);
-background-repeat: no-repeat;
-min-height: 115px;
-width: 115px;
-display: inline-block;
-background-position: center center; 
-}
-
-.planning
-{
-background-image: url(images/svgs/planning.svg);
-background-repeat: no-repeat;
-min-height: 115px;
-width: 115px;
-display: inline-block;
-background-position: center center; 
-}
+	
 	</style>
 	
 
