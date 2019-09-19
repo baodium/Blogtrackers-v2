@@ -7,15 +7,16 @@
 <%@page import="org.json.JSONObject"%>
 <%@page import="org.json.JSONArray"%>
 <%@page import="java.net.URI"%>
-<%@page import="java.text.NumberFormat" %>
+<%@page import="java.text.NumberFormat"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="java.util.Date"%>
 
 <%@page import="org.apache.commons.lang3.*"%>
 
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%@page import="java.time.LocalDateTime"%>
-	
+
 <%
 	Object email = (null == session.getAttribute("email")) ? "" : session.getAttribute("email");
 	Object tid = (null == request.getParameter("tid")) ? "" : request.getParameter("tid");
@@ -495,7 +496,7 @@
 		
 		
 %>
-	
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -532,7 +533,7 @@
 <script src="pagedependencies/googletagmanagerscript.js"></script>
 </head>
 <body>
-<%@include file="subpages/loader.jsp" %>
+	<%@include file="subpages/loader.jsp"%>
 	<%@include file="subpages/googletagmanagernoscript.jsp"%>
 	<div class="modal-notifications">
 		<div class="row">
@@ -564,15 +565,16 @@
 					<%-- <a class="cursor-pointer profilemenulink"
 						href="<%=request.getContextPath()%>/notifications.jsp"><h6 class="text-primary">
 							Notifications <b id="notificationcount" class="cursor-pointer">12</b>
-						</h6> </a> --%>  <a class="cursor-pointer profilemenulink" href="<%=request.getContextPath()%>/addblog.jsp"><h6 class="text-primary">Add Blog</h6></a>
-						<a class="cursor-pointer profilemenulink"
+						</h6> </a> --%>
+					<a class="cursor-pointer profilemenulink"
+						href="<%=request.getContextPath()%>/addblog.jsp"><h6
+							class="text-primary">Add Blog</h6></a> <a
+						class="cursor-pointer profilemenulink"
 						href="<%=request.getContextPath()%>/profile.jsp"><h6
-							class="text-primary">Profile</h6></a> 
-							<a
+							class="text-primary">Profile</h6></a> <a
 						class="cursor-pointer profilemenulink"
 						href="https://addons.mozilla.org/en-US/firefox/addon/blogtrackers/"><h6
-							class="text-primary">Plugin</h6></a>
-							<a
+							class="text-primary">Plugin</h6></a> <a
 						class="cursor-pointer profilemenulink"
 						href="<%=request.getContextPath()%>/logout"><h6
 							class="text-primary">Log Out</h6></a>
@@ -685,21 +687,26 @@
 		<div class="row bottom-border pb20">
 			<div class="col-md-6 ">
 				<nav class="breadcrumb">
-  <a class="breadcrumb-item text-primary" href="<%=request.getContextPath()%>/trackerlist.jsp">Trackers</a>
-  <a class="breadcrumb-item text-primary" href="<%=request.getContextPath()%>/edittracker.jsp?tid=<%=tid%>"><%=trackername%></a>
-  <a class="breadcrumb-item active text-primary" href="<%=request.getContextPath()%>/dashboard.jsp?tid=<%=tid%>">Dashboard</a>
-  <a class="breadcrumb-item active text-primary" href="<%=request.getContextPath()%>/postingfrequency.jsp?tid=<%=tid%>">Keyword Trend</a>
-  </nav>
+					<a class="breadcrumb-item text-primary"
+						href="<%=request.getContextPath()%>/trackerlist.jsp">Trackers</a>
+					<a class="breadcrumb-item text-primary"
+						href="<%=request.getContextPath()%>/edittracker.jsp?tid=<%=tid%>"><%=trackername%></a>
+					<a class="breadcrumb-item active text-primary"
+						href="<%=request.getContextPath()%>/dashboard.jsp?tid=<%=tid%>">Dashboard</a>
+					<a class="breadcrumb-item active text-primary"
+						href="<%=request.getContextPath()%>/postingfrequency.jsp?tid=<%=tid%>">Keyword
+						Trend</a>
+				</nav>
 				<!-- <div>
 					<button class="btn btn-primary stylebutton1 " id="printdoc">SAVE
 						AS PDF</button>
 				</div> -->
 			</div>
 
-		<div class="col-md-6 text-right mt10">
+			<div class="col-md-6 text-right mt10">
 				<div class="text-primary demo">
 					<h6 id="reportrange">
-						
+
 						Date: <span><%=dispfrom%> - <%=dispto%></span>
 					</h6>
 				</div>
@@ -757,10 +764,11 @@
 						<!-- <small class="text-success pb10 ">+5% from <b>Last Week</b>
 
     </small> -->
-		<div class="scrolly" style="height: 250px; padding-right: 10px !important;">
-							
-							
-									<%
+						<div class="scrolly"
+							style="height: 250px; padding-right: 10px !important;">
+
+
+							<%
 									
 									if (sortedterms.length() > 0) {																	
 											for (int i=0; i<sortedterms.length(); i++) {
@@ -779,8 +787,10 @@
 														selectedkeycount = term.getTermOcuurence(tm, dt, dte);;
 													}
 																			
-											%><a class="btn btn-primary form-control select-term bloggerinactive mb20 <%=dselected%> size-<%=size%>" id="<%=tm.replaceAll(" ","_")%>***<%=terms_id%>"><b><%=tm%></b></a>
-											<%
+											%><a
+								class="btn btn-primary form-control select-term bloggerinactive mb20 <%=dselected%> size-<%=size%>"
+								id="<%=tm.replaceAll(" ","_")%>***<%=terms_id%>"><b><%=tm%></b></a>
+							<%
 										}
 									  }
 									}	
@@ -798,7 +808,8 @@
 						<div style="min-height: 250px;">
 							<div>
 								<p class="text-primary mt10 float-left">
-									Keyword Trend <!-- of Past <select
+									Keyword Trend
+									<!-- of Past <select
 										class="text-primary filtersort sortbytimerange"><option
 											value="week">Week</option>
 										<option value="month">Month</option>
@@ -827,7 +838,7 @@
 								<h2 class="mb0 bold-text blogger-mentioned"><%=NumberFormat.getNumberInstance(Locale.US).format(selectedkeycount)%></h2>
 								<!-- <small class="text-success">+5% from <b>Last Week</b></small> -->
 							</div>
-							
+
 							<div class="col-md-3 mt5 mb5">
 								<h6 class="card-title mb0">Posts Mentioned</h6>
 								<h2 class="mb0 bold-text post-mentioned"><%=postmentioned%></h2>
@@ -863,30 +874,32 @@
 
 </div> -->
 
-<div id="combined-div">
+		<div id="combined-div">
 
-		<div class="row m0 mt20 mb0 d-flex align-items-stretch">
-			<div class="col-md-6 mt20 card card-style nobordertopright noborderbottomright" id="post-list">
-				<div class="card-body p0 pt20 pb20" style="min-height: 420px;">
-					<p>
-						Posts that mentioned <b class="text-green active-term"><%=mostactiveterm%></b>
-					</p>
-					<!--  <div class="p15 pb5 pt0" role="group">
+			<div class="row m0 mt20 mb0 d-flex align-items-stretch">
+				<div
+					class="col-md-6 mt20 card card-style nobordertopright noborderbottomright"
+					id="post-list">
+					<div class="card-body p0 pt20 pb20" style="min-height: 420px;">
+						<p>
+							Posts that mentioned <b class="text-green active-term"><%=mostactiveterm%></b>
+						</p>
+						<!--  <div class="p15 pb5 pt0" role="group">
           Export Options
           </div> -->
-          <%  
+						<%  
           JSONObject firstpost = new JSONObject();
           if(allposts.size()>0){	%>
-					<table id="DataTables_Table_2_wrapper" class="display"
-						style="width: 100%">
-						<thead>
-							<tr>
-								<th>Post title</th>
-								<th>Occurence</th>
-							</tr>
-						</thead>
-						<tbody>
-							<%				
+						<table id="DataTables_Table_2_wrapper" class="display"
+							style="width: 100%">
+							<thead>
+								<tr>
+									<th>Post title</th>
+									<th>Occurence</th>
+								</tr>
+							</thead>
+							<tbody>
+								<%				
 									String tres = null;
 									JSONObject tresp = null;
 									String tresu = null;
@@ -930,25 +943,29 @@
 												    
 												}
 									%>
-                                    <tr>
-                                   <td><a class="blogpost_link cursor-pointer blogpost_link" id="<%=tobj.get("blogpost_id")%>" ><%=tobj.get("title") %></a><br/>
-								<a class="mt20 viewpost makeinvisible" href="<%=tobj.get("permalink") %>" target="_blank"><buttton class="btn btn-primary btn-sm mt10 visitpost">Visit Post &nbsp;<i class="fas fa-external-link-alt"></i></buttton></a>
-								</td>
-								<td align="center"><%=(bodyoccurencece) %></td>
-                                     </tr>
-                                    <% }%>
-							</tr>						
-						</tbody>
-					</table>
-					<% } %>
+								<tr>
+									<td><a class="blogpost_link cursor-pointer blogpost_link"
+										id="<%=tobj.get("blogpost_id")%>"><%=tobj.get("title") %></a><br />
+										<a class="mt20 viewpost makeinvisible"
+										href="<%=tobj.get("permalink") %>" target="_blank"><buttton
+												class="btn btn-primary btn-sm mt10 visitpost">Visit
+											Post &nbsp;<i class="fas fa-external-link-alt"></i></buttton></a></td>
+									<td align="center"><%=(bodyoccurencece) %></td>
+								</tr>
+								<% }%>
+								</tr>
+							</tbody>
+						</table>
+						<% } %>
+					</div>
+
 				</div>
 
-			</div>
+				<div
+					class="col-md-6 mt20 card card-style nobordertopleft noborderbottomleft">
 
-			<div class="col-md-6 mt20 card card-style nobordertopleft noborderbottomleft">
-
-				<div style="" class="pt20" id="blogpost_detail">
-					<%
+					<div style="" class="pt20" id="blogpost_detail">
+						<%
                                 if(firstpost.length()>0){	
 									JSONObject tobj = firstpost;
 									String title = tobj.get("title").toString().replaceAll("[^a-zA-Z]", " ");
@@ -985,36 +1002,37 @@
 									body = body.replaceAll(mostactiveterm,replace);
 									body = body.replaceAll(active2,replace);
 									body = body.replaceAll(active3,replace);
-									%>                                    
-                                    <h5 class="text-primary p20 pt0 pb0"><%=title%></h5>
-										<div class="text-center mb20 mt20">
-											<%-- <a href="<%=request.getContextPath()%>/bloggerportfolio.jsp?tid=<%=tid.toString()%>&blogger=<%=tobj.get("blogger")%>"> 
+									%>
+						<h5 class="text-primary p20 pt0 pb0"><%=title%></h5>
+						<div class="text-center mb20 mt20">
+							<%-- <a href="<%=request.getContextPath()%>/bloggerportfolio.jsp?tid=<%=tid.toString()%>&blogger=<%=tobj.get("blogger")%>"> 
 											<button class="btn stylebuttonblue">
 											--%>
-											<button class="btn stylebuttonblue" onclick="window.location.href = '<%=request.getContextPath()%>/bloggerportfolio.jsp?tid=<%=tid%>&blogger=<%=tobj.get("blogger")%>'">
-												<b class="float-left ultra-bold-text"><%=tobj.get("blogger")%></b> <i
-													class="far fa-user float-right blogcontenticon"></i>
-											</button>
-											</a>
-											<button class="btn stylebuttonnocolor nocursor"><%=date %></button>
-											<button class="btn stylebuttonnocolor nocursor">
-												<b class="float-left ultra-bold-text"><%=tobj.get("num_comments")%> comments</b><i
-													class="far fa-comments float-right blogcontenticon"></i>
-											</button>
-										</div>
-										<div style="height: 600px;">
-										<div class="p20 pt0 pb20 text-blog-content text-primary"
-											style="height: 550px; overflow-y: scroll;">
-											<%=body%>
-										</div>         
-										</div>             
-                     		<% } %>
+							<button class="btn stylebuttonblue"
+								onclick="window.location.href = '<%=request.getContextPath()%>/bloggerportfolio.jsp?tid=<%=tid%>&blogger=<%=tobj.get("blogger")%>'">
+								<b class="float-left ultra-bold-text"><%=tobj.get("blogger")%></b>
+								<i class="far fa-user float-right blogcontenticon"></i>
+							</button>
+							</a>
+							<button class="btn stylebuttonnocolor nocursor"><%=date %></button>
+							<button class="btn stylebuttonnocolor nocursor">
+								<b class="float-left ultra-bold-text"><%=tobj.get("num_comments")%>
+									comments</b><i class="far fa-comments float-right blogcontenticon"></i>
+							</button>
+						</div>
+						<div style="height: 600px;">
+							<div class="p20 pt0 pb20 text-blog-content text-primary"
+								style="height: 550px; overflow-y: scroll;">
+								<%=body%>
+							</div>
+						</div>
+						<% } %>
 
-				</div>
+					</div>
 				</div>
 			</div>
 		</div>
-		
+
 		<div class="row mb50 d-flex align-items-stretch">
 			<div class="col-md-12 mt20 ">
 				<div class="card card-style mt20">
@@ -1041,7 +1059,7 @@
 									</tr>
 								</thead>
 								<tbody>
-								<%if (topterms.length() > 0) {										
+									<%if (topterms.length() > 0) {										
 										for (int i = 0; i < topterms.length(); i++) {
 											JSONObject jsonObj = topterms.getJSONObject(i);
 											int size = 10;
@@ -1058,19 +1076,22 @@
 									<tr>
 										<td><%=terms%></td>
 										<%-- <td><%=NumberFormat.getNumberInstance(Locale.US).format(size)%></td> --%>
-										<td><%=NumberFormat.getNumberInstance(Locale.US).format(Integer.parseInt(postcount))%> <%-- <sub>of <%=postcount%></sub> --%></td>
-										<td><%=NumberFormat.getNumberInstance(Locale.US).format(Integer.parseInt(blogcount))%> <%-- <sub>of <%=blogcount%></sub> --%></td>
-										<td><%=NumberFormat.getNumberInstance(Locale.US).format(keycount)%> <%-- <sub>of <%=bloggercount%></sub> --%></td>
+										<td><%=NumberFormat.getNumberInstance(Locale.US).format(Integer.parseInt(postcount))%>
+											<%-- <sub>of <%=postcount%></sub> --%></td>
+										<td><%=NumberFormat.getNumberInstance(Locale.US).format(Integer.parseInt(blogcount))%>
+											<%-- <sub>of <%=blogcount%></sub> --%></td>
+										<td><%=NumberFormat.getNumberInstance(Locale.US).format(keycount)%>
+											<%-- <sub>of <%=bloggercount%></sub> --%></td>
 										<%-- <td><%=blogger%></td>
 										<td><%=language%></td>
 										<td><%=location%></td> --%>
 
 									</tr>
-											<%
+									<%
 										}
 									}	
 							%>
-									
+
 
 								</tbody>
 							</table>
@@ -1080,21 +1101,19 @@
 			</div>
 
 		</div>
-		
-</div>
+
+	</div>
 
 
 
-<form action="" name="customform" id="customform" method="post">
-<input type="hidden" id="term" value="<%=mostactiveterm%>" />
-<input type="hidden" id="date_start" value="<%=dt%>" />
+	<form action="" name="customform" id="customform" method="post">
+		<input type="hidden" id="term" value="<%=mostactiveterm%>" /> <input
+			type="hidden" id="date_start" value="<%=dt%>" /> <input
+			type="hidden" id="term_id" value="<%=mostactiveterm_id%>" /> <input
+			type="hidden" id="tid" value="<%=tid%>" /> <input type="hidden"
+			id="date_end" value="<%=dte%>" />
 
-<input type="hidden" id="term_id" value="<%=mostactiveterm_id%>" />
-
-<input type="hidden" id="tid" value="<%=tid%>" />
-<input type="hidden" id="date_end" value="<%=dte%>" />
-
-</form>
+	</form>
 
 
 
@@ -1119,14 +1138,20 @@
 	<script
 		src="assets/vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
 	<!-- Start for tables  -->
-	<script type="text/javascript" src="assets/vendors/DataTables/datatables.min.js"></script>
-	<script type="text/javascript" src="assets/vendors/DataTables/dataTables.bootstrap4.min.js"></script>
-	<script src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.flash.min.js"></script>
-	<script src="assets/vendors/DataTables/Buttons-1.5.1/js/dataTables.buttons.min.js"></script>
+	<script type="text/javascript"
+		src="assets/vendors/DataTables/datatables.min.js"></script>
+	<script type="text/javascript"
+		src="assets/vendors/DataTables/dataTables.bootstrap4.min.js"></script>
+	<script
+		src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.flash.min.js"></script>
+	<script
+		src="assets/vendors/DataTables/Buttons-1.5.1/js/dataTables.buttons.min.js"></script>
 	<script src="assets/vendors/DataTables/pdfmake-0.1.32/pdfmake.min.js"></script>
 	<script src="assets/vendors/DataTables/pdfmake-0.1.32/vfs_fonts.js"></script>
-	<script src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.html5.min.js"></script>
-	<script src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.print.min.js"></script>
+	<script
+		src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.html5.min.js"></script>
+	<script
+		src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.print.min.js"></script>
 
 	<script>
  $(document).ready(function() {
@@ -1423,7 +1448,7 @@
   	  %>[<% for(int q=0; q<yearsarray.length(); q++){ 
   		  		String yearr=yearsarray.get(q).toString(); 
   		  		if(specific_auth.has(yearr)){ %>
-  		  	{"date":"<%=yearr%>","close":<%=specific_auth.get(yearr)%>},
+  		  	{"date":<%=yearr%>,"close":<%=specific_auth.get(yearr)%>},
   			<%
   		  		}else{ %>
   		  			{"date":"<%=yearr%>","close":0},
@@ -1949,11 +1974,11 @@
 
 
 
-<script src="pagedependencies/baseurl.js?v=38"></script>
- 
-<script src="pagedependencies/keywordtrends.js?v=7831690"></script>
+	<script src="pagedependencies/baseurl.js?v=38"></script>
 
-<script>
+	<script src="pagedependencies/keywordtrends.js?v=7831690"></script>
+
+	<script>
 $(".blogger-mentioned").html("<%=alloccurence%>");
 </script>
 

@@ -10,7 +10,7 @@
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="java.util.Date"%>
 <%@page import="java.io.*"%>
-<%@page import="java.util.logging.Logger" %>
+<%@page import="java.util.logging.Logger"%>
 <%-- <%@ page buffer="none" %> --%>
 
 <%@ page language="java" contentType="text/html; charset=UTF-8"
@@ -18,7 +18,8 @@
 <%@page import="java.time.LocalDateTime"%>
 
 <%
-  
+	
+
 	Object email = (null == session.getAttribute("email")) ? "" : session.getAttribute("email");
 	Object tid = (null == request.getParameter("tid")) ? "" : request.getParameter("tid");
 	Object user = (null == session.getAttribute("username")) ? "" : session.getAttribute("username");
@@ -29,7 +30,7 @@
 			? "blog"
 			: request.getParameter("sortby").toString().replaceAll("[^a-zA-Z]", " ");
 	
-	if (user == null || user == "") {
+	if (user == null || user == "" ) {
 		response.sendRedirect("index.jsp");
 	} else {
 
@@ -63,6 +64,7 @@
 		String ids = "";
 		String trackername = "";
 		if (detail.size() > 0) {
+			
 			//String res = detail.get(0).toString();
 			ArrayList resp = (ArrayList<?>) detail.get(0);
 			String tracker_userid = resp.get(1).toString();
@@ -216,8 +218,9 @@
 			
 			//Our New Code
 			Liwc liwc = new Liwc();
+			System.out.println("COMI----"+request.getHeader("referer"));
 			String totalbloggers = bloggerss._getBloggerById(ids);
-
+			
 
 			ArrayList locations = blog._getLocation(ids);
 			//System.out.println("all blog location");
@@ -492,14 +495,11 @@
 							class="text-primary">Add Blog</h6></a> <a
 						class="cursor-pointer profilemenulink"
 						href="<%=request.getContextPath()%>/profile.jsp"><h6
-							class="text-primary">Profile</h6></a> 
-							
-						<a
+							class="text-primary">Profile</h6></a> <a
 						class="cursor-pointer profilemenulink"
 						href="https://addons.mozilla.org/en-US/firefox/addon/blogtrackers/"><h6
-							class="text-primary">Plugin</h6></a>
-								
-							<a class="cursor-pointer profilemenulink"
+							class="text-primary">Plugin</h6></a> <a
+						class="cursor-pointer profilemenulink"
 						href="<%=request.getContextPath()%>/logout"><h6
 							class="text-primary">Log Out</h6></a>
 				</div>
@@ -626,7 +626,7 @@
 						</label> <label class="btn btn-primary btn-sm text-center nobgnoborder">Year
 							<input type="radio" class="option-only" name="options"
 							value="year" autocomplete="off">
-						</label> -->
+						</label> ii-->
 						<!-- <label class="btn btn-primary btn-sm nobgnoborder" id="custom">Custom</label> -->
 					</div>
 
@@ -653,7 +653,7 @@
 						<h5 class="text-primary mb0">
 							<i class="fas fa-user icondash"></i>Bloggers
 						</h5>
-						<h3 class="text-blue mb0 countdash dash-label blogger-count"><%=NumberFormat.getNumberInstance(Locale.US).format(new Double(totalbloggers).intValue())%></h3>
+						<h3 class="text-blue mb0 countdash dash-label blogger-count"><%try{NumberFormat.getNumberInstance(Locale.US).format(new Double(totalbloggers).intValue());}catch(Exception e){}%></h3>
 					</div>
 				</div>
 			</div>
@@ -722,22 +722,25 @@
 				</div>
 			</div>
 
-	<div class="col-md-6 mt20 zoom">
+			<div class="col-md-6 mt20 zoom">
 				<div class="card card-style mt20">
-				
- 				<div class="card-body mt0 pt0 pl0" style="min-height:520px;">
- 				<div class="mecard">
- 				<div class="front p30 pt5 pb5">	
- 		<div>
-		<p class="text-primary mt10 float-left">Language Usage</p>
-		<button style="right:10px; position:absolute" id="flip" type="button" onclick="flip()" class="btn btn-sm btn-primary float-right" data-toggle="tooltip" data-placement="top"
-							title="Flip to view language usage" aria-expanded="false">
-        <i class="fas fa-exchange-alt" aria-hidden="true"></i>
-       </button>
-	   </div>
-	   <div class="min-height-table" >
-							<div class="chart-container">
-								<!-- 						  <div class="btn-group float-right">
+
+					<div class="card-body mt0 pt0 pl0" style="min-height: 520px;">
+						<div class="mecard">
+							<div class="front p30 pt5 pb5">
+								<div>
+									<p class="text-primary mt10 float-left">Language Usage</p>
+									<button style="right: 10px; position: absolute" id="flip"
+										type="button" onclick="flip()"
+										class="btn btn-sm btn-primary float-right"
+										data-toggle="tooltip" data-placement="top"
+										title="Flip to view language usage" aria-expanded="false">
+										<i class="fas fa-exchange-alt" aria-hidden="true"></i>
+									</button>
+								</div>
+								<div class="min-height-table">
+									<div class="chart-container">
+										<!-- 						  <div class="btn-group float-right">
     <button id="btnGroupDrop1" type="button" class="btn btn-primary " data-toggle="dropdown" aria-expanded="false">
       <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
     </button>
@@ -746,36 +749,40 @@
       <a class="dropdown-item savelanguagepng" href="#">Export as PNG</a>
     </div>
   </div> -->
-								<!-- <button id='savelanguage'>Export my D3 visualization to PNG</button> -->
-								<div class="chart" id="languageusage"></div>
+										<!-- <button id='savelanguage'>Export my D3 visualization to PNG</button> -->
+										<div class="chart" id="languageusage"></div>
+									</div>
+								</div>
 							</div>
-						</div></div>
-                <div class="back p30 pt5 pb5">
-              
-                <div>
-		<p class="text-primary mt10 float-left">Language Usage</p>
-		<button style="right:10px; position:absolute" id="flip" type="button" onclick="flip()" class="btn btn-sm btn-primary float-right" data-toggle="tooltip" data-placement="top"
-							title="Flip to view language usage" aria-expanded="false">
-							
-        <i class="fas fa-exchange-alt" aria-hidden="true"></i>
-       </button>
-	   </div>
-	   
-	   <div class="min-height-table">
-							
-															
-								<table id="DataTables_Table_1_wrapper" class="display"
-									style="width: 100%">
-									<thead>
-										<tr>
-											<th>Language</th>
-											<th>Frequency</th>
+							<div class="back p30 pt5 pb5">
 
-										</tr>
-									</thead>
-									<tbody>
+								<div>
+									<p class="text-primary mt10 float-left">Language Usage</p>
+									<button style="right: 10px; position: absolute" id="flip"
+										type="button" onclick="flip()"
+										class="btn btn-sm btn-primary float-right"
+										data-toggle="tooltip" data-placement="top"
+										title="Flip to view language usage" aria-expanded="false">
 
-										    	  <%if (languages.size() > 0) {
+										<i class="fas fa-exchange-alt" aria-hidden="true"></i>
+									</button>
+								</div>
+
+								<div class="min-height-table">
+
+
+									<table id="DataTables_Table_1_wrapper" class="display"
+										style="width: 100%">
+										<thead>
+											<tr>
+												<th>Language</th>
+												<th>Frequency</th>
+
+											</tr>
+										</thead>
+										<tbody>
+
+											<%if (languages.size() > 0) {
 																for (int y = 0; y < languages.size(); y++) {
 																	ArrayList<?> langu = (ArrayList<?>) languages.get(y);
 																	String languag = langu.get(0).toString();
@@ -784,46 +791,46 @@
 																	
 																	if (y<10){
 																	%>
-																		<tr>
-											<td class=""><%=languag%></td>
-											<td><%=languag_freq%></td>
-										</tr>
-										    		<%}
+											<tr>
+												<td class=""><%=languag%></td>
+												<td><%=languag_freq%></td>
+											</tr>
+											<%}
 																}
 															}%>
-										
-									
-									
 
-									</tbody>
-								</table>
-							
-							
-		</div>
-	
-                </div>
- 				</div>
- 				
-					
-						
-						
-						
-						
-						
-						
-					
- 				
-    
-    			
-				</div>
-					
-					
+
+
+
+										</tbody>
+									</table>
+
+
+								</div>
+
+							</div>
+						</div>
+
+
+
+
+
+
+
+
+
+
+
+
+					</div>
+
+
 
 				</div>
 			</div>
-			
 
-			
+
+
 		</div>
 
 		<div class="row mb0">
@@ -1047,7 +1054,7 @@
 									id="swapInfluence">
 									<option value="blogs">Blogs</option>
 									<option value="bloggers">Bloggers</option>
-									
+
 
 								</select>
 								<%-- 
@@ -1076,7 +1083,7 @@
 			</div>
 
 		</div>
-		
+
 		<div class="row mb50">
 			<div class="col-md-12 mt20 zoom">
 				<div class="card card-style mt20">
@@ -1520,8 +1527,10 @@ $(document).ready(function() {
 	<!-- <script src="http://d3js.org/d3.v3.min.js"></script> -->
 	<script type="text/javascript" src="assets/vendors/d3/d3.min.js"></script>
 	<script src="assets/vendors/wordcloud/d3.layout.cloud.js"></script>
-	<script		src="https://cdn.rawgit.com/eligrey/canvas-toBlob.js/f1a01896135ab378aa5c0118eadd81da55e698d8/canvas-toBlob.js"></script>
-	<script		src="https://cdn.rawgit.com/eligrey/FileSaver.js/e9d941381475b5df8b7d7691013401e171014e89/FileSaver.min.js"></script>
+	<script
+		src="https://cdn.rawgit.com/eligrey/canvas-toBlob.js/f1a01896135ab378aa5c0118eadd81da55e698d8/canvas-toBlob.js"></script>
+	<script
+		src="https://cdn.rawgit.com/eligrey/FileSaver.js/e9d941381475b5df8b7d7691013401e171014e89/FileSaver.min.js"></script>
 	<script type="text/javascript" src="assets/vendors/d3/d3_tooltip.js"></script>
 	<script type="text/javascript" src="assets/js/jquery.inview.js"></script>
 	<script type="text/javascript" src="assets/js/exporthandler.js"></script>
@@ -2349,7 +2358,7 @@ $(function () {
     }
 });
 </script>
-<script src="chartdependencies/piechartanimated.js"></script>
+	<script src="chartdependencies/piechartanimated.js"></script>
 	<!-- end of posting frequency  -->
 	<!--  Start of sentiment Bar Chart -->
 	<script type="text/javascript">

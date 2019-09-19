@@ -791,11 +791,13 @@
 		<div class="row m0 mt20 mb50 d-flex align-items-stretch">
 			<div
 				class="col-md-6 mt20 card card-style nobordertopright noborderbottomright">
-				<div class="card-body p0 pt20 pb20" style="min-height: 320px;"
-					id="postConainer">
-					<p>
+				<p style="padding-top:20px;">
 						Blog Posts <b class="text-blue"><%=mostactiveblogger%></b>
 					</p>
+					
+				<div class="card-body p0 pt20 pb20" style="min-height: 320px;"
+					id="postConainer">
+					
 					<!-- <div class="p15 pb5 pt0" role="group">
           Export Options
           </div> -->
@@ -1527,11 +1529,11 @@ $(function () {
          	[<%for (int q = 0; q < yearsarray.length(); q++) {
 						String yer = yearsarray.get(q).toString();
 						int vlue = Integer.parseInt(graphyearsneg.get(yer).toString());%>{"date":"<%=yer%>","close":<%=vlue%>},
-      		<%}%>],
+      		<%} System.out.println("!111!!"+yearsarray);%>],
       		[<%for (int q = 0; q < yearsarray.length(); q++) {
 						String yer = yearsarray.get(q).toString();
 						int vlue = Integer.parseInt(graphyearspos.get(yer).toString());%>{"date":"<%=yer%>","close":<%=vlue%>},
-  		<%}%>]     	
+  		<%} System.out.println("!222!!"+yearsarray);%>]     	
          	];
          //console.log(data);
          // data = [];
@@ -1769,7 +1771,7 @@ $(function () {
                             	  
                             	 // console.log("point clicked");
                             	 // console.log(d.date);
-                            	  
+                            	  /* alert('i am '); */
                               });
                                                  svg.call(tip)
                       }
@@ -1836,8 +1838,9 @@ $(function () {
                                      .on("mouseover",tip.show)
                                      .on("mouseout",tip.hide)
                                      .on("click",function(d){
-                                    	 
+                                    	 //seun
                                     	// console.log("The clicked date is "+d.date);
+                                    	alert('thi ');
                                     	 loadPost(d.date);
                                      }); 
                                                         svg.call(tip)

@@ -1,5 +1,22 @@
 /* Preloader */
+.valid {
+  color: green;
+}
 
+.valid:before {
+  position: relative;
+  left: -35px;
+  content: "✓";
+}
+    .invalid {
+  color: red;
+}
+
+.invalid:before {
+  position: relative;
+  left: -35px;
+  content: "x";
+	}
 table.dataTable thead .sorting:before, table.dataTable thead .sorting_asc:before, table.dataTable thead .sorting_desc:before, table.dataTable thead .sorting_asc_disabled:before, table.dataTable thead .sorting_desc_disabled:before {
     left: 10em !important;
 }

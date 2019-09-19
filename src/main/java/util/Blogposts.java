@@ -34,10 +34,11 @@ public class Blogposts {
 	
 	String totalpost;
 	String date;
-
+	
 	public ArrayList _list(String order, String from, String sortby) throws Exception {
 		int size = 20;
 		int fr = 0;
+		
 		JSONObject jsonObj = new JSONObject("{\r\n" + 
 				"    \"query\": {\r\n" + 
 				"        \"match_all\": {}\r\n" + 
@@ -67,8 +68,10 @@ public class Blogposts {
 		}
 
 
-		String url = base_url+"_search?size="+size+"&from="+fr;   
+		String url = base_url+"_search?size="+size+"&from="+fr;  
+		System.out.println("ress--"+url);
 		return this._getResult(url, jsonObj);
+		
 	}
 
 	public String _getTotal() {

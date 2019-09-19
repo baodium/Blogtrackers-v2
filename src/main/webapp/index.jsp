@@ -11,6 +11,22 @@
 <%
 
 Object email = (null == session.getAttribute("email")) ? "" : session.getAttribute("email");
+Object error_message = (null == session.getAttribute("error_message")) ? "" : session.getAttribute("error_message");
+Object success_message = (null == session.getAttribute("success_message")) ? "" : session.getAttribute("success_message");
+String pi = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
+
+System.out.println("INDEX--" + request.getHeader("referer"));
+
+/*  if(request.getHeader("referer").equals(null)){
+	session.invalidate();
+	response.sendRedirect("login.jsp");
+} */
+/* else if(!request.getHeader("referer").equals(p +"/")){*/
+	/* session.invalidate(); */
+	/* response.sendRedirect(p +"/"); 
+
+/* System.out.println("success__ 1--" + success_message); */
+
 ArrayList<?> userinfo = new ArrayList();
 String profileimage= "";
 String username ="";
@@ -20,7 +36,15 @@ String date_modified = "";
 userinfo = DbConnection.query("SELECT * FROM usercredentials where Email = '"+email+"'");
 if (userinfo.size()<1) {
 	//response.sendRedirect("login.jsp");
-}else{
+}
+else{
+/* else if(!request.getHeader("referer").equals(p +"/forgotpassword.jsp") || !request.getHeader("referer").equals(p +"/ChangePassword.jsp") || ! request.getHeader("referer").equals(p+"/")){ */
+	/* System.out.println("success__ 1--" + success_message); */
+	/* System.out.println("COMI"+request.getHeader("referer"));
+	System.out.println(p +"/forgotpassword.jsp");
+	System.out.println(!request.getHeader("referer").equals(p +"/forgotpassword.jsp")); */
+	System.out.println("INDEX--" + request.getHeader("referer"));
+	System.out.println("INDEX--" + pi+"/");
 userinfo = (ArrayList<?>)userinfo.get(0);
 try{
 	username = (null==userinfo.get(0))?"":userinfo.get(0).toString();
@@ -43,8 +67,30 @@ try{
 	}
 		
 		File f = new File(filename);
+		File path_new = new File(application.getRealPath("/").replace('/', '/') + "images/profile_images"); 
 		if(f.exists() && !f.isDirectory()) { 
 			profileimage = "images/profile_images/"+userinfo.get(2).toString()+".jpg";
+		}
+		if (path_new.exists()) {
+			String t = "/images/profile_images";
+			int p=userpic.indexOf(t);
+			if (p != -1) {
+				
+				System.out.println("pic path---"+userpic);
+				System.out.println("path exists---"+userpic.substring(0, p));
+				String path_update=userpic.substring(0, p);
+				if (!path_update.equals(path_new.toString())) {
+					profileimage = "images/profile_images/" + userinfo.get(2).toString() + ".jpg";
+					/* profileimage=userpic.replace(userpic.substring(0, p), path_new.toString()); */
+					String new_file_path = path_new.toString().replace("\\images\\profile_images", "")+"/"+profileimage;
+					System.out.println("ready to be updated--"+ new_file_path);
+					/* new DbConnection().updateTable("UPDATE usercredentials SET profile_picture  = '" + pass + "' WHERE Email = '" + email + "'"); */
+					
+					
+				}
+			}				
+		}else{
+			System.out.println("path doesnt exist");
 		}
 	}catch(Exception e){
 		profileimage = "images/default-avatar.png";
@@ -77,14 +123,14 @@ try{
 <link rel="stylesheet" href="assets/vendors/DataTables/Buttons-1.5.1/css/buttons.dataTables.min.css" />
 <link rel="stylesheet" href="assets/css/daterangepicker.css" />
 
+
+	<link rel="stylesheet" href="assets/css/hover.css" />
+	<link rel="stylesheet" href="assets/css/custom.css"  />
+	<style>
+	
+	</style>
+	
   <link rel="stylesheet" href="assets/css/style.css" />
-  
-  <link rel="stylesheet" href="assets/css/custom.css" />
-  
-  <link rel="stylesheet" href="assets/css/hover.css" />
-  
-  
-  
   <!--end of bootstrap -->
   <script src="assets/js/jquery-3.2.1.slim.min.js"></script>
 <script src="assets/js/popper.min.js" ></script>
@@ -356,7 +402,6 @@ ass="text-center text-primary p40 pt10 pb10">Blogtrackers helps sociologists to 
 <p class="text-primary whatcanyoudodesc">Check influence of Blogs, Posts, and Bloggers</p>
 </div>
 </div>
-
 </div>
     </div>
     <div class="carousel-item">
@@ -377,9 +422,7 @@ ass="text-center text-primary p40 pt10 pb10">Blogtrackers helps sociologists to 
 </div>
 </div>
 </div>
-
 </div>
-
  <a class="carousel-control-prev" href="#featuresslides" role="button" data-slide="prev">
     <span class="carousel-control-prev-icon prevfeatures" aria-hidden="true"></span>
     <span class="sr-only">Previous</span>
@@ -389,51 +432,29 @@ ass="text-center text-primary p40 pt10 pb10">Blogtrackers helps sociologists to 
     <span class="sr-only">Next</span>
   </a>
 </div> -->
-
 <!-- END OLD-->
-
-
 <!-- START NEW -->
-
-
-
-
 <div class="row" style="padding-bottom: 30px; padding-top: 30px;">
-
     <div class="hover-desc col-md-2 hvr-bob"><p class="text-center"><i class="navbar-brand text-primary icontrackersize sentiment-analysis pt10"></i></p>
     <p class="text-center text-primary textwhy mb10">Sentiments Analysis</p>
     <p class="text-center text-primary p20 pt0 pb0">Analyze General Perception</p>
     </div>
-
     <div class="hover-desc col-md-2 hvr-bob"><p class="text-center"><i class="navbar-brand text-primary icontrackersize network-analysis pt10"></i></p>
     <p class="text-center text-primary textwhy mb10">Network Analysis Trend</p>
     <p class="text-center text-primary p20 pt0 pb0">Analyze Trends on Graphs</p></div>
-
     <div class="hover-desc col-md-2 hvr-bob"><p class="text-center"><i class="navbar-brand text-primary icontrackersize cross-analysis pt10"></i></p>
     <p class="text-center text-primary textwhy mb10">Cross Media Analysis</p>
     <p class="text-center text-primary p20 pt0 pb0">Analyze Social Media.</p></div>
-
     <div class="hover-desc col-md-2 hvr-bob"><p class="text-center"><i class="navbar-brand text-primary icontrackersize data pt10"></i></p>
     <p class="text-center text-primary textwhy mb10">Posting Frequency</p>
     <p class="text-center text-primary p20 pt0 pb0">Analyze Traffic Pattern</p></div>
-
     <div class="hover-desc col-md-2 hvr-bob"><p class="text-center"><i class="navbar-brand text-primary icontrackersize data-analytics pt10"></i></p>
     <p class="text-center text-primary textwhy mb10">Keyword Trends</p>
     <p class="text-center text-primary p20 pt0 pb0">Search Top Keywords</p></div>
-
     <div class="hover-desc col-md-2 hvr-bob"><p class="text-center"><i class="navbar-brand text-primary icontrackersize planning pt10"></i></p>
     <p class="text-center text-primary textwhy mb10">Influence Analysis</p>
     <p class="text-center text-primary p20 pt0 pb0">Check Influence of Blogs, Posts and Bloggers</p></div>
-
 </div>
-
-
-
-
-
-
-
-
 <!-- END NEW -->
 
 
@@ -645,7 +666,7 @@ Design is not just what it looks like and feels like. Design is how it works.
 
 <div class="bg-primary">
 <div class="container-fluid pb10 pt10">
-<p class="mb0 text-center copyrighttext text-white">Copyright &copy; 2018, COSMOS. All Rights Reserved.</p>
+<p class="mb0 text-center copyrighttext text-white">Copyright &copy; 2019, COSMOS. All Rights Reserved.</p>
 </div>
 </div>
 </a>

@@ -69,7 +69,8 @@ if(username.equals("")){
 					String temp = "";														// Temporary variable to loop through the content of the file
 					String[] arr;
 					while((temp = br.readLine()) != null) {
-						temp = temp.trim();  											 	// Strip the whitespaces 
+						temp = temp.trim();  											 	// Strip the whitespaces
+						/* System.out.println(temp); */
 						if(temp.isEmpty()) { 						
 							continue;														// Skip the comments, for example the author, created on and document type
 						}

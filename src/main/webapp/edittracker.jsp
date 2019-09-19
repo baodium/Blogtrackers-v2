@@ -287,7 +287,7 @@ if(ids.length()>0 && post._getBlogPostById(ids) !=""){
 									String[] ddtm = dtt2.split(" ");
 									dtmodified = ddtm[0];
 								}
-
+//u
 								if (!query.equals("")) {
 									blogs = blg._fetch(query);
 									System.out.println(blogs);
@@ -423,7 +423,8 @@ if(ids.length()>0 && post._getBlogPostById(ids) !=""){
 		</thead>
 		<tbody>		
 		<!-- <div id="bloglist"> -->
-		<% if (new_results.size() > 0) {
+		
+		<% try{if (new_results.size() > 0) {
 			String blogsite_name ="";
 			String totalposts ="";
 
@@ -458,7 +459,7 @@ if(ids.length()>0 && post._getBlogPostById(ids) !=""){
 			<td class="text-center"><%=v1.get(3) %></td>
 			<td><i class="text-primary icontrackersize cursor-pointer deleteblog text-center" data-toggle="tooltip" id="<%=v1.get(0)%>_select" data-placement="top" title="Delete Blog"></i></td>
 			</tr>
-		<% }} %>
+		<% }} }catch(Exception e){}%>
 		</tbody>
 		
 		</table>

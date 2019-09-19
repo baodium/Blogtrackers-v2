@@ -1,21 +1,37 @@
 <%@page import="authentication.*"%>
 <%
 	Object email = (null == session.getAttribute("email")) ? "" : session.getAttribute("email");
+Object error_message = (null == session.getAttribute("error_message")) ? "" : session.getAttribute("error_message");
+Object success_message = (null == session.getAttribute("success_message")) ? "" : session.getAttribute("success_message");
+String p = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
+
+System.out.println("LOGIN--" + request.getHeader("referer"));
+System.out.println("LOGIN_EMAIL--" + email);
 	if (email != null && email != "") {
-		response.sendRedirect("dashboard.jsp");
+		response.sendRedirect("dashboard.jsp");		
+	} else if (request.getHeader("referer").equals(p +"/forgotpassword.jsp")){
+		response.sendRedirect("ChangePassword.jsp");
+	} else if (request.getHeader("referer").equals(p +"/ChangePassword.jsp")){
+		session.invalidate();
+		response.sendRedirect("ChangePassword.jsp");
 	}
+	/* else if (request.getHeader("referer").equals(p +"/ChangePassword.jsp")){
+		session.invalidate();
+		response.sendRedirect("ChangePassword.jsp");
+	} */
 %>
 
 <!DOCTYPE html>
 <html>
 <head>
 <script src="https://apis.google.com/js/platform.js" async defer></script>
-<meta name="google-signin-client_id" 	content="600561618290-lmbuo5mamod25msuth4tutqvkbn91d6v.apps.googleusercontent.com" />
+<meta name="google-signin-client_id"
+	content="600561618290-lmbuo5mamod25msuth4tutqvkbn91d6v.apps.googleusercontent.com" />
 
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Blogtrackers </title>
+<title>Blogtrackers</title>
 <link rel="shortcut icon" href="images/favicons/favicon-48x48.png">
 <link rel="apple-touch-icon" href="images/favicons/favicon-48x48.png">
 <link rel="apple-touch-icon" sizes="96x96"
@@ -64,8 +80,8 @@
 </head>
 
 <body class="bgwhite">
-<%@include file="subpages/loader.jsp" %>
-<%@include file="subpages/googletagmanagernoscript.jsp" %>
+	<%@include file="subpages/loader.jsp"%>
+	<%@include file="subpages/googletagmanagernoscript.jsp"%>
 	<nav
 		class="navbar navbar-inverse bg-primary d-md-block d-sm-block d-xs-block d-lg-none d-xl-none">
 		<div class="container-fluid">
@@ -111,8 +127,8 @@
 						<div class="" id="loggin2"></div>
 						<div>
 							<p class="float-left pt10">
-								<input id="remember_me" type="checkbox" class="remembercheckbox blue" /><span></span>Remember
-								Me
+								<input id="remember_me" type="checkbox"
+									class="remembercheckbox blue" /><span></span>Remember Me
 							</p>
 							<p class="pt10 text-primary float-right">
 								<small class="bold-text"><a
@@ -143,7 +159,7 @@
 						<p class="pb40 mt30 text-primary">
 							Don't have an account with Blogtrackers? <a
 								href="<%=request.getContextPath()%>/register"><b>Register
-							Now</b></a></small>
+									Now</b></a></small>
 						</p>
 					</form>
 
@@ -161,19 +177,18 @@
 		</div>
 	</div>
 	<script>
-	$(window).load(function(){	
-		
-	})
+		$(window).load(function() {
 
-	$("body").removeClass("loaded");
-	$(document).ready(function(e)
-	{
-	$('a').on("click",function(e){
-	$("body").removeClass('loaded');
-		  });
-		 
-	$("body").addClass("loaded");
-	});
+		})
+
+		$("body").removeClass("loaded");
+		$(document).ready(function(e) {
+			$('a').on("click", function(e) {
+				$("body").removeClass('loaded');
+			});
+
+			$("body").addClass("loaded");
+		});
 		/*
 		 client id: 600561618290-lmbuo5mamod25msuth4tutqvkbn91d6v.apps.googleusercontent.com
 		 secret: fxBw8tsZsREjMZ6VNC2HQ7O8

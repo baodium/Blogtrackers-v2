@@ -1,9 +1,13 @@
 <%@page import="authentication.*"%>
 <%@page import="java.util.*"%>
 <%
+
+	Object email = (null == session.getAttribute("email")) ? "" : session.getAttribute("email");
 	Object error_message = (null == session.getAttribute("error_message")) ? "" : session.getAttribute("error_message");
 	Object success_message = (null == session.getAttribute("success_message")) ? "" : session.getAttribute("success_message");
-	
+	String p = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
+
+	System.out.println("FORGOT--" + request.getHeader("referer"));
 %>
 <!DOCTYPE html>
 <html>
@@ -109,7 +113,7 @@
 							<h5 class="content-group pt20"><%=success_message%></h5>
 						</div>
 						
-						<a href="<%=request.getContextPath()%>/login.jsp" class="btn bg-blue-400 btn-block">Click here to proceed <i class="icon-arrow-left52 position-right"></i></a>
+						<a href="<%=request.getContextPath()%>/ChangePassword.jsp" class="btn bg-blue-400 btn-block">Click here to proceed <i class="icon-arrow-left52 position-right"></i></a>
                                 </div>
                                 
                 <% } %>
@@ -126,10 +130,20 @@
 
 </body>
 <script>
-<% if(!success_message.equals("")){ %>
+<% if(!success_message.equals("")){ 
+	 /* session.invalidate();   */
+	 System.out.println(session.getId());
+	/* response.sendRedirect("profile.jsp");  */
+	%>
+alert('this is you')
 toastr.success('<%=success_message%>','Success','hideDuration:10000');
 <%} else if(!error_message.equals("")) {%>
+//alert('this is you2')
 toastr.error('<%=error_message%>','Error','hideDuration:10000');
 <%}%>
+$(document).ready(function () {
+	email = $('#email').val();
+})
+
 </script>
 </html>

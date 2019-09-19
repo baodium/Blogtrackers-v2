@@ -52,8 +52,31 @@ if(userpic.indexOf("http")>-1){
 
 
 File f = new File(filename);
+File path_new = new File(application.getRealPath("/").replace('/', '/') + "images/profile_images"); 
 if(f.exists() && !f.isDirectory()) { 
 	profileimage = "images/profile_images/"+userinfo.get(2).toString()+".jpg";
+}
+
+if (path_new.exists()) {
+	String t = "/images/profile_images";
+	int p=userpic.indexOf(t);
+	if (p != -1) {
+		
+		System.out.println("pic path---"+userpic);
+		System.out.println("path exists---"+userpic.substring(0, p));
+		String path_update=userpic.substring(0, p);
+		if (!path_update.equals(path_new.toString())) {
+			profileimage = "images/profile_images/" + userinfo.get(2).toString() + ".jpg";
+			/* profileimage=userpic.replace(userpic.substring(0, p), path_new.toString()); */
+			String new_file_path = path_new.toString().replace("\\images\\profile_images", "")+"/"+profileimage;
+			System.out.println("ready to be updated--"+ new_file_path);
+			/* new DbConnection().updateTable("UPDATE usercredentials SET profile_picture  = '" + pass + "' WHERE Email = '" + email + "'"); */
+			
+			
+		}
+	}				
+}else{
+	System.out.println("path doesnt exist");
 }
 }catch(Exception e){}
 
@@ -152,7 +175,7 @@ if(f.exists() && !f.isDirectory()) {
 
    <div class="col-lg-3">
   	 <% if(userinfo.size()>0){ %>
-  		
+  		col-lg-2 col-md-12 notificationpanel
 	  <ul class="nav navbar-nav" style="display:block;">
 		  <li class="dropdown dropdown-user cursor-pointer float-right">
 		  <a class="dropdown-toggle " id="profiletoggle" data-toggle="dropdown">

@@ -62,7 +62,28 @@ if(userpic.indexOf("http")>-1){
 		profileimage = "images/profile_images/"+userinfo.get(2).toString()+".jpg";
 	}
 	
-
+	File path_new = new File(application.getRealPath("/").replace('/', '/') + "images/profile_images"); 
+	if (path_new.exists()) {
+		String t = "/images/profile_images";
+		int p=userpic.indexOf(t);
+		if (p != -1) {
+			
+			System.out.println("pic path---"+userpic);
+			System.out.println("path exists---"+userpic.substring(0, p));
+			String path_update=userpic.substring(0, p);
+			if (!path_update.equals(path_new.toString())) {
+				profileimage = "images/profile_images/" + userinfo.get(2).toString() + ".jpg";
+				/* profileimage=userpic.replace(userpic.substring(0, p), path_new.toString()); */
+				String new_file_path = path_new.toString().replace("\\images\\profile_images", "")+"/"+profileimage;
+				System.out.println("ready to be updated--"+ new_file_path);
+				/* new DbConnection().updateTable("UPDATE usercredentials SET profile_picture  = '" + pass + "' WHERE Email = '" + email + "'"); */
+				
+				
+			}
+		}				
+	}else{
+		System.out.println("path doesnt exist");
+	}
 }catch(Exception e){}
 	
 }
@@ -81,7 +102,7 @@ if(term.equals("")){
 }else{
 	results = post._search(term,"0",sort);
 }
-
+System.out.println("result--"+results);
 String total = NumberFormat.getNumberInstance(Locale.US).format(Integer.parseInt(post._getTotal()));
 //NumberFormat.getNumberInstance(Locale.US).format(Integer.parseInt(post._getTotal()));
 
@@ -302,8 +323,8 @@ if(mytrackers.size()>0){
 <div class="trackcreationsection2 hidden">
 <i class="cursor-pointer lnr lnr-cross float-right closedialog" data-toggle="tooltip" data-placement="top" title="" data-original-title="Close Dialog"></i>
 <h1 class="text-primary">Create a Tracker</h1>
-<input type="text" class="form-control trackerinput blogbrowsertrackername" placeholder="Title" />
-<textarea placeholder="Description" class="form-control mt20 trackerdescription blogbrowsertrackerdescription" rows="8">
+<input type="text" id="newtracker_name" class="form-control trackerinput blogbrowsertrackername" placeholder="Title" />
+<textarea placeholder="Description" id="newtracker_description" class="form-control mt20 trackerdescription blogbrowsertrackerdescription" rows="8">
 </textarea>
 <div class="form-group mt20">
 <!-- <input type="text" class="form-control tokenfield-primary" value="Engadget,National Public Radio,Crooks and Liars,Tech Crunch" />-->
@@ -369,7 +390,7 @@ if(results.size()>0){
 	String bresu =null;
 	JSONObject bobj =null;
 	
-
+//test
 		for(int i=0; i< results.size(); i++){
 
 			 String blogtitle="";		

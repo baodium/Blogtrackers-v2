@@ -154,6 +154,7 @@ public class Register extends HttpServlet {
 					session.setAttribute("email",email);
 					response.setContentType("text/html");
 		            pww.write("success"); 
+//		            response.sendRedirect("index.jsp");
 				}
 			}
 			
