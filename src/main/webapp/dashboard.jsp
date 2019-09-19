@@ -366,7 +366,7 @@
 				session.setAttribute("top_term", top_terms);
 			}
 	}catch(Exception e){
-		System.err.println(e);
+		/* System.err.println(e); */
 	}
 			
 			JSONObject outerlinks = new JSONObject();
@@ -456,7 +456,7 @@
 
 <!-- <script src="assets/js/jquery-3.2.1.slim.min.js"></script>-->
 <!-- <script src="assets/js/popper.min.js"></script> -->
-<script src="pagedependencies/googletagmanagerscript.js"></script>
+<!-- <script src="pagedependencies/googletagmanagerscript.js"></script> -->
 
 <script src="pagedependencies/baseurl.js"></script>
 </head>
@@ -2688,7 +2688,7 @@ var mymarker = [
 	var word_count2 = {}; 
 	   <% 
 	    JSONArray sortedterms = term._sortJson2(unsortedterms);
-		System.out.println("TM:"+sortedterms);
+	/* 	System.out.println("TM:"+sortedterms); */
 		if (sortedterms.length() > 0) {																	
 				for (int i=0; i<sortedterms.length(); i++) {
 					String[] vals = sortedterms.get(i).toString().split("___");
@@ -2833,7 +2833,7 @@ data = {
 	/* End of sorting   */
 	  bloggers = alldata;
 	  
-	  data = {  bloggers } 
+	  data = { bloggers } 
             //
             // Append chart elements
             //

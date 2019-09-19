@@ -269,7 +269,7 @@ if(ids.length()>0 && post._getBlogPostById(ids) !=""){
 								query = query.replaceAll("\\(", "");
 								query = query.replaceAll("\\)", "");
 								
-								
+								System.out.println(query);
 								String dt = "";
 								String dtmodified = "";
 								String datemodified = "";
@@ -290,7 +290,8 @@ if(ids.length()>0 && post._getBlogPostById(ids) !=""){
 
 								if (!query.equals("")) {
 									blogs = blg._fetch(query);
-
+									System.out.println(blogs);
+									System.out.println(blogs.size());
 									new_results = blg._getPost(query);
 									
 									if (blogs.size() > 0) {

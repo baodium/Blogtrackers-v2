@@ -172,6 +172,8 @@ public class Blogposts {
 			pars.put(args[i].replaceAll(" ", ""));
 		}
 		*/
+		
+	
 
 		String arg2 = post_ids.toString();
 		String que="{\r\n" + 
