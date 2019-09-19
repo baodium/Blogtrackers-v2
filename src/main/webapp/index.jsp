@@ -124,8 +124,8 @@ try{
 <link rel="stylesheet" href="assets/css/daterangepicker.css" />
 
 
-	<link href=“assets/css/hover.css” rel=“stylesheet” media=“all”>
-	<link href=“assets/css/custom.css” rel=“stylesheet” media=“all”>
+	<link rel="stylesheet" href="assets/css/hover.css" />
+	<link rel="stylesheet" href="assets/css/custom.css"  />
 	<style>
 	
 	</style>
