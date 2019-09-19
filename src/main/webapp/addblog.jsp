@@ -101,8 +101,9 @@
 			results = new_blog._addBlog(userid, term, status);
 
 		}
-		results_blogadded = new_blog._fetchBlog(userid);
 		
+		results_blogadded = new_blog._fetchBlog(userid);
+		System.out.println("userid--"+userid);
 	}
 
 	/* 	AutomatedCrawlerConnect automatedCrawler = new AutomatedCrawlerConnect();
@@ -433,6 +434,7 @@
 								String id = (String) blog.get(0);
 								String blogname = (String) blog.get(2);
 								
+								
 								ArrayList results_blogs = null;
 								/* ArrayList results_blogfinder = null;
 								results_blogfinder = new_blog._fetchPipeline("https://tacticalinvestor.com/blog/");
@@ -479,6 +481,7 @@
 					<td class="text-primary text-left"><%=last_crawled%></td>
 					<td class="text-primary text-center"><i id="<%=k + 1%>"
 						class="text-primary icontrackersize cursor-pointer deleteblog deletebtn text-center"
+						onclick= "<% new_blog._deleteBlog(userid, id,blogname); %>"
 						data-toggle="tooltip" data-placement="top" title="Delete Blog"></i></td>
 					<%-- <td class="text-center"><i class="text-primary icontrackersize cursor-pointer deleteblog text-center" onclick= "<% new_blog._deleteBlog(username, Integer.parseInt(id)); %>" data-toggle="tooltip" id="<%=id%>_select" data-placement="top" title="Delete Blog"></i></td> --%>
 				</tr>

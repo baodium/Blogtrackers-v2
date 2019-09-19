@@ -69,7 +69,7 @@ public class Blogposts {
 
 
 		String url = base_url+"_search?size="+size+"&from="+fr;  
-		System.out.println("ress--"+url);
+		System.out.println("ress--"+jsonObj);
 		return this._getResult(url, jsonObj);
 		
 	}
@@ -1145,6 +1145,8 @@ public String _searchRangeMaxByBloggers(String field,String greater, String less
 					"}");
 		}
 
+
+		
 		if(from.equals("date")) {
 			jsonObj = new JSONObject("{\r\n" + 
 					"  \"query\": {\r\n" + 
@@ -1167,7 +1169,7 @@ public String _searchRangeMaxByBloggers(String field,String greater, String less
 					"}");
 		}
 		String url = base_url+"_search?size="+size+"&from="+fr; 
-		//System.out.println(url);
+		System.out.println("object-----"+jsonObj);
 		return this._getResult(url, jsonObj);
 	}
 
@@ -2051,7 +2053,9 @@ public ArrayList _searchPostTotal(String field, int greater, int less, String bl
 		     }
 	     }
 		}catch(Exception ex) {}
+		System.out.println("This is the list for -----"+url+"---"+list);
 	     return list;
+	     
 	}
 	
 	
