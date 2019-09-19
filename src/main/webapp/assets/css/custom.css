@@ -36,6 +36,16 @@ display: inline-block;
 background-position: center center; 
 }
 
+.plugin-icon
+{
+background-image: url(../../images/svgs/plugin.svg);
+background-repeat: no-repeat;
+min-height: 115px;
+width: 115px;
+display: inline-block;
+background-position: center center; 
+}
+
 .data-analytics
 {
 background-image: url(../../images/svgs/data-analytics.svg);
