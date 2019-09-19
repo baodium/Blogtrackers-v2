@@ -123,6 +123,80 @@ try{
 <link rel="stylesheet" href="assets/vendors/DataTables/Buttons-1.5.1/css/buttons.dataTables.min.css" />
 <link rel="stylesheet" href="assets/css/daterangepicker.css" />
 
+
+	<link href=“assets/css/hover.css” rel=“stylesheet” media=“all”>
+	<link href=“assets/css/custom.css” rel=“stylesheet” media=“all”>
+	<style>
+	.hover-desc:hover{
+
+-webkit-box-shadow: 1px 13px 20px -2px rgba(0,0,0,0.48);
+-moz-box-shadow: 1px 13px 20px -2px rgba(0,0,0,0.48);
+box-shadow: 1px 13px 20px -2px rgba(0,0,0,0.48);
+
+}
+
+.sentiment-analysis
+{
+background-image: url(images/svgs/sentiment.svg);
+background-repeat: no-repeat;
+min-height: 115px;
+width: 115px;
+display: inline-block;
+background-position: center center; 
+}
+
+.cross-analysis
+{
+background-image: url(images/svgs/networking.svg);
+background-repeat: no-repeat;
+min-height: 115px;
+width: 115px;
+display: inline-block;
+background-position: center center; 
+}
+
+.network-analysis
+{
+background-image: url(images/svgs/analysis.svg);
+background-repeat: no-repeat;
+min-height: 115px;
+width: 115px;
+display: inline-block;
+background-position: center center; 
+}
+
+.data-analytics
+{
+background-image: url(images/svgs/data-analytics.svg);
+background-repeat: no-repeat;
+min-height: 115px;
+width: 115px;
+display: inline-block;
+background-position: center center; 
+}
+
+.data
+{
+background-image: url(images/svgs/data.svg);
+background-repeat: no-repeat;
+min-height: 115px;
+width: 115px;
+display: inline-block;
+background-position: center center; 
+}
+
+.planning
+{
+background-image: url(images/svgs/planning.svg);
+background-repeat: no-repeat;
+min-height: 115px;
+width: 115px;
+display: inline-block;
+background-position: center center; 
+}
+	</style>
+	
+
   <link rel="stylesheet" href="assets/css/style.css" />
   <!--end of bootstrap -->
   <script src="assets/js/jquery-3.2.1.slim.min.js"></script>
@@ -376,7 +450,8 @@ try{
 ass="text-center text-primary p40 pt10 pb10">Blogtrackers helps sociologists to track and analyze blogs of particular interests by designing and integrating unique features. </p> -->
 </div>
 
-<div id="featuresslides" class="carousel slide" data-ride="carousel">
+<!-- START OLD -->
+<!-- <div id="featuresslides" class="carousel slide" data-ride="carousel">
   <div class="carousel-inner">
     <div class="carousel-item active">
      <div class="offset-md-2 col-md-8 offset-md-2">
@@ -394,7 +469,6 @@ ass="text-center text-primary p40 pt10 pb10">Blogtrackers helps sociologists to 
 <p class="text-primary whatcanyoudodesc">Check influence of Blogs, Posts, and Bloggers</p>
 </div>
 </div>
-
 </div>
     </div>
     <div class="carousel-item">
@@ -415,9 +489,7 @@ ass="text-center text-primary p40 pt10 pb10">Blogtrackers helps sociologists to 
 </div>
 </div>
 </div>
-
 </div>
-
  <a class="carousel-control-prev" href="#featuresslides" role="button" data-slide="prev">
     <span class="carousel-control-prev-icon prevfeatures" aria-hidden="true"></span>
     <span class="sr-only">Previous</span>
@@ -426,7 +498,31 @@ ass="text-center text-primary p40 pt10 pb10">Blogtrackers helps sociologists to 
     <span class="carousel-control-next-icon nextfeatures" aria-hidden="true"></span>
     <span class="sr-only">Next</span>
   </a>
+</div> -->
+<!-- END OLD-->
+<!-- START NEW -->
+<div class="row" style="padding-bottom: 30px; padding-top: 30px;">
+    <div class="hover-desc col-md-2 hvr-bob"><p class="text-center"><i class="navbar-brand text-primary icontrackersize sentiment-analysis pt10"></i></p>
+    <p class="text-center text-primary textwhy mb10">Sentiments Analysis</p>
+    <p class="text-center text-primary p20 pt0 pb0">Analyze General Perception</p>
+    </div>
+    <div class="hover-desc col-md-2 hvr-bob"><p class="text-center"><i class="navbar-brand text-primary icontrackersize network-analysis pt10"></i></p>
+    <p class="text-center text-primary textwhy mb10">Network Analysis Trend</p>
+    <p class="text-center text-primary p20 pt0 pb0">Analyze Trends on Graphs</p></div>
+    <div class="hover-desc col-md-2 hvr-bob"><p class="text-center"><i class="navbar-brand text-primary icontrackersize cross-analysis pt10"></i></p>
+    <p class="text-center text-primary textwhy mb10">Cross Media Analysis</p>
+    <p class="text-center text-primary p20 pt0 pb0">Analyze Social Media.</p></div>
+    <div class="hover-desc col-md-2 hvr-bob"><p class="text-center"><i class="navbar-brand text-primary icontrackersize data pt10"></i></p>
+    <p class="text-center text-primary textwhy mb10">Posting Frequency</p>
+    <p class="text-center text-primary p20 pt0 pb0">Analyze Traffic Pattern</p></div>
+    <div class="hover-desc col-md-2 hvr-bob"><p class="text-center"><i class="navbar-brand text-primary icontrackersize data-analytics pt10"></i></p>
+    <p class="text-center text-primary textwhy mb10">Keyword Trends</p>
+    <p class="text-center text-primary p20 pt0 pb0">Search Top Keywords</p></div>
+    <div class="hover-desc col-md-2 hvr-bob"><p class="text-center"><i class="navbar-brand text-primary icontrackersize planning pt10"></i></p>
+    <p class="text-center text-primary textwhy mb10">Influence Analysis</p>
+    <p class="text-center text-primary p20 pt0 pb0">Check Influence of Blogs, Posts and Bloggers</p></div>
 </div>
+<!-- END NEW -->
 
 
 <!-- <div class="row mt100 mb100">
@@ -637,7 +733,7 @@ Design is not just what it looks like and feels like. Design is how it works.
 
 <div class="bg-primary">
 <div class="container-fluid pb10 pt10">
-<p class="mb0 text-center copyrighttext text-white">Copyright &copy; 20199, COSMOS. All Rights Reserved.</p>
+<p class="mb0 text-center copyrighttext text-white">Copyright &copy; 2019, COSMOS. All Rights Reserved.</p>
 </div>
 </div>
 </a>
