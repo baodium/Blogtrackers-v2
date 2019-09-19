@@ -34,6 +34,7 @@
 <link rel="stylesheet" href="assets/css/style.css" />
 
 
+
 <table id="DataTables_Table_0_wrapper" class="display"
 						style="width: 100%">
 						<thead>
@@ -153,9 +154,10 @@
 
 	 
      $('#DataTables_Table_0_wrapper').DataTable( {
-         "scrollY": 320,
+    	 "scrollY": 370,
          "order": [[ 0, "asc" ]],
          "pagingType": "simple",
+         "ordering": false
         /*   dom: 'Bfrtip',
 
                     "columnDefs": [
