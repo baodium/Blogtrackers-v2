@@ -323,8 +323,8 @@ if(mytrackers.size()>0){
 <div class="trackcreationsection2 hidden">
 <i class="cursor-pointer lnr lnr-cross float-right closedialog" data-toggle="tooltip" data-placement="top" title="" data-original-title="Close Dialog"></i>
 <h1 class="text-primary">Create a Tracker</h1>
-<input type="text" class="form-control trackerinput blogbrowsertrackername" placeholder="Title" />
-<textarea placeholder="Description" class="form-control mt20 trackerdescription blogbrowsertrackerdescription" rows="8">
+<input type="text" id="newtracker_name" class="form-control trackerinput blogbrowsertrackername" placeholder="Title" />
+<textarea placeholder="Description" id="newtracker_description" class="form-control mt20 trackerdescription blogbrowsertrackerdescription" rows="8">
 </textarea>
 <div class="form-group mt20">
 <!-- <input type="text" class="form-control tokenfield-primary" value="Engadget,National Public Radio,Crooks and Liars,Tech Crunch" />-->
