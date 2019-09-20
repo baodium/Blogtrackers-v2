@@ -149,7 +149,6 @@ try{
 	
 	</style>
 	
-
   <link rel="stylesheet" href="assets/css/style.css" />
   <!--end of bootstrap -->
   <script src="assets/js/jquery-3.2.1.slim.min.js"></script>
@@ -388,7 +387,7 @@ try{
 <p class="text-center text-primary textwhy mb10">Actionable Insights</p>
 <p class="text-center text-primary p20 pt0 pb0">Track Blogs at your tips.</p></div>
 
-<div class="col-md-3"><p class="text-center"><i class="navbar-brand text-primary icontrackersize insights pt10"></i></p>
+<div class="col-md-3"><p class="text-center"><i class="navbar-brand text-primary icontrackersize plugin-icon pt10"></i></p>
 <p class="text-center text-primary textwhy mb10">Blogtrackers plugin</p>
 <p class="text-center text-primary p20 pt0 pb0">Sign up to download.</p></div>
 

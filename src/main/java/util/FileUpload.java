@@ -40,7 +40,7 @@ public class FileUpload extends HttpServlet {
 		PrintWriter out = response.getWriter();
 
 		JSONObject json_type = new JSONObject();
-
+System.out.println("seun");
 		JSONObject json = new JSONObject();
 		JSONObject json_exists = new JSONObject();
 		JSONObject json_error = new JSONObject();

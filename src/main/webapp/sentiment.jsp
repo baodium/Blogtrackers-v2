@@ -832,11 +832,13 @@
 		<div class="row m0 mt20 mb50 d-flex align-items-stretch">
 			<div
 				class="col-md-6 mt20 card card-style nobordertopright noborderbottomright">
-				<div class="card-body p0 pt20 pb20" style="min-height: 320px;"
-					id="postConainer">
-					<p>
+				<p style="padding-top:20px;">
 						Blog Posts <b class="text-blue"><%=mostactiveblogger%></b>
 					</p>
+					
+				<div class="card-body p0 pt20 pb20" style="min-height: 320px;"
+					id="postConainer">
+					
 					<!-- <div class="p15 pb5 pt0" role="group">
           Export Options
           </div> -->

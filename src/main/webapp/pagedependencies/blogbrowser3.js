@@ -744,7 +744,7 @@ else
 				blogs:all_blogs,
 			},
 			error: function(response)
-			{						
+			{	toastr.error(response,'Error');		
 				console.log(response);		
 			},
 			success: function(response)
@@ -753,6 +753,8 @@ else
 				// if(response.indexOf("success")>-1){
 				if(response!="error creating tracker" && response!="tracker already exist"){
 					toastr.success('Tracker successfully created and Updated!','Success');
+					$('#newtracker_name').html('');
+					$('#newtracker_description').html('');
 					$('.trackcreationsection2').addClass("hidden");
 					$('.trackcreationsection1').removeClass('hidden');
 					$('.trackinitiated, .modalbackdrop').hide();
