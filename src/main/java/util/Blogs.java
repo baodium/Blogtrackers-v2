@@ -232,7 +232,10 @@ public class Blogs extends DbConnection{
 		JSONObject jsonObj = new JSONObject(que);
 
 		String url = base_url+"_search?size=10000";
-		System.out.print("testque--"+this._getResult(url, jsonObj).size());
+		System.out.println("testque--"+this._getResult(url, jsonObj).size());
+		System.out.println("url--"+url);
+		System.out.println("elasticquery--"+jsonObj);
+//		System.out.println("elasticresult--"+this._getResult(url, jsonObj));
 		return this._getResult(url, jsonObj);
 
 	}

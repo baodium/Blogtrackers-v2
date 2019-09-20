@@ -48,10 +48,10 @@
 			
 			File f = new File(filename);
 			
+			
+			//System.out.println("new_pat--"+path_new);
+			
 			File path_new = new File(application.getRealPath("/").replace('/', '/') + "images/profile_images"); 
-			System.out.println("new_pat--"+path_new);
-			
-			
 			if (f.exists() && !f.isDirectory()) {
 				profileimage = "images/profile_images/" + userinfo.get(2).toString() + ".jpg";
 			}else{
@@ -59,6 +59,7 @@
 				path_new.mkdirs();
 				System.out.println("pathhhhh1--"+path_new);
 			}
+			
 			
 			if (path_new.exists()) {
 				

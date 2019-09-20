@@ -346,6 +346,7 @@ public String _getMostActiveByBlogger(String blogger,String date_start, String d
 	try {
 		//response = db.queryJSON("SELECT * FROM terms WHERE blogpostid IN "+blog_ids+" ");
 		response = db.queryJSON("SELECT (select blogpost_id from blogposts bp where bp.blogpost_id = tm.blogpostid AND bp.blogger='"+blogger+"' ) as blogpostid, tm.blogsiteid as blogsiteid, tm.blogpostid as blogpostid, tm.term as term, tm.frequency as frequency   FROM terms tm ORDER BY tm.frequency DESC LIMIT 1 ");
+		System.out.println(blogger);
 		ArrayList hd = (ArrayList)response.get(0);
 		return hd.get(5).toString();
 	}catch(Exception e){

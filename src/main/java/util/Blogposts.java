@@ -725,7 +725,7 @@ public String _searchRangeMaxByBloggers(String field,String greater, String less
 		}catch(Exception e){
 			return count;
 		}
-				
+		System.out.println("blogger--"+bloggers);		
 		return count;
 		/*
 		
@@ -1699,7 +1699,9 @@ public ArrayList _searchPostTotal(String field, int greater, int less, String bl
 		}catch(Exception e){
 			return count;
 		}
-		
+		System.out.println("id--"+blog_ids);
+		System.out.println("greater--"+greater);
+		System.out.println("less--"+less);
 		return count;
 		
 		
@@ -1789,7 +1791,10 @@ public ArrayList _searchPostTotal(String field, int greater, int less, String bl
 		}catch(Exception e){
 			return count;
 		}
-		
+
+		System.out.println("field--"+field);
+		System.out.println("greater--"+greater);
+		System.out.println("less--"+less);
 		return count;
 		
 		/*

@@ -86,15 +86,27 @@
 					if (userpic.indexOf("http") > -1) {
 						profileimage = userpic;
 					}
-	
+					
 					File f = new File(filename);
+					
+					
+					//System.out.println("new_pat--"+path_new);
+					
+					File path_new = new File(application.getRealPath("/").replace('/', '/') + "images/profile_images"); 
 					if (f.exists() && !f.isDirectory()) {
 						profileimage = "images/profile_images/" + userinfo.get(2).toString() + ".jpg";
+					}else{
+						/* new File("/path/directory").mkdirs(); */
+						path_new.mkdirs();
+						System.out.println("pathhhhh1--"+path_new);
 					}
-					File path_new = new File(application.getRealPath("/").replace('/', '/') + "images/profile_images"); 
+					
+					
 					if (path_new.exists()) {
+						
 						String t = "/images/profile_images";
 						int p=userpic.indexOf(t);
+						System.out.println(p);
 						if (p != -1) {
 							
 							System.out.println("pic path---"+userpic);
@@ -105,10 +117,17 @@
 								/* profileimage=userpic.replace(userpic.substring(0, p), path_new.toString()); */
 								String new_file_path = path_new.toString().replace("\\images\\profile_images", "")+"/"+profileimage;
 								System.out.println("ready to be updated--"+ new_file_path);
-								/* new DbConnection().updateTable("UPDATE usercredentials SET profile_picture  = '" + pass + "' WHERE Email = '" + email + "'"); */
-								
-								
+								/*new DbConnection().updateTable("UPDATE usercredentials SET profile_picture  = '" + pass + "' WHERE Email = '" + email + "'"); */											
 							}
+						}else{
+							path_new.mkdirs();
+							profileimage = "images/profile_images/" + userinfo.get(2).toString() + ".jpg";
+							/* profileimage=userpic.replace(userpic.substring(0, p), path_new.toString()); */
+							String new_file_path = path_new.toString().replace("\\images\\profile_images", "")+"/"+profileimage;
+							System.out.println("ready to be updated--"+ new_file_path);
+							
+							new DbConnection().updateTable("UPDATE usercredentials SET profile_picture  = '" + "images/profile_images/" + userinfo.get(2).toString() + ".jpg" + "' WHERE Email = '" + email + "'");
+							System.out.println("updated");
 						}				
 					}else{
 						System.out.println("path doesnt exist");
