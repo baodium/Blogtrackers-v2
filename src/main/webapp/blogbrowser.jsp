@@ -332,7 +332,7 @@ if(mytrackers.size()>0){
 <b class="selectedtrackercount text-primary">0</b> Tracker(s) selected
 </div>
 <br/><br/>
-<div id="added-info" class="no-display"> <a href="trackerlist.jsp" style="text-decoration:underline">Go to trackerlist page</a>
+<div id="added-info" class="no-display" style="float:right;"> <a class="btn btn-success" href="trackerlist.jsp" style=" background-color: #17394C !important;">Go to trackerlist page</a>
 </div>
 </div>
 

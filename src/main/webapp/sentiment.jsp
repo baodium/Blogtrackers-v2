@@ -1881,7 +1881,6 @@ $(function () {
                                      .on("click",function(d){
                                     	 //seun
                                     	// console.log("The clicked date is "+d.date);
-                                    	alert('thi ');
                                     	 loadPost(d.date);
                                      }); 
                                                         svg.call(tip)
