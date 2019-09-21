@@ -147,6 +147,10 @@ String total = NumberFormat.getNumberInstance(Locale.US).format(Integer.parseInt
   <link rel="stylesheet" href="assets/fonts/iconic/css/open-iconic.css" />
  <link rel="stylesheet" href="assets/vendors/bootstrap-daterangepicker/daterangepicker.css" />
  <link rel="stylesheet" href="assets/css/table.css" />
+ 
+ 
+  <link rel="stylesheet" href="assets/css/custom.css" />
+  
  <link rel="stylesheet" href="assets/vendors/DataTables/dataTables.bootstrap4.min.css" />
 <link rel="stylesheet" href="assets/vendors/DataTables/Buttons-1.5.1/css/buttons.dataTables.min.css" />
 <link rel="stylesheet" href="assets/css/daterangepicker.css" />
@@ -155,6 +159,10 @@ String total = NumberFormat.getNumberInstance(Locale.US).format(Integer.parseInt
 		display:none;
 		padding:10px;
 	}
+	
+	.toaster1{
+	opacity: 1.0;
+}
 </style>
 <!-- bootstrap  -->
   <link rel="stylesheet" href="assets/css/style.css" />

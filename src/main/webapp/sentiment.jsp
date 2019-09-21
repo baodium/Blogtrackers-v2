@@ -1091,6 +1091,8 @@
 	<script>
  $(document).ready(function() {
 	 
+	 
+	 
 	/*  function PrintElem(elem)
 	 {
 	     var mywindow = window.open('', 'PRINT', 'height=400,width=600');

@@ -141,13 +141,40 @@ $('.trackerindividual').on("click",function(e){
     $(this).find(".checktracker").addClass("hidden");
     $(this).removeClass("trackerindividualactive").addClass("bold-text");
     
- 
-    // remember to pass session id of blog
-    removeTracker(this,"removeblogset");
-    trackerselectedcount--;
-    console.log("not"+trackerselectedcount);
-    // increase count of selected tracker
-    $('.selectedtrackercount').html(trackerselectedcount);
+    info = $(this);
+    
+    toastr.warning("<br /><button style='float:left;' class='btn btn-xs' type='button' value='yes'>Yes</button><button style='float:right;' type='button' class='btn btn-xs'  value='no' >No</button>",'Are you sure you want to delete this blog from this tracker?',
+	{
+	    allowHtml: true,
+	    closeButton: true,
+	    showMethod: 'show',
+	    positionClass: 'toast-page-center toaster1',
+	    closeHtml: '<button type="button">&times;</button>',
+	    showDuration: 0,
+	    tapToDismiss: false,
+	    closeOnHover: false,
+	    timeOut: 0,
+	    onclick: function (toast) {
+	      value = toast.target.value
+	      if (value == 'yes') {
+	    	  
+	    	  toastr.remove();
+
+    	    removeTracker(info,"removeblogset");
+    	    trackerselectedcount--;
+    	    console.log("not"+trackerselectedcount);
+    	    // increase count of selected tracker
+    	    $('.selectedtrackercount').html(trackerselectedcount);
+	     
+	      }else{
+	    	  toastr.remove();
+	      }
+	    }
+
+	})
+    
+
+   
   }
 
 });
@@ -664,6 +691,9 @@ $('.trackcreationsection1').removeClass('hidden');
 
 // show the create tracker from dialog handler
 $('.createtrackerbtn').on("click", function(){
+	
+	
+			
 	// console.log(typeof loggedinstatus)
 	if(loggedinstatus === "true")
 	{
