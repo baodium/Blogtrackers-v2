@@ -143,7 +143,7 @@ $('.trackerindividual').on("click",function(e){
     
  
     // remember to pass session id of blog
-    removeTracker(this,"removeblog");
+    removeTracker(this,"removeblogset");
     trackerselectedcount--;
     console.log("not"+trackerselectedcount);
     // increase count of selected tracker
