@@ -24,11 +24,11 @@
 	String attachedblogger =  (null == request.getParameter("blogger")) ? "" : request.getParameter("blogger");
 
 	
-	//System.out.println(date_start);
+	System.out.println("date---"+date_start);
 	if (user == null || user == "") {
 		response.sendRedirect("index.jsp");
 	} else {
-
+		
 		ArrayList<?> userinfo = null;
 		String profileimage = "";
 		String username = "";
@@ -68,11 +68,12 @@
 				ids = query;
 			}
 		}
-		
+		System.out.println("id---"+ids);
 		userinfo = new DbConnection().query("SELECT * FROM usercredentials where Email = '" + email + "'");
 		if (userinfo.size() < 1 || !isowner) {
 			response.sendRedirect("index.jsp");
 		} else {
+			
 			userinfo = (ArrayList<?>) userinfo.get(0);
 			try {
 					username = (null == userinfo.get(0)) ? "" : userinfo.get(0).toString();
@@ -88,15 +89,27 @@
 					if (userpic.indexOf("http") > -1) {
 						profileimage = userpic;
 					}
-	
+					
 					File f = new File(filename);
+					
+					
+					//System.out.println("new_pat--"+path_new);
+					
+					File path_new = new File(application.getRealPath("/").replace('/', '/') + "images/profile_images"); 
 					if (f.exists() && !f.isDirectory()) {
 						profileimage = "images/profile_images/" + userinfo.get(2).toString() + ".jpg";
+					}else{
+						/* new File("/path/directory").mkdirs(); */
+						path_new.mkdirs();
+						System.out.println("pathhhhh1--"+path_new);
 					}
-					File path_new = new File(application.getRealPath("/").replace('/', '/') + "images/profile_images"); 
+					
+					
 					if (path_new.exists()) {
+						
 						String t = "/images/profile_images";
 						int p=userpic.indexOf(t);
+						System.out.println(p);
 						if (p != -1) {
 							
 							System.out.println("pic path---"+userpic);
@@ -107,10 +120,17 @@
 								/* profileimage=userpic.replace(userpic.substring(0, p), path_new.toString()); */
 								String new_file_path = path_new.toString().replace("\\images\\profile_images", "")+"/"+profileimage;
 								System.out.println("ready to be updated--"+ new_file_path);
-								/* new DbConnection().updateTable("UPDATE usercredentials SET profile_picture  = '" + pass + "' WHERE Email = '" + email + "'"); */
-								
-								
+								/*new DbConnection().updateTable("UPDATE usercredentials SET profile_picture  = '" + pass + "' WHERE Email = '" + email + "'"); */											
 							}
+						}else{
+							path_new.mkdirs();
+							profileimage = "images/profile_images/" + userinfo.get(2).toString() + ".jpg";
+							/* profileimage=userpic.replace(userpic.substring(0, p), path_new.toString()); */
+							String new_file_path = path_new.toString().replace("\\images\\profile_images", "")+"/"+profileimage;
+							System.out.println("ready to be updated--"+ new_file_path);
+							
+							new DbConnection().updateTable("UPDATE usercredentials SET profile_picture  = '" + "images/profile_images/" + userinfo.get(2).toString() + ".jpg" + "' WHERE Email = '" + email + "'");
+							System.out.println("updated");
 						}				
 					}else{
 						System.out.println("path doesnt exist");
@@ -172,7 +192,7 @@
 			String test = post._searchRangeTotal("date", "2013-04-01", "2018-04-01", "1");
 			
 			System.out.println(test);  */
-		
+			System.out.println("test here2");
 			
 			String totalpost = "0";
 			
@@ -269,10 +289,12 @@
 			
 			ArrayList activeblogposts = post._getBloggerByBlogId("date", dt, dte, selectedblogid, "influence_score", "DESC");
 			String mostactiveterm = "";
+			
 			ArrayList bloggerPostFrequency = bloggerss._getBloggerPostFrequency(ids);
 			//System.out.println("Terms here:"+termss);
 			
 			ArrayList blogs = blog._fetch(ids);
+			
 			int totalblog = blogs.size();
 			
 			JSONObject graphyears = new JSONObject();
@@ -381,6 +403,7 @@
 				//ystint=0;
 				//yendint = diff;
 			}
+			
 			int b=0;
 			int jan=0;
 			int feb=0;
@@ -399,14 +422,14 @@
 					   String dtu = y + "-01-01";
 
 					   String dtue = y + "-12-31";
-					   
+					   System.out.println("test here2_1");
 					   if(b==0){
 							dtu = dt;
 						}else if(b==yendint){
 							dtue = dte;
 						}
 					   
-					   
+					   System.out.println("test here2");
 					   String totu = post._searchRangeTotal("date",dtu, dtue,selectedblogid);
 					    
 					   jan += Integer.parseInt(post._searchRangeTotalByBlogger("date",y + "-01-01", y + "-01-31",mostactiveblogger));
@@ -425,9 +448,10 @@
 					   graphyears.put(y+"",totu);
 			    	   yearsarray.put(b,y);	
 			    	   b++;
+			    	   System.out.println("test here2_2");
 			}
 			
-
+			
 			
 			possentiment=new Liwc()._searchRangeAggregate("date", yst[0]+"-01-01", yend[0]+"-12-31", sentimentpost,"posemo");
 			negsentiment=new Liwc()._searchRangeAggregate("date", yst[0]+"-01-01", yend[0]+"-12-31", sentimentpost,"negemo");
@@ -435,9 +459,9 @@
 			JSONArray sortedyearsarray = yearsarray;//post._sortJson(yearsarray);
 			int highestfrequency = 0;
 			 String blogids = "";
-
+			 
 outlinks = outl._searchByRange("date", dt, dte, selectedblogid);
-
+System.out.println("test here");
 JSONObject outerlinks = new JSONObject();
 ArrayList outlinklooper = new ArrayList();
 if (outlinks.size() > 0) {
@@ -460,7 +484,7 @@ if (outlinks.size() > 0) {
 				maindomain = domain;
 			}
 		} catch (Exception ex) {}
-
+		
 		
 		if (outerlinks.has(maindomain)) {
 			content = new JSONObject(outerlinks.get(maindomain).toString());
@@ -485,20 +509,23 @@ if (outlinks.size() > 0) {
 	}
 }
 
-
-mostactiveterm = term._getMostActiveByBlogger(dt, dte, mostactiveblogger);;
+System.out.println("test here4");
+/* mostactiveterm = term._getMostActiveByBlogger(dt, dte, mostactiveblogger); */
+System.out.println("test here5");
 String totalinfluence ="";
 
 try{			
 	totalpost = post._searchRangeTotalByBlogger("date", dt, dte, mostactiveblogger);
+	System.out.println("test here5_1");
 	Double influence =  Double.parseDouble(post._searchRangeMaxByBloggers("date",dt, dte,mostactiveblogger));
+	System.out.println("test here5_2");
 	totalinfluence = influence+"";
 }
 catch(Exception e){
 	totalinfluence = "0";
 	totalpost = "0";
 }
-
+System.out.println("test here3");
 %>
 <!DOCTYPE html>
 <html>

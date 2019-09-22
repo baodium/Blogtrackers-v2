@@ -263,7 +263,9 @@ public class Tracker extends HttpServlet {
 				}			
 				
 		}else if(action.equals("removeblog")) {
-			String ids= request.getParameter("blog_ids").replaceAll("\\<.*?\\>", "");
+//			String ids= request.getParameter("blog_ids").replaceAll("\\<.*?\\>", "");
+			
+			String[] bloggs = blogs.replaceAll(", $", "").split(",");
 			//System.out.println(ids);
 			/*
 			try {
@@ -276,9 +278,9 @@ public class Tracker extends HttpServlet {
 			try {
 			DbConnection db = new DbConnection();
 //			String[] bloggs = ids.split(",");
-			String[] bloggs = new String[1];
-			bloggs[0] = ids;
-			//System.out.println(bloggs[0].toString());
+//			String[] bloggs = new String[1];
+//			bloggs[0] = ids;
+//			System.out.println(bloggs[0].toString());
 			JSONObject jblog = new JSONObject();
 			String output = "false";
 			
@@ -286,7 +288,7 @@ public class Tracker extends HttpServlet {
 				jblog.put(bloggs[k], bloggs[k]);
 			}
 			
-//			System.out.println();
+
 			ArrayList detail = new DbConnection().query("SELECT * FROM trackers WHERE tid='"+tracker_id+"' AND userid='"+userid+"'");
         	
 			 if(detail.size()>0){
@@ -297,42 +299,69 @@ public class Tracker extends HttpServlet {
 					 que = que.replaceAll("\\(", "");			 
 					 que = que.replaceAll("\\)", "");
 					 String[] blogs2 = que.split(",");
-					 String idToCheck = ids.toString();
+					 String idToCheck = bloggs.toString();
 					
 					 
-					 String mergedblogs = "";	
+					 String mergedblogs = "";
+					 String mergers = "";
 					 int blogcounter=0;
+					 int k=1;
+					 int z= bloggs.length;
+	
 					 for(int j=0; j<blogs2.length; j++) {
-						 //System.out.println(ids);
-						 //if(!jblog.has(blogs2[j].toString())) {
-						 if(blogs2[j].equalsIgnoreCase(idToCheck)) {
-							 //System.out.println(idToCheck);
-							 //System.out.println(blogs2[j].equalsIgnoreCase(idToCheck)+"equals");
-							 //blogcounter++;
-							 //continue;
-							
-						 }
-						 else if(!blogs2[j].equalsIgnoreCase(idToCheck)) {
-//							 System.out.println(idToCheck);
-//							 System.out.println(!blogs2[j].equalsIgnoreCase(idToCheck)+"not equals");
-							 if(j<(blogs2.length-1))
-								 mergedblogs+=blogs2[j]+",";
-							 else
-								 mergedblogs+=blogs2[j];
+						 
+						 if(k > z) {
+							 
+							 mergers += ""+blogs2[j]+",";
 							 blogcounter++;
+							
+						 }else {
+							 
+							 
+							 String temp =  bloggs[j];
+
+							 String val =  blogs2[j];
+							 
+							 if(val.equalsIgnoreCase(temp)){
+								
+//								 blogs2[j] = null;
+								 mergers += "";
+								
+							
+							 }else {
+								 
+								blogcounter++;
+								mergers += ""+blogs2[j]+",";
+							 } 
+							 
+					
 						 }
+						 k++;
+						
+						
 					 }
-					 	//System.out.println(mergedblogs);		
-					que =  "blogsite_id in ("+mergedblogs+")";	
+					 
+//					 
+//					 String file = Arrays.toString(blogs2);
+//					 
+//					 file = file.replaceAll("\\[", "");			 
+//					 file = file.replaceAll("\\]", "");
+//					 
+//					 pww.write(file); 
+//					 mergedblogs += file;
+	
+					 que =  "blogsite_id in ("+mergers+")";	
+
 					String modifiedDate= getDateTime();
 					
 					db.updateTable("UPDATE trackers SET query='"+que+"', blogsites_num = '"+blogcounter+"', date_modified='"+modifiedDate+"' WHERE  tid='"+tracker_id+"'");	
 					pww.write("success");
 			 }else {
-				 pww.write("false");
+				 pww.write("falseqq");
 			 }
 			}catch(Exception e) {
-				 pww.write("false"); 
+//				pww.write(e);
+				 pww.write("false19"); 
 			}	
 			 
 			 			

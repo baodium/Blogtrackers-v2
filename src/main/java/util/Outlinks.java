@@ -142,6 +142,8 @@ public ArrayList _searchByRange(String field,String greater, String less, String
 	JSONObject jsonObj = new JSONObject(que);
 	 
     String url = base_url+"_search";
+    System.out.println("url_out--"+url);
+	System.out.println("elasticquery_out--"+jsonObj);
     return this._getResult(url,jsonObj);
 }
 

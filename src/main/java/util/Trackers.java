@@ -71,7 +71,7 @@ public ArrayList _list(String order, String from, String userid, String size) th
 		//System.out.println("userid:"+userid);
 		trackerlist = DbConnection.query("select * from trackers where userid = '"+userid+"' ORDER BY tid DESC ");				
 	} catch (Exception ex) {}
-	
+	System.out.println("userid----"+userid);
 	return trackerlist;
 	
    }
