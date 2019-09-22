@@ -1091,6 +1091,8 @@
 	<script>
  $(document).ready(function() {
 	 
+	 
+	 
 	/*  function PrintElem(elem)
 	 {
 	     var mywindow = window.open('', 'PRINT', 'height=400,width=600');
@@ -1881,7 +1883,6 @@ $(function () {
                                      .on("click",function(d){
                                     	 //seun
                                     	// console.log("The clicked date is "+d.date);
-                                    	alert('thi ');
                                     	 loadPost(d.date);
                                      }); 
                                                         svg.call(tip)

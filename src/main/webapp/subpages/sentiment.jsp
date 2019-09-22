@@ -125,6 +125,18 @@
 	 }	
 
 %>
+<link rel="stylesheet" href="assets/bootstrap/css/bootstrap.css" />
+<link rel="stylesheet"
+	href="assets/fonts/fontawesome/css/fontawesome-all.css" />
+<link rel="stylesheet" href="assets/fonts/iconic/css/open-iconic.css" />
+<link rel="stylesheet"
+	href="assets/vendors/bootstrap-daterangepicker/daterangepicker.css" />
+<link rel="stylesheet" href="assets/css/table.css" />
+<link rel="stylesheet"
+	href="assets/vendors/DataTables/dataTables.bootstrap4.min.css" />
+
+<link rel="stylesheet" href="assets/css/daterangepicker.css" />
+<link rel="stylesheet" href="assets/css/style.css" />
 
 					<!-- <div class="p20 pt0 pb20 text-blog-content text-primary" style="height:586px;">
           <h5 class="text-primary p20 pt0 pb0 text-center">Personal Content</h5>
@@ -217,6 +229,11 @@
 
 	<script>
 $(function () {
+	//Adds The FA Icons on change of page
+	$(".carousel-control-prev-icon").addClass('fa');
+	$(".carousel-control-next-icon").addClass('fa');
+	
+	
     /* Radar chart design created by Nadieh Bremer - VisualCinnamon.com */
 
     //////////////////////////////////////////////////////////////
