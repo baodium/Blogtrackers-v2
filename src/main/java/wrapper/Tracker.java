@@ -149,72 +149,7 @@ public class Tracker extends HttpServlet {
 				pww.write("Trackername cannot be empty");
 			}
 		}else if(action.equals("update")) {
-			String[] bloggs = blogs.replaceAll(", $", "").split(",");
-			
-			try {
-				ArrayList tracker =null;
-				
-				DbConnection db = new DbConnection();
-				String addendum="";
-					 tracker = db.query("SELECT * FROM trackers WHERE tid='"+tracker_id+"' AND userid='"+userid+"'");
-					 
-					 if(tracker.size()>0){
-						 	ArrayList hd = (ArrayList)tracker.get(0);
-							String que = hd.get(5).toString();
-							
-							 que = que.replaceAll("blogsite_id in ", "");
-							 que = que.replaceAll("\\(", "");			 
-							 que = que.replaceAll("\\)", "");
-							 String[] blogs2 = que.replaceAll(", $", "").split(",");
-							 
-							 JSONObject jblog = new JSONObject();
-								
-							
-							 if(tracker_name.equals("")) {
-								 tracker_name = hd.get(2).toString();
-							 }
-							
-							 if(description.equals("")) {
-								 description = hd.get(6).toString();
-							 }
-							
-							 
-							 String mergedblogs = "";//this.mergeArrays(bloggs, blogs2);
-							 
-							 for(int k=0; k<bloggs.length; k++) {
-								 jblog.put(bloggs[k], bloggs[k]);
-									mergedblogs+=bloggs[k]+",";								
-							 }
-					 
-							 for(int j=0; j<blogs2.length; j++) {
-								 if(!jblog.has(blogs2[j])) {
-									 if(j != blogs2.length - 1) {
-										 mergedblogs+=blogs2[j]+","; 
-									 }
-									 else if(j == blogs2.length - 1)
-									 {
-										 mergedblogs+=blogs2[j]; 
-									 }
-									
-									
-								 }
-							 }
-							 
-							 String[] allblogs = mergedblogs.replaceAll(",$", "").split(",");
-							 int blognum = allblogs.length;
-							// System.out.println("Blog during update ajax request "+  mergedblogs);
-							 addendum = "blogsite_id in ("+mergedblogs+")";//"blogsite_id in ("+addendum+blog_id+")";
-							 
-							 String modifiedDate= getDateTime();
-							db.updateTable("UPDATE trackers SET query='"+addendum+"', tracker_name='"+tracker_name+"', description='"+description+"', date_modified='"+modifiedDate+"', blogsites_num = '"+blognum+"' WHERE  tid='"+tracker_id+"'");	
-							pww.write("success");
-					 }else {
-						 	pww.write("invalid tracker");
-					 }
-
-			}catch(Exception ex) {
-				pww.write("false"); 
-			}
+			pww.write("seun");
 		}else if(action.equals("updatedetail")) {
 			
 			try {
@@ -225,7 +160,7 @@ public class Tracker extends HttpServlet {
 					
 					 if(tracker.size()>0){
 						 String modifiedDate= getDateTime();
-							
+							//seun 
 						 db.updateTable("UPDATE trackers SET tracker_name='"+tracker_name+"', description='"+description+"', date_modified='"+modifiedDate+"' WHERE  tid='"+tracker_id+"'");	
 						 //tracker = db.query("SELECT * FROM trackers WHERE tid='"+tracker_id+"' AND userid='"+userid+"'");
 						 //System.out.println("tracker here :"+tracker_name+"-"+tracker);

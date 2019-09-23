@@ -126,7 +126,7 @@ $('.trackerindividual').on("click",function(e){
     $(this).addClass("trackerindividualactive").removeClass("bold-text");
     $(this).addClass("trackerindividualactive");
     console.log("here");
-    
+    alert('john');
     updateTracker(this,"update");
     // remember to pass session id of blog
     trackerselectedcount++;
@@ -827,7 +827,10 @@ function updateTracker(element,type){
 	     });
 	   	 
 	  
-	   		id = $(element).attr('id');	   		 
+	   		id = $(element).attr('id');	  
+	   		
+	   	 alert('john is here');
+	   	alert('john is here again');
 		    $.ajax({
 				url: app_url+'tracker',
 				method: 'POST',

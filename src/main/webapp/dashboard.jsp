@@ -18,8 +18,6 @@
 <%@page import="java.time.LocalDateTime"%>
 
 <%
-	
-
 	Object email = (null == session.getAttribute("email")) ? "" : session.getAttribute("email");
 	Object tid = (null == request.getParameter("tid")) ? "" : request.getParameter("tid");
 	Object user = (null == session.getAttribute("username")) ? "" : session.getAttribute("username");
@@ -29,8 +27,8 @@
 	String sort = (null == request.getParameter("sortby"))
 			? "blog"
 			: request.getParameter("sortby").toString().replaceAll("[^a-zA-Z]", " ");
-	System.out.println("email--"+email);
-	if (user == null || user == "" ) {
+	System.out.println("email--" + email);
+	if (user == null || user == "") {
 		response.sendRedirect("index.jsp");
 	} else {
 
@@ -50,21 +48,21 @@
 		Outlinks outl = new Outlinks();
 		Comment comment = new Comment();
 		if (tid != "") {
-		// fast query	
+			// fast query	
 			detail = tracker._fetch(tid.toString());
-			
+
 		} else {
 			detail = tracker._list("DESC", "", user.toString(), "1");
-			
+
 		}
-		
+
 		// fast query
 		boolean isowner = false;
 		JSONObject obj = null;
 		String ids = "";
 		String trackername = "";
 		if (detail.size() > 0) {
-			
+
 			//String res = detail.get(0).toString();
 			ArrayList resp = (ArrayList<?>) detail.get(0);
 			String tracker_userid = resp.get(1).toString();
@@ -78,13 +76,9 @@
 				ids = query;
 			}
 		}
-		
-		
-		
 
 		userinfo = DbConnection.query("SELECT * FROM usercredentials where Email = '" + email + "'");
-		
-		
+
 		if (userinfo.size() < 1 || !isowner) {
 			response.sendRedirect("index.jsp");
 		} else {
@@ -103,56 +97,59 @@
 				if (userpic.indexOf("http") > -1) {
 					profileimage = userpic;
 				}
-				
+
 				File f = new File(filename);
-				
-				
+
 				//System.out.println("new_pat--"+path_new);
-				
-				File path_new = new File(application.getRealPath("/").replace('/', '/') + "images/profile_images"); 
+
+				File path_new = new File(
+						application.getRealPath("/").replace('/', '/') + "images/profile_images");
 				if (f.exists() && !f.isDirectory()) {
 					profileimage = "images/profile_images/" + userinfo.get(2).toString() + ".jpg";
-				}else{
+				} else {
 					/* new File("/path/directory").mkdirs(); */
 					path_new.mkdirs();
-					System.out.println("pathhhhh1--"+path_new);
+					System.out.println("pathhhhh1--" + path_new);
 				}
-				
-				
+
 				if (path_new.exists()) {
-					
+
 					String t = "/images/profile_images";
-					int p=userpic.indexOf(t);
+					int p = userpic.indexOf(t);
 					System.out.println(p);
 					if (p != -1) {
-						
-						System.out.println("pic path---"+userpic);
-						System.out.println("path exists---"+userpic.substring(0, p));
-						String path_update=userpic.substring(0, p);
+
+						System.out.println("pic path---" + userpic);
+						System.out.println("path exists---" + userpic.substring(0, p));
+						String path_update = userpic.substring(0, p);
 						if (!path_update.equals(path_new.toString())) {
 							profileimage = "images/profile_images/" + userinfo.get(2).toString() + ".jpg";
 							/* profileimage=userpic.replace(userpic.substring(0, p), path_new.toString()); */
-							String new_file_path = path_new.toString().replace("\\images\\profile_images", "")+"/"+profileimage;
-							System.out.println("ready to be updated--"+ new_file_path);
-							/*new DbConnection().updateTable("UPDATE usercredentials SET profile_picture  = '" + pass + "' WHERE Email = '" + email + "'"); */											
+							String new_file_path = path_new.toString().replace("\\images\\profile_images", "")
+									+ "/" + profileimage;
+							System.out.println("ready to be updated--" + new_file_path);
+							/*new DbConnection().updateTable("UPDATE usercredentials SET profile_picture  = '" + pass + "' WHERE Email = '" + email + "'"); */
 						}
-					}else{
+					} else {
 						path_new.mkdirs();
 						profileimage = "images/profile_images/" + userinfo.get(2).toString() + ".jpg";
 						/* profileimage=userpic.replace(userpic.substring(0, p), path_new.toString()); */
-						String new_file_path = path_new.toString().replace("\\images\\profile_images", "")+"/"+profileimage;
-						System.out.println("ready to be updated--"+ new_file_path);
-						
-						new DbConnection().updateTable("UPDATE usercredentials SET profile_picture  = '" + "images/profile_images/" + userinfo.get(2).toString() + ".jpg" + "' WHERE Email = '" + email + "'");
+						String new_file_path = path_new.toString().replace("\\images\\profile_images", "") + "/"
+								+ profileimage;
+						System.out.println("ready to be updated--" + new_file_path);
+
+						new DbConnection().updateTable("UPDATE usercredentials SET profile_picture  = '"
+								+ "images/profile_images/" + userinfo.get(2).toString() + ".jpg"
+								+ "' WHERE Email = '" + email + "'");
 						System.out.println("updated");
-					}				
-				}else{
+					}
+				} else {
 					System.out.println("path doesnt exist");
 				}
 			} catch (Exception e) {
 
 			}
-			
+
 			String[] user_name = name.split(" ");
 			Blogposts post = new Blogposts();
 			Blogs blog = new Blogs();
@@ -171,8 +168,7 @@
 			Date dstart = new Date();
 			Date today = new Date();
 			Date nnow = new Date();
-			
-			
+
 			//System.out.println("start:"+stdate+", End:"+endate);
 
 			try {
@@ -198,10 +194,9 @@
 
 			String historyfrom = DATE_FORMAT.format(dstart);
 			String historyto = DATE_FORMAT.format(today);
-			
+
 			String dst = DATE_FORMAT2.format(dstart);
 			String dend = DATE_FORMAT2.format(today);
-			
 
 			String totalpost = "";
 			ArrayList allauthors = new ArrayList();
@@ -226,10 +221,9 @@
 					ddey = "30";
 				}
 			}
-			
-			
+
 			if (!date_start.equals("") && !date_end.equals("")) {
-				
+
 				Date start = new SimpleDateFormat("yyyy-MM-dd").parse(date_start.toString());
 				Date end = new SimpleDateFormat("yyyy-MM-dd").parse(date_end.toString());
 
@@ -253,15 +247,14 @@
 			} else if (single.equals("year")) {
 				dt = year + "-01-01";
 				dte = year + "-12-" + ddey;
-			} 
-			
+			}
+
 			// fast till here
-			
+
 			//Our New Code
 			Liwc liwc = new Liwc();
-			System.out.println("COMI----"+request.getHeader("referer"));
+			System.out.println("COMI----" + request.getHeader("referer"));
 			String totalbloggers = bloggerss._getBloggerById(ids);
-			
 
 			ArrayList locations = blog._getLocation(ids);
 			//System.out.println("all blog location");
@@ -276,7 +269,7 @@
 			//System.out.println("all blog influencial");
 			ArrayList influenceBlogger = blog._getInfluencialBlogger(ids);
 			//System.out.println("all bloggger influencial");
-			
+
 			// needs reindexing for large data set
 			ArrayList getPositiveEmotion = liwc._getPosEmotion(ids);
 			// slow
@@ -285,16 +278,16 @@
 			// slow
 			//System.out.println("all negative emotion");
 			Map<Integer, Integer> postingTrend = new TreeMap<Integer, Integer>();
-			
+
 			session.setAttribute("influentialbloggers", influenceBlogger);
-			
+
 			String[] yst = dt.split("-");
 			String[] yend = dte.split("-");
 			year_start = yst[0];
 			year_end = yend[0];
 			int ystint = new Double(year_start).intValue();
 			int yendint = new Double(year_end).intValue();
-			
+
 			if (yendint > Integer.parseInt(YEAR_ONLY.format(new Date()))) {
 				dte = DATE_FORMAT2.format(new Date()).toString();
 				yendint = Integer.parseInt(YEAR_ONLY.format(new Date()));
@@ -305,13 +298,13 @@
 				ystint = 2000;
 				dt = "2000-01-01";
 			}
-                
+
 			dispfrom = DATE_FORMAT.format(new SimpleDateFormat("yyyy-MM-dd").parse(dt));
 			dispto = DATE_FORMAT.format(new SimpleDateFormat("yyyy-MM-dd").parse(dte));
 			//totalpost = post._searchRangeTotal("date", dt, dte, ids);
-			
+
 			totalpost = post._getBlogPostById(ids);
-			
+
 			if (totalpost.equals("")) {
 				totalpost = post._searchRangeTotal("date", dt, dte, ids); // To be modified later
 			}
@@ -324,7 +317,7 @@
 
 			String totalcomment = comment._getCommentById(ids);
 			//System.out.println("totalcomment end");
-			
+
 			//System.out.println("blogfetch start");
 			ArrayList blogs = blog._fetch(ids); //To be removed
 			//System.out.println("blogfetch end");
@@ -338,81 +331,81 @@
 			//System.out.println("year start"+ystint +":"+yendint);
 			ArrayList postingTotal = post._searchPostTotal("date", ystint, yendint, ids);
 
-			for(int i = ystint; i <= yendint; i++){
+			for (int i = ystint; i <= yendint; i++) {
 				postingTrend.put(i, 0);
 			}
 			if (postingTotal.size() > 0) {
-				
-				for (int m = 0; m < postingTotal.size(); m++) {
-				ArrayList<?> postCount = (ArrayList<?>) postingTotal.get(m);
-				String postyear = postCount.get(0).toString();
-				String yearcount = postCount.get(1).toString();
-				//System.out.println(postyear+":"+yearcount);
-				if(postingTrend.containsKey(Integer.parseInt(postyear))){
-					postingTrend.put(Integer.parseInt(postyear), Integer.parseInt(yearcount));
-				}
-				}
-				}
-		
-	/* 		
-			for (int y = ystint; y <= yendint; y++) {
-				
-				String dtu = y + "-01-01";
-				String dtue = y + "-12-31";
 
-				if (b == 0) {
-					dtu = dt;
-				} else if (b == yendint) {
-					dtue = dte;
+				for (int m = 0; m < postingTotal.size(); m++) {
+					ArrayList<?> postCount = (ArrayList<?>) postingTotal.get(m);
+					String postyear = postCount.get(0).toString();
+					String yearcount = postCount.get(1).toString();
+					//System.out.println(postyear+":"+yearcount);
+					if (postingTrend.containsKey(Integer.parseInt(postyear))) {
+						postingTrend.put(Integer.parseInt(postyear), Integer.parseInt(yearcount));
+					}
 				}
-				System.out.println("search range start");
-				String totu = post._searchRangeTotal("date", dtu, dtue, ids);
-				
-				System.out.println("search range end");	
-				graphyears.put(y + "", totu);
-				yearsarray.put(b, y);
-				b++;
 			}
-			System.out.println("year end");
-			 */
-			 JSONArray unsortedterms = new JSONArray();
-			 JSONObject termstore = new JSONObject();
+
+			/* 		
+					for (int y = ystint; y <= yendint; y++) {
+						
+						String dtu = y + "-01-01";
+						String dtue = y + "-12-31";
 			
+						if (b == 0) {
+							dtu = dt;
+						} else if (b == yendint) {
+							dtue = dte;
+						}
+						System.out.println("search range start");
+						String totu = post._searchRangeTotal("date", dtu, dtue, ids);
+						
+						System.out.println("search range end");	
+						graphyears.put(y + "", totu);
+						yearsarray.put(b, y);
+						b++;
+					}
+					System.out.println("year end");
+					 */
+			JSONArray unsortedterms = new JSONArray();
+			JSONObject termstore = new JSONObject();
+
 			JSONArray sortedyearsarray = yearsarray;//post._sortJson(yearsarray);
 			JSONObject keys = new JSONObject();
 			JSONObject positions = new JSONObject();
-			
+
 			Map<String, Integer> top_terms = new HashMap<String, Integer>();
-	
-	try{
-			if (termss.size() > 0) {
-				for (int p = 0; p < termss.size(); p++) {
-					String bstr = termss.get(p).toString();
-					JSONObject bj = new JSONObject(bstr);
-					bstr = bj.get("_source").toString();
-					bj = new JSONObject(bstr);
-					String tm = bj.get("term").toString();
-					String frequency = bj.get("frequency").toString();
-					String id = bj.get("id").toString();
-					
-					int frequency2 = Integer.parseInt(frequency);
-					if (top_terms.containsKey(tm)) {
-						top_terms.put(tm, top_terms.get(tm) + frequency2);
-						frequency2 = top_terms.get(tm) + frequency2;
-					} else {
-						top_terms.put(tm, frequency2);
+
+			try {
+				if (termss.size() > 0) {
+					for (int p = 0; p < termss.size(); p++) {
+						String bstr = termss.get(p).toString();
+						JSONObject bj = new JSONObject(bstr);
+						bstr = bj.get("_source").toString();
+						bj = new JSONObject(bstr);
+						String tm = bj.get("term").toString();
+						String frequency = bj.get("frequency").toString();
+						String id = bj.get("id").toString();
+
+						int frequency2 = Integer.parseInt(frequency);
+						if (top_terms.containsKey(tm)) {
+							top_terms.put(tm, top_terms.get(tm) + frequency2);
+							frequency2 = top_terms.get(tm) + frequency2;
+						} else {
+							top_terms.put(tm, frequency2);
+						}
+
+						unsortedterms.put(frequency2 + "___" + tm + "___" + id);
+
 					}
-					
-					unsortedterms.put(frequency2+"___"+tm+"___"+id);
-					
+
+					session.setAttribute("top_term", top_terms);
 				}
-				
-				session.setAttribute("top_term", top_terms);
+			} catch (Exception e) {
+				System.err.println(e);
 			}
-	}catch(Exception e){
-		System.err.println(e);
-	}
-			
+
 			JSONObject outerlinks = new JSONObject();
 			ArrayList outlinklooper = new ArrayList();
 			if (outlinks.size() > 0) {
@@ -457,7 +450,6 @@
 
 				}
 			}
-						
 %>
 <!DOCTYPE html>
 <html>
@@ -694,7 +686,7 @@
 						<h5 class="text-primary mb0">
 							<i class="fas fa-user icondash"></i>Bloggers
 						</h5>
-						<h3 class="text-blue mb0 countdash dash-label blogger-count"><%try{NumberFormat.getNumberInstance(Locale.US).format(new Double(totalbloggers).intValue());}catch(Exception e){}%></h3>
+						<h3 class="text-blue mb0 countdash dash-label blogger-count"><%=NumberFormat.getNumberInstance(Locale.US).format(new Double(totalbloggers).intValue())%></h3>
 					</div>
 				</div>
 			</div>
@@ -823,22 +815,26 @@
 										</thead>
 										<tbody>
 
-											<%if (languages.size() > 0) {
-																for (int y = 0; y < languages.size(); y++) {
-																	ArrayList<?> langu = (ArrayList<?>) languages.get(y);
-																	String languag = langu.get(0).toString();
-																	
-																	String languag_freq = NumberFormat.getNumberInstance(Locale.US).format(new Double(langu.get(1).toString()).intValue()) ;
-																	
-																	if (y<10){
-																	%>
+											<%
+												if (languages.size() > 0) {
+															for (int y = 0; y < languages.size(); y++) {
+																ArrayList<?> langu = (ArrayList<?>) languages.get(y);
+																String languag = langu.get(0).toString();
+
+																String languag_freq = NumberFormat.getNumberInstance(Locale.US)
+																		.format(new Double(langu.get(1).toString()).intValue());
+
+																if (y < 10) {
+											%>
 											<tr>
 												<td class=""><%=languag%></td>
 												<td><%=languag_freq%></td>
 											</tr>
-											<%}
-																}
-															}%>
+											<%
+												}
+															}
+														}
+											%>
 
 
 
@@ -1251,39 +1247,37 @@
 			type="hidden" name="date_start" id="date_start" value="" /> <input
 			type="hidden" name="date_end" id="date_end" value="" />
 		<textarea style="display: none" name="blogs" id="blogs">
-			<%	
-			if (blogPostFrequency.size() > 0) {
+			<%
+				if (blogPostFrequency.size() > 0) {
 							int p = 0;
 							for (int m = 0; m < blogPostFrequency.size(); m++) {
 								ArrayList<?> blogFreq = (ArrayList<?>) blogPostFrequency.get(m);
 								String blogName = blogFreq.get(0).toString();
 								String blogPostFreq = blogFreq.get(1).toString();
-									if (p < 10) {
-										p++;
+								if (p < 10) {
+									p++;
 			%>{letter:"<%=blogName%>", frequency:<%=blogPostFreq%>, name:"<%=blogName%>", type:"blog"},
     			 <%
 				}
-								}
 							}
-					
+						}
 			%>
 			</textarea>
 		<textarea style="display: none" name="bloggers" id="bloggers">
-<%
+<%try{
 	if (bloggerPostFrequency.size() > 0) {
 				int p = 0;
 				for (int m = 0; m < bloggerPostFrequency.size(); m++) {
 					ArrayList<?> bloggerFreq = (ArrayList<?>) bloggerPostFrequency.get(m);
 					String bloggerName = bloggerFreq.get(0).toString();
 					String bloggerPostFreq = bloggerFreq.get(1).toString();
-						if (p < 10) {
-							p++;
+					if (p < 10) {
+						p++;
 %>{letter:"<%=bloggerName%>", frequency:<%=bloggerPostFreq%>, name:"<%=bloggerName%>", type:"blogger"},
 <%
 	}
-					}
 				}
-			
+			}}catch(Exception e){}
 %>
 		</textarea>
 
@@ -1291,7 +1285,7 @@
 		<textarea style="display: none" name="influencialBlogs"
 			id="InfluencialBlogs">
 
-<%
+<%try{
 	if (influenceBlog.size() > 0) {
 				int p = 0;
 				for (int m = 0; m < influenceBlog.size(); m++) {
@@ -1299,35 +1293,34 @@
 					String blogInf = blogInfluence.get(0).toString();
 					String blogInfFreq = blogInfluence.get(1).toString();
 					if (p < 10) {
-						p++;%>
+						p++;
+%>
 {letter:"<%=blogInf%>", frequency:<%=blogInfFreq%>, name:"<%=blogInf%>", type:"blog"},
     			 <%
 	}
-					}
 				}
-			
+			}}catch(Exception e){}
 %>
 			 </textarea>
 		</textarea>
 
 		<textarea style="display: none" name="influencialBloggers"
 			id="InfluencialBloggers">
-			<%
+			<%try{
 				if (influenceBlogger.size() > 0) {
-					int k = 0;
-					for (int y = 0; y < influenceBlogger.size(); y++) {
-						ArrayList<?> bloggerInfluence = (ArrayList<?>) influenceBlogger.get(y);
-						 String bloggerInf = bloggerInfluence.get(0).toString();
-						 String bloggerInfFreq =  bloggerInfluence.get(1).toString();
-						if (k < 10) {
-							k++;
+							int k = 0;
+							for (int y = 0; y < influenceBlogger.size(); y++) {
+								ArrayList<?> bloggerInfluence = (ArrayList<?>) influenceBlogger.get(y);
+								String bloggerInf = bloggerInfluence.get(0).toString();
+								String bloggerInfFreq = bloggerInfluence.get(1).toString();
+								if (k < 10) {
+									k++;
 			%>
 		{letter:"<%=bloggerInf%>", frequency:<%=bloggerInfFreq%>, name:"<%=bloggerInf%>", type:"blogger"},
 		 <%
 				}
-					}
-								}
-							
+							}
+						}}catch(Exception e){}
 			%>
 		</textarea>
 	</form>
@@ -1639,10 +1632,9 @@ $(function () {
 						for (int y = 0; y < languages.size(); y++) {
 							ArrayList<?> langu = (ArrayList<?>) languages.get(y);
 							String languag = langu.get(0).toString();
-							
+
 							String languag_freq = langu.get(1).toString();
-							if (y<10){
-							%>
+							if (y < 10) {%>
 							{letter:"<%=languag%>", frequency:<%=languag_freq%>},
     		<%}
 						}
@@ -2175,22 +2167,19 @@ $(function () {
       //
       //
       data = [
-    		 <%
-    		 int p = 0;
-    			if (blogPostFrequency.size() > 0) {
-					for (int m = 0; m < blogPostFrequency.size() ; m++) {
-						ArrayList<?> blogFreq = (ArrayList<?>) blogPostFrequency.get(m);
-						String blogName = blogFreq.get(0).toString();
-						String blogPostFreq = blogFreq.get(1).toString();
-								if (p < 10) {
-									p++;%>
+    		 <%int p = 0;
+					if (blogPostFrequency.size() > 0) {
+						for (int m = 0; m < blogPostFrequency.size(); m++) {
+							ArrayList<?> blogFreq = (ArrayList<?>) blogPostFrequency.get(m);
+							String blogName = blogFreq.get(0).toString();
+							String blogPostFreq = blogFreq.get(1).toString();
+							if (p < 10) {
+								p++;%>
 									{letter:"<%=blogName%>", frequency:<%=Integer.parseInt(blogPostFreq)%>, name:"<%=blogName%>", type:"blogger"},
- 			 <%
-				}
-							}
-								
+ 			 <%}
 						}
-    		%>
+
+					}%>
             //{letter:"Blog 5", frequency:2550, name:"Obadimu Adewale", type:"blogger"},
             
         ];
@@ -2405,20 +2394,17 @@ $(function () {
 	<script type="text/javascript">
 	  $(function () {
 	
-	 <%
-      String pos = "";
-      String neg = "";
-		for (int i = 0; i <getPositiveEmotion.size(); i++){
-			ArrayList<?> posi = (ArrayList<?>) getPositiveEmotion.get(i);
-			pos = posi.get(0).toString();
-		} 
-      	for (int i = 0; i <getNegativeEmotion.size(); i++){
-			ArrayList<?> nega = (ArrayList<?>) getNegativeEmotion.get(i);
-			neg = nega.get(0).toString();
-			
-		} 
-      
-      %>
+	 <%String pos = "";
+					String neg = "";
+					for (int i = 0; i < getPositiveEmotion.size(); i++) {
+						ArrayList<?> posi = (ArrayList<?>) getPositiveEmotion.get(i);
+						pos = posi.get(0).toString();
+					}
+					for (int i = 0; i < getNegativeEmotion.size(); i++) {
+						ArrayList<?> nega = (ArrayList<?>) getNegativeEmotion.get(i);
+						neg = nega.get(0).toString();
+
+					}%>
       sentimentdata = [
             {label:"Negative", value:<%=Integer.parseInt(pos)%>},
             {label:"Positive", value:<%=Integer.parseInt(neg)%>}
@@ -2714,10 +2700,8 @@ var mymarker = [
 							ArrayList<?> loca = (ArrayList<?>) locations.get(i);
 							String loc = loca.get(0).toString();
 							String size = loca.get(1).toString();
-							int markerSize = Integer.parseInt(loca.get(1).toString());
-					
-							%>
-			{latLng: [<%=location.get(loc)%>], name: '<%=size%>' , r:<%=markerSize %>},
+							int markerSize = Integer.parseInt(loca.get(1).toString());%>
+			{latLng: [<%=location.get(loc)%>], name: '<%=size%>' , r:<%=markerSize%>},
 	<%}
 					}%>]
   </script>
@@ -2736,24 +2720,22 @@ var mymarker = [
 	<!--word cloud  -->
 	<script>
 	var word_count2 = {}; 
-	   <% 
-	    JSONArray sortedterms = term._sortJson2(unsortedterms);
-		System.out.println("TM:"+sortedterms);
-		if (sortedterms.length() > 0) {																	
-				for (int i=0; i<sortedterms.length(); i++) {
-					String[] vals = sortedterms.get(i).toString().split("___");
-					int size = Integer.parseInt(vals[0].trim());
-					String tm = vals[1];
-					String terms_id = vals[2];
-					
-					if(!termstore.has(tm)){						
-						termstore.put(tm, tm);%>			    		
+	   <%JSONArray sortedterms = term._sortJson2(unsortedterms);
+					System.out.println("TM:" + sortedterms);
+					if (sortedterms.length() > 0) {
+						for (int i = 0; i < sortedterms.length(); i++) {
+							String[] vals = sortedterms.get(i).toString().split("___");
+							int size = Integer.parseInt(vals[0].trim());
+							String tm = vals[1];
+							String terms_id = vals[2];
+
+							if (!termstore.has(tm)) {
+								termstore.put(tm, tm);%>			    		
 						<%-- {"text":"<%=terms.toString() %>","size":<%=size %>}, --%>
 						 word_count2["<%=tm.toString()%>"] = <%=size%> 
-	 				<%	}
-					}
-				}
-		%>
+	 				<%}
+						}
+					}%>
 		
 		console.log(word_count2)
 				
@@ -2837,11 +2819,10 @@ data = {
 						for (int m = 0; m < bloggerPostFrequency.size(); m++) {
 							ArrayList<?> bloggerFreq = (ArrayList<?>) bloggerPostFrequency.get(m);
 							String bloggerName = bloggerFreq.get(0).toString();
-							String bloggerPostFreq = bloggerFreq.get(1).toString();
-							%>
-							{"label":"<%=bloggerName.trim( )%>","name":"<%=bloggerName.trim()%>", "size":<%=Integer.parseInt(bloggerPostFreq)%>},
+							String bloggerPostFreq = bloggerFreq.get(1).toString();%>
+							{"label":"<%=bloggerName.trim()%>","name":"<%=bloggerName.trim()%>", "size":<%=Integer.parseInt(bloggerPostFreq)%>},
 <%}
-							
+
 					}%>
  /* {"label":"Blogger 2","name":"Obadimu Adewale", "size":2500},
  {"label":"Blogger 3","name":"Oluwaseun Walter", "size":2800},
@@ -3039,17 +3020,14 @@ $(function () {
 data = {
  //"name":"flare",
  "bloggers":[
-	 <%
-		if (blogPostFrequency.size() > 0) {
-					for (int m = 0; m < blogPostFrequency.size() ; m++) {
-						ArrayList<?> blogFreq = (ArrayList<?>) blogPostFrequency.get(m);
-						String blogName = blogFreq.get(0).toString();
-						String blogPostFreq = blogFreq.get(1).toString();
-	%>{label:"<%=blogName%>", "size":<%=Integer.parseInt(blogPostFreq)%>, name:"<%=blogName%>", type:"blog"},
-		 <%
-		}
-						
-				}%>
+	 <%if (blogPostFrequency.size() > 0) {
+						for (int m = 0; m < blogPostFrequency.size(); m++) {
+							ArrayList<?> blogFreq = (ArrayList<?>) blogPostFrequency.get(m);
+							String blogName = blogFreq.get(0).toString();
+							String blogPostFreq = blogFreq.get(1).toString();%>{label:"<%=blogName%>", "size":<%=Integer.parseInt(blogPostFreq)%>, name:"<%=blogName%>", type:"blog"},
+		 <%}
+
+					}%>
  ]
 }  
       
@@ -3246,14 +3224,13 @@ $(".option-lable").on("click",function(e){
          // [{"date":"Jan","close":10},{"date":"Feb","close":20},{"date":"Mar","close":30},{"date": "Apr","close": 40},{"date": "May","close": 50},{"date": "Jun","close": 60},{"date": "Jul","close": 70},{"date": "Aug","close": 80},{"date": "Sep","close": 90},{"date": "Oct","close": 100},{"date": "Nov","close": 120},{"date": "Dec","close": 140}],
          // ];
          data = [	
-        	[<%
-        	 if (postingTrend.size() > 0) {
-					for (int key: postingTrend.keySet()) {
-						/* String postYear = postingTrend.get(key).toString(); */
-						int postCount = Integer.parseInt(postingTrend.get(key).toString());
-						%>
+        	[<%if (postingTrend.size() > 0) {
+						for (int key : postingTrend.keySet()) {
+							/* String postYear = postingTrend.get(key).toString(); */
+							int postCount = Integer.parseInt(postingTrend.get(key).toString());%>
      		  			{"date":"<%=key%>","close":<%=postCount%>},
-     		<%}}%>
+     		<%}
+					}%>
      		]
      	  
         	 /*

@@ -1,4 +1,16 @@
 <%@page import="authentication.*"%>
+<%@page import="java.util.*"%>
+<%@page import="java.io.File"%>
+<%@page import="util.*"%>
+<%@page import="util.Blogs"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="java.text.NumberFormat"%>
+
+<%@page import="java.text.SimpleDateFormat"%>
+<%@page import="java.util.Date"%>
+<%@page import="org.json.JSONObject"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%
 	Object email = (null == session.getAttribute("email")) ? "" : session.getAttribute("email");
 	Object success_message = (null == session.getAttribute("success_message")) ? "" : "";
@@ -65,7 +77,12 @@
 		<p><%=email%> is logged in</p>
 		
 		<p>His trackers</p>
+		<%
+		JSONArray a = (JSONArray) parser.parse(new FileReader("c:\\exer4-courses.json"));
+
+		  
 		
+		%>
 		
 		</div>
 	</form>

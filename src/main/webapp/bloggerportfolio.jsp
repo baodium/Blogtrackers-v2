@@ -510,7 +510,7 @@ if (outlinks.size() > 0) {
 }
 
 System.out.println("test here4");
-/* mostactiveterm = term._getMostActiveByBlogger(dt, dte, mostactiveblogger); */
+/* mostactiveterm = term._getMostActiveByBlogger(mostactiveblogger); */
 System.out.println("test here5");
 String totalinfluence ="";
 

@@ -489,14 +489,16 @@
 
 				<tr class="<%=statusstyle%>">
 					<td class="text-left pl0 blogcount"><%=k + 1%></td>
-					<td class="text-primary text-left nameofblog"><%=blogname%></td>
+					<%-- <td class="text-primary text-left nameofblog"><%=blogname%></td> --%>
+					<td class="text-primary text-left nameofblog"><a href="<%=blogname%>" target="_blank"><%=blogname%></a></td>
 					<td class="text-primary text-left blogstatus"><%=status%></td>
 					<td class="text-primary text-left"><%=total_post%></td>
 					<td class="text-primary text-left"><%=last_crawled%></td>
-					<td class="text-primary text-center"><i id="<%=k + 1%>"
+					<td><i class="text-primary icontrackersize cursor-pointer deleteblog text-center" data-toggle="tooltip" id="<%=blog.get(0)%>_select" data-placement="top" title="Delete Blog"></i></td>
+					<%-- <td class="text-primary text-center"><i id="<%=k + 1%>"
 						class="text-primary icontrackersize cursor-pointer deleteblog deletebtn text-center"
 						onclick= "<%  %>"
-						data-toggle="tooltip" data-placement="top" title="Delete Blog"></i></td>
+						data-toggle="tooltip" data-placement="top" title="Delete Blog"></i></td> --%>
 					<%-- <td class="text-center"><i class="text-primary icontrackersize cursor-pointer deleteblog text-center" onclick= "<% new_blog._deleteBlog(username, Integer.parseInt(id)); %>" data-toggle="tooltip" id="<%=id%>_select" data-placement="top" title="Delete Blog"></i></td> --%>
 				</tr>
 
