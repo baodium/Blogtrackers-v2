@@ -87,7 +87,6 @@ function loadPost(date){
 			color = "#0080CC";
 			var post_id = $(first).attr("id");
 			console.log(post_id);
-			alert('the date')
 			console.log(response);
 			try{
 			loadChart(post_id,color);
