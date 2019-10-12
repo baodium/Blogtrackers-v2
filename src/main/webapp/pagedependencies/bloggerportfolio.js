@@ -7,10 +7,11 @@ $('#blogger-changed').on("change", function(){
 	var date_start = $("#date_start").val();
 	var date_end = $("#date_end").val();
 	var blogger = $(this).val();
-	
+	/*alert("i am here");*/
 	var blg = blogger.split("_");
 	
 	var blog_id = blg[0];
+	console.log("iddd"+blog_id);
 	
 	$(".active-blog").html(blg[1]);
 	$("#blogger").val(blg[1]);
@@ -18,7 +19,8 @@ $('#blogger-changed').on("change", function(){
 	
 	//loadInfluence(bloog,blg[1]);
 	//console.log(blg[1]);
-
+	
+	
 	loadStat(blg[1]);
 	loadChart(blg[1]);
 	loadYearlyChart(blg[1]);
@@ -29,18 +31,25 @@ $('#blogger-changed').on("change", function(){
 
 
 function loadStat(blogger){
+	
 	$(".total-influence").html("<img src='images/loading.gif' />");
 	$(".total-post").html("<img src='images/loading.gif' />");
 	$(".total-sentiment").html("<img src='images/loading.gif' />");
 	$(".top-keyword").html("<img src='images/loading.gif' />");
+	
+	all_blogsite_ids = $('#all_blogsite_ids').val();
+	/*alert(all_blogsite_ids);*/
+	
 	$.ajax({
 		url: app_url+"subpages/bloggerportfoliochart.jsp",
 		method: 'POST',
 		data: {
 			action:"getstats",
 			blogger:blogger,
+		/*	blogger:blogger,*/
 			date_start:$("#date_start").val(),
-			date_end:$("#date_end").val(),
+			ids__:all_blogsite_ids,
+			date_end:$("#date_end").val()
 		},
 		error: function(response)
 		{						

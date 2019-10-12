@@ -5,13 +5,13 @@
 <%@page import="org.json.JSONObject"%>
 <%@page import="org.json.JSONArray"%>
 <%@page import="java.net.URI"%>
-<%@page import="java.text.NumberFormat" %>
+<%@page import="java.text.NumberFormat"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="java.util.Date"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@page import="java.time.LocalDateTime"%>
-	
+
 <%
 	Object email = (null == session.getAttribute("email")) ? "" : session.getAttribute("email");
 	Object tid = (null == request.getParameter("tid")) ? "" : request.getParameter("tid");
@@ -20,15 +20,16 @@
 	Object date_start = (null == request.getParameter("date_start")) ? "" : request.getParameter("date_start");
 	Object date_end = (null == request.getParameter("date_end")) ? "" : request.getParameter("date_end");
 	Object single = (null == request.getParameter("single_date")) ? "" : request.getParameter("single_date");
-	String sort =  (null == request.getParameter("sortby")) ? "blog" : request.getParameter("sortby").toString().replaceAll("[^a-zA-Z]", " ");
-	String attachedblogger =  (null == request.getParameter("blogger")) ? "" : request.getParameter("blogger");
+	String sort = (null == request.getParameter("sortby"))
+			? "blog"
+			: request.getParameter("sortby").toString().replaceAll("[^a-zA-Z]", " ");
+	String attachedblogger = (null == request.getParameter("blogger")) ? "" : request.getParameter("blogger");
 
-	
-	System.out.println("date---"+date_start);
+	System.out.println("date---" + date_start);
 	if (user == null || user == "") {
 		response.sendRedirect("index.jsp");
 	} else {
-		
+
 		ArrayList<?> userinfo = null;
 		String profileimage = "";
 		String username = "";
@@ -44,18 +45,18 @@
 		Terms term = new Terms();
 		Outlinks outl = new Outlinks();
 		if (tid != "") {
-			detail = tracker._fetch(tid.toString());	
+			detail = tracker._fetch(tid.toString());
 		} else {
 			detail = tracker._list("DESC", "", user.toString(), "1");
 		}
-		
+
 		boolean isowner = false;
 		JSONObject obj = null;
 		String ids = "";
-		String trackername="";
+		String trackername = "";
 		if (detail.size() > 0) {
 			//String res = detail.get(0).toString();
-			ArrayList resp = (ArrayList<?>)detail.get(0);
+			ArrayList resp = (ArrayList<?>) detail.get(0);
 
 			String tracker_userid = resp.get(1).toString();
 			trackername = resp.get(2).toString();
@@ -68,75 +69,78 @@
 				ids = query;
 			}
 		}
-		System.out.println("id---"+ids);
+		System.out.println("id---" + ids);
 		userinfo = new DbConnection().query("SELECT * FROM usercredentials where Email = '" + email + "'");
 		if (userinfo.size() < 1 || !isowner) {
 			response.sendRedirect("index.jsp");
 		} else {
-			
+
 			userinfo = (ArrayList<?>) userinfo.get(0);
 			try {
-					username = (null == userinfo.get(0)) ? "" : userinfo.get(0).toString();
-	
-					name = (null == userinfo.get(4)) ? "" : (userinfo.get(4).toString());
-					email = (null == userinfo.get(2)) ? "" : userinfo.get(2).toString();
-					phone = (null == userinfo.get(6)) ? "" : userinfo.get(6).toString();
-					String userpic = userinfo.get(9).toString();
-					String path = application.getRealPath("/").replace('\\', '/') + "images/profile_images/";
-					String filename = userinfo.get(9).toString();
-	
-					profileimage = "images/default-avatar.png";
-					if (userpic.indexOf("http") > -1) {
-						profileimage = userpic;
-					}
-					
-					File f = new File(filename);
-					
-					
-					//System.out.println("new_pat--"+path_new);
-					
-					File path_new = new File(application.getRealPath("/").replace('/', '/') + "images/profile_images"); 
-					if (f.exists() && !f.isDirectory()) {
-						profileimage = "images/profile_images/" + userinfo.get(2).toString() + ".jpg";
-					}else{
-						/* new File("/path/directory").mkdirs(); */
-						path_new.mkdirs();
-						System.out.println("pathhhhh1--"+path_new);
-					}
-					
-					
-					if (path_new.exists()) {
-						
-						String t = "/images/profile_images";
-						int p=userpic.indexOf(t);
-						System.out.println(p);
-						if (p != -1) {
-							
-							System.out.println("pic path---"+userpic);
-							System.out.println("path exists---"+userpic.substring(0, p));
-							String path_update=userpic.substring(0, p);
-							if (!path_update.equals(path_new.toString())) {
-								profileimage = "images/profile_images/" + userinfo.get(2).toString() + ".jpg";
-								/* profileimage=userpic.replace(userpic.substring(0, p), path_new.toString()); */
-								String new_file_path = path_new.toString().replace("\\images\\profile_images", "")+"/"+profileimage;
-								System.out.println("ready to be updated--"+ new_file_path);
-								/*new DbConnection().updateTable("UPDATE usercredentials SET profile_picture  = '" + pass + "' WHERE Email = '" + email + "'"); */											
-							}
-						}else{
-							path_new.mkdirs();
+				username = (null == userinfo.get(0)) ? "" : userinfo.get(0).toString();
+
+				name = (null == userinfo.get(4)) ? "" : (userinfo.get(4).toString());
+				email = (null == userinfo.get(2)) ? "" : userinfo.get(2).toString();
+				phone = (null == userinfo.get(6)) ? "" : userinfo.get(6).toString();
+				String userpic = userinfo.get(9).toString();
+				String path = application.getRealPath("/").replace('\\', '/') + "images/profile_images/";
+				String filename = userinfo.get(9).toString();
+
+				profileimage = "images/default-avatar.png";
+				if (userpic.indexOf("http") > -1) {
+					profileimage = userpic;
+				}
+
+				File f = new File(filename);
+
+				//System.out.println("new_pat--"+path_new);
+
+				File path_new = new File(
+						application.getRealPath("/").replace('/', '/') + "images/profile_images");
+				if (f.exists() && !f.isDirectory()) {
+					profileimage = "images/profile_images/" + userinfo.get(2).toString() + ".jpg";
+				} else {
+					/* new File("/path/directory").mkdirs(); */
+					path_new.mkdirs();
+					System.out.println("pathhhhh1--" + path_new);
+				}
+
+				if (path_new.exists()) {
+
+					String t = "/images/profile_images";
+					int p = userpic.indexOf(t);
+					System.out.println(p);
+					if (p != -1) {
+
+						System.out.println("pic path---" + userpic);
+						System.out.println("path exists---" + userpic.substring(0, p));
+						String path_update = userpic.substring(0, p);
+						if (!path_update.equals(path_new.toString())) {
 							profileimage = "images/profile_images/" + userinfo.get(2).toString() + ".jpg";
 							/* profileimage=userpic.replace(userpic.substring(0, p), path_new.toString()); */
-							String new_file_path = path_new.toString().replace("\\images\\profile_images", "")+"/"+profileimage;
-							System.out.println("ready to be updated--"+ new_file_path);
-							
-							new DbConnection().updateTable("UPDATE usercredentials SET profile_picture  = '" + "images/profile_images/" + userinfo.get(2).toString() + ".jpg" + "' WHERE Email = '" + email + "'");
-							System.out.println("updated");
-						}				
-					}else{
-						System.out.println("path doesnt exist");
+							String new_file_path = path_new.toString().replace("\\images\\profile_images", "")
+									+ "/" + profileimage;
+							System.out.println("ready to be updated--" + new_file_path);
+							/*new DbConnection().updateTable("UPDATE usercredentials SET profile_picture  = '" + pass + "' WHERE Email = '" + email + "'"); */
+						}
+					} else {
+						path_new.mkdirs();
+						profileimage = "images/profile_images/" + userinfo.get(2).toString() + ".jpg";
+						/* profileimage=userpic.replace(userpic.substring(0, p), path_new.toString()); */
+						String new_file_path = path_new.toString().replace("\\images\\profile_images", "") + "/"
+								+ profileimage;
+						System.out.println("ready to be updated--" + new_file_path);
+
+						new DbConnection().updateTable("UPDATE usercredentials SET profile_picture  = '"
+								+ "images/profile_images/" + userinfo.get(2).toString() + ".jpg"
+								+ "' WHERE Email = '" + email + "'");
+						System.out.println("updated");
 					}
+				} else {
+					System.out.println("path doesnt exist");
+				}
 			} catch (Exception e) {
-			
+
 			}
 
 			String[] user_name = name.split(" ");
@@ -154,28 +158,28 @@
 			SimpleDateFormat SMALL_MONTH_ONLY = new SimpleDateFormat("mm");
 			SimpleDateFormat WEEK_ONLY = new SimpleDateFormat("dd");
 			SimpleDateFormat YEAR_ONLY = new SimpleDateFormat("yyyy");
-			
+
 			SimpleDateFormat DAY_NAME_ONLY = new SimpleDateFormat("EEEE");
-			
-			String stdate = post._getDate(ids,"first");
-			String endate = post._getDate(ids,"last");
-			
+
+			String stdate = post._getDate(ids, "first");
+			String endate = post._getDate(ids, "last");
+
 			Date dstart = new SimpleDateFormat("yyyy-MM-dd").parse(stdate);
 			Date today = new SimpleDateFormat("yyyy-MM-dd").parse(endate);
 
-			Date nnow = new Date();  
-			  
+			Date nnow = new Date();
+
 			String day = DAY_ONLY.format(today);
-			
+
 			String month = MONTH_ONLY.format(today);
-			
+
 			String smallmonth = SMALL_MONTH_ONLY.format(today);
 
 			String year = YEAR_ONLY.format(today);
 
 			String dispfrom = DATE_FORMAT.format(dstart);
 			String dispto = DATE_FORMAT.format(today);
-			
+
 			String historyfrom = DATE_FORMAT.format(dstart);
 			String historyto = DATE_FORMAT.format(today);
 
@@ -184,8 +188,8 @@
 
 			//ArrayList posts = post._list("DESC","");
 			ArrayList sentiments = senti._list("DESC", "", "id");
-			 
-		 	/* Liwc liwc = new Liwc();
+
+			/* Liwc liwc = new Liwc();
 			
 			ArrayList liwcSent = liwc._list("DESC", ""); 
 			
@@ -193,25 +197,26 @@
 			
 			System.out.println(test);  */
 			System.out.println("test here2");
-			
+
 			String totalpost = "0";
-			
+
 			String possentiment = "0";
 			String negsentiment = "0";
 			String ddey = "31";
 			String dt = dst;
 			String dte = dend;
-			String year_start="";
-			String year_end="";
-			
-			if(!single.equals("")){
-				month = MONTH_ONLY.format(nnow); 
-				day = DAY_ONLY.format(nnow); 
-				year = YEAR_ONLY.format(nnow); 
+			String year_start = "";
+			String year_end = "";
+
+			if (!single.equals("")) {
+				month = MONTH_ONLY.format(nnow);
+				day = DAY_ONLY.format(nnow);
+				year = YEAR_ONLY.format(nnow);
 				//System.out.println("Now:"+month+"small:"+smallmonth);
-				if(month.equals("02")){
-					ddey = (Integer.parseInt(year)%4==0)?"28":"29";
-				}else if(month.equals("09") || month.equals("04") || month.equals("05") || month.equals("11")){
+				if (month.equals("02")) {
+					ddey = (Integer.parseInt(year) % 4 == 0) ? "28" : "29";
+				} else if (month.equals("09") || month.equals("04") || month.equals("05")
+						|| month.equals("11")) {
 					ddey = "30";
 				}
 			}
@@ -222,100 +227,97 @@
 
 				//possentiment = post._searchRangeTotal("sentiment", "0", "10", ids);
 				//negsentiment = post._searchRangeTotal("sentiment", "-10", "-1", ids);
-								
 
 				Date start = new SimpleDateFormat("yyyy-MM-dd").parse(date_start.toString());
 				Date end = new SimpleDateFormat("yyyy-MM-dd").parse(date_end.toString());
-				
+
 				dt = date_start.toString();
 				dte = date_end.toString();
 			} else if (single.equals("day")) {
-				 dt = year + "-" + month + "-" + day;
-					
+				dt = year + "-" + month + "-" + day;
+
 			} else if (single.equals("week")) {
-				
-				 dte = year + "-" + month + "-" + day;
-				int dd = Integer.parseInt(day)-7;
-				
+
+				dte = year + "-" + month + "-" + day;
+				int dd = Integer.parseInt(day) - 7;
+
 				Calendar cal = Calendar.getInstance();
 				cal.add(Calendar.DATE, -7);
 				Date dateBefore7Days = cal.getTime();
-				dt = YEAR_ONLY.format(dateBefore7Days) + "-" + MONTH_ONLY.format(dateBefore7Days) + "-" + DAY_ONLY.format(dateBefore7Days);
-				
+				dt = YEAR_ONLY.format(dateBefore7Days) + "-" + MONTH_ONLY.format(dateBefore7Days) + "-"
+						+ DAY_ONLY.format(dateBefore7Days);
+
 			} else if (single.equals("month")) {
 				dt = year + "-" + month + "-01";
-				dte = year + "-" + month + "-"+day;	
+				dte = year + "-" + month + "-" + day;
 
 			} else if (single.equals("year")) {
 				dt = year + "-01-01";
-				dte = year + "-12-"+ddey;
-				
-				
+				dte = year + "-12-" + ddey;
+
 			} else {
 				dt = dst;
 				dte = dend;
 			}
-			
+
 			String[] yst = dt.split("-");
 			String[] yend = dte.split("-");
 			year_start = yst[0];
 			year_end = yend[0];
 			int ystint = new Double(year_start).intValue();
 			int yendint = new Double(year_end).intValue();
-			
-			if(yendint>Integer.parseInt(YEAR_ONLY.format(new Date()))){
-				dte = DATE_FORMAT2.format(new Date()).toString();	
+
+			if (yendint > Integer.parseInt(YEAR_ONLY.format(new Date()))) {
+				dte = DATE_FORMAT2.format(new Date()).toString();
 				yendint = Integer.parseInt(YEAR_ONLY.format(new Date()));
 			}
-			
-			if(ystint<2000){
+
+			if (ystint < 2000) {
 				ystint = 2000;
 				dt = "2000-01-01";
 			}
-			
+
 			String month_start = yst[1];
 			String month_end = yend[1];
-			
-			
+
 			dispfrom = DATE_FORMAT.format(new SimpleDateFormat("yyyy-MM-dd").parse(dt));
 			dispto = DATE_FORMAT.format(new SimpleDateFormat("yyyy-MM-dd").parse(dte));
-			
-			
+
 			String[] idss = ids.split(",");
 			String selectedblogid = idss[0];
-			
-			String mostactiveblogger ="";
-			String mostactiveblogurl ="";
-			
-			ArrayList activeblogposts = post._getBloggerByBlogId("date", dt, dte, selectedblogid, "influence_score", "DESC");
+
+			String mostactiveblogger = "";
+			String mostactiveblogurl = "";
+
+			ArrayList activeblogposts = post._getBloggerByBlogId("date", dt, dte, selectedblogid,
+					"influence_score", "DESC");
 			String mostactiveterm = "";
-			
+
 			ArrayList bloggerPostFrequency = bloggerss._getBloggerPostFrequency(ids);
 			//System.out.println("Terms here:"+termss);
-			
+
 			ArrayList blogs = blog._fetch(ids);
-			
+
 			int totalblog = blogs.size();
-			
+
 			JSONObject graphyears = new JSONObject();
-		    JSONArray yearsarray = new JSONArray();
-		    
-		    JSONObject authors = new JSONObject();
-		    JSONObject blgers = new JSONObject();
-		    JSONArray sentimentpost = new JSONArray();
-		    
-		    JSONArray authorcount = new JSONArray();
-		    JSONObject language = new JSONObject();
-		    ArrayList langlooper = new ArrayList();
-		    
-		    int sun=0;
-		    int mon=0;
-		    int tue=0;
-		    int wed =0;
-		    int thur =0;
-		    int fri=0;
-		    int sat =0;
-		    
+			JSONArray yearsarray = new JSONArray();
+
+			JSONObject authors = new JSONObject();
+			JSONObject blgers = new JSONObject();
+			JSONArray sentimentpost = new JSONArray();
+
+			JSONArray authorcount = new JSONArray();
+			JSONObject language = new JSONObject();
+			ArrayList langlooper = new ArrayList();
+
+			int sun = 0;
+			int mon = 0;
+			int tue = 0;
+			int wed = 0;
+			int thur = 0;
+			int fri = 0;
+			int sat = 0;
 
 			int highestpost = 0;
 			if (bloggerPostFrequency.size() > 0) {
@@ -328,362 +330,430 @@
 					selectedblogid = blogsiteId;
 				}
 			}
-			
-			if(activeblogposts.size()>0){
+
+			if (activeblogposts.size() > 0) {
 				String tres = null;
 				JSONObject tresp = null;
 				String tresu = null;
 				JSONObject tobj = null;
-				int j=0;
-				int k=0;
+				int j = 0;
+				int k = 0;
 				int n = 0;
-			for(int i=0; i< activeblogposts.size(); i++){
-						tres = activeblogposts.get(i).toString();			
-						tresp = new JSONObject(tres);
-					    tresu = tresp.get("_source").toString();
-					    tobj = new JSONObject(tresu);
-					    
-					    String auth = tobj.get("blogger").toString();
-					    String lang = tobj.get("language").toString();
-					    String blogsite_id = tobj.get("blogsite_id").toString();
-					    String btoty = post._getTotalByBlogger(auth,"date",dt, dte);
-						int totalcounter = Integer.parseInt(btoty);
-						URI uri = new URI(tobj.get("permalink").toString());							
-						
-						if(totalcounter>highestpost){
-							highestpost = totalcounter;
-							//mostactiveblogger = auth;							
-							mostactiveblogurl = uri.getHost();
+				for (int i = 0; i < activeblogposts.size(); i++) {
+					tres = activeblogposts.get(i).toString();
+					tresp = new JSONObject(tres);
+					tresu = tresp.get("_source").toString();
+					tobj = new JSONObject(tresu);
+
+					String auth = tobj.get("blogger").toString();
+					String lang = tobj.get("language").toString();
+					String blogsite_id = tobj.get("blogsite_id").toString();
+					String btoty = post._getTotalByBlogger(auth, "date", dt, dte);
+					int totalcounter = Integer.parseInt(btoty);
+					URI uri = new URI(tobj.get("permalink").toString());
+
+					if (totalcounter > highestpost) {
+						highestpost = totalcounter;
+						//mostactiveblogger = auth;							
+						mostactiveblogurl = uri.getHost();
+					}
+
+					if (attachedblogger.equals(auth)) {
+						mostactiveblogger = auth;
+						mostactiveblogurl = uri.getHost();
+					}
+
+					JSONObject content = new JSONObject();
+
+					String[] dateyear = tobj.get("date").toString().split("-");
+					String yy = dateyear[0];
+
+					if (mostactiveblogger.equals(tobj.get("blogger").toString())) {
+						sentimentpost.put(tobj.get("blogpost_id").toString());
+
+						Date rawdaydate = new SimpleDateFormat("yyyy-mm-dd").parse(tobj.get("date").toString());
+						String rawday = DAY_NAME_ONLY.format(rawdaydate);
+
+						if (rawday.equals("Sunday")) {
+							sun++;
+						} else if (rawday.equals("Monday")) {
+							mon++;
+						} else if (rawday.equals("Tuesday")) {
+							tue++;
+						} else if (rawday.equals("Wednesday")) {
+							wed++;
+						} else if (rawday.equals("Thursday")) {
+							thur++;
+						} else if (rawday.equals("Friday")) {
+							fri++;
+						} else if (rawday.equals("Saturday")) {
+							sat++;
 						}
-					    
-					    
-					    if(attachedblogger.equals(auth)){
-					    	mostactiveblogger = auth;
-					    	mostactiveblogurl = uri.getHost();
-					    }
-					    
-					    JSONObject content = new JSONObject();
-					   
-					  	String[] dateyear=tobj.get("date").toString().split("-");
-					    String yy= dateyear[0];
-					    
-					    if(mostactiveblogger.equals(tobj.get("blogger").toString())){
-					    	sentimentpost.put(tobj.get("blogpost_id").toString());
-					    	
-					    	Date rawdaydate = new SimpleDateFormat("yyyy-mm-dd").parse(tobj.get("date").toString());
-						    String rawday = DAY_NAME_ONLY.format(rawdaydate);
-						   
-						    if(rawday.equals("Sunday")){
-						    	sun++;
-						    }else if(rawday.equals("Monday")){
-						    	mon++;
-						    }else if(rawday.equals("Tuesday")){
-						    	tue++;
-						    }else if(rawday.equals("Wednesday")){
-						    	wed++;
-						    }else if(rawday.equals("Thursday")){
-						    	thur++;
-						    }else if(rawday.equals("Friday")){
-						    	fri++;
-						    }else if(rawday.equals("Saturday")){
-						    	sat++;
-						    }
-					    }
-					   
+					}
+
 				}
-			} 
-			
-			
-			
-			
-			
-			
-			if(single.equals("month")){
+			}
+
+			if (single.equals("month")) {
 				//int diff = post.monthsBetweenDates(DATE_FORMAT2.parse(dt), DATE_FORMAT2.parse(dte));
 				//ystint=0;
 				//yendint = diff;
 			}
-			
-			int b=0;
-			int jan=0;
-			int feb=0;
-			int march=0;
-			int apr=0;
-			int may=0;
-			int june=0;
-			int july=0;
-			int aug=0;
-			int sep=0;
-			int oct=0;
-			int nov=0;
-			int dec=0;
-			
-			for(int y=ystint; y<=yendint; y++){ 
-					   String dtu = y + "-01-01";
 
-					   String dtue = y + "-12-31";
-					   System.out.println("test here2_1");
-					   if(b==0){
-							dtu = dt;
-						}else if(b==yendint){
-							dtue = dte;
-						}
-					   
-					   System.out.println("test here2");
-					   String totu = post._searchRangeTotal("date",dtu, dtue,selectedblogid);
-					    
-					   jan += Integer.parseInt(post._searchRangeTotalByBlogger("date",y + "-01-01", y + "-01-31",mostactiveblogger));
-					    feb += Integer.parseInt(post._searchRangeTotalByBlogger("date",y + "-02-01", y + "-02-29",mostactiveblogger));
-					    march += Integer.parseInt(post._searchRangeTotalByBlogger("date",y + "-03-01", y + "-03-31",mostactiveblogger));
-					   	apr += Integer.parseInt(post._searchRangeTotalByBlogger("date",y + "-04-01", y + "-04-30",mostactiveblogger));
-					    may += Integer.parseInt(post._searchRangeTotalByBlogger("date",y + "-05-01", y + "-05-31",mostactiveblogger));
-					    june += Integer.parseInt(post._searchRangeTotalByBlogger("date",y + "-06-01", y + "-06-30",mostactiveblogger));
-					   	july += Integer.parseInt(post._searchRangeTotalByBlogger("date",y + "-07-01", y + "-07-31",mostactiveblogger));
-					   	aug += Integer.parseInt(post._searchRangeTotalByBlogger("date",y + "-08-01", y + "-08-31",mostactiveblogger));
-					    sep += Integer.parseInt(post._searchRangeTotalByBlogger("date",y + "-09-01", y + "-09-30",mostactiveblogger));
-					   oct += Integer.parseInt(post._searchRangeTotalByBlogger("date",y + "-10-01", y + "-10-31",mostactiveblogger));
-					   nov += Integer.parseInt(post._searchRangeTotalByBlogger("date",y + "-11-01", y + "-11-30",mostactiveblogger));
-					   dec += Integer.parseInt(post._searchRangeTotalByBlogger("date",y + "-12-01", y + "-12-31",mostactiveblogger));
-					   
-					   graphyears.put(y+"",totu);
-			    	   yearsarray.put(b,y);	
-			    	   b++;
-			    	   System.out.println("test here2_2");
+			int b = 0;
+			int jan = 0;
+			int feb = 0;
+			int march = 0;
+			int apr = 0;
+			int may = 0;
+			int june = 0;
+			int july = 0;
+			int aug = 0;
+			int sep = 0;
+			int oct = 0;
+			int nov = 0;
+			int dec = 0;
+
+			for (int y = ystint; y <= yendint; y++) {
+				String dtu = y + "-01-01";
+
+				String dtue = y + "-12-31";
+				System.out.println("test here2_1");
+				if (b == 0) {
+					dtu = dt;
+				} else if (b == yendint) {
+					dtue = dte;
+				}
+
+				System.out.println("test here2");
+				String totu = post._searchRangeTotal("date", dtu, dtue, selectedblogid);
+
+				jan += Integer.parseInt(
+						post._searchRangeTotalByBlogger("date", y + "-01-01", y + "-01-31", mostactiveblogger));
+				feb += Integer.parseInt(
+						post._searchRangeTotalByBlogger("date", y + "-02-01", y + "-02-29", mostactiveblogger));
+				march += Integer.parseInt(
+						post._searchRangeTotalByBlogger("date", y + "-03-01", y + "-03-31", mostactiveblogger));
+				apr += Integer.parseInt(
+						post._searchRangeTotalByBlogger("date", y + "-04-01", y + "-04-30", mostactiveblogger));
+				may += Integer.parseInt(
+						post._searchRangeTotalByBlogger("date", y + "-05-01", y + "-05-31", mostactiveblogger));
+				june += Integer.parseInt(
+						post._searchRangeTotalByBlogger("date", y + "-06-01", y + "-06-30", mostactiveblogger));
+				july += Integer.parseInt(
+						post._searchRangeTotalByBlogger("date", y + "-07-01", y + "-07-31", mostactiveblogger));
+				aug += Integer.parseInt(
+						post._searchRangeTotalByBlogger("date", y + "-08-01", y + "-08-31", mostactiveblogger));
+				sep += Integer.parseInt(
+						post._searchRangeTotalByBlogger("date", y + "-09-01", y + "-09-30", mostactiveblogger));
+				oct += Integer.parseInt(
+						post._searchRangeTotalByBlogger("date", y + "-10-01", y + "-10-31", mostactiveblogger));
+				nov += Integer.parseInt(
+						post._searchRangeTotalByBlogger("date", y + "-11-01", y + "-11-30", mostactiveblogger));
+				dec += Integer.parseInt(
+						post._searchRangeTotalByBlogger("date", y + "-12-01", y + "-12-31", mostactiveblogger));
+
+				graphyears.put(y + "", totu);
+				yearsarray.put(b, y);
+				b++;
+				System.out.println("test here2_2");
 			}
-			
-			
-			
-			possentiment=new Liwc()._searchRangeAggregate("date", yst[0]+"-01-01", yend[0]+"-12-31", sentimentpost,"posemo");
-			negsentiment=new Liwc()._searchRangeAggregate("date", yst[0]+"-01-01", yend[0]+"-12-31", sentimentpost,"negemo");
-			
+
+			possentiment = new Liwc()._searchRangeAggregate("date", yst[0] + "-01-01", yend[0] + "-12-31",
+					sentimentpost, "posemo");
+			negsentiment = new Liwc()._searchRangeAggregate("date", yst[0] + "-01-01", yend[0] + "-12-31",
+					sentimentpost, "negemo");
+
 			JSONArray sortedyearsarray = yearsarray;//post._sortJson(yearsarray);
 			int highestfrequency = 0;
-			 String blogids = "";
-			 
-outlinks = outl._searchByRange("date", dt, dte, selectedblogid);
-System.out.println("test here");
-JSONObject outerlinks = new JSONObject();
-ArrayList outlinklooper = new ArrayList();
-if (outlinks.size() > 0) {
-	int mm=0;
-	for (int p = 0; p < outlinks.size(); p++) {
-		String bstr = outlinks.get(p).toString();
-		JSONObject bj = new JSONObject(bstr);
-		bstr = bj.get("_source").toString();
-		bj = new JSONObject(bstr);
-		String link = bj.get("link").toString();
-		
-		JSONObject content = new JSONObject();
-		String maindomain="";
-		try {
-			URI uri = new URI(link);
-			String domain = uri.getHost();
-			if (domain.startsWith("www.")) {
-				maindomain = domain.substring(4);
-			} else {
-				maindomain = domain;
+			String blogids = "";
+
+			outlinks = outl._searchByRange("date", dt, dte, selectedblogid);
+			System.out.println("test here");
+			JSONObject outerlinks = new JSONObject();
+			ArrayList outlinklooper = new ArrayList();
+			if (outlinks.size() > 0) {
+				int mm = 0;
+				for (int p = 0; p < outlinks.size(); p++) {
+					String bstr = outlinks.get(p).toString();
+					JSONObject bj = new JSONObject(bstr);
+					bstr = bj.get("_source").toString();
+					bj = new JSONObject(bstr);
+					String link = bj.get("link").toString();
+
+					JSONObject content = new JSONObject();
+					String maindomain = "";
+					try {
+						URI uri = new URI(link);
+						String domain = uri.getHost();
+						if (domain.startsWith("www.")) {
+							maindomain = domain.substring(4);
+						} else {
+							maindomain = domain;
+						}
+					} catch (Exception ex) {
+					}
+
+					if (outerlinks.has(maindomain)) {
+						content = new JSONObject(outerlinks.get(maindomain).toString());
+
+						int valu = Integer.parseInt(content.get("value").toString());
+						valu++;
+
+						content.put("value", valu);
+						content.put("link", link);
+						content.put("domain", maindomain);
+						outerlinks.put(maindomain, content);
+					} else {
+						int valu = 1;
+						content.put("value", valu);
+						content.put("link", link);
+						content.put("domain", maindomain);
+						outerlinks.put(maindomain, content);
+						outlinklooper.add(mm, maindomain);
+						mm++;
+					}
+
+				}
 			}
-		} catch (Exception ex) {}
-		
-		
-		if (outerlinks.has(maindomain)) {
-			content = new JSONObject(outerlinks.get(maindomain).toString());
-			
-			int valu = Integer.parseInt(content.get("value").toString());
-			valu++;
-			
-			content.put("value", valu);
-			content.put("link", link);
-			content.put("domain", maindomain);
-			outerlinks.put(maindomain, content);
-		} else {
-			int valu = 1;
-			content.put("value", valu);
-			content.put("link", link);
-			content.put("domain", maindomain);
-			outerlinks.put(maindomain, content);
-			outlinklooper.add(mm, maindomain);
-			mm++;
-		}				
-	
-	}
-}
 
-System.out.println("test here4");
-/* mostactiveterm = term._getMostActiveByBlogger(mostactiveblogger); */
-System.out.println("test here5");
-String totalinfluence ="";
+			System.out.println("test here4");
+			String sql = post._getBloggerPosts(mostactiveblogger, dt, dte, ids);
 
-try{			
-	totalpost = post._searchRangeTotalByBlogger("date", dt, dte, mostactiveblogger);
-	System.out.println("test here5_1");
-	Double influence =  Double.parseDouble(post._searchRangeMaxByBloggers("date",dt, dte,mostactiveblogger));
-	System.out.println("test here5_2");
-	totalinfluence = influence+"";
-}
-catch(Exception e){
-	totalinfluence = "0";
-	totalpost = "0";
-}
-System.out.println("test here3");
+			mostactiveterm = post._termVectors(sql);
+			/* mostactiveterm = term._getMostActiveByBlogger(mostactiveblogger); */
+			System.out.println("test here5");
+			String totalinfluence = "";
+
+			try {
+				totalpost = post._searchRangeTotalByBlogger("date", dt, dte, mostactiveblogger);
+				System.out.println("test here5_1");
+				Double influence = Double
+						.parseDouble(post._searchRangeMaxByBloggers("date", dt, dte, mostactiveblogger));
+				System.out.println("test here5_2");
+				totalinfluence = influence + "";
+			} catch (Exception e) {
+				totalinfluence = "0";
+				totalpost = "0";
+			}
+			System.out.println("test here3");
 %>
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Blogtrackers - Blogger Portfolio</title>
-  <link rel="shortcut icon" href="images/favicons/favicon-48x48.png">
-  <link rel="apple-touch-icon" href="images/favicons/favicon-48x48.png">
-  <link rel="apple-touch-icon" sizes="96x96" href="images/favicons/favicon-96x96.png">
-  <link rel="apple-touch-icon" sizes="144x144" href="images/favicons/favicon-144x144.png">
-  <!-- start of bootsrap -->
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans:600,700" rel="stylesheet">
-  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap-grid.css"/>
-  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.css"/>
-  <link rel="stylesheet" href="assets/fonts/fontawesome/css/fontawesome-all.css" />
-  <link rel="stylesheet" href="assets/fonts/iconic/css/open-iconic.css" />
- <link rel="stylesheet" href="assets/vendors/bootstrap-daterangepicker/daterangepicker.css" />
- <link rel="stylesheet" href="assets/css/table.css" />
- <link rel="stylesheet" href="assets/vendors/DataTables/dataTables.bootstrap4.min.css" />
-  <link href="assets/vendors/animations/animate.min.css" rel="stylesheet" type="text/css" />
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blogtrackers - Blogger Portfolio</title>
+<link rel="shortcut icon" href="images/favicons/favicon-48x48.png">
+<link rel="apple-touch-icon" href="images/favicons/favicon-48x48.png">
+<link rel="apple-touch-icon" sizes="96x96"
+	href="images/favicons/favicon-96x96.png">
+<link rel="apple-touch-icon" sizes="144x144"
+	href="images/favicons/favicon-144x144.png">
+<!-- start of bootsrap -->
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:600,700"
+	rel="stylesheet">
+<link rel="stylesheet" href="assets/bootstrap/css/bootstrap-grid.css" />
+<link rel="stylesheet" href="assets/bootstrap/css/bootstrap.css" />
+<link rel="stylesheet"
+	href="assets/fonts/fontawesome/css/fontawesome-all.css" />
+<link rel="stylesheet" href="assets/fonts/iconic/css/open-iconic.css" />
+<link rel="stylesheet"
+	href="assets/vendors/bootstrap-daterangepicker/daterangepicker.css" />
+<link rel="stylesheet" href="assets/css/table.css" />
+<link rel="stylesheet"
+	href="assets/vendors/DataTables/dataTables.bootstrap4.min.css" />
+<link href="assets/vendors/animations/animate.min.css" rel="stylesheet"
+	type="text/css" />
 
 <link rel="stylesheet" href="assets/css/daterangepicker.css" />
-  <link rel="stylesheet" href="assets/css/style.css" />
+<link rel="stylesheet" href="assets/css/style.css" />
 
-  <!--end of bootsrap -->
-  <script src="assets/js/jquery-3.2.1.slim.min.js" ></script>
+<!--end of bootsrap -->
+<script src="assets/js/jquery-3.2.1.slim.min.js"></script>
 <script src="assets/js/popper.min.js"></script>
-<script type="text/javascript" src="assets/vendors/animations/animations_css3.js"></script>
-  <script src="pagedependencies/googletagmanagerscript.js"></script>
+<script type="text/javascript"
+	src="assets/vendors/animations/animations_css3.js"></script>
+<script src="pagedependencies/googletagmanagerscript.js"></script>
 </head>
 <body>
-<%@include file="subpages/loader.jsp" %>
-<%@include file="subpages/googletagmanagernoscript.jsp" %>
- <div class="modal-notifications">
-<div class="row">
-<div class="col-lg-10 closesection">
-	
+	<%@include file="subpages/loader.jsp"%>
+	<%@include file="subpages/googletagmanagernoscript.jsp"%>
+	<div class="modal-notifications">
+		<div class="row">
+			<div class="col-lg-10 closesection"></div>
+			<div class="col-lg-2 col-md-12 notificationpanel">
+				<div id="closeicon" class="cursor-pointer">
+					<i class="fas fa-times-circle"></i>
+				</div>
+				<div class="profilesection col-md-12 mt50">
+					<%
+						if (userinfo.size() > 0) {
+					%>
+					<div class="text-center mb10">
+						<img src="<%=profileimage%>" width="60" height="60"
+							onerror="this.src='images/default-avatar.png'" alt="" />
+					</div>
+					<div class="text-center" style="margin-left: 0px;">
+						<h6 class="text-primary m0 bolder profiletext"><%=name%></h6>
+						<p class="text-primary profiletext"><%=email%></p>
+					</div>
+					<%
+						}
+					%>
+				</div>
+				<div id="othersection" class="col-md-12 mt10" style="clear: both">
+					<%
+						if (userinfo.size() > 0) {
+					%>
+					<a class="cursor-pointer profilemenulink"
+						href="<%=request.getContextPath()%>/notifications.jsp"><h6
+							class="text-primary">
+							Notifications <b id="notificationcount" class="cursor-pointer">12</b>
+						</h6> </a> <a class="cursor-pointer profilemenulink"
+						href="<%=request.getContextPath()%>/addblog.jsp"><h6
+							class="text-primary">Add Blog</h6></a> <a
+						class="cursor-pointer profilemenulink"
+						href="<%=request.getContextPath()%>/profile.jsp"><h6
+							class="text-primary">Profile</h6></a> <a
+						class="cursor-pointer profilemenulink"
+						href="<%=request.getContextPath()%>/logout"><h6
+							class="text-primary">Log Out</h6></a>
+					<%
+						} else {
+					%>
+					<a class="cursor-pointer profilemenulink"
+						href="<%=request.getContextPath()%>/login"><h6
+							class="text-primary">Login</h6></a>
+
+					<%
+						}
+					%>
+				</div>
+			</div>
+		</div>
 	</div>
-  <div class="col-lg-2 col-md-12 notificationpanel">
-    <div id="closeicon" class="cursor-pointer"><i class="fas fa-times-circle"></i></div>
-  <div class="profilesection col-md-12 mt50">
-  <% if(userinfo.size()>0){ %>
-    <div class="text-center mb10" ><img src="<%=profileimage%>" width="60" height="60" onerror="this.src='images/default-avatar.png'" alt="" /></div>
-    <div class="text-center" style="margin-left:0px;">
-      <h6 class="text-primary m0 bolder profiletext"><%=name%></h6>
-      <p class="text-primary profiletext"><%=email%></p>
-    </div>
-  <%} %>
-  </div>
-  <div id="othersection" class="col-md-12 mt10" style="clear:both">
-  <% if(userinfo.size()>0){ %>
-  <a class="cursor-pointer profilemenulink" href="<%=request.getContextPath()%>/notifications.jsp"><h6 class="text-primary">Notifications <b id="notificationcount" class="cursor-pointer">12</b></h6> </a>
-   <a class="cursor-pointer profilemenulink" href="<%=request.getContextPath()%>/addblog.jsp"><h6 class="text-primary">Add Blog</h6></a>
-  <a class="cursor-pointer profilemenulink" href="<%=request.getContextPath()%>/profile.jsp"><h6 class="text-primary">Profile</h6></a>
-  <a class="cursor-pointer profilemenulink" href="<%=request.getContextPath()%>/logout"><h6 class="text-primary">Log Out</h6></a>
-  <%}else{ %>
-  <a class="cursor-pointer profilemenulink" href="<%=request.getContextPath()%>/login"><h6 class="text-primary">Login</h6></a>
-  
-  <%} %>
-  </div>
-  </div>
-</div>
-</div>
 
-      <nav class="navbar navbar-inverse bg-primary">
-        <div class="container-fluid mt10 mb10">
+	<nav class="navbar navbar-inverse bg-primary">
+		<div class="container-fluid mt10 mb10">
 
-          <div class="navbar-header d-none d-lg-inline-flex d-xl-inline-flex  col-lg-3">
-      <a class="navbar-brand text-center logohomeothers" href="./">
-  </a>
-          </div>
-          <!-- Mobile Menu -->
-          <nav class="navbar navbar-dark bg-primary float-left d-md-block d-sm-block d-xs-block d-lg-none d-xl-none" id="menutoggle">
-          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-          </button>
-          </nav>
-          <!-- <div class="navbar-header ">
+			<div
+				class="navbar-header d-none d-lg-inline-flex d-xl-inline-flex  col-lg-3">
+				<a class="navbar-brand text-center logohomeothers" href="./"> </a>
+			</div>
+			<!-- Mobile Menu -->
+			<nav
+				class="navbar navbar-dark bg-primary float-left d-md-block d-sm-block d-xs-block d-lg-none d-xl-none"
+				id="menutoggle">
+				<button class="navbar-toggler" type="button" data-toggle="collapse"
+					data-target="#navbarToggleExternalContent"
+					aria-controls="navbarToggleExternalContent" aria-expanded="false"
+					aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+			</nav>
+			<!-- <div class="navbar-header ">
           <a class="navbar-brand text-center" href="#"><img src="images/blogtrackers.png" /></a>
           </div> -->
-          <!-- Mobile menu  -->
-          <div class="col-lg-6 themainmenu"  align="center">
-            <ul class="nav main-menu2" style="display:inline-flex; display:-webkit-inline-flex; display:-mozkit-inline-flex;">
-            <li><a class="bold-text" href="<%=request.getContextPath()%>/blogbrowser.jsp"><i class="homeicon"></i> <b class="bold-text ml30">Home</b></a></li>
-          <li><a class="bold-text" href="<%=request.getContextPath()%>/trackerlist.jsp"><i class="trackericon"></i><b class="bold-text ml30">Trackers</b></a></li>
-          <li><a class="bold-text" href="<%=request.getContextPath()%>/favorites.jsp"><i class="favoriteicon"></i> <b class="bold-text ml30">Favorites</b></a></li>
-        
-                </ul>
-          </div>
+			<!-- Mobile menu  -->
+			<div class="col-lg-6 themainmenu" align="center">
+				<ul class="nav main-menu2"
+					style="display: inline-flex; display: -webkit-inline-flex; display: -mozkit-inline-flex;">
+					<li><a class="bold-text"
+						href="<%=request.getContextPath()%>/blogbrowser.jsp"><i
+							class="homeicon"></i> <b class="bold-text ml30">Home</b></a></li>
+					<li><a class="bold-text"
+						href="<%=request.getContextPath()%>/trackerlist.jsp"><i
+							class="trackericon"></i><b class="bold-text ml30">Trackers</b></a></li>
+					<li><a class="bold-text"
+						href="<%=request.getContextPath()%>/favorites.jsp"><i
+							class="favoriteicon"></i> <b class="bold-text ml30">Favorites</b></a></li>
 
-      <div class="col-lg-3">
-  	 <% if(userinfo.size()>0){ %>
-  		
-	  <ul class="nav navbar-nav" style="display:block;">
-		  <li class="dropdown dropdown-user cursor-pointer float-right">
-		  <a class="dropdown-toggle " id="profiletoggle" data-toggle="dropdown">
-		    <i class="fas fa-circle" id="notificationcolor"></i>
-		   
-		  <img src="<%=profileimage%>" width="50" height="50" onerror="this.src='images/default-avatar.png'" alt="" class="" />
-		  <span><%=user_name[0]%></span></a>
-			
-		   </li>
-	    </ul>
-         <% }else{ %>
-         <ul class="nav main-menu2 float-right" style="display:inline-flex; display:-webkit-inline-flex; display:-mozkit-inline-flex;">
-        
-        	<li class="cursor-pointer"><a href="login.jsp">Login</a></li>
-         </ul>
-        <% } %>
-      </div>
+				</ul>
+			</div>
 
-          </div>
-          <div class="col-md-12 bg-dark d-md-block d-sm-block d-xs-block d-lg-none d-xl-none p0 mt20">
-          <div class="collapse" id="navbarToggleExternalContent">
-            <ul class="navbar-nav mr-auto mobile-menu">
-                       <li class="nav-item active">
-                <a class="" href="<%=request.getContextPath()%>/blogbrowser.jsp">Home <span class="sr-only">(current)</span></a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="<%=request.getContextPath()%>/trackerlist.jsp">Trackers</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="<%=request.getContextPath()%>/favorites.jsp">Favorites</a>
-              </li>
-                </ul>
-        </div>
-          </div>
+			<div class="col-lg-3">
+				<%
+					if (userinfo.size() > 0) {
+				%>
 
-          <!-- <div class="col-md-12 mt0">
+				<ul class="nav navbar-nav" style="display: block;">
+					<li class="dropdown dropdown-user cursor-pointer float-right">
+						<a class="dropdown-toggle " id="profiletoggle"
+						data-toggle="dropdown"> <i class="fas fa-circle"
+							id="notificationcolor"></i> <img src="<%=profileimage%>"
+							width="50" height="50"
+							onerror="this.src='images/default-avatar.png'" alt="" class="" />
+							<span><%=user_name[0]%></span></a>
+
+					</li>
+				</ul>
+				<%
+					} else {
+				%>
+				<ul class="nav main-menu2 float-right"
+					style="display: inline-flex; display: -webkit-inline-flex; display: -mozkit-inline-flex;">
+
+					<li class="cursor-pointer"><a href="login.jsp">Login</a></li>
+				</ul>
+				<%
+					}
+				%>
+			</div>
+
+		</div>
+		<div
+			class="col-md-12 bg-dark d-md-block d-sm-block d-xs-block d-lg-none d-xl-none p0 mt20">
+			<div class="collapse" id="navbarToggleExternalContent">
+				<ul class="navbar-nav mr-auto mobile-menu">
+					<li class="nav-item active"><a class=""
+						href="<%=request.getContextPath()%>/blogbrowser.jsp">Home <span
+							class="sr-only">(current)</span></a></li>
+					<li class="nav-item"><a class="nav-link"
+						href="<%=request.getContextPath()%>/trackerlist.jsp">Trackers</a>
+					</li>
+					<li class="nav-item"><a class="nav-link"
+						href="<%=request.getContextPath()%>/favorites.jsp">Favorites</a></li>
+				</ul>
+			</div>
+		</div>
+
+		<!-- <div class="col-md-12 mt0">
           <input type="search" class="form-control p30 pt5 pb5 icon-big border-none bottom-border text-center blogbrowsersearch nobackground" placeholder="Search Trackers" />
           </div> -->
 
-        </nav>
-<div class="container analyticscontainer">
-<div class="row">
-<div class="col-md-6 paddi">
+	</nav>
+	<div class="container analyticscontainer">
+		<div class="row">
+			<div class="col-md-6 paddi">
 
- <nav class="breadcrumb">
+				<nav class="breadcrumb">
 					<a class="breadcrumb-item text-primary"
-						href="<%=request.getContextPath()%>/trackerlist.jsp">Trackers</a> 
-						<a class="breadcrumb-item text-primary"	href="<%=request.getContextPath()%>/edittracker.jsp?tid=<%=tid%>"><%=trackername%></a>
-					<a class="breadcrumb-item active text-primary" href="<%=request.getContextPath()%>/dashboard.jsp?tid=<%=tid%>">Dashboard</a>
-					<a class="breadcrumb-item active text-primary" href="<%=request.getContextPath()%>/blogportfolio.jsp?tid=<%=tid%>">Blogger Portfolio</a>
+						href="<%=request.getContextPath()%>/trackerlist.jsp">Trackers</a>
+					<a class="breadcrumb-item text-primary"
+						href="<%=request.getContextPath()%>/edittracker.jsp?tid=<%=tid%>"><%=trackername%></a>
+					<a class="breadcrumb-item active text-primary"
+						href="<%=request.getContextPath()%>/dashboard.jsp?tid=<%=tid%>">Dashboard</a>
+					<a class="breadcrumb-item active text-primary"
+						href="<%=request.getContextPath()%>/blogportfolio.jsp?tid=<%=tid%>">Blogger
+						Portfolio</a>
 				</nav>
-<div><button class="btn btn-primary stylebutton1 " id="printdoc">SAVE AS PDF</button></div>
-</div>
+				<div>
+					<button class="btn btn-primary stylebutton1 " id="printdoc">SAVE
+						AS PDF</button>
+				</div>
+			</div>
 
-<div class="col-md-6 text-right mt10">
-<div class="text-primary demo">
+			<div class="col-md-6 text-right mt10">
+				<div class="text-primary demo">
 					<h6 id="reportrange">
 						Date: <span><%=dispfrom%> - <%=dispto%></span>
 					</h6>
 				</div>
-<div>
-  <div class="btn-group mt5" data-toggle="buttons">
-  <!-- <label class="btn btn-primary btn-sm daterangebutton legitRipple nobgnoborder"> <input type="radio" name="options" value="day" autocomplete="off" > Day
+				<div>
+					<div class="btn-group mt5" data-toggle="buttons">
+						<!-- <label class="btn btn-primary btn-sm daterangebutton legitRipple nobgnoborder"> <input type="radio" name="options" value="day" autocomplete="off" > Day
   	</label>
     <label class="btn btn-primary btn-sm nobgnoborder"> <input type="radio" name="options" value="week" autocomplete="off" >Week
   	</label>
@@ -691,60 +761,66 @@ System.out.println("test here3");
   	</label>
     <label class="btn btn-primary btn-sm text-center nobgnoborder">Year <input type="radio" name="options" value="year" autocomplete="off" >
   	</label> -->
-   <!--  <label class="btn btn-primary btn-sm nobgnoborder " id="custom">Custom</label> -->
-  </div>
+						<!--  <label class="btn btn-primary btn-sm nobgnoborder " id="custom">Custom</label> -->
+					</div>
 
-  <!-- Day Week Month Year <b id="custom" class="text-primary">Custom</b> -->
+					<!-- Day Week Month Year <b id="custom" class="text-primary">Custom</b> -->
 
-</div>
-</div>
-</div>
+				</div>
+			</div>
+		</div>
 
-<div class="row p0 pt20 pb20 border-top-bottom mt20 mb20">
-  <div class="col-md-2 animated fadeInLeft">
-  <div class="card nocoloredcard mt10 mb10">
+		<div class="row p0 pt20 pb20 border-top-bottom mt20 mb20">
+			<div class="col-md-2 animated fadeInLeft">
+				<div class="card nocoloredcard mt10 mb10">
 					<div class="card-body p0 pt5 pb5">
-<!-- <small class="text-primary">Select Blogger</small> -->
-<h5 class="text-primary mb0">
+						<!-- <small class="text-primary">Select Blogger</small> -->
+						<h5 class="text-primary mb0">
 							<i class="icondash"></i>Select Blogger
 						</h5>
-<h6 class="mt5">
-<select id="blogger-changed" class="custom-select">
- <%
- if (bloggerPostFrequency.size() > 0) {
-		int p = 0;
-		for (int m = 0; m < bloggerPostFrequency.size(); m++) {
-			ArrayList<?> bloggerFreq = (ArrayList<?>) bloggerPostFrequency.get(m);
-			String bloggerName = bloggerFreq.get(0).toString();
-			String bloggerPostFreq = bloggerFreq.get(1).toString();
-			String blogsiteId = bloggerFreq.get(2).toString();
-				if(p==0){
-					mostactiveblogger = bloggerName;
-				}
-				if (p < 10) {
-					%>
-					<option value="<%=blogsiteId%>_<%=bloggerName%>" <% if(mostactiveblogger.equals(bloggerName)){ %> selected <% } %>><%=bloggerName%></option>
- 
-				<%	p++;
-					
-				}
-		}
- }
- %>
-</select>
+						<h6 class="mt5">
+							<select id="blogger-changed" class="custom-select">
+								<%
+									if (bloggerPostFrequency.size() > 0) {
+												System.out.println("test here3");
+												int p = 0;
+												for (int m = 0; m < bloggerPostFrequency.size(); m++) {
+													ArrayList<?> bloggerFreq = (ArrayList<?>) bloggerPostFrequency.get(m);
+													/* String bloggerName = bloggerFreq.get(0).toString(); */
+													System.out.println(bloggerFreq.get(0).toString());
+													String bloggerName = (null == bloggerFreq.get(0).toString()
+															|| "NULL" == bloggerFreq.get(0).toString()) ? "" : bloggerFreq.get(0).toString();
+													String bloggerPostFreq = bloggerFreq.get(1).toString();
+													String blogsiteId = bloggerFreq.get(2).toString();
+													if (p == 0) {
+														mostactiveblogger = bloggerName;
+													}
+													if (p < 10) {
+								%>
+								<option value="<%=blogsiteId%>_<%=bloggerName%>"
+									<%if (mostactiveblogger.equals(bloggerName)) {%> selected <%}%>><%=bloggerName%></option>
 
-</h6>
-<!-- <h2 class="textblue styleheading">AdNovum <div class="circle"></div></h2> -->
-</div>
-</div>
-</div>
-<div class="col-md-2">
+								<%
+									p++;
+
+													}
+												}
+											}
+								%>
+							</select>
+
+						</h6>
+						<!-- <h2 class="textblue styleheading">AdNovum <div class="circle"></div></h2> -->
+					</div>
+				</div>
+			</div>
+			<div class="col-md-2">
 				<div class="card nocoloredcard mt10 mb10">
 					<div class="card-body p0 pt5 pb5">
 						<h5 class="text-primary mb0">
 							<i class="fas fa-exchange-alt icondash"></i>Influence
 						</h5>
-						<h3 class="text-blue mb0 countdash dash-label total-influence"><%=NumberFormat.getNumberInstance(Locale.US).format(Float.parseFloat(totalinfluence))%></h3>				
+						<h3 class="text-blue mb0 countdash dash-label total-influence"><%=NumberFormat.getNumberInstance(Locale.US).format(Float.parseFloat(totalinfluence))%></h3>
 					</div>
 				</div>
 			</div>
@@ -756,6 +832,8 @@ System.out.println("test here3");
 							<i class="fas fa-search icondash"></i>Top Keyword
 						</h5>
 						<h3 class="text-blue mb0 countdash dash-label top-keyword"><%=mostactiveterm%></h3>
+						<h3
+							class="text-blue mb0 countdash dash-label top-keyword-ids hidden"><%=ids%></h3>
 					</div>
 				</div>
 			</div>
@@ -765,9 +843,9 @@ System.out.println("test here3");
 					<div class="card-body p0 pt5 pb5">
 						<h5 class="text-primary mb0">
 							<i class="fas fa-file-alt icondash"></i>Posts
-						</h5>	
-						<h3 class="text-blue mb0 countdash dash-label total-post"><%= NumberFormat.getNumberInstance(Locale.US).format(Integer.parseInt(totalpost)) %></h3>
-					
+						</h5>
+						<h3 class="text-blue mb0 countdash dash-label total-post"><%=NumberFormat.getNumberInstance(Locale.US).format(Integer.parseInt(totalpost))%></h3>
+
 					</div>
 				</div>
 			</div>
@@ -778,27 +856,34 @@ System.out.println("test here3");
 						<h5 class="text-primary mb0">
 							<i class="fas fa-adjust icondash"></i>Sentiment
 						</h5>
-						<h3 class="text-blue mb0 countdash dash-label total-sentiment"><%=NumberFormat.getNumberInstance(Locale.US).format(Integer.parseInt(possentiment)+Integer.parseInt(negsentiment))%></h3>
+						<h3 class="text-blue mb0 countdash dash-label total-sentiment"><%=NumberFormat.getNumberInstance(Locale.US)
+							.format(Integer.parseInt(possentiment) + Integer.parseInt(negsentiment))%></h3>
 					</div>
 				</div>
 			</div>
-<div class="col-md-2 text-right">
-<div class="card nocoloredcard mt10 mb10">
+			<div class="col-md-2 text-right">
+				<div class="card nocoloredcard mt10 mb10">
 					<div class="card-body p0 pt5 pb5">
-<!-- <small class="text-primary">Blogsite of <b class="text-blue"><u>Advonum</u></b></small><br/> -->
-<h5 class="text-primary mb0 active-blog"><%=mostactiveblogger%></h5>
-<h3><a href="http://<%=mostactiveblogurl%>" target="_blank"><button class="btn buttonportfolio"><b class="float-left">Visit Site</b> <b class="far fa-file-alt float-right iconportfolio"></b></button></a></h3>
-</div>
-</div>
-</div>
-  <!-- <div class="col-md-3">
+						<!-- <small class="text-primary">Blogsite of <b class="text-blue"><u>Advonum</u></b></small><br/> -->
+						<h5 class="text-primary mb0 active-blog"><%=mostactiveblogger%></h5>
+						<h3>
+							<a href="http://<%=mostactiveblogurl%>" target="_blank"><button
+									class="btn buttonportfolio">
+									<b class="float-left">Visit Site</b> <b
+										class="far fa-file-alt float-right iconportfolio"></b>
+								</button></a>
+						</h3>
+					</div>
+				</div>
+			</div>
+			<!-- <div class="col-md-3">
   <small class="text-primary">Find Blogger</small>
   <input class="form-control inputboxstyle opacity53 inputportfolio" placeholder="| Search" /><i class="fas fa-search searchiconinput"></i>
   </div>-->
-</div> 
+		</div>
 
-<div class="row mt40">
-<!-- <div class="col-md-3">
+		<div class="row mt40">
+			<!-- <div class="col-md-3">
   <div class="card card-style mt20 opacity53 cursor-pointer">
     <div class="card-body  p30 pt10 pb10">
       <h6 class="card-title mb0">Maximum Influence</h6>
@@ -832,155 +917,187 @@ System.out.println("test here3");
   </div>
 
 </div> -->
-<div class="col-md-12">
-  <div class="card card-style mt20">
-    <div class="card-body  p30 pt5 pb5">
-      <div style="min-height: 365px;">
-<div><p class="text-primary mt10 float-left"><b class="text-green">Posts</b> Published by <b class="textblue"><u class="active-blog"><%=mostactiveblogger%></u></b> <!-- of Past <select class="text-primary filtersort sortbytimerange"><option value="week">Week</option><option value="month">Month</option><option value="year">Year</option></select> --></p></div>
-<!-- <svg class="linesvg" width="960" height="400"></svg> -->
-<!-- <div id="lineplot" style="min-height: 380px;"></div> -->
-<div id="overall-chart">
-<div class="chart-container">
-  <div class="chart" id="d3-line-basic"></div>
-</div>
-</div>
+			<div class="col-md-12">
+				<div class="card card-style mt20">
+					<div class="card-body  p30 pt5 pb5">
+						<div style="min-height: 365px;">
+							<div>
+								<p class="text-primary mt10 float-left">
+								<input type="hidden" name="ids__" id="all_blogsite_ids" value="<%=ids%>" />
+								
+									<b class="text-green">Posts</b> Published by <b
+										class="textblue"><u class="active-blog"><%=mostactiveblogger%></u></b>
+									<!-- of Past <select class="text-primary filtersort sortbytimerange"><option value="week">Week</option><option value="month">Month</option><option value="year">Year</option></select> -->
+								</p>
+							</div>
+							<!-- <svg class="linesvg" width="960" height="400"></svg> -->
+							<!-- <div id="lineplot" style="min-height: 380px;"></div> -->
+							<div id="overall-chart">
+								<div class="chart-container">
+									<div class="chart" id="d3-line-basic"></div>
+								</div>
+							</div>
 
-      </div>
-        </div>
-  </div>
-</div>
+						</div>
+					</div>
+				</div>
+			</div>
 
 
-</div>
+		</div>
 
- 
-<form action="" name="customform" id="customform" method="post">
-<input type="hidden" id="term" value="<%=mostactiveterm%>" />
-<input type="hidden" id="date_start" value="<%=dt%>" />
-<input type="hidden" id="date_end" value="<%=dte%>" />
 
-</form>
+		<form action="" name="customform" id="customform" method="post">
+			<input type="hidden" id="term" value="<%=mostactiveterm%>" /> <input
+				type="hidden" id="date_start" value="<%=dt%>" /> <input
+				type="hidden" id="date_end" value="<%=dte%>" />
 
-<div class="row mb0">
-  <div class="col-md-6 mt20 ">
-    <div class="card card-style mt20">
-      <div class="card-body  p5 pt10 pb10">
+		</form>
 
-        <div style="min-height: 420px;">
-          <div><p class="text-primary p15 pb5 pt0"><b class="text-blue"><u class="active-blog"><%=mostactiveblogger %></u></b> Day of the Week Posting Pattern <!-- of Past <select class="text-primary filtersort sortbytimerange"><option value="week">Week</option><option value="month">Month</option><option value="year">Year</option></select> --></p></div>
-          
-          <div id="day-chart">
-	          <div class="chart" id="d3-bar-horizontal"></div>
-          </div>
-        </div>
-          </div>
-    </div>
-  </div>
+		<div class="row mb0">
+			<div class="col-md-6 mt20 ">
+				<div class="card card-style mt20">
+					<div class="card-body  p5 pt10 pb10">
 
-  <div class="col-md-6 mt20">
-    <div class="card card-style mt20">
-      <div class="card-body  p5 pt10 pb10">
-        <div class="min-height-table" style="min-height: 420px;">
-          <div><p class="text-primary p15 pb5 pt0"><b class="text-blue"><u class="active-blog"><%=mostactiveblogger %></u></b> Yearly Posting Pattern <!-- of Past <select class="text-primary filtersort sortbytimerange"><option value="week">Week</option><option value="month">Month</option><option value="year">Year</option></select> --></p></div>
-         <div class="chart-container" id="year-chart" >
-          <div class="chart" id="yearlypattern">
+						<div style="min-height: 420px;">
+							<div>
+								<p class="text-primary p15 pb5 pt0">
+									<b class="text-blue"><u class="active-blog"><%=mostactiveblogger%></u></b>
+									Day of the Week Posting Pattern
+									<!-- of Past <select class="text-primary filtersort sortbytimerange"><option value="week">Week</option><option value="month">Month</option><option value="year">Year</option></select> -->
+								</p>
+							</div>
 
-          </div>
-          </div>
-        </div>
-          </div>
-    </div>
-  </div>
-</div>
+							<div id="day-chart">
+								<div class="chart" id="d3-bar-horizontal"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 
-<div class="row mb50">
-  <div class="col-md-12 mt20 ">
-    <div class="card card-style mt20">
-      <div class="card-body  p5 pt10 pb10">
-        <p class="p15 pb5 pt0 text-primary">List of <select id="top-listtype"  
-										class="text-primary filtersort sortbydomainsrls"><option
-											value="domains">Domains</option>
-										<option value="urls">URLs</option></select> of <b class="textblue active-blog"><%=mostactiveblogger %></b></p>
-        <div style="min-height: 420px;">
-         <!--  <div class="p15 pb5 pt0" role="group">
+			<div class="col-md-6 mt20">
+				<div class="card card-style mt20">
+					<div class="card-body  p5 pt10 pb10">
+						<div class="min-height-table" style="min-height: 420px;">
+							<div>
+								<p class="text-primary p15 pb5 pt0">
+									<b class="text-blue"><u class="active-blog"><%=mostactiveblogger%></u></b>
+									Yearly Posting Pattern
+									<!-- of Past <select class="text-primary filtersort sortbytimerange"><option value="week">Week</option><option value="month">Month</option><option value="year">Year</option></select> -->
+								</p>
+							</div>
+							<div class="chart-container" id="year-chart">
+								<div class="chart" id="yearlypattern"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row mb50">
+			<div class="col-md-12 mt20 ">
+				<div class="card card-style mt20">
+					<div class="card-body  p5 pt10 pb10">
+						<p class="p15 pb5 pt0 text-primary">
+							List of <select id="top-listtype"
+								class="text-primary filtersort sortbydomainsrls"><option
+									value="domains">Domains</option>
+								<option value="urls">URLs</option></select> of <b
+								class="textblue active-blog"><%=mostactiveblogger%></b>
+						</p>
+						<div style="min-height: 420px;">
+							<!--  <div class="p15 pb5 pt0" role="group">
           Export
           </div> -->
-               <div id="url-table">
-                <table id="DataTables_Table_0_wrapper" class="display" style="width:100%">
-                        <thead>
-                            <tr>
-                                <th>Domain</th>
-                                <th>Frequency</th>
+							<div id="url-table">
+								<table id="DataTables_Table_0_wrapper" class="display"
+									style="width: 100%">
+									<thead>
+										<tr>
+											<th>Domain</th>
+											<th>Frequency</th>
 
 
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <%
-										if (outlinklooper.size() > 0) {
-													//System.out.println(bloggers);
-													for (int y = 0; y < outlinklooper.size(); y++) {
-														String key = outlinklooper.get(y).toString();
-														JSONObject resu = outerlinks.getJSONObject(key);
-									%>
-									<tr>
-										<td class=""><a href="http://<%=resu.get("domain")%>" target="_blank"><%=resu.get("domain")%></a></td>
-										<td><%=resu.get("value")%></td>
-									</tr>
-									<%
-										}
-									}
-									%>                     
-                        </tbody>
-                    </table>
-                   </div>
-               
-        </div>
-          </div>
-    </div>
-  </div>
-  
-</div>
-</div>
+										</tr>
+									</thead>
+									<tbody>
+										<%
+											if (outlinklooper.size() > 0) {
+														//System.out.println(bloggers);
+														for (int y = 0; y < outlinklooper.size(); y++) {
+															String key = outlinklooper.get(y).toString();
+															JSONObject resu = outerlinks.getJSONObject(key);
+										%>
+										<tr>
+											<td class=""><a href="http://<%=resu.get("domain")%>"
+												target="_blank"><%=resu.get("domain")%></a></td>
+											<td><%=resu.get("value")%></td>
+										</tr>
+										<%
+											}
+													}
+										%>
+									</tbody>
+								</table>
+							</div>
+
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
 
 
-<!-- <footer class="footer">
+			
+	<!-- <footer class="footer">
   <div class="container-fluid bg-primary mt60">
 <p class="text-center text-medium pt10 pb10 mb0">Copyright &copy; 2017 All Rights Reserved.</p>
 </div>
   </footer> -->
-<form action="" name="customformsingle" id="customformsingle" method="post">
-		<input type="hidden" name="tid" id="alltid" value="<%=tid%>" />
-		
-		<input type="hidden" id="blogger" value="<%=selectedblogid%>" /> 
-		<input type="hidden" name="single_date" id="single_date" value="" />
-		
-		<input type="hidden" name="date_start" id="date_start" value="<%=dt%>" /> 
-		<input type="hidden" name="date_end" id="date_end" value="<%=dte%>" />	
-</form>
-	
+	<form action="" name="customformsingle" id="customformsingle"
+		method="post">
+		<input type="hidden" name="tid" id="alltid" value="<%=tid%>" /> <input
+			type="hidden" id="blogger" value="<%=selectedblogid%>" /> <input
+			type="hidden" name="single_date" id="single_date" value="" /> <input
+			type="hidden" name="date_start" id="date_start" value="<%=dt%>" /> <input
+			type="hidden" name="date_end" id="date_end" value="<%=dte%>" />
+			
+			
+	</form>
 
 
-  <script type="text/javascript" src="assets/js/jquery-1.11.3.min.js"></script>
- <script src="assets/bootstrap/js/bootstrap.js">
+
+	<script type="text/javascript" src="assets/js/jquery-1.11.3.min.js"></script>
+	<script src="assets/bootstrap/js/bootstrap.js">
 
  </script>
- <script src="assets/js/generic.js">
+	<script src="assets/js/generic.js">
  </script>
 
- <script src="assets/vendors/bootstrap-daterangepicker/moment.js"></script>
- <script src="assets/vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
- <!-- Start for tables  -->
- <script type="text/javascript" src="assets/vendors/DataTables/datatables.min.js"></script>
- <script type="text/javascript" src="assets/vendors/DataTables/dataTables.bootstrap4.min.js"></script>
- <script src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.flash.min.js"></script>
- <script src="assets/vendors/DataTables/Buttons-1.5.1/js/dataTables.buttons.min.js"></script>
- <script src="assets/vendors/DataTables/pdfmake-0.1.32/pdfmake.min.js"></script>
- <script src="assets/vendors/DataTables/pdfmake-0.1.32/vfs_fonts.js"></script>
- <script src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.html5.min.js"></script>
- <script src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.print.min.js"></script>
+	<script src="assets/vendors/bootstrap-daterangepicker/moment.js"></script>
+	<script
+		src="assets/vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
+	<!-- Start for tables  -->
+	<script type="text/javascript"
+		src="assets/vendors/DataTables/datatables.min.js"></script>
+	<script type="text/javascript"
+		src="assets/vendors/DataTables/dataTables.bootstrap4.min.js"></script>
+	<script
+		src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.flash.min.js"></script>
+	<script
+		src="assets/vendors/DataTables/Buttons-1.5.1/js/dataTables.buttons.min.js"></script>
+	<script src="assets/vendors/DataTables/pdfmake-0.1.32/pdfmake.min.js"></script>
+	<script src="assets/vendors/DataTables/pdfmake-0.1.32/vfs_fonts.js"></script>
+	<script
+		src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.html5.min.js"></script>
+	<script
+		src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.print.min.js"></script>
 
- <script>
+	<script>
  $(document).ready(function() {
 	 
 	 $('#printdoc').on('click',function(){
@@ -1030,8 +1147,8 @@ System.out.println("test here3");
      } );
  } );
  </script>
- <!--end for table  -->
- <script>
+	<!--end for table  -->
+	<script>
  $(document).ready(function() {
    $(document)
    						.ready(
@@ -1173,9 +1290,9 @@ System.out.println("test here3");
  });
  </script>
 
- <script type="text/javascript" src="assets/vendors/d3/d3.min.js"></script>
- <script type="text/javascript" src="assets/vendors/d3/d3_tooltip.js"></script>
- <script>
+	<script type="text/javascript" src="assets/vendors/d3/d3.min.js"></script>
+	<script type="text/javascript" src="assets/vendors/d3/d3_tooltip.js"></script>
+	<script>
 
  $(function () {
 
@@ -1272,11 +1389,11 @@ System.out.println("test here3");
  //   [{"date":"2014","close":500},{"date":"2015","close":900},{"date":"2016","close":1200}]
  // ];
 
- data = [[<% for(int q=0; q<sortedyearsarray.length(); q++){ 
-	  		String yer=sortedyearsarray.get(q).toString(); 
-	  		int vlue = Integer.parseInt(graphyears.get(yer).toString()); %>
+ data = [[<%for (int q = 0; q < sortedyearsarray.length(); q++) {
+						String yer = sortedyearsarray.get(q).toString();
+						int vlue = Integer.parseInt(graphyears.get(yer).toString());%>
 	  			{"date":"<%=yer%>","close":<%=vlue%>},
-	<% } %>]];
+	<%}%>]];
 
  //console.log(data);
  // data = [];
@@ -1694,7 +1811,7 @@ System.out.println("test here3");
 
 
 
- <script>
+	<script>
  $(function () {
 
      // Initialize chart
@@ -1940,8 +2057,8 @@ System.out.println("test here3");
  });
  </script>
 
-<!-- Yearly patterns  -->
- <script>
+	<!-- Yearly patterns  -->
+	<script>
  $(function () {
 
      // Initialize chart
@@ -2426,9 +2543,9 @@ System.out.println("test here3");
 
  </script>
 
-<script src="pagedependencies/baseurl.js?v=93"></script>
-<script src="pagedependencies/bloggerportfolio.js"></script>
-<script>
+	<script src="pagedependencies/baseurl.js?v=93"></script>
+	<script src="pagedependencies/bloggerportfolio.js"></script>
+	<script>
 $(document).ready(function() {
 	
 	$('#top-listtype').on("change",function(e){
@@ -2442,4 +2559,7 @@ $(document).ready(function() {
 </script>
 </body>
 </html>
-<% }} %>
+<%
+	}
+	}
+%>
