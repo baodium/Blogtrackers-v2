@@ -23,10 +23,9 @@ Object all_blogs = (null == request.getParameter("all_blogs")) ? "" : request.ge
 Object sort = (null == request.getParameter("sort")) ? "" : request.getParameter("sort");
 Object action = (null == request.getParameter("action")) ? "" : request.getParameter("action");
 Object post_ids = (null == request.getParameter("post_ids")) ? "" : request.getParameter("post_ids");
-String blogger = (null == request.getParameter("blogger")) ? "" : request.getParameter("blogger");
 
 
-System.out.println("blogger-chart--"+blogger);
+
 Trackers tracker  = new Trackers();
 Blogposts post  = new Blogposts();
 Blogs blog  = new Blogs();
@@ -264,12 +263,8 @@ if(action.toString().equals("getstats")){
 		}
 	}
 	
-	String sql = post._getBloggerPosts(blogger);
-
-	mostactiveterm = post._termVectors(sql);
-	
 	JSONObject result = new JSONObject();
-	result.put("totalpost",0);
+	result.put("totalpost",totalpost);
 	result.put("totalsentiment",comb);
 	result.put("totalinfluence",normalized_score);
 	result.put("topterm",mostactiveterm);

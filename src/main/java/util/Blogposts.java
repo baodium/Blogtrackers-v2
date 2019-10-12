@@ -1900,6 +1900,8 @@ public String _searchMinAndMaxRangeMaxByBloggers(String field,String greater, St
 			System.out.println("GETTING TERM VECTORS");
 			String jsonResponse = EntityUtils.toString(response.getEntity());
 			myResponse = new JSONObject(jsonResponse);
+			
+			esClient.close();
 		} catch (Exception e) {
 
 		}
@@ -2249,6 +2251,7 @@ public String _searchMinAndMaxRangeMaxByBloggers(String field,String greater, St
 //	
 		ArrayList<String> list = new ArrayList<String>();
 		ArrayList<String> _idlist = new ArrayList<String>();
+		String result = null;
 		JSONObject query = new JSONObject("{\r\n" + "    \"size\": 10000,\r\n" + "    \"query\": {\r\n"
 				+ "        \"bool\": {\r\n" + "            \"must\": [\r\n" + "                {\r\n"
 				+ "                    \"bool\": {\r\n" + "                        \"must\": [\r\n"
@@ -2279,55 +2282,24 @@ public String _searchMinAndMaxRangeMaxByBloggers(String field,String greater, St
 				+ "                \"unmapped_type\": \"float\"\r\n" + "            }\r\n" + "        }\r\n"
 				+ "    ]\r\n" + "}");
 
-		RestClient esClient = RestClient.builder(new HttpHost("144.167.115.90", 9200, "http")).build();
-//		RestHighLevelClient client = new RestHighLevelClient(
-//				RestClient.builder(new HttpHost("localhost", 9200, "http")));
 
-		Request request = new Request("POST", "/blogposts/_search/?");
-		request.setJsonEntity(query.toString());
-
-		Response response = esClient.performRequest(request);
-		String source = null;
-		String source_ = null;
-		String result = null;
-		JSONArray jsonArray = null;
-		String jsonResponse = EntityUtils.toString(response.getEntity());
-
-		Object j_ = new JSONObject(response.getEntity());
-
-		JSONObject myResponse = new JSONObject(jsonResponse);
-		System.out.println("response-" + j_);
 		if (bloggerName != "" || bloggerName != null) {
 			System.out.println("nameblogger" + bloggerName);
-			if (null != myResponse.get("hits")) {
-				Object hits = myResponse.getJSONObject("hits").getJSONArray("hits");
-				Object total = myResponse.getJSONObject("hits").getJSONObject("total").get("value");
-//			JSONArray hits_ = myResponse.getJSONArray("hits");
 
-				JSONObject myRes1 = new JSONObject(hits);
-				source = hits.toString();
+			JSONArray jsonArray = this._elastic(query);
 
-//			this.totalpost = total;
-//
-				jsonArray = new JSONArray(source);
-
-//			System.out.print("--"+src);
-//			System.out.print("----"+jsonArray.length());
 				System.out.println("DONE GETTING POSTS FOR BLOGGER");
 				if (jsonArray != null) {
-////////				int len = jsonArray.length();
+
 					for (int i = 0; i < jsonArray.length(); i++) {
-//////					System.out.println();
+
 						String indx = jsonArray.get(i).toString();
 						JSONObject j = new JSONObject(indx);
 						String ids = j.get("_source").toString();
 						String _ids = j.get("_id").toString();
 
 						j = new JSONObject(ids);
-//						JSONObject _j = new JSONObject(_ids);
-
 						String src = j.get("post").toString();
-
 						list.add(src);
 						_idlist.add("\"" + _ids + "\"");
 					}
@@ -2367,7 +2339,7 @@ public String _searchMinAndMaxRangeMaxByBloggers(String field,String greater, St
 //			
 //			System.out.print("index-"+index);
 
-			}
+//			}
 		}
 //		RestHighLevelClient client = new RestHighLevelClient(
 //        RestClient.builder(
@@ -2429,7 +2401,7 @@ public String _searchMinAndMaxRangeMaxByBloggers(String field,String greater, St
 //
 ////		return this._getResult(url, jsonObj);
 //		System.out.println("response--" + jsonResponse);
-		esClient.close();
+//		esClient.close();
 //		client.close();
 
 //		result = result.replace("/","//");
