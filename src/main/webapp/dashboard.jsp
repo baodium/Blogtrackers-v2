@@ -2730,6 +2730,9 @@ var mymarker = [
 		src="chartdependencies/keywordtrendd3.js"></script>
 	<!--word cloud  -->
 	<script>
+	
+
+	
 	var word_count2 = {}; 
 	/* var res = {}; */
 	   <%JSONArray sortedterms = term._sortJson2(unsortedterms);

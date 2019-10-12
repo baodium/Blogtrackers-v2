@@ -23,6 +23,15 @@
 	Object post_ids = (null == request.getParameter("post_ids")) ? "" : request.getParameter("post_ids");
 	Object ids__ = (null == request.getParameter("ids__")) ? "" : request.getParameter("ids__");
 	
+Object date_start = (null == request.getParameter("date_start")) ? "" : request.getParameter("date_start");
+Object date_end = (null == request.getParameter("date_end")) ? "" : request.getParameter("date_end");
+Object blogger = (null == request.getParameter("blogger")) ? "" : request.getParameter("blogger");
+
+Object all_bloggers = (null == request.getParameter("all_bloggers")) ? "" : request.getParameter("all_bloggers");
+
+Object sort = (null == request.getParameter("sort")) ? "" : request.getParameter("sort");
+Object action = (null == request.getParameter("action")) ? "" : request.getParameter("action");
+Object post_ids = (null == request.getParameter("post_ids")) ? "" : request.getParameter("post_ids");
 
 	
 	
@@ -188,6 +197,45 @@
 		System.out.println("i am out again4");
 		String negsentiment = new Liwc()._searchRangeAggregate("date", date_start.toString(),
 				date_end.toString(), sentimentpost, "negemo");
+Terms term  = new Terms();
+		String dt = date_start.toString();
+		String dte = date_end.toString();
+		
+		
+		String selectedblogid=blogger.toString();
+		
+		JSONObject graphyears = new JSONObject();
+	    JSONArray yearsarray = new JSONArray();
+	    
+	    
+	   
+	    
+	  
+	    
+		String[] yst = dt.split("-");
+		String[] yend = dte.split("-");
+		String year_start = yst[0];
+		String year_end = yend[0];
+		
+		String month_start = yst[1];
+		String month_end = yend[1];
+		
+		int ystint = Integer.parseInt(year_start);
+		int yendint = Integer.parseInt(year_end);
+		
+		int b=0;
+		int jan=0;
+		int feb=0;
+		int march=0;
+		int apr=0;
+		int may=0;
+		int june=0;
+		int july=0;
+		int aug=0;
+		int sep=0;
+		int oct=0;
+		int nov=0;
+		int dec=0;
 		
 		System.out.println("i am out again5");
 		
@@ -234,6 +282,113 @@
 		result.put("totalsentiment", comb);
 		result.put("totalinfluence", totalpost);
 		result.put("topterm", mostactiveterm);
+	} 
+	
+	
+	
+	
+	String totalpost = post._searchRangeTotalByBlogger("date", date_start.toString(), date_end.toString(), selectedblogid);
+	
+	//String totalinfluence = post._searchRangeAggregateByBloggers("date", dt, dte, selectedblogid);	
+	Double influence =  Double.parseDouble(post._searchRangeMaxByBloggers("date",dt, dte,blogger.toString()));
+
+	//Start Normalized Value Calculation
+	String all_bloggers1 = all_bloggers.toString();
+	String[] all_blogger = all_bloggers1.split("---");
+    
+    
+	
+	double normalized_value;
+	double value = 0;
+	double max = 0;
+	double min = 0;
+	for(int i=0; i < all_blogger.length; i++){
+		
+		String blogger_name = all_blogger[i];
+		
+		value =  Double.parseDouble(post._searchRangeMaxByBloggers("date",dt, dte,blogger_name));
+
+		if(i == 0){
+			max = value;
+			min = value;
+		}
+		
+		if(value > max){
+			max = value;
+		}
+		
+		if(value < min){
+			min = value;
+		}
+		
+		
+		
+	}
+	
+	
+	
+	normalized_value = ( (influence - min)/(max - min));
+	
+	String normalized_score = "";
+	if(normalized_value >= 0.0 && normalized_value <= 0.2){
+		normalized_score = "Very Low";
+	}else if(normalized_value > 0.2 && normalized_value < 0.5){
+		normalized_score = "Low";
+	}else if(normalized_value == 0.5){
+		normalized_score = "Medium";
+	}else if(normalized_value > 0.5 && normalized_value < 0.8){
+		normalized_score = "High";
+	}else if(normalized_value > 0.8 && normalized_value <= 1.0){
+		normalized_score = "Very High";
+	}else{
+		normalized_score = "undefined";
+	}
+
+	//End Normalize value calculation
+	
+	
+	String totalinfluence = influence+"";
+	
+	String possentiment=new Liwc()._searchRangeAggregate("date", date_start.toString(), date_end.toString(), sentimentpost,"posemo");
+	String negsentiment=new Liwc()._searchRangeAggregate("date", date_start.toString(), date_end.toString(), sentimentpost,"negemo");
+	
+	int comb = Integer.parseInt(possentiment)+Integer.parseInt(negsentiment);
+	String mostactiveterm = "";
+
+	int highestfrequency = 0; 
+	 
+	ArrayList termss =  term._searchByRange("blogsiteid", dt, dte, blogids);
+	JSONArray topterms = new JSONArray();
+	if (termss.size() > 0) {
+		for (int p = 0; p < termss.size(); p++) {
+			String bstr = termss.get(p).toString();
+			JSONObject bj = new JSONObject(bstr);
+			bstr = bj.get("_source").toString();
+			bj = new JSONObject(bstr);
+			String frequency = bj.get("frequency").toString();
+			String tm = bj.get("term").toString();
+			JSONObject cont = new JSONObject();
+			
+			int freq = Integer.parseInt(frequency);
+			
+			String blogpostid = bj.get("blogpostid").toString();
+			
+			if(freq>highestfrequency){
+				highestfrequency = freq;
+				mostactiveterm = tm;
+			}		
+			
+			cont.put("key", tm);
+			cont.put("frequency", frequency);
+			topterms.put(cont);
+		}
+	}
+	
+	JSONObject result = new JSONObject();
+	result.put("totalpost",totalpost);
+	result.put("totalsentiment",comb);
+	result.put("totalinfluence",normalized_score);
+	result.put("topterm",mostactiveterm);
 %>
 <%=result.toString()%>
 <%

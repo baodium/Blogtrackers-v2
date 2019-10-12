@@ -537,6 +537,51 @@
 				totalpost = "0";
 			}
 			System.out.println("test here3");
+		} catch (Exception ex) {}
+		
+		
+		if (outerlinks.has(maindomain)) {
+			content = new JSONObject(outerlinks.get(maindomain).toString());
+			
+			int valu = Integer.parseInt(content.get("value").toString());
+			valu++;
+			
+			content.put("value", valu);
+			content.put("link", link);
+			content.put("domain", maindomain);
+			outerlinks.put(maindomain, content);
+		} else {
+			int valu = 1;
+			content.put("value", valu);
+			content.put("link", link);
+			content.put("domain", maindomain);
+			outerlinks.put(maindomain, content);
+			outlinklooper.add(mm, maindomain);
+			mm++;
+		}				
+	
+	}
+}
+
+System.out.println("test here4");
+/* mostactiveterm = term._getMostActiveByBlogger(mostactiveblogger); */
+System.out.println("test here5");
+String totalinfluence ="";
+
+try{			
+	totalpost = post._searchRangeTotalByBlogger("date", dt, dte, mostactiveblogger);
+	System.out.println("test here5_1");
+	Double influence =  Double.parseDouble(post._searchRangeMaxByBloggers("date",dt, dte,mostactiveblogger));
+	System.out.println("dt--"+dt+",dte--"+dte+",mstb--"+mostactiveblogger);
+	System.out.println("test here5_2");
+	totalinfluence = influence+"";
+	System.out.println("ttl infl"+totalinfluence);
+}
+catch(Exception e){
+	totalinfluence = "0";
+	totalpost = "0";
+}
+System.out.println("test here3");
 %>
 <!DOCTYPE html>
 <html>
@@ -815,12 +860,65 @@
 				</div>
 			</div>
 			<div class="col-md-2">
+<h6 class="mt5">
+<select id="blogger-changed" class="custom-select">
+ <%
+ if (bloggerPostFrequency.size() > 0) {
+		int p = 0;
+		
+		String all_bloggers = "";
+		
+		for (int m = 0; m < bloggerPostFrequency.size(); m++) {
+			ArrayList<?> bloggerFreq = (ArrayList<?>) bloggerPostFrequency.get(m);
+			String bloggerName = bloggerFreq.get(0).toString();
+			
+			if(m>0){
+				all_bloggers += "---";
+			}
+		
+			String bloggerPostFreq = bloggerFreq.get(1).toString();
+			String blogsiteId = bloggerFreq.get(2).toString();
+				if(p==0){
+					mostactiveblogger = bloggerName;
+				}
+				if (p < 10) {
+					
+					
+					all_bloggers += bloggerName;
+					
+					%>
+					<option value="<%=blogsiteId%>_<%=bloggerName%>" <% if(mostactiveblogger.equals(bloggerName)){ %> selected <% } %>><%=bloggerName%></option>
+ 
+				<%	p++;
+					
+				}
+		}
+		
+		%>
+		<input id="all_bloggers" type="hidden" value="<%=all_bloggers%>" >
+		
+		
+		<%
+ }else{
+	 String all_bloggers = "";
+ }
+ %>
+</select>
+
+
+</h6>
+<!-- <h2 class="textblue styleheading">AdNovum <div class="circle"></div></h2> -->
+</div>
+</div>
+</div>
+<div class="col-md-2">
 				<div class="card nocoloredcard mt10 mb10">
 					<div class="card-body p0 pt5 pb5">
 						<h5 class="text-primary mb0">
 							<i class="fas fa-exchange-alt icondash"></i>Influence
 						</h5>
 						<h3 class="text-blue mb0 countdash dash-label total-influence"><%=NumberFormat.getNumberInstance(Locale.US).format(Float.parseFloat(totalinfluence))%></h3>
+						<h3 id="normalized_influence" class="text-blue mb0 countdash dash-label total-influence"><%=NumberFormat.getNumberInstance(Locale.US).format(Float.parseFloat(totalinfluence))%></h3>				
 					</div>
 				</div>
 			</div>
