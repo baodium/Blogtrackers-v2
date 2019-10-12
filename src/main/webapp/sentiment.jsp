@@ -1578,7 +1578,7 @@ $(function () {
 						int vlue = Integer.parseInt(graphyearspos.get(yer).toString());%>{"date":"<%=yer%>","close":<%=vlue%>},
   		<%} System.out.println("!222!!"+yearsarray);%>]     	
          	];
-         //console.log(data);
+         console.log(data);
          // data = [];
 
          // data = [

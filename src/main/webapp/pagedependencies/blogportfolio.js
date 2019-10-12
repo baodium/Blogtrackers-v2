@@ -1,4 +1,17 @@
 // delete all blog from tracker action
+$(document).ready(function(){
+	var all_blogs = $("#all_blogs").val();
+	
+	var blog = $('#blogger-changed').val();
+	var blg = blog.split("_");
+	var blog_id = blg[0];
+	
+	$(".active-blog").html(blg[1]);
+	$("#blogger").val(blg[1]);
+	
+	loadStat(blg[0], all_blogs);
+})
+
 
 
 $('#blogger-changed').on("change", function(){
@@ -17,8 +30,12 @@ $('#blogger-changed').on("change", function(){
 	
 	
 	//loadInfluence(bloog,blg[1]);
+	
 
-	loadStat(blog_id);
+	
+	var all_blogs = $("#all_blogs").val();
+
+	loadStat(blog_id, all_blogs);
 	loadChart(blog_id);
 	loadYearlyChart(blog_id);
 	loadDailyChart(blog_id);
@@ -27,17 +44,22 @@ $('#blogger-changed').on("change", function(){
 
 
 
-function loadStat(blog_id){
+function loadStat(blog_id, all_blogs){
 	$(".total-influence").html("<img src='images/loading.gif' />");
 	$(".total-post").html("<img src='images/loading.gif' />");
 	$(".total-sentiment").html("<img src='images/loading.gif' />");
 	$(".top-keyword").html("<img src='images/loading.gif' />");
+	
+	blog_url = $('#blog__'+blog_id).attr('url');
+	
+	
 	$.ajax({
 		url: app_url+"subpages/blogportfoliochart.jsp",
 		method: 'POST',
 		data: {
 			action:"getstats",
 			blog_id:blog_id,
+			all_blogs:all_blogs,
 			date_start:$("#date_start").val(),
 			date_end:$("#date_end").val(),
 		},
@@ -55,10 +77,14 @@ function loadStat(blog_id){
 		response = response.trim();
 		var data = JSON.parse(response);
 
-		$(".total-influence").html(parseInt(data.totalinfluence).toLocaleString('en'));
+//		$(".total-influence").html(parseInt(data.totalinfluence).toLocaleString('en'));
+		$(".total-influence").html(data.totalinfluence).toLocaleString('en');
 		$(".total-post").html(parseInt(data.totalpost).toLocaleString('en'));
 		$(".total-sentiment").html(parseInt(data.totalsentiment).toLocaleString('en'));
 		$(".top-keyword").html(data.topterm);
+		
+		$('#blog_url_link').attr('href', blog_url);
+		
 		//$("#overall-chart").delay(3000).html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />").delay(2000).html(response);
 			/* $.getScript("assets/js/generic.js", function(data, textStatus, jqxhr) {	
 			  });*/

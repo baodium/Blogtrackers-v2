@@ -43,6 +43,7 @@ public class Tracker extends HttpServlet {
 		super();
 
 	}
+	
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
@@ -59,6 +60,7 @@ public class Tracker extends HttpServlet {
 	{
 		 Trackers trk = new Trackers();  
 		 Blogposts bp = new Blogposts();  
+		 
 		 
 		 PrintWriter pww = response.getWriter();
 		 HttpSession session = request.getSession();

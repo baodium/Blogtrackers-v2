@@ -711,21 +711,46 @@ public String _searchMinInfluence() throws Exception {
 	
 	return count;
 }
+
+public String _searchMinAndMaxRangeMaxByBloggers(String field,String greater, String less, String bloggers) throws Exception {
+	
+	String count = "0";
+	try {
+		ArrayList response = DbConnection.query("SELECT MAX(influence_score) as total FROM blogposts WHERE blogger='"+bloggers+"' AND "+field+">='"+greater+"' AND "+field+" <='"+less+"' ");
+		System.out.println("response--"+response);	 
+		if(response.size()>0){
+		 	ArrayList hd = (ArrayList)response.get(0);
+			count = hd.get(0).toString();
+		}
+	}catch(Exception e){
+	
+		return count;
+		
+	}
+
+	return count;
+}
 	
 public String _searchRangeMaxByBloggers(String field,String greater, String less, String bloggers) throws Exception {
 		
 		String count = "0";
+		String que = "SELECT MAX(influence_score) as total FROM blogposts WHERE blogger='"+bloggers+"' AND "+field+">='"+greater+"' AND "+field+" <='"+less+"' ";
+		System.out.println("response--"+que);	
 		try {
-			ArrayList response = DbConnection.query("SELECT MAX(influence_score) as total FROM blogposts WHERE blogger='"+bloggers+"' AND "+field+">='"+greater+"' AND "+field+" <='"+less+"' ");
-			 
+			
+			
+			ArrayList response = DbConnection.query(que);
+			System.out.println("response--"+response);	 
 			if(response.size()>0){
 			 	ArrayList hd = (ArrayList)response.get(0);
 				count = hd.get(0).toString();
 			}
 		}catch(Exception e){
+			
 			return count;
+			
 		}
-		System.out.println("blogger--"+bloggers);		
+	
 		return count;
 		/*
 		
@@ -881,6 +906,8 @@ public String _searchRangeMaxByBloggers(String field,String greater, String less
 		String url = base_url+"_search?size=1";
 		ArrayList result =  this._getResult(url, jsonObj);
 		String res = "0";
+		
+
 		
 		if(result.size()>0) {
 			String tres = null;
@@ -2046,7 +2073,8 @@ public ArrayList _searchPostTotal(String field, int greater, int less, String bl
 		     String res = myResponse.get("hits").toString();
 		     JSONObject myRes1 = new JSONObject(res);
 		      String total = myRes1.get("total").toString();
-		      this.totalpost = total;
+		      JSONObject total_ = new JSONObject(total);
+		      this.totalpost = total_.get("value").toString();
 		    
 		     JSONArray jsonArray = new JSONArray(myRes1.get("hits").toString()); 
 		     

@@ -675,16 +675,44 @@
    <%
    if (blogPostFrequency.size() > 0) {
 							int p = 0;
+							
+							String all_blogs = "";
+				
 							for (int m = 0; m < blogPostFrequency.size(); m++) {
+								
+								if(m>0){
+									all_blogs += "---";
+								
+								}
+								
 								ArrayList<?> blogFreq = (ArrayList<?>) blogPostFrequency.get(m);
 								String blogName = blogFreq.get(0).toString();
 								String blogPostFreq = blogFreq.get(1).toString();
 								String blogId = blogFreq.get(2).toString();
+								String blog_url = blogFreq.get(3).toString();
 									if (p < 10) {
+										
+										all_blogs += blogId;
+										
+										
+										
 										p++;%>
-										<option value="<%=blogId%>_<%=blogName%>" <% if(blogName.equals(mostactiveblog)){%> selected <% } %>><%=blogName%></option>
+										<option id="blog__<%=blogId%>" url="<%=blog_url%>" value="<%=blogId%>_<%=blogName%>" <% if(blogName.equals(mostactiveblog)){%> selected <% } %>><%=blogName%></option>
+										
 	<% }
+				
+									
+									
 	 }
+								
+	%>
+	<input id="all_blogs" type="hidden" value="<%=all_blogs%>" >
+	
+	
+	
+	<%
+							
+							
 	}
 	%>
 </select>
@@ -739,7 +767,7 @@
 
 <div class="col-md-2 text-right">
 <!-- <small class="text-primary cursor-pointer"><a href="">Visit Blog</a></small> --><br/>
-<a href="http://<%=mostactiveblogurl%>" target="_blank"><button class="btn buttonportfolio"><b class="float-left active-blog styleactiveblog"><%=mostactiveblog %></b> <b class="fas fa-location-arrow float-right iconportfolio"></b></button></a>
+<a id="blog_url_link" href="http://<%=mostactiveblogurl%>" target="_blank"><button class="btn buttonportfolio"><b class="float-left active-blog styleactiveblog"><%=mostactiveblog %></b> <b class="fas fa-location-arrow float-right iconportfolio"></b></button></a>
 </div>
  <!--  <div class="col-md-3">
   <small class="text-primary">Find Blog</small>
@@ -2096,7 +2124,7 @@
           return "No Information Available";
         }
         else if(d !== null) {
-         return d.date+" ("+d.close+")<br/> Click for more information";
+         return d.date+" ("+d.close+")";
           }
         // return "here";
         });

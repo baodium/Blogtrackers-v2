@@ -18,6 +18,8 @@ Object date_start = (null == request.getParameter("date_start")) ? "" : request.
 Object date_end = (null == request.getParameter("date_end")) ? "" : request.getParameter("date_end");
 Object blog_id = (null == request.getParameter("blog_id")) ? "" : request.getParameter("blog_id");
 
+Object all_blogs = (null == request.getParameter("all_blogs")) ? "" : request.getParameter("all_blogs");
+
 Object sort = (null == request.getParameter("sort")) ? "" : request.getParameter("sort");
 Object action = (null == request.getParameter("action")) ? "" : request.getParameter("action");
 Object post_ids = (null == request.getParameter("post_ids")) ? "" : request.getParameter("post_ids");
@@ -137,6 +139,8 @@ Terms term  = new Terms();
 if(action.toString().equals("getstats")){	
 	JSONArray sentimentpost = new JSONArray();
 	ArrayList allauthors = post._getBloggerByBlogId("date", dt, dte, selectedblogid, "influence_score", "DESC");
+	
+	System.out.println("sssssss"+selectedblogid);
 
 	if(allauthors.size()>0){
 		String tres = null;
@@ -157,8 +161,74 @@ if(action.toString().equals("getstats")){
 	} 
 	
 	String totalpost = post._searchRangeTotal("date", date_start.toString(), date_end.toString(), selectedblogid);
+
+	
+	Double totalinfluence =  Double.parseDouble(post._searchRangeMaxByBlogId("date", dt, dte, selectedblogid));
 	//String totalinfluence = post._searchRangeAggregate("date", dt, dte, selectedblogid);
-	String totalinfluence = post._searchRangeMaxByBlogId("date", dt, dte, selectedblogid);
+	
+	//Start Normalized Value Calculation
+	String all_blogs1 = all_blogs.toString();
+	String[] all_blog = all_blogs1.split("---");
+    
+    
+	
+	double normalized_value;
+	double value = 0;
+	double max = 0;
+	double min = 0;
+	for(int i=0; i < all_blog.length; i++){
+		
+		String blogg_id = all_blog[i];
+		
+		value =  Double.parseDouble(post._searchRangeMaxByBlogId("date", dt, dte, blogg_id));
+		
+
+		if(i == 0){
+			max = value;
+			min = value;
+		}
+		
+		if(value > max){
+			max = value;
+		}
+		
+		if(value < min){
+			min = value;
+		}
+		
+		
+		
+	}
+	
+	System.out.println("maxxxxx"+max);
+	System.out.println("minnnn"+min);
+	System.out.println("totttt"+totalinfluence);
+	
+	
+	normalized_value = ( (totalinfluence - min)/(max - min));
+	
+	String normalized_score = "";
+	if(normalized_value >= 0.0 && normalized_value <= 0.2){
+		normalized_score = "Very Low";
+	}else if(normalized_value > 0.2 && normalized_value < 0.5){
+		normalized_score = "Low";
+	}else if(normalized_value == 0.5){
+		normalized_score = "Medium";
+	}else if(normalized_value > 0.5 && normalized_value < 0.8){
+		normalized_score = "High";
+	}else if(normalized_value > 0.8 && normalized_value <= 1.0){
+		normalized_score = "Very High";
+	}else{
+		normalized_score = "undefined";
+	}
+
+	//End Normalize value calculation
+	
+	
+	
+	
+	
+	
 	String possentiment=new Liwc()._searchRangeAggregate("date", date_start.toString(), date_end.toString(), sentimentpost,"posemo");
 	String negsentiment=new Liwc()._searchRangeAggregate("date", date_start.toString(), date_end.toString(), sentimentpost,"negemo");
 	
@@ -196,7 +266,7 @@ if(action.toString().equals("getstats")){
 	JSONObject result = new JSONObject();
 	result.put("totalpost",totalpost);
 	result.put("totalsentiment",comb);
-	result.put("totalinfluence",totalinfluence);
+	result.put("totalinfluence",normalized_score);
 	result.put("topterm",mostactiveterm);
 %>
 <%=result.toString()%>

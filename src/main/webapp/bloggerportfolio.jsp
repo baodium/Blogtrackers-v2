@@ -518,8 +518,10 @@ try{
 	totalpost = post._searchRangeTotalByBlogger("date", dt, dte, mostactiveblogger);
 	System.out.println("test here5_1");
 	Double influence =  Double.parseDouble(post._searchRangeMaxByBloggers("date",dt, dte,mostactiveblogger));
+	System.out.println("dt--"+dt+",dte--"+dte+",mstb--"+mostactiveblogger);
 	System.out.println("test here5_2");
 	totalinfluence = influence+"";
+	System.out.println("ttl infl"+totalinfluence);
 }
 catch(Exception e){
 	totalinfluence = "0";
@@ -713,15 +715,27 @@ System.out.println("test here3");
  <%
  if (bloggerPostFrequency.size() > 0) {
 		int p = 0;
+		
+		String all_bloggers = "";
+		
 		for (int m = 0; m < bloggerPostFrequency.size(); m++) {
 			ArrayList<?> bloggerFreq = (ArrayList<?>) bloggerPostFrequency.get(m);
 			String bloggerName = bloggerFreq.get(0).toString();
+			
+			if(m>0){
+				all_bloggers += "---";
+			}
+		
 			String bloggerPostFreq = bloggerFreq.get(1).toString();
 			String blogsiteId = bloggerFreq.get(2).toString();
 				if(p==0){
 					mostactiveblogger = bloggerName;
 				}
 				if (p < 10) {
+					
+					
+					all_bloggers += bloggerName;
+					
 					%>
 					<option value="<%=blogsiteId%>_<%=bloggerName%>" <% if(mostactiveblogger.equals(bloggerName)){ %> selected <% } %>><%=bloggerName%></option>
  
@@ -729,9 +743,18 @@ System.out.println("test here3");
 					
 				}
 		}
+		
+		%>
+		<input id="all_bloggers" type="hidden" value="<%=all_bloggers%>" >
+		
+		
+		<%
+ }else{
+	 String all_bloggers = "";
  }
  %>
 </select>
+
 
 </h6>
 <!-- <h2 class="textblue styleheading">AdNovum <div class="circle"></div></h2> -->
@@ -744,7 +767,7 @@ System.out.println("test here3");
 						<h5 class="text-primary mb0">
 							<i class="fas fa-exchange-alt icondash"></i>Influence
 						</h5>
-						<h3 class="text-blue mb0 countdash dash-label total-influence"><%=NumberFormat.getNumberInstance(Locale.US).format(Float.parseFloat(totalinfluence))%></h3>				
+						<h3 id="normalized_influence" class="text-blue mb0 countdash dash-label total-influence"><%=NumberFormat.getNumberInstance(Locale.US).format(Float.parseFloat(totalinfluence))%></h3>				
 					</div>
 				</div>
 			</div>
