@@ -1028,13 +1028,13 @@
 															+ mostactiveterm.substring(1, mostactiveterm.length());
 													String active3 = mostactiveterm.toUpperCase();
 
-													posts = posts.replaceAll(mostactiveterm, replace);
-													posts = posts.replaceAll(active2, replace);
-													posts = posts.replaceAll(active3, replace);
+													posts = posts.replace(mostactiveterm, replace);
+													posts = posts.replace(active2, replace);
+													posts = posts.replace(active3, replace);
 
-													title = title.replaceAll(mostactiveterm, replace);
-													title = title.replaceAll(active2, replace);
-													title = title.replaceAll(active3, replace);
+													title = title.replace(mostactiveterm, replace);
+													title = title.replace(active2, replace);
+													title = title.replace(active3, replace);
 
 													/* 	LocalDate datee = LocalDate.parse(date);
 														DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");

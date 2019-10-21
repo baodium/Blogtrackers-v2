@@ -291,7 +291,8 @@
 			String mostactiveterm = "";
 			
 			ArrayList bloggerPostFrequency = bloggerss._getBloggerPostFrequency(ids);
-			//System.out.println("Terms here:"+termss);
+			
+			System.out.println("Terms here:"+bloggerPostFrequency);
 			
 			ArrayList blogs = blog._fetch(ids);
 			
@@ -325,6 +326,7 @@
 					String bloggerName = bloggerFreq.get(0).toString();
 					String blogsiteId = bloggerFreq.get(2).toString();
 					mostactiveblogger = bloggerName;
+					
 					selectedblogid = blogsiteId;
 				}
 			}
@@ -337,6 +339,7 @@
 				int j=0;
 				int k=0;
 				int n = 0;
+				
 			for(int i=0; i< activeblogposts.size(); i++){
 						tres = activeblogposts.get(i).toString();			
 						tresp = new JSONObject(tres);
@@ -448,7 +451,8 @@
 					   graphyears.put(y+"",totu);
 			    	   yearsarray.put(b,y);	
 			    	   b++;
-			    	   System.out.println("test here2_2");
+			    	   
+			    	   System.out.println("test here2_2"+mostactiveblogger);
 			}
 			
 			
@@ -511,12 +515,14 @@ if (outlinks.size() > 0) {
 
 System.out.println("test here4");
 /* mostactiveterm = term._getMostActiveByBlogger(mostactiveblogger); */
+System.out.println("---''-"+mostactiveblogger+dt+dte+ids);
 JSONObject sql = post._getBloggerPosts(null,mostactiveblogger,dt,dte,ids);
 String sql_ = sql.get("posts").toString();
 mostactiveterm = post._termVectors(sql_);
 
 System.out.println("test here5");
 String totalinfluence ="";
+
 
 try{			
 	totalpost = post._searchRangeTotalByBlogger("date", dt, dte, mostactiveblogger);
