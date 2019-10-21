@@ -28,9 +28,7 @@
 	Object action = (null == request.getParameter("action")) ? "" : request.getParameter("action");
 	Object id = (null == request.getParameter("id")) ? "" : request.getParameter("id");
 	Object tid = (null == request.getParameter("tid")) ? "" : request.getParameter("tid");
-	Object all_blog_ids = (null == request.getParameter("all_blog_ids"))
-			? ""
-			: request.getParameter("all_blog_ids");
+	String ids = (null == request.getParameter("all_blog_ids")) ? "": request.getParameter("all_blog_ids");
 
 	Trackers tracker = new Trackers();
 	Blogposts post = new Blogposts();
@@ -138,160 +136,203 @@
 
 
 <div class="row m0 mt20 mb0 d-flex align-items-stretch">
-	<div
-		class="col-md-6 mt20 card card-style nobordertopright noborderbottomright"
-		id="post-list">
-		<div class="card-body p0 pt20 pb20" style="min-height: 420px;">
-			<p>
-				Posts that mentioned <b class="text-green active-term"><%=mostactiveterm%></b>
-			</p>
-			<!--  <div class="p15 pb5 pt0" role="group">
+				<div
+					class="col-md-6 mt20 card card-style nobordertopright noborderbottomright"
+					id="post-list">
+					<div class="card-body p0 pt20 pb20" style="min-height: 420px;">
+						<p>
+							Posts that mentioned <b class="text-green active-term"><%=mostactiveterm%></b>
+						</p>
+						<!--  <div class="p15 pb5 pt0" role="group">
           Export Options
           </div> -->
-			<%
-				JSONObject firstpost = new JSONObject();
-					if (allposts.size() > 0) {
-			%>
-			<table id="DataTables_Table_2_wrapper" class="display"
-				style="width: 100%">
-				<thead>
-					<tr>
-						<th>Post title</th>
-						<th>Occurence</th>
-					</tr>
-				</thead>
-				<tbody>
-					<%
-						String tres = null;
-								JSONObject tresp = null;
-								String tresu = null;
-								JSONObject tobj = null;
+						<%
+							System.out.println("values1--" + mostactiveterm + "NOBLOGGER" + "," + dt + "," + dte + "," + ids);
+									JSONObject sql = post._getBloggerPosts(mostactiveterm, "NOBLOGGER", dt, dte, ids);
 
-								int k = 0;
+									JSONObject firstpost = new JSONObject();
+									/*if(allposts.size()>0){ */
 
-								for (int i = 0; i < allposts.size(); i++) {
-									tres = allposts.get(i).toString();
-									tresp = new JSONObject(tres);
-									tresu = tresp.get("_source").toString();
-									tobj = new JSONObject(tresu);
+									if (sql.getJSONArray("data").length() > 0) {
+										String perma_link = null;
+										String j = null;
+										String title = null;
+										String blogpost_id = null;
+										String date = null;
+										String num_comments = null;
+										String blogger = null;
+										String posts = null;
+										Integer occurence = null;
+						%>
+						<table id="DataTables_Table_2_wrapper" class="display"
+							style="width: 100%">
+							<thead>
+								<tr>
+									<th>Post title</th>
+									<th>Occurence</th>
+								</tr>
+							</thead>
+							<tbody>
+								<%
+									String tres = null;
+												JSONObject tresp = null;
+												String tresu = null;
+												JSONObject tobj = null;
 
-									//System.out.println("postdet +"+tobj3);
-									if (i == 0) {
-										firstpost = tobj;
+												int k = 0;
+
+												/* for(int i=0; i< allposts.size(); i++){
+													tres = allposts.get(i).toString();	
+													tresp = new JSONObject(tres);									
+													tresu = tresp.get("_source").toString();
+													tobj = new JSONObject(tresu); */
+
+												String sql_ = sql.get("data").toString();
+												for (int i = 0; i < sql.getJSONArray("data").length(); i++) {
+													Object jsonArray = sql.getJSONArray("data").get(i);
+
+													j = jsonArray.toString();
+													JSONObject j_ = new JSONObject(j);
+													perma_link = j_.get("permalink").toString();
+													title = j_.get("title").toString();
+													blogpost_id = j_.get("blogpost_id").toString();
+													date = j_.get("date").toString();
+													num_comments = j_.get("num_comments").toString();
+													blogger = j_.get("blogger").toString();
+													posts = j_.get("post").toString();
+													occurence = (Integer) j_.get("occurence");
+
+													DateTimeFormatter inputFormatter = DateTimeFormatter
+															.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH);
+													DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("dd-MM-yyy",
+															Locale.ENGLISH);
+													LocalDate date_ = LocalDate.parse(date, inputFormatter);
+													Integer d = date_.getYear();
+													/* String formattedDate = outputFormatter.format(date); */
+													System.out.println(d.toString());
+
+													String replace = "<span style=background:red;color:#fff>" + mostactiveterm + "</span>";
+													String active2 = mostactiveterm.substring(0, 1).toUpperCase()
+															+ mostactiveterm.substring(1, mostactiveterm.length());
+													String active3 = mostactiveterm.toUpperCase();
+
+													posts = posts.replaceAll(mostactiveterm, replace);
+													posts = posts.replaceAll(active2, replace);
+													posts = posts.replaceAll(active3, replace);
+
+													title = title.replaceAll(mostactiveterm, replace);
+													title = title.replaceAll(active2, replace);
+													title = title.replaceAll(active3, replace);
+
+													/* 	LocalDate datee = LocalDate.parse(date);
+														DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");
+														date = dtf.format(datee); */
+
+													/* BY SEUN ENDING */
+								%>
+								<tr>
+									<td><a class="blogpost_link cursor-pointer blogpost_link"
+										id="<%-- <%=tobj.get("blogpost_id")%> --%><%=blogpost_id%>">
+											<%-- <%=tobj.get("title") %> --%><%=title%></a><br /> <a
+										class="mt20 viewpost makeinvisible"
+										href="<%-- <%=tobj.get("permalink") %> --%><%=perma_link%>"
+										target="_blank"> <buttton
+												class="btn btn-primary btn-sm mt10 visitpost">Visit
+											Post &nbsp;<i class="fas fa-external-link-alt"></i></buttton>
+									</a></td>
+									<td align="center">
+										<%-- <%=(bodyoccurencece) %> --%><%=occurence%></td>
+								</tr>
+								<%
 									}
+								%>
+								</tr>
+							</tbody>
+						</table>
+						<%-- <% System.out.println("dd--"+title+blogpost_id+date+num_comments+blogger);} %> --%>
+					</div>
 
-									int bodyoccurencece = 0;//ut.countMatches(tobj3.get("post").toString(), mostactiveterm);
+				</div>
 
-									String str = tobj.get("post").toString() + " " + tobj.get("post").toString();
-									str = str.toLowerCase();
-									mostactiveterm = mostactiveterm.toLowerCase();
-									String findStr = mostactiveterm;
-									int lastIndex = 0;
-									//int count = 0;
+				<div
+					class="col-md-6 mt20 card card-style nobordertopleft noborderbottomleft">
 
-									while (lastIndex != -1) {
-
-										lastIndex = str.indexOf(findStr, lastIndex);
-
-										if (lastIndex != -1) {
-											bodyoccurencece++;
-											// alloccurence+=bodyoccurencece;
-											lastIndex += findStr.length();
-										}
-
+					<div style="" class="pt20" id="blogpost_detail">
+						<%
+							/* JSONObject tobj = firstpost;
+										String title = tobj.get("title").toString().replaceAll("[^a-zA-Z]", " ");
+										String body = tobj.get("post").toString().replaceAll("[^a-zA-Z]", " ");
+										String dat = tobj.get("date").toString().substring(0,10);
+										LocalDate datee = LocalDate.parse(dat);
+										DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");
+										String date = dtf.format(datee);
+										String replace = 	"<span style=background:red;color:#fff>"+mostactiveterm+"</span>";
+										String link = tobj.get("permalink").toString();
+										
+										String maindomain="";
+										try {
+											URI uri = new URI(link);
+											String domain = uri.getHost();
+											if (domain.startsWith("www.")) {
+												maindomain = domain.substring(4);
+											} else {
+												maindomain = domain;
+											}
+										} catch (Exception ex) {}
+										System.out.println("dd--"+title+blogpost_id+date+num_comments+blogger);
+										
+										title = title.replaceAll(mostactiveterm,replace);
+										String active2 = mostactiveterm.substring(0,1).toUpperCase()+mostactiveterm.substring(1,mostactiveterm.length());
+										String active3= mostactiveterm.toUpperCase();
+										
+										
+										title = title.replaceAll(mostactiveterm,replace);
+										title = title.replaceAll(active2,replace);
+										title = title.replaceAll(active3,replace);
+										
+										
+										body = body.replaceAll(mostactiveterm,replace);
+										body = body.replaceAll(active2,replace);
+										body = body.replaceAll(active3,replace); */
+						%>
+						<h5 class="text-primary p20 pt0 pb0">
+							<%-- <%=title%> --%><%=title%></h5>
+						<div class="text-center mb20 mt20">
+							<%-- <a href="<%=request.getContextPath()%>/bloggerportfolio.jsp?tid=<%=tid.toString()%>&blogger=<%=tobj.get("blogger")%>">
+							<button class="btn stylebuttonblue">
+								--%>
+							<button class="btn stylebuttonblue"
+								onclick="window.location.href = '<%=request.getContextPath()%>/bloggerportfolio.jsp?tid=<%=tid%>&blogger=<%-- <%=tobj.get("blogger")%> --%><%=blogger%>'">
+								<b class="float-left ultra-bold-text">
+									<%-- <%=tobj.get("blogger")%> --%><%=blogger%></b> <i
+									class="far fa-user float-right blogcontenticon"></i>
+							</button>
+							</a>
+							<button class="btn stylebuttonnocolor nocursor">
+								<%-- <%=date %> --%><%=date%></button>
+							<button class="btn stylebuttonnocolor nocursor">
+								<b class="float-left ultra-bold-text">
+									<%-- <%=tobj.get("num_comments")%> --%><%=num_comments%>
+									comments
+								</b><i class="far fa-comments float-right blogcontenticon"></i>
+							</button>
+						</div>
+						<div style="height: 600px;">
+							<div class="p20 pt0 pb20  text-primary"
+								style="height: 550px; overflow-y: scroll;">
+								<%-- <%=body%> --%>
+								<p><%=posts%></p>
+							</div>
+						</div>
+						<%
+							System.out
+												.println("dd--" + title + blogpost_id + date + num_comments + blogger + mostactiveterm);
 									}
-					%>
-					<tr>
-						<td><a class="blogpost_link cursor-pointer blogpost_link"
-							id="<%=tobj.get("blogpost_id")%>"><%=tobj.get("title")%></a><br />
-							<a class="mt20 viewpost makeinvisible"
-							href="<%=tobj.get("permalink")%>" target="_blank"><buttton
-									class="btn btn-primary btn-sm mt10 visitpost">Visit
-								Post &nbsp;<i class="fas fa-external-link-alt"></i></buttton></a></td>
-						<td align="center"><%=(bodyoccurencece)%></td>
-					</tr>
-					<%
-						}
-					%>
-					</tr>
-				</tbody>
-			</table>
-			<%
-				}
-			%>
-		</div>
+						%>
 
-	</div>
-
-	<div
-		class="col-md-6 mt20 card card-style nobordertopleft noborderbottomleft">
-
-		<div style="" class="pt20" id="blogpost_detail">
-			<%
-				if (firstpost.length() > 0) {
-						JSONObject tobj = firstpost;
-						String title = tobj.get("title").toString().replaceAll("[^a-zA-Z]", " ");
-						String body = tobj.get("post").toString().replaceAll("[^a-zA-Z]", " ");
-						String dat = tobj.get("date").toString().substring(0, 10);
-						LocalDate datee = LocalDate.parse(dat);
-						DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");
-						String date = dtf.format(datee);
-						String replace = "<span style=background:red;color:#fff>" + mostactiveterm + "</span>";
-						String link = tobj.get("permalink").toString();
-
-						String maindomain = "";
-						try {
-							URI uri = new URI(link);
-							String domain = uri.getHost();
-							if (domain.startsWith("www.")) {
-								maindomain = domain.substring(4);
-							} else {
-								maindomain = domain;
-							}
-						} catch (Exception ex) {
-						}
-
-						title = title.replaceAll(mostactiveterm, replace);
-						String active2 = mostactiveterm.substring(0, 1).toUpperCase()
-								+ mostactiveterm.substring(1, mostactiveterm.length());
-						String active3 = mostactiveterm.toUpperCase();
-
-						title = title.replaceAll(mostactiveterm, replace);
-						title = title.replaceAll(active2, replace);
-						title = title.replaceAll(active3, replace);
-
-						body = body.replaceAll(mostactiveterm, replace);
-						body = body.replaceAll(active2, replace);
-						body = body.replaceAll(active3, replace);
-			%>
-			<h5 class="text-primary p20 pt0 pb0"><%=title%></h5>
-			<div class="text-center mb20 mt20">
-				<a
-					href="<%=request.getContextPath()%>/bloggerportfolio.jsp?tid=<%=tid.toString()%>&blogger=<%=tobj.get("blogger")%>">
-					<button class="btn stylebuttonblue">
-						<b class="float-left ultra-bold-text"><%=tobj.get("blogger")%></b>
-						<i class="far fa-user float-right blogcontenticon"></i>
-					</button>
-				</a>
-				<button class="btn stylebuttonnocolor nocursor"><%=date%></button>
-				<button class="btn stylebuttonnocolor nocursor">
-					<b class="float-left ultra-bold-text"><%=tobj.get("num_comments")%>
-						comments</b><i class="far fa-comments float-right blogcontenticon"></i>
-				</button>
-			</div>
-			<div style="height: 600px;">
-				<div class="p20 pt0 pb20 text-blog-content text-primary"
-					style="height: 550px; overflow-y: scroll;">
-					<%=body%>
+					</div>
 				</div>
 			</div>
-			<%
-				}
-			%>
-
-		</div>
-	</div>
-</div>
 <link rel="stylesheet"
 	href="assets/vendors/DataTables/dataTables.bootstrap4.min.css" />
 <script type="text/javascript"
@@ -366,18 +407,20 @@
 		}
 		termsyears.put(mostactiveterm, postyear);
 %>
+
+
 <div class="chart-container">
 	<div class="chart" id="d3-line-basic"></div>
 </div>
 
 
 <!--end for table  -->
-<script>
+<%-- <script>
 
  $(function () {
 
      // Initialize chart
-     lineBasic('#d3-line-basic', 200);
+     /* lineBasic('#d3-line-basic', 200); */
 
      // Chart setup
      function lineBasic(element, height) {
@@ -901,7 +944,7 @@
          }
      }
  });
- </script>
+ </script> --%>
 
 
 

@@ -32,7 +32,7 @@ $('.select-term').on("click", function() {
 	/* loadStat(tm); */
 	/* loadChart(tm); */
 
-	/*loadTable(date_start, date_end);*/
+	loadTable(date_start, date_end);
 });
 var r = /a/;
 // console.log(typeof r.test('a')); // true
@@ -265,6 +265,7 @@ function loadTable(date_start, date_end) {
 					action : "gettable",
 					term : $("#term").val(),
 					id : $("#term_id").val(),
+					all_blog_ids : $("#all_blog_ids").val(),
 					tid : $("#tid").val(),
 					date_start : date_start,
 					date_end : date_end,

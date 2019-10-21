@@ -917,7 +917,8 @@
 
 							<div class="col-md-3 mt5 mb5">
 								<h6 class="card-title mb0">Top Posting Location</h6>
-								<h3 class="mb0 bold-text top-location"><%=top_location%></h3>
+								
+								<h3 class="mb0 bold-text top-location"><%=(null == top_location) ? "NOT AVAILABLE" : top_location%></h3>
 								<!-- <small class="text-success">+5% from <b>Last Week</b></small> -->
 							</div>
 
