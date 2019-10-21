@@ -284,9 +284,9 @@ function loadTable(date_start, date_end) {
 					$.getScript("pagedependencies/baseurl.js?v=38", function(
 							data, textStatus, jqxhr) {
 					});
-					$.getScript("pagedependencies/keywordtrends.js?v=0879",
+				/*	$.getScript("pagedependencies/keywordtrends.js?v=0879",
 							function(data, textStatus, jqxhr) {
-							});
+							});*/
 
 				}
 			});

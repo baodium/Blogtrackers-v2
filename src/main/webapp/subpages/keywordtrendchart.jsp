@@ -377,7 +377,7 @@
 <%
 	} else {
 
-		String[] yst = dt.split("-");
+		/* String[] yst = dt.split("-");
 		String[] yend = dte.split("-");
 		year_start = yst[0];
 		year_end = yend[0];
@@ -405,13 +405,13 @@
 			//System.out.println("totu here "+totu);
 			postyear.put(y + "", totu);
 		}
-		termsyears.put(mostactiveterm, postyear);
+		termsyears.put(mostactiveterm, postyear); */
 %>
 
 
-<div class="chart-container">
+<!-- <div class="chart-container">
 	<div class="chart" id="d3-line-basic"></div>
-</div>
+</div> -->
 
 
 <!--end for table  -->
