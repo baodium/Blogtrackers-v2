@@ -2306,12 +2306,24 @@ authoryears.put(mostactiveblogger,postyear);
 /* wordtagcloud("#tagcloudcontainer",450,word_count2); */
 <%
 /* outlinks = outl._searchByRange("date", dt, dte, ids); */
-String sql = post._getMostKeywordDashboard(null,dt,dte,ids);
+/* String sql = post._getMostKeywordDashboard(null,dt,dte,ids);
 JSONObject res=post._keywordTermvctors(sql);	
-System.out.println("--->"+res);
+System.out.println("--->"+res); */
+
+
+String sql = post._getMostKeywordDashboard(mostactiveblogger,dt,dte,ids);
+Map<String, Integer> res = new HashMap<String, Integer>();
+
+res=post._keywordTermvctors(sql);
+/* /* JSONObject res=post._keywordTermvctors(sql); */ 
+JSONObject d = new JSONObject(res);
+String s = res.toString();
+JSONObject o = new JSONObject(res);
 %>
 
-wordtagcloud("#tagcloudcontainer",450,<%=res%>);
+<%-- wordtagcloud("#tagcloudcontainer",450,<%=res%>); --%>
+
+wordtagcloud("#tagcloudcontainer",450,<%=d%>); 
 	
  </script>
 <script src="pagedependencies/baseurl.js"></script>

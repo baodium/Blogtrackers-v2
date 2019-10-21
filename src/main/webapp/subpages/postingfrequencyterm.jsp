@@ -102,12 +102,24 @@ var word_count2 = {};
 	<%
 	/* outlinks = outl._searchByRange("date", dt, dte, ids); */
 	String sql = post._getMostKeywordDashboard(blogger.toString(),dt,dte,all_blog_ids.toString());
-	JSONObject res=post._keywordTermvctors(sql);	
-	System.out.println("--->"+res);
-	%>
-	console.log("blogger--"+"<%=blogger.toString()%>"+"date_from--"+"<%=dt%>"+"date_to--"+"<%=dte%>"+"all_ids--"+"<%=all_blog_ids.toString()%>")
-	wordtagcloud("#tagcloudcontainer",450,<%=res%>);
+	Map<String, Integer> res = new HashMap<String, Integer>();
+
+	res=post._keywordTermvctors(sql);
+	/* /* JSONObject res=post._keywordTermvctors(sql); */ 
+	JSONObject d = new JSONObject(res);
+	String s = res.toString();
+	JSONObject o = new JSONObject(res);
 	
+	/* Map<String, Integer> json = (HashMap<String, Integer>)json_type_2; */
+						
+	System.out.println("testing w" + d);%>
+		  	
+
+	System.out.println("--->"+res);
+
+	console.log("blogger--"+"<%=blogger.toString()%>"+"date_from--"+"<%=dt%>"+"date_to--"+"<%=dte%>"+"all_ids--"+"<%=all_blog_ids.toString()%>")
+	<%-- wordtagcloud("#tagcloudcontainer",450,<%=res%>); --%>
+	wordtagcloud("#tagcloudcontainer",450,<%=d%>); 
 /* wordtagcloud("#tagcloudcontainer",450,word_count2); */
 
 <%-- wordtagcloud("#tagcloudcontainer",450);
