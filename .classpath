@@ -29,5 +29,35 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/oljohnson/Desktop/Tomcat Server/lib/servlet-api.jar"/>
+	<classpathentry kind="lib" path="C:/Users/oljohnson/Desktop/Tomcat Server/lib/tomcat-api.jar"/>
+	<classpathentry kind="lib" path="C:/Users/oljohnson/Desktop/Tomcat Server/lib/annotations-api.jar"/>
+	<classpathentry kind="lib" path="C:/Users/oljohnson/Desktop/Tomcat Server/lib/catalina.jar"/>
+	<classpathentry kind="lib" path="C:/Users/oljohnson/Desktop/Tomcat Server/lib/catalina-ant.jar"/>
+	<classpathentry kind="lib" path="C:/Users/oljohnson/Desktop/Tomcat Server/lib/catalina-ha.jar"/>
+	<classpathentry kind="lib" path="C:/Users/oljohnson/Desktop/Tomcat Server/lib/catalina-tribes.jar"/>
+	<classpathentry kind="lib" path="C:/Users/oljohnson/Desktop/Tomcat Server/lib/commons-fileupload-1.3.3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/oljohnson/Desktop/Tomcat Server/lib/commons-io-2.6.jar"/>
+	<classpathentry kind="lib" path="C:/Users/oljohnson/Desktop/Tomcat Server/lib/commons-lang3-3.8.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/oljohnson/Desktop/Tomcat Server/lib/ecj-4.2.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/oljohnson/Desktop/Tomcat Server/lib/el-api.jar"/>
+	<classpathentry kind="lib" path="C:/Users/oljohnson/Desktop/Tomcat Server/lib/gson-2.8.5.jar"/>
+	<classpathentry kind="lib" path="C:/Users/oljohnson/Desktop/Tomcat Server/lib/jasper.jar"/>
+	<classpathentry kind="lib" path="C:/Users/oljohnson/Desktop/Tomcat Server/lib/jasper-el.jar"/>
+	<classpathentry kind="lib" path="C:/Users/oljohnson/Desktop/Tomcat Server/lib/javax.json-1.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/oljohnson/Desktop/Tomcat Server/lib/json-lib-2.4-jdk15.jar"/>
+	<classpathentry kind="lib" path="C:/Users/oljohnson/Desktop/Tomcat Server/lib/json-lib-2.4-jdk15-javadoc.jar"/>
+	<classpathentry kind="lib" path="C:/Users/oljohnson/Desktop/Tomcat Server/lib/jsp-api.jar"/>
+	<classpathentry kind="lib" path="C:/Users/oljohnson/Desktop/Tomcat Server/lib/mail-1.4.5.jar"/>
+	<classpathentry kind="lib" path="C:/Users/oljohnson/Desktop/Tomcat Server/lib/mysql-connector-java-8.0.11.jar"/>
+	<classpathentry kind="lib" path="C:/Users/oljohnson/Desktop/Tomcat Server/lib/tomcat7-websocket.jar"/>
+	<classpathentry kind="lib" path="C:/Users/oljohnson/Desktop/Tomcat Server/lib/tomcat-coyote.jar"/>
+	<classpathentry kind="lib" path="C:/Users/oljohnson/Desktop/Tomcat Server/lib/tomcat-dbcp.jar"/>
+	<classpathentry kind="lib" path="C:/Users/oljohnson/Desktop/Tomcat Server/lib/tomcat-i18n-es.jar"/>
+	<classpathentry kind="lib" path="C:/Users/oljohnson/Desktop/Tomcat Server/lib/tomcat-i18n-fr.jar"/>
+	<classpathentry kind="lib" path="C:/Users/oljohnson/Desktop/Tomcat Server/lib/tomcat-i18n-ja.jar"/>
+	<classpathentry kind="lib" path="C:/Users/oljohnson/Desktop/Tomcat Server/lib/tomcat-jdbc.jar"/>
+	<classpathentry kind="lib" path="C:/Users/oljohnson/Desktop/Tomcat Server/lib/tomcat-util.jar"/>
+	<classpathentry kind="lib" path="C:/Users/oljohnson/Desktop/Tomcat Server/lib/websocket-api.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

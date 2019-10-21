@@ -11,27 +11,20 @@
 		    word_count = word_count2;
 		// var word_count2 = {"ade":5};
 
-        /* var words = text_string.split(/[ '\-\(\)\*":;\[\]|{},.!?]+/);
-          if (words.length == 1){
-            word_count[words[0]] = 1;
-          } else {
-            words.forEach(function(word){
-              var word = word.toLowerCase();
-              if (word != "" && common.indexOf(word)==-1 && word.length>1){
-                if (word_count[word]){
-                  word_count[word]++;
-                } else {
-                  word_count[word] = 1;
-                }
-              }
-            })  */
+        /*
+		 * var words = text_string.split(/[ '\-\(\)\*":;\[\]|{},.!?]+/); if
+		 * (words.length == 1){ word_count[words[0]] = 1; } else {
+		 * words.forEach(function(word){ var word = word.toLowerCase(); if (word != "" &&
+		 * common.indexOf(word)==-1 && word.length>1){ if (word_count[word]){
+		 * word_count[word]++; } else { word_count[word] = 1; } } })
+		 */
             
             
-					//console.log(typeof word_count2);
+					// console.log(typeof word_count2);
           var fill = d3.scale.category20();
             
 		 var word_entries = d3.entries(word_count);
-		 //console.log(word_count);
+		 // console.log(word_count);
             
 		var xScale = d3.scale.linear()
         .domain([0, d3.max(word_entries, function(d) {
@@ -61,25 +54,27 @@
            .data(words)
          .enter().append("text")
          .style("font-size", 0)
-           //.style("font-size", function(d) { return xScale(d.value) + "px"; })
+           // .style("font-size", function(d) { return xScale(d.value) + "px";
+			// })
            .style("font-family", "Impact")
            .style("fill", function(d, i) { return fill(i); })
            .attr("text-anchor", "middle")
            .attr("transform", function(d) {
              return "translate(" + [d.x, d.y] + ")"+"rotate(" + d.rotate + ")";
            })
-           /* .on("wheel", function() { d3.event.preventDefault(); })
-                  .call(d3.behavior.zoom().on("zoom", function () {
-                	var g = svg.selectAll("g"); 
-                  g.attr("transform", "translate("+(width/2-10) +",180)" + " scale(" + d3.event.scale + ")").style("cursor","zoom-out")
-                 })) */
+           /*
+			 * .on("wheel", function() { d3.event.preventDefault(); })
+			 * .call(d3.behavior.zoom().on("zoom", function () { var g =
+			 * svg.selectAll("g"); g.attr("transform", "translate("+(width/2-10)
+			 * +",180)" + " scale(" + d3.event.scale +
+			 * ")").style("cursor","zoom-out") }))
+			 */
            .text(function(d) { return d.key; })
     	 
-    	/* .call(d3.behavior.drag()
-          		.origin(function(d) { return d; })
-          		.on("dragstart", dragstarted) 
-          		.on("drag", dragged)			
-          		); */
+    	/*
+		 * .call(d3.behavior.drag() .origin(function(d) { return d; })
+		 * .on("dragstart", dragstarted) .on("drag", dragged) );
+		 */
          
            svg.selectAll("text").transition()
                      .delay(200)
@@ -111,7 +106,7 @@
    	 		    );
    	 		}
    	 		
-   	 	// trasnlate and scale the zoom	
+   	 	// trasnlate and scale the zoom
    	 	function interpolateZoom (translate, scale) {
    	 	    var self = this;
    	 	    return d3.transition().duration(350).tween("zoom", function () {
@@ -138,7 +133,7 @@
    	 	        translate0 = [],
    	 	        l = [],
    	 	        view = {x: translate[0], y: translate[1], k: zoom.scale()};
-   	 	    //console.log(this.id);
+   	 	    // console.log(this.id);
    	 	    d3.event.preventDefault();
    	 	    direction = (this.id === 'zoom_in') ? 1 : -1;
    	 	    target_zoom = zoom.scale() * (1 + factor * direction);
@@ -158,10 +153,11 @@
                	 movetext.attr("dx",d3.event.y)
                	 .attr("dy",d3.event.x)
                	 .style("cursor","move"); 
-               	 /* g.attr("transform","translateX("+d3.event.x+")")
-               	 .attr("transform","translateY("+d3.event.y+")")
-               	 .attr("width", width)
-                    .attr("height", height); */
+               	 /*
+					 * g.attr("transform","translateX("+d3.event.x+")")
+					 * .attr("transform","translateY("+d3.event.y+")")
+					 * .attr("width", width) .attr("height", height);
+					 */
                	} 
                	function dragstarted(d){
        				d3.event.sourceEvent.stopPropagation();
@@ -203,7 +199,7 @@
        // // -------------------------
        //
        // // Horizontal range
-       //x.rangeRoundBands([0, width]);
+       // x.rangeRoundBands([0, width]);
        //
        // // Horizontal axis
       // svg.selectAll('.d3-axis-horizontal').call(xAxis);

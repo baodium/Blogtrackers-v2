@@ -256,6 +256,8 @@
 			System.out.println("COMI----" + request.getHeader("referer"));
 			String totalbloggers = bloggerss._getBloggerById(ids);
 
+			System.out.println("Total bloggers----" + totalbloggers);
+			
 			ArrayList locations = blog._getLocation(ids);
 			//System.out.println("all blog location");
 			ArrayList languages = blog._getLanguage(ids);
@@ -310,6 +312,7 @@
 			}
 			//System.out.println("termss start");
 			termss = term._searchByRange("blogsiteid", dt, dte, ids);
+			System.out.println("terms---"+termss);
 			session.setAttribute("terms", termss);
 			//System.out.println("termss end");
 			//System.out.println("outlinks start");
@@ -1626,8 +1629,12 @@ $(function () {
       //
       //
       //
-      
-     data = [
+      	/* String sql = post._getMostKeywordDashboard(dt,dte,ids);
+	JSONObject res=post._keywordTermvctors(sql);	 */
+	data = [];
+	<%JSONArray language_data = post. _getMostLanguage(dt, dte, ids,10);%>
+	
+<%--      data = [
     	  <%if (languages.size() > 0) {
 						for (int y = 0; y < languages.size(); y++) {
 							ArrayList<?> langu = (ArrayList<?>) languages.get(y);
@@ -1639,7 +1646,11 @@ $(function () {
     		<%}
 						}
 					}%>
-	 ]; 
+	 ];  --%>
+	 
+	 data = <%=language_data%>
+	 
+	 <%-- console.log("langdata-->"+"<%=language_data%>"); --%>
      data.sort(function(a, b){
     	    return a.frequency - b.frequency;
     	});
@@ -2723,6 +2734,7 @@ var mymarker = [
 
 	
 	var word_count2 = {}; 
+	/* var res = {}; */
 	   <%JSONArray sortedterms = term._sortJson2(unsortedterms);
 					System.out.println("TM:" + sortedterms);
 					if (sortedterms.length() > 0) {
@@ -2736,14 +2748,22 @@ var mymarker = [
 								termstore.put(tm, tm);%>			    		
 						<%-- {"text":"<%=terms.toString() %>","size":<%=size %>}, --%>
 						 word_count2["<%=tm.toString()%>"] = <%=size%> 
+						 System.out.println("--->"+tm.toString());
 	 				<%}
 						}
 					}%>
 		
-		console.log(word_count2)
-				
-	wordtagcloud("#tagcloudcontainer",450,word_count2);
+		console.log("--->"+word_count2)
+		
+	<%
+	/* outlinks = outl._searchByRange("date", dt, dte, ids); */
+	String sql = post._getMostKeywordDashboard(dt,dte,ids);
+	JSONObject res=post._keywordTermvctors(sql);	
+	System.out.println("--->"+res);
+	%>
 	
+	wordtagcloud("#tagcloudcontainer",450,<%=res%>);
+	{}
 
 	
  </script>

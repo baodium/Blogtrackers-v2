@@ -19,6 +19,7 @@ $('#blogger-changed').on("change", function(){
 
 	var date_start = $("#date_start").val();
 	var date_end = $("#date_end").val();
+	var all_ids = $("#id__").val();
 	var blogger = $(this).val();
 	var blg = blogger.split("_");
 	
@@ -38,7 +39,7 @@ $('#blogger-changed').on("change", function(){
 	
 	
 
-	loadStat(blg[1], all_bloggers);
+	loadStat(blg[1], all_bloggers,all_ids);
 	loadChart(blg[1]);
 	loadYearlyChart(blg[1]);
 	loadDailyChart(blg[1]);
@@ -48,7 +49,7 @@ $('#blogger-changed').on("change", function(){
 
 
 
-function loadStat(blogger, all_bloggers){
+function loadStat(blogger, all_bloggers,ids){
 	
 
 	
@@ -62,6 +63,7 @@ function loadStat(blogger, all_bloggers){
 		data: {
 			action:"getstats",
 			blogger:blogger,
+			ids:ids,
 			all_bloggers:all_bloggers,
 			date_start:$("#date_start").val(),
 			date_end:$("#date_end").val(),
@@ -79,6 +81,7 @@ function loadStat(blogger, all_bloggers){
 //		$(".total-influence").html(parseInt(data.totalinfluence).toLocaleString('en'));
 		$(".total-post").html(parseInt(data.totalpost).toLocaleString('en'));
 		$(".total-sentiment").html(parseInt(data.totalsentiment).toLocaleString('en'));
+	
 		$(".top-keyword").html(data.topterm);
 		//$("#overall-chart").delay(3000).html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />").delay(2000).html(response);
 			/* $.getScript("assets/js/generic.js", function(data, textStatus, jqxhr) {	

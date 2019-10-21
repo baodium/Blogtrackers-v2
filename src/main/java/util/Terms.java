@@ -275,6 +275,8 @@ public ArrayList _searchByRange(String field,String greater, String less, String
 		
 	//jsonObj = new JSONObject(que3);
     String url = base_url+"_search";
+    System.out.println("term_url"+url);
+    System.out.println("term_jsonobj"+jsonObj);
     return this._getResult(url,jsonObj);
   
 }
@@ -588,6 +590,7 @@ public ArrayList _getResult(String url, JSONObject jsonObj) throws Exception {
 		     }
 	    }
 	}catch(Exception ex) {}
+		/* System.out.println(list); */
 	   return  list;
 }
 

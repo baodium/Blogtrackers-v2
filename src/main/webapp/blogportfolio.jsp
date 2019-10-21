@@ -277,7 +277,14 @@
 					
 			ArrayList activeblogposts = post._getBloggerByBlogId("date", dt, dte, selectedblogid, "influence_score", "DESC");
 			ArrayList blogPostFrequency = blog._getblogPostFrequency(ids);
-			String mostactiveterm =term._getMostActiveByBlog(dt, dte, selectedblogid);;
+			
+			/* String mostactiveterm =term._getMostActiveByBlog(dt, dte, selectedblogid); */
+			String mostactiveterm =term._getMostActiveByBlog(dt, dte, selectedblogid);
+			System.out.println("select--"+selectedblogid);
+			/* String sql = post._getBloggerPosts(mostactiveblogger, dt, dte, ids);
+
+			mostactiveterm = post._termVectors(sql); */
+			
 			
 			ArrayList blogs = blog._fetch(ids);
 			int totalblog = blogs.size();

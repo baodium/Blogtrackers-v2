@@ -29,6 +29,7 @@ Object all_bloggers = (null == request.getParameter("all_bloggers")) ? "" : requ
 Object sort = (null == request.getParameter("sort")) ? "" : request.getParameter("sort");
 Object action = (null == request.getParameter("action")) ? "" : request.getParameter("action");
 Object post_ids = (null == request.getParameter("post_ids")) ? "" : request.getParameter("post_ids");
+Object ids = (null == request.getParameter("ids")) ? "" : request.getParameter("ids");
 
 
 
@@ -260,7 +261,7 @@ if(action.toString().equals("getstats")){
 			
 			if(freq>highestfrequency){
 				highestfrequency = freq;
-				mostactiveterm = tm;
+				/* mostactiveterm = tm; */
 			}		
 			
 			cont.put("key", tm);
@@ -268,6 +269,9 @@ if(action.toString().equals("getstats")){
 			topterms.put(cont);
 		}
 	}
+	
+	String sql = post._getBloggerPosts(selectedblogid,date_start.toString(),date_end.toString(),ids.toString());
+	mostactiveterm = post._termVectors(sql);
 	
 	JSONObject result = new JSONObject();
 	result.put("totalpost",totalpost);

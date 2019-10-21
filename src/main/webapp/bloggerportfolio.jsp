@@ -511,6 +511,9 @@ if (outlinks.size() > 0) {
 
 System.out.println("test here4");
 /* mostactiveterm = term._getMostActiveByBlogger(mostactiveblogger); */
+String sql = post._getBloggerPosts(mostactiveblogger,dt,dte,ids);
+mostactiveterm = post._termVectors(sql);
+
 System.out.println("test here5");
 String totalinfluence ="";
 
@@ -779,6 +782,7 @@ System.out.println("test here3");
 							<i class="fas fa-search icondash"></i>Top Keyword
 						</h5>
 						<h3 class="text-blue mb0 countdash dash-label top-keyword"><%=mostactiveterm%></h3>
+						<input type="hidden" id="id__" value="<%=ids%>" />
 					</div>
 				</div>
 			</div>
