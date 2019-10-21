@@ -112,10 +112,10 @@ var word_count2 = {};
 	
 	/* Map<String, Integer> json = (HashMap<String, Integer>)json_type_2; */
 						
-	System.out.println("testing w" + d);%>
+	System.out.println("testing w---" + d);%>
 		  	
 
-	System.out.println("--->"+res);
+	/* System.out.println("--->"+res); */
 
 	console.log("blogger--"+"<%=blogger.toString()%>"+"date_from--"+"<%=dt%>"+"date_to--"+"<%=dte%>"+"all_ids--"+"<%=all_blog_ids.toString()%>")
 	<%-- wordtagcloud("#tagcloudcontainer",450,<%=res%>); --%>
