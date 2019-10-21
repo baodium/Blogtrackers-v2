@@ -327,6 +327,8 @@ userinfo = (ArrayList<?>)userinfo.get(0);
 <link rel="stylesheet" href="assets/css/table.css" />
 <link rel="stylesheet" href="assets/vendors/DataTables/dataTables.bootstrap4.min.css" />
 
+<link rel="stylesheet" type="text/css" href="multiline.css">
+
 <link rel="stylesheet" href="assets/css/daterangepicker.css" />
 <link rel="stylesheet" href="assets/css/style.css" />
 
@@ -568,6 +570,7 @@ userinfo = (ArrayList<?>)userinfo.get(0);
 								
 									
 									String dselected = "";
+									String activew = "";
 								
 									String postids = "";					
 										if (k < 10) {
@@ -590,6 +593,9 @@ userinfo = (ArrayList<?>)userinfo.get(0);
 										    	influecechart.put(bloggerInf,xy);
 										    	
 											if(k==0){
+												
+												activew = "activew";
+												
 												dselected = "abloggerselected";
 												mostactiveblogger = bloggerInf;	
 												mostactivebloggerId = blogsiteid;
@@ -599,7 +605,7 @@ userinfo = (ArrayList<?>)userinfo.get(0);
 											}
 											%>
 											<input type="hidden" id="postby<%=bloggerInf.replaceAll(" ","__")%>" value="<%=postids%>" />
-					    			<a class="blogger-select btn btn-primary form-control bloggerinactive mb20 <%=dselected%>"  id="<%=bloggerInf.replaceAll(" ","__")%>***<%=blogsiteid%>" ><b><%=bloggerInf%></b></a>
+					    			<a class="blogger-select btn btn-primary form-control bloggerinactive mb20 <%=dselected%> <%=activew%>"  id="<%=bloggerInf.replaceAll(" ","__")%>***<%=blogsiteid%>" ><b><%=bloggerInf%></b></a>
 					    			
 											<%
 											k++;
@@ -740,6 +746,10 @@ authoryears.put(mostactiveblogger,postyear);
 %>
 
 
+<div class="body">
+     <div style="width: 100%;" class="graph" id="chart"></div>
+ </div>
+
 
 	<div class="col-md-9">
 				<div class="card card-style mt20">
@@ -759,6 +769,11 @@ authoryears.put(mostactiveblogger,postyear);
 							<div class="chart-container">
 								<div class="chart" id="d3-line-basic"></div>
 							</div>
+							
+							
+							
+                        
+                        
 							</div>
 						</div>
 					</div>
@@ -1184,10 +1199,20 @@ authoryears.put(mostactiveblogger,postyear);
    //$('#config-demo').daterangepicker(options, function(start, end, label) { console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')'); });
  });
  </script>
+ 
+	
+ 
 	<script type="text/javascript" src="assets/vendors/d3/d3.min.js"></script>
 	<script src="assets/vendors/wordcloud/d3.layout.cloud.js"></script>
 	<script type="text/javascript" src="assets/vendors/d3/d3_tooltip.js"></script>
 	<script type="text/javascript" src="assets/js/jquery.inview.js"></script>	
+	
+	
+	<script src="https://d3js.org/d3.v4.min.js"></script>
+	
+	 <script type="text/javascript" src="test.js"></script>
+	
+	
 	<script>
  $(function () {
 
@@ -1287,6 +1312,10 @@ authoryears.put(mostactiveblogger,postyear);
            [{"date":"2014","close":500},{"date":"2015","close":900},{"date":"2016","close":1200},{"date":"2017","close":1200},{"date":"2018","close":2600}]
          ];
 		*/
+		
+		
+		
+		
 		  data = [<% 
 		  		String auu = mostactiveblogger;
 		  		JSONObject specific_auth= new JSONObject(authoryears.get(auu).toString());
@@ -1301,6 +1330,12 @@ authoryears.put(mostactiveblogger,postyear);
 			<%  
 		  		}%>]
 		  ];
+		
+		
+		
+		
+		
+		
          //console.log(data);
          // data = [];
 

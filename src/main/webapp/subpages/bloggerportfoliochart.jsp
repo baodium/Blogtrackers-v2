@@ -5,6 +5,12 @@
 <%@page import="util.Blogposts"%>
 <%@page import="java.text.NumberFormat"%>
 <%@page import="java.util.Locale"%>
+
+
+<%@page import="java.util.Date"%>
+<%@page import="java.util.Calendar"%>
+
+
 <%@page import="java.util.ArrayList"%>
 <%@page import="org.json.JSONObject"%>
 <%@page import="org.json.JSONArray"%>
@@ -36,12 +42,13 @@ Terms term  = new Terms();
 		String dte = date_end.toString();
 		
 		
+		
 		String selectedblogid=blogger.toString();
 		
 		JSONObject graphyears = new JSONObject();
 	    JSONArray yearsarray = new JSONArray();
 	    
-	    
+	
 	   
 	    
 	  

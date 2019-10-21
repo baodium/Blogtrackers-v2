@@ -47,6 +47,10 @@
 		<display-name>KeywordTrend</display-name>
 		<description></description>
 		<servlet-class>util.KeywordTrend</servlet-class>
+		<servlet-name>Influence</servlet-name>
+		<display-name>Influence</display-name>
+		<description></description>
+		<servlet-class>util.Influence</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>AddBlog</servlet-name>
@@ -80,4 +84,22 @@
 
 	</error-page>
 
+		<servlet-name>Influence</servlet-name>
+		<url-pattern>/Influence</url-pattern>
+	</servlet-mapping>
+<error-page>
+    <error-code>404</error-code>
+    <location>/404.html</location>
+    
+  </error-page>
+  <error-page>
+    <error-code>503</error-code>
+    <location>/503.html</location>
+    
+  </error-page>
+   <error-page>
+    <error-code>500</error-code>
+    <location>/500.html</location>
+    
+  </error-page>
 </web-app>
