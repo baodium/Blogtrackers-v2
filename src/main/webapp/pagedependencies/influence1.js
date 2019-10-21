@@ -5,7 +5,7 @@
 
 $(document).delegate('.topics1', 'click', function(){
 	$(".blogger-select").removeClass("abloggerselected");
-	$(this).addClass("abloggerselected");
+	//$(this).addClass("abloggerselected");
 
 	var date_start = $("#date_start").val();
 	var date_end = $("#date_end").val();
