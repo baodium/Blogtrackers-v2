@@ -10,7 +10,7 @@ $(document).ready(function(){
 	$(".active-blog").html(blg[1]);
 	$("#blogger").val(blg[1]);
 	
-	loadStat(blg[1], all_bloggers);
+//	loadStat(blg[1], all_bloggers);
 })
 
 

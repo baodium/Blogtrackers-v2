@@ -80,6 +80,8 @@ $(document).delegate('.blogpost_link', 'click', function(){
 
 function loadChart(blogger,blog_id){
 	$("#chart-container").html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />");
+	
+
 	$.ajax({
 		url: app_url+"subpages/influencechart.jsp",
 		method: 'POST',

@@ -1,0 +1,29 @@
+svg {
+    font-family: Sans-Serif, Arial;
+}
+
+.hidden{
+	display: none !important;
+}
+.line {
+  stroke-width: 2;
+  fill: none;
+}
+
+.axis path {
+  stroke: black;
+}
+
+.text {
+  font-size: 12px;
+}
+
+.title-text {
+  font-size: 12px;
+}
+
+
+.nobccolor{
+
+  background-color: unset !important;
+}

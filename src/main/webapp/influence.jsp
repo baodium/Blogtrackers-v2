@@ -1292,7 +1292,7 @@ authoryears.put(mostactiveblogger,postyear);
 		  		JSONObject specific_auth= new JSONObject(authoryears.get(auu).toString());
 		  %>[<% for(int q=0; q<yearsarray.length(); q++){ 
 			  		String yearr=yearsarray.get(q).toString(); 
-			  		if(specific_auth.has(yearr)){ %>
+			  		if(specific_auth.has(yearr)){ System.out.println(q);%>
 			  			{"date":"<%=yearr%>","close":<%=specific_auth.get(yearr) %>},
 				<%
 			  		}else{ %>
@@ -1301,7 +1301,8 @@ authoryears.put(mostactiveblogger,postyear);
 			<%  
 		  		}%>]
 		  ];
-         //console.log(data);
+		
+         console.log(data);
          // data = [];
 
          // data = [
