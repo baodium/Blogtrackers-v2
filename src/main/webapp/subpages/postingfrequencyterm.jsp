@@ -26,9 +26,11 @@ String dte = date_end.toString();
 String pids = new Blogposts()._getPostIdsByBloggerName("date",dt, dte,blogger.toString(),"date","DESC");
 
 ArrayList allterms = new Terms()._searchByRange("blogpostid", dt, dte, pids);//_searchByRange(dt, dte, post_ids.toString());
+Object all_blog_ids = (null == request.getParameter("all_blog_ids")) ? "" : request.getParameter("all_blog_ids");
+
 int highestfrequency = 0;
 
-
+Blogposts post = new Blogposts();
 JSONArray topterms = new JSONArray();
 JSONObject keys = new JSONObject();
 String mostusedkeyword="";
@@ -52,7 +54,7 @@ if (allterms.size() > 0) {
 		cont.put("frequency", frequency);
 		if(!keys.has(tm)){
 			keys.put(tm,tm);
-			topterms.put(cont);
+			/* topterms.put(cont); */
 		}
 	}
 }
@@ -96,8 +98,29 @@ var word_count2 = {};
 		 word_count2["<%=jsonObj.getString("key")%>"] = <%=size%> 
 <%}
 	}%>
+
+	<%
+	/* outlinks = outl._searchByRange("date", dt, dte, ids); */
+	String sql = post._getMostKeywordDashboard(blogger.toString(),dt,dte,all_blog_ids.toString());
+	Map<String, Integer> res = new HashMap<String, Integer>();
+
+	res=post._keywordTermvctors(sql);
+	/* /* JSONObject res=post._keywordTermvctors(sql); */ 
+	JSONObject d = new JSONObject(res);
+	String s = res.toString();
+	JSONObject o = new JSONObject(res);
 	
-wordtagcloud("#tagcloudcontainer",450,word_count2);
+	/* Map<String, Integer> json = (HashMap<String, Integer>)json_type_2; */
+						
+	System.out.println("testing w" + d);%>
+		  	
+
+	System.out.println("--->"+res);
+
+	console.log("blogger--"+"<%=blogger.toString()%>"+"date_from--"+"<%=dt%>"+"date_to--"+"<%=dte%>"+"all_ids--"+"<%=all_blog_ids.toString()%>")
+	<%-- wordtagcloud("#tagcloudcontainer",450,<%=res%>); --%>
+	wordtagcloud("#tagcloudcontainer",450,<%=d%>); 
+/* wordtagcloud("#tagcloudcontainer",450,word_count2); */
 
 <%-- wordtagcloud("#tagcloudcontainer",450);
 function wordtagcloud(element, height) {

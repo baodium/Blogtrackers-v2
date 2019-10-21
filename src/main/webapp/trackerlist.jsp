@@ -165,7 +165,7 @@
 <script src="pagedependencies/googletagmanagerscript.js"></script>
 </head>
 <body>
-	<%@include file="subpages/loader.jsp"%>
+	<%-- <%@include file="subpages/loader.jsp"%> --%>
 	<noscript>
 		<%@include file="subpages/googletagmanagernoscript.jsp"%>
 	</noscript>
