@@ -914,6 +914,7 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
 		<input type="hidden" name="tid" id="tid" value="<%=tid%>" /> 
 		<input type="hidden" name="date_start" id="date_start" value="<%=dt%>" /> 
 		<input type="hidden" name="date_end" id="date_end" value="<%=dte%>" />
+		<input type="hidden" name="all_blog_ids" id="all_blog_ids" value="<%=ids%>" />
 			
 	</form>
 
@@ -1801,8 +1802,16 @@ console.log("here");
 	<%}%>
 	
 	console.log(word_count2);
+	<%
+
+	String sql = post._getMostKeywordDashboard(mostactiveblogger,dt,dte,ids);
+	JSONObject res=post._keywordTermvctors(sql);	
+	System.out.println("--->"+res);
+	%>
 	
- wordtagcloud("#tagcloudcontainer",450,word_count2);
+	wordtagcloud("#tagcloudcontainer",450,<%=res%>); 
+	
+ /* wordtagcloud("#tagcloudcontainer",450,word_count2); */
 
  </script>
 <script src="pagedependencies/baseurl.js?v=93"></script>

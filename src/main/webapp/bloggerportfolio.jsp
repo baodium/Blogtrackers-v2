@@ -511,8 +511,9 @@ if (outlinks.size() > 0) {
 
 System.out.println("test here4");
 /* mostactiveterm = term._getMostActiveByBlogger(mostactiveblogger); */
-String sql = post._getBloggerPosts(mostactiveblogger,dt,dte,ids);
-mostactiveterm = post._termVectors(sql);
+JSONObject sql = post._getBloggerPosts(null,mostactiveblogger,dt,dte,ids);
+String sql_ = sql.get("posts").toString();
+mostactiveterm = post._termVectors(sql_);
 
 System.out.println("test here5");
 String totalinfluence ="";

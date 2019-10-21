@@ -529,28 +529,45 @@ public class Blogposts {
 
 		return count;
 	}
-	
 
+	public String _searchMinAndMaxRangeMaxByBloggers(String field, String greater, String less, String bloggers)
+			throws Exception {
 
-public String _searchMinAndMaxRangeMaxByBloggers(String field,String greater, String less, String bloggers) throws Exception {
-	
-	String count = "0";
-	try {
-		ArrayList response = DbConnection.query("SELECT MAX(influence_score) as total FROM blogposts WHERE blogger='"+bloggers+"' AND "+field+">='"+greater+"' AND "+field+" <='"+less+"' ");
-		System.out.println("response--"+response);	 
-		if(response.size()>0){
-		 	ArrayList hd = (ArrayList)response.get(0);
-			count = hd.get(0).toString();
+		String count = "0";
+		try {
+			ArrayList response = DbConnection
+					.query("SELECT MAX(influence_score) as total FROM blogposts WHERE blogger='" + bloggers + "' AND "
+							+ field + ">='" + greater + "' AND " + field + " <='" + less + "' ");
+			System.out.println("response--" + response);
+			if (response.size() > 0) {
+				ArrayList hd = (ArrayList) response.get(0);
+				count = hd.get(0).toString();
+			}
+		} catch (Exception e) {
+
+			return count;
+
 		}
-	}catch(Exception e){
-	
+
 		return count;
-		
 	}
 
-	return count;
-}
-	
+	public String _searchMaxInfluence() throws Exception {
+
+		String count = "0";
+
+		try {
+			ArrayList response = DbConnection.query("SELECT max(influence_score) as total, blogger,date FROM blogger ");
+			if (response.size() > 0) {
+				ArrayList hd = (ArrayList) response.get(0);
+				count = hd.get(0).toString();
+			}
+		} catch (Exception e) {
+			return count;
+		}
+
+		return count;
+	}
 
 	public String _searchMinInfluence() throws Exception {
 
@@ -685,10 +702,8 @@ public String _searchMinAndMaxRangeMaxByBloggers(String field,String greater, St
 		String url = base_url + "_search?size=1";
 		ArrayList result = this._getResult(url, jsonObj);
 		String res = "0";
-		
 
-		
-		if(result.size()>0) {
+		if (result.size() > 0) {
 			String tres = null;
 			JSONObject tresp = null;
 			String tresu = null;
@@ -1103,7 +1118,7 @@ public String _searchMinAndMaxRangeMaxByBloggers(String field,String greater, St
 				+ filter + "\"\r\n" + "            }\r\n" + "        }\r\n" + "    }" + "    }");
 
 		String url = base_url + "_search?size=1";
-
+		System.out.println("post query" + jsonObj);
 		return this._getAggregate(url, jsonObj);
 
 	}
@@ -1524,60 +1539,59 @@ public String _searchMinAndMaxRangeMaxByBloggers(String field,String greater, St
 	public ArrayList _getResult(String url, JSONObject jsonObj) throws Exception {
 		ArrayList<String> list = new ArrayList<String>();
 		try {
-		URL obj = new URL(url);
-	    HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-	    
-	    con.setDoOutput(true);
-	    con.setDoInput(true);
-	   
-	    con.setRequestProperty("Content-Type", "application/json; charset=utf-32");
-	    con.setRequestProperty("Content-Type", "application/json");
-	    con.setRequestProperty("Accept-Charset", "UTF-32");
-	    con.setRequestProperty("Accept", "application/json");
-	    con.setRequestMethod("POST");
-	    
-	    DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-	    
-	    
-	    //OutputStreamWriter wr1 = new OutputStreamWriter(con.getOutputStream());
-	    wr.write(jsonObj.toString().getBytes());
-	    wr.flush();
-	    
-	    int responseCode = con.getResponseCode();  
-	    BufferedReader in = new BufferedReader(
-	         new InputStreamReader(con.getInputStream()));
-	    String inputLine;
-	    StringBuffer response = new StringBuffer();
-	    
-	    while ((inputLine = in.readLine()) != null) {
-	     	response.append(inputLine);
-	     	//System.out.println(inputLine);
-	     	
-	     }
-	     in.close();
-	     
-	     JSONObject myResponse = new JSONObject(response.toString());
-	    
-	     if(null!=myResponse.get("hits")) {
-		     String res = myResponse.get("hits").toString();
-		     JSONObject myRes1 = new JSONObject(res);
-		      String total = myRes1.get("total").toString();
-		      JSONObject total_ = new JSONObject(total);
-		      this.totalpost = total_.get("value").toString();
-		    
-		     JSONArray jsonArray = new JSONArray(myRes1.get("hits").toString()); 
-		     
-		     if (jsonArray != null) { 
-		        int len = jsonArray.length();
-		        for (int i=0;i<len;i++){ 
-		         list.add(jsonArray.get(i).toString());
-		        } 
-		     }
-	     }
-		}catch(Exception ex) {}
-		System.out.println("This is the list for -----"+url+"---"+list);
-	     return list;
-	     
+			URL obj = new URL(url);
+			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+
+			con.setDoOutput(true);
+			con.setDoInput(true);
+
+			con.setRequestProperty("Content-Type", "application/json; charset=utf-32");
+			con.setRequestProperty("Content-Type", "application/json");
+			con.setRequestProperty("Accept-Charset", "UTF-32");
+			con.setRequestProperty("Accept", "application/json");
+			con.setRequestMethod("POST");
+
+			DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+
+			// OutputStreamWriter wr1 = new OutputStreamWriter(con.getOutputStream());
+			wr.write(jsonObj.toString().getBytes());
+			wr.flush();
+
+			int responseCode = con.getResponseCode();
+			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+			String inputLine;
+			StringBuffer response = new StringBuffer();
+
+			while ((inputLine = in.readLine()) != null) {
+				response.append(inputLine);
+				// System.out.println(inputLine);
+
+			}
+			in.close();
+
+			JSONObject myResponse = new JSONObject(response.toString());
+
+			if (null != myResponse.get("hits")) {
+				String res = myResponse.get("hits").toString();
+				JSONObject myRes1 = new JSONObject(res);
+				String total = myRes1.get("total").toString();
+				JSONObject total_ = new JSONObject(total);
+				this.totalpost = total_.get("value").toString();
+
+				JSONArray jsonArray = new JSONArray(myRes1.get("hits").toString());
+
+				if (jsonArray != null) {
+					int len = jsonArray.length();
+					for (int i = 0; i < len; i++) {
+						list.add(jsonArray.get(i).toString());
+					}
+				}
+			}
+		} catch (Exception ex) {
+		}
+		System.out.println("This is the list for -----" + url + "---" + list);
+		return list;
+
 	}
 
 	public String NormalizedOutput(String value) {
@@ -1887,72 +1901,268 @@ public String _searchMinAndMaxRangeMaxByBloggers(String field,String greater, St
 	 * Calendar.getInstance(); cal.setTime(date); cal.add(Calendar.YEAR, i); return
 	 * cal.getTime(); }
 	 */
-	public JSONObject _makeElasticRequest(JSONObject query,String IP,Integer port, String requestType, String endPoint) throws Exception {
-		
+	public JSONObject _makeElasticRequest(JSONObject query, String requestType, String endPoint) throws Exception {
+
 		JSONObject myResponse = new JSONObject();
 		try {
-			RestClient esClient = RestClient.builder(new HttpHost(IP, port, "http")).build();
+
+			RestClient esClient = RestClient.builder(new HttpHost("144.167.35.73", 9200, "http")).build();
 
 			Request request = new Request(requestType, endPoint);
 			request.setJsonEntity(query.toString());
 
 			Response response = esClient.performRequest(request);
+			System.out.println("=!");
 			System.out.println("GETTING TERM VECTORS");
 			String jsonResponse = EntityUtils.toString(response.getEntity());
 			myResponse = new JSONObject(jsonResponse);
-			
+
 			esClient.close();
 		} catch (Exception e) {
 
 		}
 		return myResponse;
-		
+
 	}
 
-	public JSONArray _elastic(JSONObject query) throws Exception {
+	public JSONObject _elastic(JSONObject query) throws Exception {
 		ArrayList<String> list = new ArrayList<String>();
-
-//		RestClient esClient = RestClient.builder(new HttpHost("144.167.115.90", 9200, "http")).build();
-//		Request request = new Request("POST", "/blogposts/_search/?scroll=1d");
-//		request.setJsonEntity(query.toString());
-
-//		Response response = esClient.performRequest(request);
 
 		String source = null;
 
 		System.out.println("this is the query-" + query);
 		JSONArray jsonArray = null;
-//		String jsonResponse = EntityUtils.toString(response.getEntity());
 
-//		Object j_ = new JSONObject(response.getEntity());
-//		JSONObject myResponse = new JSONObject(jsonResponse);
-		
-		JSONObject myResponse = this._makeElasticRequest(query, "144.167.115.90", 9200, "POST", "/blogposts/_search/?scroll=1d");
-//		System.out.println("response-" + j_);
+		JSONObject all_data = new JSONObject();
+
+		JSONObject myResponse = this._makeElasticRequest(query, "POST", "/blogposts/_search/?scroll=1d");
+		System.out.println(hm.get("elasticIndex") + "==" + query);
 
 		if (null != myResponse.get("hits")) {
+
 			Object hits = myResponse.getJSONObject("hits").getJSONArray("hits");
 			Object total = myResponse.getJSONObject("hits").getJSONObject("total").get("value");
-
-//			JSONObject myRes1 = new JSONObject(hits);
 			source = hits.toString();
-
 			jsonArray = new JSONArray(source);
+			System.out.println("DONE GETTING POSTS FOR BLOGGER");
+
+			all_data.put("total", total.toString());
+			all_data.put("hit_array", jsonArray);
+
+		}
+		return all_data;
+	}
+
+	public String _getMostLocation(String term, String date_from, String date_to, String ids_) throws Exception {
+		ArrayList<String> list = new ArrayList<String>();
+		HashMap<String, Integer> hm2 = new HashMap<String, Integer>();
+
+		JSONArray all = new JSONArray();
+		String res = null;
+
+		JSONObject query = new JSONObject("{\r\n" + "    \"size\": 0,\r\n" + "    \"query\": {\r\n"
+				+ "        \"bool\": {\r\n" + "            \"must\": [\r\n" + "                {\r\n"
+				+ "                    \"match\": {\r\n" + "                        \"post\": \"" + term + "\"\r\n"
+				+ "                    }\r\n" + "                },\r\n" + "                {\r\n"
+				+ "                    \"bool\": {\r\n" + "                        \"must\": [\r\n"
+				+ "                            {\r\n" + "                                \"terms\": {\r\n"
+				+ "                                    \"blogsite_id\": [" + ids_ + "],\r\n"
+				+ "                                    \"boost\": 1\r\n" + "                                }\r\n"
+				+ "                            },\r\n" + "                            {\r\n"
+				+ "                                \"exists\": {\r\n"
+				+ "                                    \"field\": \"location\",\r\n"
+				+ "                                    \"boost\": 1\r\n" + "                                }\r\n"
+				+ "                            }\r\n" + "                        ],\r\n"
+				+ "                        \"adjust_pure_negative\": true,\r\n"
+				+ "                        \"boost\": 1\r\n" + "                    }\r\n" + "                },\r\n"
+				+ "                {\r\n" + "                    \"range\": {\r\n"
+				+ "                        \"date\": {\r\n" + "                            \"from\": \"" + date_from
+				+ "\",\r\n" + "                            \"to\": \"" + date_to + "\",\r\n"
+				+ "                            \"include_lower\": true,\r\n"
+				+ "                            \"include_upper\": true,\r\n"
+				+ "                            \"boost\": 1\r\n" + "                        }\r\n"
+				+ "                    }\r\n" + "                }\r\n" + "            ],\r\n"
+				+ "            \"adjust_pure_negative\": true,\r\n" + "            \"boost\": 1\r\n" + "        }\r\n"
+				+ "    },\r\n" + "    \"_source\": false,\r\n" + "    \"stored_fields\": \"_none_\",\r\n"
+				+ "    \"aggregations\": {\r\n" + "        \"groupby\": {\r\n" + "            \"composite\": {\r\n"
+				+ "                \"size\": 1000,\r\n" + "                \"sources\": [\r\n"
+				+ "                    {\r\n" + "                        \"dat\": {\r\n"
+				+ "                            \"terms\": {\r\n"
+				+ "                                \"field\": \"location.keyword\",\r\n"
+				+ "                                \"missing_bucket\": true,\r\n"
+				+ "                                \"order\": \"asc\"\r\n" + "                            }\r\n"
+				+ "                        }\r\n" + "                    }\r\n" + "                ]\r\n"
+				+ "            },\r\n" + "            \"aggregations\": {\r\n" + "                \"dat\": {\r\n"
+				+ "                    \"filter\": {\r\n" + "                        \"exists\": {\r\n"
+				+ "                            \"field\": \"location\",\r\n"
+				+ "                            \"boost\": 1\r\n" + "                        }\r\n"
+				+ "                    }\r\n" + "                }\r\n" + "            }\r\n" + "        }\r\n"
+				+ "    }\r\n" + "}");
+
+		JSONObject myResponse = this._makeElasticRequest(query, "POST", "/blogposts/_search/?");
+		String val = null;
+		Integer freq = null;
+		String idx = null;
+		String language = null;
+		JSONArray jsonArray = new JSONArray();
+
+		if (null != myResponse.get("aggregations")) {
+			Object buckets = myResponse.getJSONObject("aggregations").getJSONObject("groupby").getJSONArray("buckets");
+			val = buckets.toString();
+			jsonArray = new JSONArray(val);
 
 			System.out.println("DONE GETTING POSTS FOR BLOGGER");
 
 		}
 
-		return jsonArray;
+		if (jsonArray != null) {
+
+			for (int i = 0; i < jsonArray.length(); i++) {
+				JSONObject da = new JSONObject();
+				idx = jsonArray.get(i).toString();
+
+				JSONObject j = new JSONObject(idx);
+				freq = (Integer) j.get("doc_count");
+
+				Object k = j.getJSONObject("key").get("dat");
+				language = k.toString();
+
+				da.put("letter", language);
+				da.put("frequency", freq);
+
+				all.put(da);
+				hm2.put(language, freq);
+			}
+
+		}
+
+		Map<String, Integer> hm1 = this.sortHashMapByValues(hm2);
+
+		Map.Entry<String, Integer> entry = hm1.entrySet().iterator().next();
+		Integer value = entry.getValue();
+		res = entry.getKey();
+		return res;
 	}
 
-	public JSONArray _getMostLanguage(String date_from, String date_to, String ids_,Integer limit) throws Exception {
+	public Integer _getOnlyPostMentioned(String term, String date_from, String date_to, String ids_) throws Exception {
 		ArrayList<String> list = new ArrayList<String>();
-		HashMap<String, Integer> hm = new HashMap<String, Integer>();
-		
+		HashMap<String, Integer> hm2 = new HashMap<String, Integer>();
+
 		JSONArray all = new JSONArray();
-		
-		
+
+		JSONObject query = new JSONObject("{\r\n" + "    \"size\": 1000,\r\n" + "    \"query\": {\r\n"
+				+ "        \"bool\": {\r\n" + "            \"must\": [\r\n" + "                {\r\n"
+				+ "                    \"term\": {\r\n" + "                        \"post\": \"care\"\r\n"
+				+ "                    }\r\n" + "                },\r\n" + "                {\r\n"
+				+ "                    \"terms\": {\r\n" + "                        \"blogsite_id\": [\r\n"
+				+ "                            813,\r\n" + "                            815,\r\n"
+				+ "                            809,\r\n" + "                            811,\r\n"
+				+ "                            812,\r\n" + "                            806,\r\n"
+				+ "                            808,\r\n" + "                            817,\r\n"
+				+ "                            644,\r\n" + "                            652,\r\n"
+				+ "                            616,\r\n" + "                            641,\r\n"
+				+ "                            732,\r\n" + "                            761,\r\n"
+				+ "                            709,\r\n" + "                            128\r\n"
+				+ "                        ],\r\n" + "                        \"boost\": 1\r\n"
+				+ "                    }\r\n" + "                },\r\n" + "                {\r\n"
+				+ "                    \"range\": {\r\n" + "                        \"date\": {\r\n"
+				+ "                            \"from\": \"2000-01-01\",\r\n"
+				+ "                            \"to\": \"2019-10-10\",\r\n"
+				+ "                            \"include_lower\": true,\r\n"
+				+ "                            \"include_upper\": true,\r\n"
+				+ "                            \"boost\": 1\r\n" + "                        }\r\n"
+				+ "                    }\r\n" + "                }\r\n" + "            ],\r\n"
+				+ "            \"adjust_pure_negative\": true,\r\n" + "            \"boost\": 1\r\n" + "        }\r\n"
+				+ "    },\r\n" + "    \"_source\": {\r\n" + "        \"includes\": [\r\n" + "            \r\n"
+				+ "            \"title\",\r\n" + "            \"post\"\r\n" + "        ],\r\n"
+				+ "        \"excludes\": []\r\n" + "    },\r\n" + "    \"sort\": [\r\n" + "        {\r\n"
+				+ "            \"influence_score\": {\r\n" + "                \"order\": \"desc\",\r\n"
+				+ "                \"missing\": \"_last\",\r\n" + "                \"unmapped_type\": \"float\"\r\n"
+				+ "            }\r\n" + "        }\r\n" + "    ]\r\n" + "}");
+
+		JSONObject myResponse = this._makeElasticRequest(query, "POST", "/blogposts/_search/?");
+		String val = null;
+		Integer freq = null;
+		String idx = null;
+		String language = null;
+		JSONArray jsonArray = new JSONArray();
+
+		if (null != myResponse.get("aggregations")) {
+			Object buckets = myResponse.getJSONObject("aggregations").getJSONObject("groupby").getJSONArray("buckets")
+					.get(0);
+			val = buckets.toString();
+			JSONObject bucket_ = new JSONObject(val);
+			freq = (Integer) bucket_.getJSONObject("dat").get("value");
+			System.out.println("DONE GETTING POSTS FOR BLOGGER--" + freq);
+
+		}
+		return freq;
+	}
+
+	public Integer _getBlogOrPostMentioned(String field, String term, String date_from, String date_to, String ids_)
+			throws Exception {
+		ArrayList<String> list = new ArrayList<String>();
+		HashMap<String, Integer> hm2 = new HashMap<String, Integer>();
+
+		JSONArray all = new JSONArray();
+
+		JSONObject query = new JSONObject("{\r\n" + "    \"size\": 0,\r\n" + "    \"query\": {\r\n"
+				+ "        \"bool\": {\r\n" + "            \"must\": [\r\n" + "                {\r\n"
+				+ "                    \"bool\": {\r\n" + "                        \"must\": [\r\n"
+				+ "                            {\r\n" + "                                \"term\": {\r\n"
+				+ "                                    \"post\": \"" + term + "\"\r\n"
+				+ "                                }\r\n" + "                            },\r\n"
+				+ "                            {\r\n" + "                                \"terms\": {\r\n"
+				+ "                                    \"blogsite_id\": [" + ids_ + "],\r\n"
+				+ "                                    \"boost\": 1\r\n" + "                                }\r\n"
+				+ "                            }\r\n" + "                        ],\r\n"
+				+ "                        \"adjust_pure_negative\": true,\r\n"
+				+ "                        \"boost\": 1\r\n" + "                    }\r\n" + "                },\r\n"
+				+ "                {\r\n" + "                    \"range\": {\r\n"
+				+ "                        \"date\": {\r\n" + "                            \"from\": \"" + date_from
+				+ "\",\r\n" + "                            \"to\": \"" + date_to + "\",\r\n"
+				+ "                            \"include_lower\": true,\r\n"
+				+ "                            \"include_upper\": true,\r\n"
+				+ "                            \"boost\": 1\r\n" + "                        }\r\n"
+				+ "                    }\r\n" + "                }\r\n" + "            ],\r\n"
+				+ "            \"adjust_pure_negative\": true,\r\n" + "            \"boost\": 1\r\n" + "        }\r\n"
+				+ "    },\r\n" + "    \"_source\": false,\r\n" + "    \"stored_fields\": \"_none_\",\r\n"
+				+ "    \"aggregations\": {\r\n" + "        \"groupby\": {\r\n" + "            \"filters\": {\r\n"
+				+ "                \"filters\": [\r\n" + "                    {\r\n"
+				+ "                        \"match_all\": {\r\n" + "                            \"boost\": 1\r\n"
+				+ "                        }\r\n" + "                    }\r\n" + "                ],\r\n"
+				+ "                \"other_bucket\": false,\r\n"
+				+ "                \"other_bucket_key\": \"_other_\"\r\n" + "            },\r\n"
+				+ "            \"aggregations\": {\r\n" + "                \"dat\": {\r\n"
+				+ "                    \"cardinality\": {\r\n" + "                        \"field\": \"" + field
+				+ "\"\r\n" + "                    }\r\n" + "                }\r\n" + "            }\r\n"
+				+ "        }\r\n" + "    }\r\n" + "}");
+
+		JSONObject myResponse = this._makeElasticRequest(query, "POST", "/blogposts/_search/?");
+		String val = null;
+		Integer freq = null;
+		String idx = null;
+		String language = null;
+		JSONArray jsonArray = new JSONArray();
+
+		if (null != myResponse.get("aggregations")) {
+			Object buckets = myResponse.getJSONObject("aggregations").getJSONObject("groupby").getJSONArray("buckets")
+					.get(0);
+			val = buckets.toString();
+			JSONObject bucket_ = new JSONObject(val);
+			freq = (Integer) bucket_.getJSONObject("dat").get("value");
+			System.out.println("DONE GETTING POSTS FOR BLOGGER--" + freq);
+
+		}
+		return freq;
+	}
+
+	public JSONArray _getMostLanguage(String date_from, String date_to, String ids_, Integer limit) throws Exception {
+		ArrayList<String> list = new ArrayList<String>();
+		HashMap<String, Integer> hm2 = new HashMap<String, Integer>();
+
+		JSONArray all = new JSONArray();
+
 		JSONObject query = new JSONObject("{\r\n" + "    \"size\": 0,\r\n" + "    \"query\": {\r\n"
 				+ "        \"bool\": {\r\n" + "            \"must\": [\r\n" + "                {\r\n"
 				+ "                    \"terms\": {\r\n" + "                        \"blogsite_id\": [" + ids_
@@ -1981,69 +2191,54 @@ public String _searchMinAndMaxRangeMaxByBloggers(String field,String greater, St
 				+ "                    }\r\n" + "                }\r\n" + "            }\r\n" + "        }\r\n"
 				+ "    }\r\n" + "}");
 
-		JSONObject myResponse = this._makeElasticRequest(query, "144.167.115.90", 9200, "POST", "/blogposts/_search/?");
-		String val=null;
+		JSONObject myResponse = this._makeElasticRequest(query, "POST", "/blogposts/_search/?");
+		String val = null;
 		Integer freq = null;
 		String idx = null;
 		String language = null;
 		JSONArray jsonArray = new JSONArray();
-		
+
 		if (null != myResponse.get("aggregations")) {
 			Object buckets = myResponse.getJSONObject("aggregations").getJSONObject("groupby").getJSONArray("buckets");
-//			Object total = myResponse.getJSONObject("hits").getJSONObject("total").get("value");
-
-//			JSONObject myRes1 = new JSONObject(buckets);
 			val = buckets.toString();
 			jsonArray = new JSONArray(val);
 
 			System.out.println("DONE GETTING POSTS FOR BLOGGER");
 
 		}
-//		JSONArray jsonArray = this._elastic(query);
-//		String source = null;
-//		String source_ = null;
-//		String result = null;
-//
-//		System.out.println("DONE GETTING POSTS FOR BLOGGER");
+
 		if (jsonArray != null) {
-			
+
 			for (int i = 0; i < limit; i++) {
 				JSONObject da = new JSONObject();
 				idx = jsonArray.get(i).toString();
-				
+
 				JSONObject j = new JSONObject(idx);
-				freq = (Integer)j.get("doc_count");
-				
+				freq = (Integer) j.get("doc_count");
+
 				Object k = j.getJSONObject("key").get("dat");
 				language = k.toString();
-//				String ids = j.get("_source").toString();
-//				j = new JSONObject(ids);
-//				String src = j.get("post").toString();
-//
-//				list.add(src);
+
 				da.put("letter", language);
 				da.put("frequency", freq);
-				
+
 				all.put(da);
-				hm.put(language, freq);
+				hm2.put(language, freq);
 			}
-			
-//
-//			System.out.println("DONE and size of list is --" + list.size());
-//			result = String.join(" ", list);
+
 		}
 
 		return all;
 	}
 
-	public JSONObject _keywordTermvctors(String data) throws Exception {
+	public Map<String, Integer> _keywordTermvctors(String data) throws Exception {
 		String result = null;
 		String source = null;
 		String source_ = null;
 		JSONObject d = new JSONObject();
 //		LinkedHashMap<String, Integer> sortedMap = new LinkedHashMap<>();
-		Map<String, Integer> hm1 = new HashMap<>();
-
+		// Map<String, Integer> hm1 = new HashMap<>();
+		Map<String, Integer> hm1 = new HashMap<String, Integer>();
 		System.out.println(data.length());
 		if (data.length() > 0) {
 
@@ -2053,73 +2248,110 @@ public String _searchMinAndMaxRangeMaxByBloggers(String field,String greater, St
 					+ "      \"max_num_terms\" : 1000,\r\n" + "      \"min_term_freq\" : 1,\r\n"
 					+ "      \"min_doc_freq\" : 1,\r\n" + "      \"min_word_length\":3\r\n" + "	\r\n" + "    }\r\n"
 					+ "}");
+//System.out.println("keyword termvec query is"+query);
+			JSONObject myResponse = this._makeElasticRequest(query, "POST", "/blogposts/_termvectors");
+
+			Object hits = myResponse.getJSONObject("term_vectors").getJSONObject("post").getJSONObject("terms");
+
+			source = hits.toString();
+			System.out.println("GETTING TERM VECTORS");
+			JSONObject jsonObject = new JSONObject(source);
+			Iterator<String> keys = jsonObject.keys();
+
+			source_ = keys.next();
+
+			System.out.println("DONE GETTING TERM VECTORS");
+			HashMap<String, Integer> hm2 = new HashMap<String, Integer>();
+			JSONObject da_ = new JSONObject();
+
+			while (keys.hasNext()) {
+				String key = keys.next();
+				Object freq = jsonObject.getJSONObject(key).get("term_freq");
+				Integer f = (Integer) freq;
+				hm2.put(key, f);
+			}
+
+			hm1 = this.sortHashMapByValues(hm2);
+			System.out.println("DONE SORTING OBJECT");
+
+			Map.Entry<String, Integer> entry = hm1.entrySet().iterator().next();
+			source = entry.getKey().toUpperCase();
 			
-				JSONObject myResponse = this._makeElasticRequest(query, "144.167.115.90", 9200, "POST", "/blogposts/_termvectors");
-				
-				Object hits = myResponse.getJSONObject("term_vectors").getJSONObject("post").getJSONObject("terms");
+			Integer value = entry.getValue();
+			String highest = entry.getKey();
 
-				source = hits.toString();
-				System.out.println("GETTING TERM VECTORS");
-				JSONObject jsonObject = new JSONObject(source);
-				Iterator<String> keys = jsonObject.keys();
+			System.out.println("HIGHEST TERM IS -- " + source + " OCCURING " + value + " TIMES");
 
-				source_ = keys.next();
+			String da = hm1.toString();
 
-				System.out.println("DONE GETTING TERM VECTORS");
-				HashMap<String, Integer> hm = new HashMap<String, Integer>();
-				while (keys.hasNext()) {
-					String key = keys.next();
-					Object freq = jsonObject.getJSONObject(key).get("term_freq");
-					Integer f = (Integer) freq;
-					hm.put(key, f);
-				
-				}
-
-				hm1 = this.sortHashMapByValues(hm);
-				System.out.println("DONE SORTING OBJECT");
-				System.out.println(" OCCURES-- " + hm1);
-
-				Map.Entry<String, Integer> entry = hm1.entrySet().iterator().next();
-				source = entry.getKey().toUpperCase();
-				Integer value = entry.getValue();
-
-				System.out.println("HIGHEST TERM IS -- " + source + " OCCURING " + value + " TIMES");
-
-				String da = hm1.toString();
-				d = new JSONObject(hm1);
-				System.out.println(d);
+			d = new JSONObject(hm1);
+			System.out.println(d);
 
 		} else {
 			source = "Null";
 		}
-		return d;
+		return hm1;
 
 	}
 
-	public String _getMostKeywordDashboard(String date_from, String date_to, String ids_) throws Exception {
+	public String _getMostKeywordDashboard(String BloggerName, String date_from, String date_to, String ids_)
+			throws Exception {
 		//
 		ArrayList<String> list = new ArrayList<String>();
+		JSONObject query = new JSONObject();
 		String result = null;
-		JSONObject query = new JSONObject("{\r\n" + "    \"size\": 10000,\r\n" + "    \"query\": {\r\n"
-				+ "        \"bool\": {\r\n" + "            \"must\": [\r\n" + "                {\r\n"
-				+ "                    \"terms\": {\r\n" + "                        \"blogsite_id\": [" + ids_
-				+ "],\r\n" + "                        \"boost\": 1.0\r\n" + "                    }\r\n"
-				+ "                },\r\n" + "                {\r\n" + "                    \"range\": {\r\n"
-				+ "                        \"date\": {\r\n" + "                            \"from\": \"" + date_from
-				+ "\",\r\n" + "                            \"to\": \"" + date_to + "\",\r\n"
-				+ "                            \"include_lower\": true,\r\n"
-				+ "                            \"include_upper\": true,\r\n"
-				+ "                            \"boost\": 1.0\r\n" + "                        }\r\n"
-				+ "                    }\r\n" + "                }\r\n" + "            ],\r\n"
-				+ "            \"adjust_pure_negative\": true,\r\n" + "            \"boost\": 1.0\r\n" + "        }\r\n"
-				+ "    },\r\n" + "    \"_source\": {\r\n" + "        \"includes\": [\r\n" + "            \"post\"\r\n"
-				+ "        ],\r\n" + "        \"excludes\": []\r\n" + "    },\r\n" + "    \"sort\": [\r\n"
-				+ "        {\r\n" + "            \"influence_score\": {\r\n"
-				+ "                \"order\": \"desc\",\r\n" + "                \"missing\": \"_first\",\r\n"
-				+ "                \"unmapped_type\": \"float\"\r\n" + "            }\r\n" + "        }\r\n"
-				+ "    ]\r\n" + "}");
+		if (BloggerName == null || BloggerName == "") {
+			query = new JSONObject("{\r\n" + "    \"size\": 10000,\r\n" + "    \"query\": {\r\n"
+					+ "        \"bool\": {\r\n" + "            \"must\": [\r\n" + "                {\r\n"
+					+ "                    \"terms\": {\r\n" + "                        \"blogsite_id\": [" + ids_
+					+ "],\r\n" + "                        \"boost\": 1.0\r\n" + "                    }\r\n"
+					+ "                },\r\n" + "                {\r\n" + "                    \"range\": {\r\n"
+					+ "                        \"date\": {\r\n" + "                            \"from\": \"" + date_from
+					+ "\",\r\n" + "                            \"to\": \"" + date_to + "\",\r\n"
+					+ "                            \"include_lower\": true,\r\n"
+					+ "                            \"include_upper\": true,\r\n"
+					+ "                            \"boost\": 1.0\r\n" + "                        }\r\n"
+					+ "                    }\r\n" + "                }\r\n" + "            ],\r\n"
+					+ "            \"adjust_pure_negative\": true,\r\n" + "            \"boost\": 1.0\r\n"
+					+ "        }\r\n" + "    },\r\n" + "    \"_source\": {\r\n" + "        \"includes\": [\r\n"
+					+ "            \"post\"\r\n" + "        ],\r\n" + "        \"excludes\": []\r\n" + "    },\r\n"
+					+ "    \"sort\": [\r\n" + "        {\r\n" + "            \"influence_score\": {\r\n"
+					+ "                \"order\": \"desc\",\r\n" + "                \"missing\": \"_first\",\r\n"
+					+ "                \"unmapped_type\": \"float\"\r\n" + "            }\r\n" + "        }\r\n"
+					+ "    ]\r\n" + "}");
+		} else {
+			query = new JSONObject("{\r\n" + "    \"size\": 10000,\r\n" + "    \"query\": {\r\n"
+					+ "        \"bool\": {\r\n" + "            \"must\": [\r\n" + "                {\r\n"
+					+ "                    \"bool\": {\r\n" + "                        \"must\": [\r\n"
+					+ "                            {\r\n" + "                                \"term\": {\r\n"
+					+ "                                    \"blogger.keyword\": {\r\n"
+					+ "                                        \"value\": \"" + BloggerName + "\",\r\n"
+					+ "                                        \"boost\": 1.0\r\n"
+					+ "                                    }\r\n" + "                                }\r\n"
+					+ "                            },\r\n" + "                            {\r\n"
+					+ "                                \"terms\": {\r\n"
+					+ "                                    \"blogsite_id\": [" + ids_ + "],\r\n"
+					+ "                                    \"boost\": 1.0\r\n" + "                                }\r\n"
+					+ "                            }\r\n" + "                        ],\r\n"
+					+ "                        \"adjust_pure_negative\": true,\r\n"
+					+ "                        \"boost\": 1.0\r\n" + "                    }\r\n"
+					+ "                },\r\n" + "                {\r\n" + "                    \"range\": {\r\n"
+					+ "                        \"date\": {\r\n" + "                            \"from\": \"" + date_from
+					+ "\",\r\n" + "                            \"to\": \"" + date_to + "\",\r\n"
+					+ "                            \"include_lower\": true,\r\n"
+					+ "                            \"include_upper\": true,\r\n"
+					+ "                            \"boost\": 1.0\r\n" + "                        }\r\n"
+					+ "                    }\r\n" + "                }\r\n" + "            ],\r\n"
+					+ "            \"adjust_pure_negative\": true,\r\n" + "            \"boost\": 1.0\r\n"
+					+ "        }\r\n" + "    },\r\n" + "    \"_source\": {\r\n" + "        \"includes\": [\r\n"
+					+ "            \"post\"\r\n" + "        ],\r\n" + "        \"excludes\": []\r\n" + "    },\r\n"
+					+ "    \"sort\": [\r\n" + "        {\r\n" + "            \"influence_score\": {\r\n"
+					+ "                \"order\": \"desc\",\r\n" + "                \"missing\": \"_first\",\r\n"
+					+ "                \"unmapped_type\": \"float\"\r\n" + "            }\r\n" + "        }\r\n"
+					+ "    ]\r\n" + "}");
+		}
 
-		JSONArray jsonArray = this._elastic(query);
+		JSONArray jsonArray = this._elastic(query).getJSONArray("hit_array");
 
 		System.out.println("DONE GETTING POSTS FOR BLOGGER");
 		if (jsonArray != null) {
@@ -2205,40 +2437,39 @@ public String _searchMinAndMaxRangeMaxByBloggers(String field,String greater, St
 					+ "      \"max_num_terms\" : 100,\r\n" + "      \"min_term_freq\" : 1,\r\n"
 					+ "      \"min_doc_freq\" : 1,\r\n" + "      \"min_word_length\":3\r\n" + "	\r\n" + "    }\r\n"
 					+ "}");
-				
-				JSONObject myResponse = this._makeElasticRequest(query, "144.167.115.90", 9200, "POST", "/blogposts/_termvectors");
-				
-				Object hits = myResponse.getJSONObject("term_vectors").getJSONObject("post").getJSONObject("terms");
-				source = hits.toString();
 
-				JSONObject jsonObject = new JSONObject(source);
-				Iterator<String> keys = jsonObject.keys();
+			JSONObject myResponse = this._makeElasticRequest(query, "POST", "/blogposts/_termvectors");
 
-				source_ = keys.next();
+			Object hits = myResponse.getJSONObject("term_vectors").getJSONObject("post").getJSONObject("terms");
+			source = hits.toString();
 
-				System.out.println("DONE GETTING TERM VECTORS");
-				HashMap<String, Integer> hm = new HashMap<String, Integer>();
-				while (keys.hasNext()) {
-					String key = keys.next();
-					// do something with jsonObject here
-					Object freq = jsonObject.getJSONObject(key).get("term_freq");
-					Integer f = (Integer) freq;
+			JSONObject jsonObject = new JSONObject(source);
+			Iterator<String> keys = jsonObject.keys();
 
-					// enter data into hashmap
-					hm.put(key, f);
+			source_ = keys.next();
 
+			System.out.println("DONE GETTING TERM VECTORS");
+			HashMap<String, Integer> hm2 = new HashMap<String, Integer>();
+			while (keys.hasNext()) {
+				String key = keys.next();
+				// do something with jsonObject here
+				Object freq = jsonObject.getJSONObject(key).get("term_freq");
+				Integer f = (Integer) freq;
 
-				}
-				System.out.println("2--" + data.length());
-				Map<String, Integer> hm1 = this.sortHashMapByValues(hm);
-				System.out.println("DONE SORTING OBJECT");
-				System.out.println(" OCCURES-- " + hm1);
+				// enter data into hashmap
+				hm2.put(key, f);
 
-				Map.Entry<String, Integer> entry = hm1.entrySet().iterator().next();
-				source = entry.getKey().toUpperCase();
-				Integer value = entry.getValue();
+			}
+			System.out.println("2--" + data.length());
+			Map<String, Integer> hm1 = this.sortHashMapByValues(hm2);
+			System.out.println("DONE SORTING OBJECT");
+			System.out.println(" OCCURES-- " + hm1);
 
-				System.out.println("HIGHEST TERM IS -- " + source + " OCCURING " + value + " TIMES");
+			Map.Entry<String, Integer> entry = hm1.entrySet().iterator().next();
+			source = entry.getKey().toUpperCase();
+			Integer value = entry.getValue();
+
+			System.out.println("HIGHEST TERM IS -- " + source + " OCCURING " + value + " TIMES");
 
 		} else {
 			source = "Null";
@@ -2247,176 +2478,175 @@ public String _searchMinAndMaxRangeMaxByBloggers(String field,String greater, St
 
 	}
 
-	public String _getBloggerPosts(String bloggerName, String date_from, String date_to, String ids_) throws Exception {
+	public int countOccurences(String str, String word)  
+	{ 
+	    // split the string by spaces in a 
+	    String a[] = str.split(" "); 
+	    
+	    String str_=null;
+	    
+	    // search for pattern in a 
+	    int count = 0; 
+	    for (int i = 0; i < a.length; i++)  
+	    { 
+	    // if match found increase count 
+	    	str_=a[i].toLowerCase();
+	    if (word.equals(str_)) 
+	        count++; 
+	    } 
+	  
+	    return count; 
+	} 
+	
+	public JSONObject _getBloggerPosts(String term, String bloggerName, String date_from, String date_to, String ids_)
+			throws Exception {
 //	
 		ArrayList<String> list = new ArrayList<String>();
 		ArrayList<String> _idlist = new ArrayList<String>();
 		String result = null;
-		JSONObject query = new JSONObject("{\r\n" + "    \"size\": 10000,\r\n" + "    \"query\": {\r\n"
-				+ "        \"bool\": {\r\n" + "            \"must\": [\r\n" + "                {\r\n"
-				+ "                    \"bool\": {\r\n" + "                        \"must\": [\r\n"
-				+ "                            {\r\n" + "                                \"term\": {\r\n"
-				+ "                                    \"blogger.keyword\": {\r\n"
-				+ "                                        \"value\": \"" + bloggerName + "\",\r\n"
-				+ "                                        \"boost\": 1.0\r\n"
-				+ "                                    }\r\n" + "                                }\r\n"
-				+ "                            },\r\n" + "                            {\r\n"
-				+ "                                \"terms\": {\r\n"
-				+ "                                    \"blogsite_id\": [" + ids_ + "],\r\n"
-				+ "                                    \"boost\": 1.0\r\n" + "                                }\r\n"
-				+ "                            }\r\n" + "                        ],\r\n"
-				+ "                        \"adjust_pure_negative\": true,\r\n"
-				+ "                        \"boost\": 1.0\r\n" + "                    }\r\n" + "                },\r\n"
-				+ "                {\r\n" + "                    \"range\": {\r\n"
-				+ "                        \"date\": {\r\n" + "                            \"from\": \"" + date_from
-				+ "\",\r\n" + "                            \"to\": \"" + date_to + "\",\r\n"
-				+ "                            \"include_lower\": true,\r\n"
-				+ "                            \"include_upper\": true,\r\n"
-				+ "                            \"boost\": 1.0\r\n" + "                        }\r\n"
-				+ "                    }\r\n" + "                }\r\n" + "            ],\r\n"
-				+ "            \"adjust_pure_negative\": true,\r\n" + "            \"boost\": 1.0\r\n" + "        }\r\n"
-				+ "    },\r\n" + "    \"_source\": {\r\n" + "        \"includes\": [\r\n" + "            \"post\"\r\n"
-				+ "        ],\r\n" + "        \"excludes\": []\r\n" + "    },\r\n" + "    \"sort\": [\r\n"
-				+ "        {\r\n" + "            \"influence_score\": {\r\n"
-				+ "                \"order\": \"desc\",\r\n" + "                \"missing\": \"_first\",\r\n"
-				+ "                \"unmapped_type\": \"float\"\r\n" + "            }\r\n" + "        }\r\n"
-				+ "    ]\r\n" + "}");
 
+		JSONObject all_data = new JSONObject();
+		JSONObject posts_occured_data = new JSONObject();
 
-		if (bloggerName != "" || bloggerName != null) {
-			System.out.println("nameblogger" + bloggerName);
+		JSONObject query = new JSONObject();
 
-			JSONArray jsonArray = this._elastic(query);
+		if (bloggerName != "NOBLOGGER") {
 
-				System.out.println("DONE GETTING POSTS FOR BLOGGER");
-				if (jsonArray != null) {
+			query = new JSONObject("{\r\n" + "    \"size\": 10000,\r\n" + "    \"query\": {\r\n"
+					+ "        \"bool\": {\r\n" + "            \"must\": [\r\n" + "                {\r\n"
+					+ "                    \"bool\": {\r\n" + "                        \"must\": [\r\n"
+					+ "                            {\r\n" + "                                \"term\": {\r\n"
+					+ "                                    \"blogger.keyword\": {\r\n"
+					+ "                                        \"value\": \"" + bloggerName + "\",\r\n"
+					+ "                                        \"boost\": 1.0\r\n"
+					+ "                                    }\r\n" + "                                }\r\n"
+					+ "                            },\r\n" + "                            {\r\n"
+					+ "                                \"terms\": {\r\n"
+					+ "                                    \"blogsite_id\": [" + ids_ + "],\r\n"
+					+ "                                    \"boost\": 1.0\r\n" + "                                }\r\n"
+					+ "                            }\r\n" + "                        ],\r\n"
+					+ "                        \"adjust_pure_negative\": true,\r\n"
+					+ "                        \"boost\": 1.0\r\n" + "                    }\r\n"
+					+ "                },\r\n" + "                {\r\n" + "                    \"range\": {\r\n"
+					+ "                        \"date\": {\r\n" + "                            \"from\": \"" + date_from
+					+ "\",\r\n" + "                            \"to\": \"" + date_to + "\",\r\n"
+					+ "                            \"include_lower\": true,\r\n"
+					+ "                            \"include_upper\": true,\r\n"
+					+ "                            \"boost\": 1.0\r\n" + "                        }\r\n"
+					+ "                    }\r\n" + "                }\r\n" + "            ],\r\n"
+					+ "            \"adjust_pure_negative\": true,\r\n" + "            \"boost\": 1.0\r\n"
+					+ "        }\r\n" + "    },\r\n" + "    \"_source\": {\r\n" + "        \"includes\": [\r\n"
+					+ "            \"post\"\r\n" + "        ],\r\n" + "        \"excludes\": []\r\n" + "    },\r\n"
+					+ "    \"sort\": [\r\n" + "        {\r\n" + "            \"influence_score\": {\r\n"
+					+ "                \"order\": \"desc\",\r\n" + "                \"missing\": \"_first\",\r\n"
+					+ "                \"unmapped_type\": \"float\"\r\n" + "            }\r\n" + "        }\r\n"
+					+ "    ]\r\n" + "}");
 
-					for (int i = 0; i < jsonArray.length(); i++) {
+		} else {
+			query = new JSONObject("{\r\n" + "    \"size\": 1000,\r\n" + "    \"query\": {\r\n"
+					+ "        \"bool\": {\r\n" + "            \"must\": [\r\n" + "                {\r\n"
+					+ "                    \"term\": {\r\n" + "                        \"post\": \""+term+"\"\r\n"
+					+ "                    }\r\n" + "                },\r\n" + "                {\r\n"
+					+ "                    \"terms\": {\r\n" + "                        \"blogsite_id\": ["+ids_+"],\r\n" + "                        \"boost\": 1\r\n"
+					+ "                    }\r\n" + "                },\r\n" + "                {\r\n"
+					+ "                    \"range\": {\r\n" + "                        \"date\": {\r\n"
+					+ "                            \"from\": \""+date_from+"\",\r\n"
+					+ "                            \"to\": \""+date_to+"\",\r\n"
+					+ "                            \"include_lower\": true,\r\n"
+					+ "                            \"include_upper\": true,\r\n"
+					+ "                            \"boost\": 1\r\n" + "                        }\r\n"
+					+ "                    }\r\n" + "                }\r\n" + "            ],\r\n"
+					+ "            \"adjust_pure_negative\": true,\r\n" + "            \"boost\": 1\r\n"
+					+ "        }\r\n" + "    },\r\n" + "    \"_source\": {\r\n" + "        \"includes\": [\r\n"
+					+ "            \r\n" + "            \"title\",\r\n" + "            \"post\",\r\n"
+					+ "            \"blogpost_id\",\r\n" + "            \"permalink\",\r\n"
+					+ "            \"num_comments\",\r\n" + "            \"date\",\r\n"
+					+ "            \"num_comments\",\r\n" + "            \"blogger\"\r\n" + "        ],\r\n"
+					+ "        \"excludes\": []\r\n" + "    },\r\n" + "    \"sort\": [\r\n" + "        {\r\n"
+					+ "            \"influence_score\": {\r\n" + "                \"order\": \"desc\",\r\n"
+					+ "                \"missing\": \"_last\",\r\n" + "                \"unmapped_type\": \"float\"\r\n"
+					+ "            }\r\n" + "        }\r\n" + "    ]\r\n" + "}");
+		}
 
-						String indx = jsonArray.get(i).toString();
-						JSONObject j = new JSONObject(indx);
-						String ids = j.get("_source").toString();
-						String _ids = j.get("_id").toString();
+		System.out.println("query" + query);
 
-						j = new JSONObject(ids);
-						String src = j.get("post").toString();
-						list.add(src);
-						_idlist.add("\"" + _ids + "\"");
+		JSONObject elas = this._elastic(query);
+		JSONArray jsonArray = elas.getJSONArray("hit_array");
+		String total = elas.get("total").toString();
+
+		String title = null;
+		String blogpost_id = null;
+		String permalink = null;
+		String date = null;
+		String num_comments = null;
+		String blogger = null;
+		int occurence = 0;
+		
+		JSONArray all = new JSONArray();
+
+		System.out.println("DONE GETTING POSTS FOR BLOGGER");
+		if (jsonArray != null) {
+
+			for (int i = 0; i < jsonArray.length(); i++) {
+
+				String indx = jsonArray.get(i).toString();
+				JSONObject j = new JSONObject(indx);
+				String ids = j.get("_source").toString();
+				String _ids = j.get("_id").toString();
+
+				j = new JSONObject(ids);
+
+				String src = j.get("post").toString();
+				src=src.replaceAll("\\<.*?>", "");
+				if (bloggerName == "NOBLOGGER") {
+					if (j.get("title").toString() != null || j.get("title").toString() != "") {
+						occurence = this.countOccurences(src,term);
+//						System.out.println(term+"----------------------"+occurence);
+						title = j.get("title").toString();
+						blogpost_id = j.get("blogpost_id").toString();
+						permalink = j.get("permalink").toString();
+						date = j.get("date").toString();
+						num_comments = j.get("num_comments").toString();
+						blogger = j.get("blogger").toString();
 					}
-
-					System.out.println("DONE and size of list is --" + list.size());
-//					System.out.println("IDS_ are --" + _idlist);
-					result = String.join(" ", list);
 				}
 
-//			XContentBuilder docBuilder = XContentFactory.jsonBuilder();
-//			docBuilder.startObject().field("post", "guest-user").endObject();
-//			TermVectorsRequest request1 = new TermVectorsRequest("blogposts",docBuilder); 
-//			
-//			request1.setFieldStatistics(false); 
-//			request1.setTermStatistics(true); 
-//			request1.setPositions(false); 
-//			request1.setOffsets(false); 
-//			request1.setPayloads(false); 
-//
-//			Map<String, Integer> filterSettings = new HashMap<>();
-//			filterSettings.put("max_num_terms", 3);
-//			filterSettings.put("min_term_freq", 1);
-//			filterSettings.put("max_term_freq", 10);
-//			filterSettings.put("min_doc_freq", 1);
-//			filterSettings.put("max_doc_freq", 100);
-//			filterSettings.put("min_word_length", 1);
-//			filterSettings.put("max_word_length", 10);
-//			
-//			request1.setFilterSettings(filterSettings);
-//			
-//			org.elasticsearch.client.core.TermVectorsResponse response1 = client.termvectors(request1, RequestOptions.DEFAULT);
-//			
-//			String index = response1.getIndex(); 
-//			
-//			String id = response1.getId(); 
-//			boolean found = response1.getFound(); 
-//			
-//			System.out.print("index-"+index);
+				posts_occured_data = new JSONObject();
+				posts_occured_data.put("post", src);
+				posts_occured_data.put("title", title);
+				posts_occured_data.put("blogpost_id", blogpost_id);
+				posts_occured_data.put("permalink", permalink);
+				posts_occured_data.put("date", date);
+				posts_occured_data.put("num_comments", num_comments);
+				posts_occured_data.put("blogger", blogger);
+				posts_occured_data.put("occurence", occurence);
 
-//			}
+				all.put(posts_occured_data);
+
+				list.add(src);
+				_idlist.add("\"" + _ids + "\"");
+			}
+
+			System.out.println("DONE and size of list is --" + list.size());
+
+			result = String.join(" ", list);
 		}
-//		RestHighLevelClient client = new RestHighLevelClient(
-//        RestClient.builder(
-//                new HttpHost("localhost", 9200, "http"),
-//                new HttpHost("localhost", 9201, "http")));
-//
-////		RestClient restClient = RestClient
-////				.builder(new HttpHost("localhost", 9200, "http"), new HttpHost("localhost", 9201, "http")).build();
-//
-//		Request request = null;
-////		String url = base_url_test + "_search";
-//		
-//
-////
-////		RestClient restClient = RestClient.builder(new HttpHost("localhost", 9200, "http")).build();
-////		
-//		
-//		SearchResponse response = client.prepareSearch("blogposts")
-//                .setQuery(query)
-//                .execute()
-//                .actionGet();
 
-//		SearchResponse response2 = client.prepareSearch("index1", "index2")
-//		        .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
-//		        .setQuery(QueryBuilders.termQuery("multi", "test"))                 // Query
-//		        .setPostFilter(QueryBuilders.rangeQuery("age").from(12).to(18))     // Filter
-//		        .setFrom(0).setSize(60).setExplain(true)
-//		        .get();
+		result.replaceAll("\\<.*?>", "");
 
-//		Request request = new Request("POST", "/blogposts/_search");
-//		request.addParameter("pretty", "true");
-//		request.setEntity(new NStringEntity(query, ContentType.APPLICATION_JSON));
-//		Response response = null;
-//		try {
-//		response = restClient.performRequest(request);
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		
-//		
-//		HttpEntity entity = new NStringEntity(query,ContentType.APPLICATION_JSON);
-//		Response response = restClient.performRequest("GET", "/hist_latest_5.5.0/_search",Collections.<String, String>emptyMap(),entity);
-//		Response response = client.performRequest("POST","/_search",emptyMap(),entity);
-////		Response response = restClient.performRequest("POST","/_search",emptyMap(),entity);
-////		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-////		SearchModule searchModule = new SearchModule(Settings.EMPTY, false, Collections.emptyList());
-////		try (XContentParser parser = XContentFactory.xContent(XContentType.JSON).createParser(new NamedXContentRegistry(searchModule
-////		            .getNamedXContents()), query)) {
-////		    searchSourceBuilder.parseXContent(parser);
-////		}
-////		
-//		IndexResponse response = client.prepareIndex("blogposts", "_doc")
-//		        .setSource(json, XContentType.JSON)
-//		        .get();
-////		
-////		JSONObject jsonObj = new JSONObject(que);
-////		ArrayList result = this._getResult(url, jsonObj);
-//
-////		return this._getResult(url, jsonObj);
-//		System.out.println("response--" + jsonResponse);
-//		esClient.close();
-//		client.close();
-
-//		result = result.replace("/","//");
-//		String q = query.toString();
-//		q = q.replaceAll("[^a-zA-Z0-9\\s+:]", "");
 		result = this.escape(result);
 		System.out.println("Done Escaped the necessary");
-//		result = stop.removeStopWords(result);
+
 		System.out.println("Done remmoving stop words");
-		return result.replace("(adsbygoogle = window.adsbygoogle || []).push({}); ", "");
+
+		all_data.put("total", total);
+		all_data.put("posts", result.replace("(adsbygoogle = window.adsbygoogle || []).push({}); ", ""));
+		all_data.put("data", all);
+
+		return all_data;
 	}
 
 	public ArrayList _testbloggertranslate(String blogger, String start) throws Exception {
-//		JSONObject jsonObj = new JSONObject(
-//				"{\r\n" + "    \"query\": \"SELECT post FROM blogposts where blogger=\"" + blogger + "\"\r\n" + "}");
 
 		JSONObject jsonObj = new JSONObject(
 				"{\r\n" + "    \"query\": \"SELECT post FROM blogposts where blogger='" + blogger + "'\"\r\n" + "}");

@@ -22,9 +22,11 @@ Object bloggerId = (null == request.getParameter("bloggerId")) ? "" : request.ge
 System.out.println(bloggerId);
 
 Object action = (null == request.getParameter("action")) ? "" : request.getParameter("action");
+Object all_blog_ids = (null == request.getParameter("all_blog_ids")) ? "" : request.getParameter("all_blog_ids");
 
 String dt = date_start.toString();
 String dte = date_end.toString();
+Blogposts post = new Blogposts();
 //ArrayList allterms = new Terms()._searchByRange("blogsiteid", dt, dte, post_ids.toString());
 int highestfrequency = 0;
 
@@ -97,8 +99,15 @@ var word_count2 = {};
 		 word_count2["<%=terms.toString()%>"] = <%=size%> 
 	<%}}%>
 	
-wordtagcloud("#tagcloudcontainer",450,word_count2);	
-	
+/* wordtagcloud("#tagcloudcontainer",450,word_count2);	 */
+<%
+/* outlinks = outl._searchByRange("date", dt, dte, ids); */
+String sql = post._getMostKeywordDashboard(blogger.toString(),dt,dte,all_blog_ids.toString());
+JSONObject res=post._keywordTermvctors(sql);	
+System.out.println("--->"+res);
+%>
+<%-- console.log("blogger--"+"<%=blogger.toString()%>"+"date_from--"+"<%=dt%>"+"date_to--"+"<%=dte%>"+"all_ids--"+"<%=all_blog_ids.toString()%>") --%>
+wordtagcloud("#tagcloudcontainer",450,<%=res%>);
 <%-- wordtagcloud("#tagcloudcontainer",450);
 function wordtagcloud(element, height) {
 	 var d3Container = d3.select(element),

@@ -172,6 +172,7 @@ function loadTerms(blogger,blog_id){
 			action:"getchart",
 			post_ids:$("#postby"+blger).val(),
 			blogger:blogger,
+			all_blog_ids:$("#all_blog_ids").val(),
 			date_start:$("#date_start").val(),
 			sort:"influence_score",
 			date_end:$("#date_end").val(),

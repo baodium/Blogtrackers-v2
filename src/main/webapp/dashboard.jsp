@@ -257,7 +257,7 @@
 			String totalbloggers = bloggerss._getBloggerById(ids);
 
 			System.out.println("Total bloggers----" + totalbloggers);
-			
+
 			ArrayList locations = blog._getLocation(ids);
 			//System.out.println("all blog location");
 			ArrayList languages = blog._getLanguage(ids);
@@ -307,12 +307,14 @@
 
 			totalpost = post._getBlogPostById(ids);
 
+			/* outlinks = outl._searchByRange("date", dt, dte, ids); */
+
 			if (totalpost.equals("")) {
 				totalpost = post._searchRangeTotal("date", dt, dte, ids); // To be modified later
 			}
 			//System.out.println("termss start");
 			termss = term._searchByRange("blogsiteid", dt, dte, ids);
-			System.out.println("terms---"+termss);
+			System.out.println("terms---" + termss);
 			session.setAttribute("terms", termss);
 			//System.out.println("termss end");
 			//System.out.println("outlinks start");
@@ -501,6 +503,7 @@
 </head>
 <body>
 	<%@include file="subpages/loader.jsp"%>
+	--%>
 	<%@include file="subpages/googletagmanagernoscript.jsp"%>
 	<div class="modal-notifications">
 		<div class="row">
@@ -817,25 +820,37 @@
 											</tr>
 										</thead>
 										<tbody>
-
+											<%-- 
+											
+											System.out.println("--->"+dt+"--->"+dte+"--->"+ids);
+											String sql = post._getMostKeywordDashboard(null,dt,dte,ids);
+											JSONObject res=post._keywordTermvctors(sql);	
+											System.out.println("--->"+res);
+											 --%>
 											<%
-												if (languages.size() > 0) {
-															for (int y = 0; y < languages.size(); y++) {
-																ArrayList<?> langu = (ArrayList<?>) languages.get(y);
-																String languag = langu.get(0).toString();
+												JSONArray language_data = post._getMostLanguage(dt, dte, ids, 10);
 
-																String languag_freq = NumberFormat.getNumberInstance(Locale.US)
-																		.format(new Double(langu.get(1).toString()).intValue());
+														if (language_data.length() > 0) {
+															JSONObject lang_total = new JSONObject();
 
-																if (y < 10) {
+															for (int y = 0; y < language_data.length(); y++) {
+																String a = language_data.get(y).toString();
+																lang_total = new JSONObject(a);
+																//System.out.println(j.get("letter"));
+																/* 	ArrayList<?> langu = (ArrayList<?>) languages.get(y);
+																	String languag = langu.get(0).toString();
+																
+																	String languag_freq = NumberFormat.getNumberInstance(Locale.US)
+																			.format(new Double(langu.get(1).toString()).intValue()); */
 											%>
 											<tr>
-												<td class=""><%=languag%></td>
-												<td><%=languag_freq%></td>
+												<td class=""><%=lang_total.get("letter")%></td>
+												<td><%=lang_total.get("frequency")%></td>
+												<!-- <td class="">j.get("letter")</td>
+												<td>j.get("frequency")</td> -->
 											</tr>
 											<%
 												}
-															}
 														}
 											%>
 
@@ -928,10 +943,15 @@
 							</p>
 						</div>
 						<!-- <div class="tagcloudcontainer" style="min-height: 420px;"></div> -->
-						<div class="chart-container">
-							<div class="chart" id="tagcloudcontainer">
-								<div class="jvectormap-zoomin zoombutton" id="zoom_in">+</div>
-								<div class="jvectormap-zoomout zoombutton" id="zoom_out">−</div>
+
+
+
+						<div style="min-height: 420px;">
+							<div class="chart-container word-cld">
+								<div class="chart" id="tagcloudcontainer">
+									<div class="jvectormap-zoomin zoombutton" id="zoom_in">+</div>
+									<div class="jvectormap-zoomout zoombutton" id="zoom_out">−</div>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -1267,20 +1287,23 @@
 			%>
 			</textarea>
 		<textarea style="display: none" name="bloggers" id="bloggers">
-<%try{
-	if (bloggerPostFrequency.size() > 0) {
-				int p = 0;
-				for (int m = 0; m < bloggerPostFrequency.size(); m++) {
-					ArrayList<?> bloggerFreq = (ArrayList<?>) bloggerPostFrequency.get(m);
-					String bloggerName = bloggerFreq.get(0).toString();
-					String bloggerPostFreq = bloggerFreq.get(1).toString();
-					if (p < 10) {
-						p++;
+<%
+	try {
+				if (bloggerPostFrequency.size() > 0) {
+					int p = 0;
+					for (int m = 0; m < bloggerPostFrequency.size(); m++) {
+						ArrayList<?> bloggerFreq = (ArrayList<?>) bloggerPostFrequency.get(m);
+						String bloggerName = bloggerFreq.get(0).toString();
+						String bloggerPostFreq = bloggerFreq.get(1).toString();
+						if (p < 10) {
+							p++;
 %>{letter:"<%=bloggerName%>", frequency:<%=bloggerPostFreq%>, name:"<%=bloggerName%>", type:"blogger"},
 <%
 	}
+					}
 				}
-			}}catch(Exception e){}
+			} catch (Exception e) {
+			}
 %>
 		</textarea>
 
@@ -1288,42 +1311,48 @@
 		<textarea style="display: none" name="influencialBlogs"
 			id="InfluencialBlogs">
 
-<%try{
-	if (influenceBlog.size() > 0) {
-				int p = 0;
-				for (int m = 0; m < influenceBlog.size(); m++) {
-					ArrayList<?> blogInfluence = (ArrayList<?>) influenceBlog.get(m);
-					String blogInf = blogInfluence.get(0).toString();
-					String blogInfFreq = blogInfluence.get(1).toString();
-					if (p < 10) {
-						p++;
+<%
+	try {
+				if (influenceBlog.size() > 0) {
+					int p = 0;
+					for (int m = 0; m < influenceBlog.size(); m++) {
+						ArrayList<?> blogInfluence = (ArrayList<?>) influenceBlog.get(m);
+						String blogInf = blogInfluence.get(0).toString();
+						String blogInfFreq = blogInfluence.get(1).toString();
+						if (p < 10) {
+							p++;
 %>
 {letter:"<%=blogInf%>", frequency:<%=blogInfFreq%>, name:"<%=blogInf%>", type:"blog"},
     			 <%
 	}
+					}
 				}
-			}}catch(Exception e){}
+			} catch (Exception e) {
+			}
 %>
 			 </textarea>
 		</textarea>
 
 		<textarea style="display: none" name="influencialBloggers"
 			id="InfluencialBloggers">
-			<%try{
-				if (influenceBlogger.size() > 0) {
-							int k = 0;
-							for (int y = 0; y < influenceBlogger.size(); y++) {
-								ArrayList<?> bloggerInfluence = (ArrayList<?>) influenceBlogger.get(y);
-								String bloggerInf = bloggerInfluence.get(0).toString();
-								String bloggerInfFreq = bloggerInfluence.get(1).toString();
-								if (k < 10) {
-									k++;
+			<%
+				try {
+							if (influenceBlogger.size() > 0) {
+								int k = 0;
+								for (int y = 0; y < influenceBlogger.size(); y++) {
+									ArrayList<?> bloggerInfluence = (ArrayList<?>) influenceBlogger.get(y);
+									String bloggerInf = bloggerInfluence.get(0).toString();
+									String bloggerInfFreq = bloggerInfluence.get(1).toString();
+									if (k < 10) {
+										k++;
 			%>
 		{letter:"<%=bloggerInf%>", frequency:<%=bloggerInfFreq%>, name:"<%=bloggerInf%>", type:"blogger"},
 		 <%
 				}
+								}
 							}
-						}}catch(Exception e){}
+						} catch (Exception e) {
+						}
 			%>
 		</textarea>
 	</form>
@@ -1632,7 +1661,7 @@ $(function () {
       	/* String sql = post._getMostKeywordDashboard(dt,dte,ids);
 	JSONObject res=post._keywordTermvctors(sql);	 */
 	data = [];
-	<%JSONArray language_data = post. _getMostLanguage(dt, dte, ids,10);%>
+	
 	
 <%--      data = [
     	  <%if (languages.size() > 0) {
@@ -1648,7 +1677,7 @@ $(function () {
 					}%>
 	 ];  --%>
 	 
-	 data = <%=language_data%>
+	  data = <%=language_data%> 
 	 
 	 <%-- console.log("langdata-->"+"<%=language_data%>"); --%>
      data.sort(function(a, b){
@@ -2734,6 +2763,7 @@ var mymarker = [
 
 	
 	var word_count2 = {}; 
+	
 	/* var res = {}; */
 	   <%JSONArray sortedterms = term._sortJson2(unsortedterms);
 					System.out.println("TM:" + sortedterms);
@@ -2755,15 +2785,65 @@ var mymarker = [
 		
 		console.log("--->"+word_count2)
 		
-	<%
-	/* outlinks = outl._searchByRange("date", dt, dte, ids); */
-	String sql = post._getMostKeywordDashboard(dt,dte,ids);
-	JSONObject res=post._keywordTermvctors(sql);	
-	System.out.println("--->"+res);
-	%>
+		$(document).ready(function(){
+
+	<%if (null == session.getAttribute(tid.toString())) {%>
+		  // keywords have not been computed.
+		loadKeywordDashboard(null, "<%=ids%>")
+		<%} else {
+						Object json_type_2 = (null == session.getAttribute(tid.toString()))
+								? ""
+								: session.getAttribute(tid.toString());
+						Map<String, Integer> json = (HashMap<String, Integer>)json_type_2;
+						JSONObject d = new JSONObject(json);
+						String s = json_type_2.toString();
+					
+						JSONObject o = new JSONObject(json_type_2);
+						System.out.println("testing w" + d);%>
+		  		wordtagcloud("#tagcloudcontainer",450,<%=d%>); 
+		<%}%>
 	
-	wordtagcloud("#tagcloudcontainer",450,<%=res%>);
-	{}
+			
+})
+		
+		
+		function loadKeywordDashboard(blogger,ids){
+			 $(".word-cld").html("<img src='images/loading.gif' /> COMPUTING TERMS PLEASE WAIT...."); 
+			$.ajax({
+				url: app_url+"subpages/dashboardcharts.jsp",
+				method: 'POST',
+	            dataType: 'json',
+				data: {
+					action:"getkeyworddashboard",
+					blogger:null,
+					action:"<%=tid%>",
+					ids:"<%=ids%>",
+					date_start:"<%=dt%>",
+					date_end:"<%=dte%>",
+				},
+				error: function(response)
+				{		
+					console.log("This is failure"+response);
+					
+					$(".word-cld").html("FAILED TO COMPUTE TERMS.. RETRYING.. PLEASE WAIT.... <img src='images/loading.gif' />g");
+					$(".word-cld").html("<div style='min-height: 420px;'><div class='chart-container word-cld'><div class='chart' id='tagcloudcontainer'><div class='jvectormap-zoomin zoombutton' id='zoom_in'>+</div><div class='jvectormap-zoomout zoombutton' id='zoom_out'>−</div></div></div></div>");
+					wordtagcloud("#tagcloudcontainer",450,{"NO KEYWORD":1});
+
+				},
+				success: function(response)
+				{   				  
+				 console.log(response)
+				console.log("this is the response"+data)
+				
+				$(".word-cld").html("<div style='min-height: 420px;'><div class='chart-container word-cld'><div class='chart' id='tagcloudcontainer'><div class='jvectormap-zoomin zoombutton' id='zoom_in'>+</div><div class='jvectormap-zoomout zoombutton' id='zoom_out'>−</div></div></div></div>");
+				wordtagcloud("#tagcloudcontainer",450,response); 
+				}
+			});
+		}
+
+	
+	<%-- wordtagcloud("#tagcloudcontainer",450,<%=res%>); --%>
+
 
 	
  </script>

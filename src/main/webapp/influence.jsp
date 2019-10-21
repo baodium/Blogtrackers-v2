@@ -960,7 +960,7 @@ authoryears.put(mostactiveblogger,postyear);
 		<input type="hidden" name="author" id="author" value="<%=mostactiveblogger%>" /> 
 		<input type="hidden" name="bloggerId" id="bloggerId" value="<%=mostactivebloggerId%>" /> 
 		<input type="hidden" name="single_date" id="single_date" value="" />
-		
+		<input type="hidden" name="all_blog_ids" id="all_blog_ids" value="<%=ids%>" />
 		<input type="hidden" name="date_start" id="date_start" value="<%=dt%>" /> 
 		<input type="hidden" name="date_end" id="date_end" value="<%=dte%>" />	
 	</form>
@@ -2303,8 +2303,15 @@ authoryears.put(mostactiveblogger,postyear);
 						word_count2["No Terms Available"] = 2 */
 					<%}%>
 	
-wordtagcloud("#tagcloudcontainer",450,word_count2);
-	
+/* wordtagcloud("#tagcloudcontainer",450,word_count2); */
+<%
+/* outlinks = outl._searchByRange("date", dt, dte, ids); */
+String sql = post._getMostKeywordDashboard(null,dt,dte,ids);
+JSONObject res=post._keywordTermvctors(sql);	
+System.out.println("--->"+res);
+%>
+
+wordtagcloud("#tagcloudcontainer",450,<%=res%>);
 	
  </script>
 <script src="pagedependencies/baseurl.js"></script>

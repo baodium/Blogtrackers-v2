@@ -14,254 +14,289 @@
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="java.util.Date"%>
 <%@page import="java.net.URI"%>
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 
 <%
-Object date_start = (null == request.getParameter("date_start")) ? "" : request.getParameter("date_start");
-Object date_end = (null == request.getParameter("date_end")) ? "" : request.getParameter("date_end");
-String mostactiveterm = (null == request.getParameter("term")) ? "" : request.getParameter("term").toString();
+	Object date_start = (null == request.getParameter("date_start")) ? "" : request.getParameter("date_start");
+	Object date_end = (null == request.getParameter("date_end")) ? "" : request.getParameter("date_end");
+	String mostactiveterm = (null == request.getParameter("term"))
+			? ""
+			: request.getParameter("term").toString();
 
-Object sort = (null == request.getParameter("sort")) ? "" : request.getParameter("sort");
-Object action = (null == request.getParameter("action")) ? "" : request.getParameter("action");
-Object id = (null == request.getParameter("id")) ? "" : request.getParameter("id");
-Object tid = (null == request.getParameter("tid")) ? "" : request.getParameter("tid");
+	Object sort = (null == request.getParameter("sort")) ? "" : request.getParameter("sort");
+	Object action = (null == request.getParameter("action")) ? "" : request.getParameter("action");
+	Object id = (null == request.getParameter("id")) ? "" : request.getParameter("id");
+	Object tid = (null == request.getParameter("tid")) ? "" : request.getParameter("tid");
+	Object all_blog_ids = (null == request.getParameter("all_blog_ids"))
+			? ""
+			: request.getParameter("all_blog_ids");
 
+	Trackers tracker = new Trackers();
+	Blogposts post = new Blogposts();
+	Blogs blog = new Blogs();
 
-Trackers tracker  = new Trackers();
-Blogposts post  = new Blogposts();
-Blogs blog  = new Blogs();
+	Terms term = new Terms();
+	String dt = date_start.toString();
+	String dte = date_end.toString();
+	JSONArray termscount = new JSONArray();
 
-Terms term  = new Terms();
-String dt = date_start.toString();
-String dte = date_end.toString();
-JSONArray termscount = new JSONArray();
+	JSONObject years = new JSONObject();
+	JSONArray yearsarray = new JSONArray();
 
-JSONObject years = new JSONObject();
-JSONArray yearsarray = new JSONArray();
+	JSONObject termsyears = new JSONObject();
 
-
-JSONObject termsyears = new JSONObject();
-
-String year_start="";
-String year_end="";
-		
+	String year_start = "";
+	String year_end = "";
 %>
 
 
-<%  
-if(action.toString().equals("getstats")){	
-	String postc =  post._searchTotalAndUnique(mostactiveterm,"date", dt,dte,"blogpost_id");
-	String blogc = post._searchTotalAndUnique(mostactiveterm,"date", dt,dte,"blogsite_id");
-	String bloggerc = post._searchTotalAndUniqueBlogger(mostactiveterm,"date", dt,dte,"blogger");
-	String toplocation = "";
-	
-    ArrayList allposts =  post._searchByBody(mostactiveterm, dt,dte);
-    JSONObject firstpost = new JSONObject();
-    JSONObject locations = new JSONObject();
-    
-    
-    if(allposts.size()>0){			
-								String tres = null;
+<!-- BY SEUN--BEGINNING  -->
+<%-- <%
+	Integer blog_mentioned = null;
+	JSONObject result = new JSONObject();
+	if (action.toString().equals("getblogmentioned")) {
+		blog_mentioned = post._getBlogMentioned(mostactiveterm.toString(), date_start.toString(),date_end.toString(), all_blog_ids.toString());
+		
+		System.out.println(blog_mentioned.toString() + mostactiveterm.toString() + date_start.toString()+ date_end.toString() + all_blog_ids.toString());
+
+		result.put("blogmentioned", blog_mentioned.toString());
+		String new_result = result.toString();
+		result = new JSONObject(new_result);
+		System.out.println(result.toString());
+%>
+<%=result.toString()%>
+
+<%
+	}
+%> --%>
+<!--  BY SEUN--BEGINNING  -->
+<%
+%>
+
+
+<%
+	if (action.toString().equals("getstats")) {
+		String postc = post._searchTotalAndUnique(mostactiveterm, "date", dt, dte, "blogpost_id");
+		String blogc = post._searchTotalAndUnique(mostactiveterm, "date", dt, dte, "blogsite_id");
+		String bloggerc = post._searchTotalAndUniqueBlogger(mostactiveterm, "date", dt, dte, "blogger");
+		String toplocation = "";
+
+		ArrayList allposts = post._searchByBody(mostactiveterm, dt, dte);
+		JSONObject firstpost = new JSONObject();
+		JSONObject locations = new JSONObject();
+
+		if (allposts.size() > 0) {
+			String tres = null;
+			JSONObject tresp = null;
+			String tresu = null;
+			JSONObject tobj = null;
+
+			int k = 0;
+			int tloc = 0;
+			for (int i = 0; i < allposts.size(); i++) {
+				tres = allposts.get(i).toString();
+				tresp = new JSONObject(tres);
+
+				tresu = tresp.get("_source").toString();
+				tobj = new JSONObject(tresu);
+				String country = blog._getTopLocation(tobj.get("blogsite_id").toString());
+
+				if (locations.has(country)) {
+					int val = Integer.parseInt(locations.get(country).toString());
+					locations.put(country, val);
+					if (val > tloc) {
+						tloc = val;
+						toplocation = country;
+					}
+				} else {
+					locations.put(country, 1);
+				}
+
+			}
+		}
+
+		int keycount = term.getTermOcuurence(mostactiveterm, dt, dte);
+
+		/* 	JSONObject result = new JSONObject();
+			result.put("postmentioned",postc);
+			result.put("blogmentioned",blogc);
+			result.put("bloggermentioned",keycount);
+			result.put("toplocation",toplocation); */
+%>
+<%-- <%=result.toString()%> --%>
+<%
+	} else if (action.toString().equals("gettable")) {
+		System.out.println("start:" + dt + ",End:" + dte);
+%>
+
+<%
+	ArrayList allposts = post._searchByTitleAndBody(mostactiveterm, "date", dt, dte);//term._searchByRange("date",dt,dte, tm,"term","10");
+%>
+
+
+
+
+<div class="row m0 mt20 mb0 d-flex align-items-stretch">
+	<div
+		class="col-md-6 mt20 card card-style nobordertopright noborderbottomright"
+		id="post-list">
+		<div class="card-body p0 pt20 pb20" style="min-height: 420px;">
+			<p>
+				Posts that mentioned <b class="text-green active-term"><%=mostactiveterm%></b>
+			</p>
+			<!--  <div class="p15 pb5 pt0" role="group">
+          Export Options
+          </div> -->
+			<%
+				JSONObject firstpost = new JSONObject();
+					if (allposts.size() > 0) {
+			%>
+			<table id="DataTables_Table_2_wrapper" class="display"
+				style="width: 100%">
+				<thead>
+					<tr>
+						<th>Post title</th>
+						<th>Occurence</th>
+					</tr>
+				</thead>
+				<tbody>
+					<%
+						String tres = null;
 								JSONObject tresp = null;
 								String tresu = null;
 								JSONObject tobj = null;
-								
-								
-								int k=0;
-								int tloc = 0;
-								for(int i=0; i< allposts.size(); i++){
-									tres = allposts.get(i).toString();	
+
+								int k = 0;
+
+								for (int i = 0; i < allposts.size(); i++) {
+									tres = allposts.get(i).toString();
 									tresp = new JSONObject(tres);
-									
 									tresu = tresp.get("_source").toString();
 									tobj = new JSONObject(tresu);
-									String country = 	blog._getTopLocation(tobj.get("blogsite_id").toString());
-									
-									if(locations.has(country)){
-										int val = Integer.parseInt(locations.get(country).toString());			
-										locations.put(country,val);
-										if(val>tloc){
-											tloc = val;
-											toplocation = country;
-										}
-									}else{
-										locations.put(country,1);
+
+									//System.out.println("postdet +"+tobj3);
+									if (i == 0) {
+										firstpost = tobj;
 									}
-									
-											
-									
 
-                             }					
-	}
-    
-    int keycount = term.getTermOcuurence(mostactiveterm, dt, dte);
-	
-				
-	JSONObject result = new JSONObject();
-	result.put("postmentioned",postc);
-	result.put("blogmentioned",blogc);
-	result.put("bloggermentioned",keycount);
-	result.put("toplocation",toplocation);
-%>
-<%=result.toString()%>
-<% }else if(action.toString().equals("gettable")){
-	System.out.println("start:"+dt+",End:"+dte); 
-%>
+									int bodyoccurencece = 0;//ut.countMatches(tobj3.get("post").toString(), mostactiveterm);
 
-<% 
-   ArrayList allposts =  post._searchByTitleAndBody(mostactiveterm,"date", dt,dte);//term._searchByRange("date",dt,dte, tm,"term","10");		
-%>
-          
-          
- <div class="row m0 mt20 mb0 d-flex align-items-stretch">
-			<div class="col-md-6 mt20 card card-style nobordertopright noborderbottomright" id="post-list">
-				<div class="card-body p0 pt20 pb20" style="min-height: 420px;">
-					<p>
-						Posts that mentioned <b class="text-green active-term"><%=mostactiveterm%></b>
-					</p>
-					<!--  <div class="p15 pb5 pt0" role="group">
-          Export Options
-          </div> -->
-          <%  
-          JSONObject firstpost = new JSONObject();
-          if(allposts.size()>0){	%>
-					<table id="DataTables_Table_2_wrapper" class="display"
-						style="width: 100%">
-						<thead>
-							<tr>
-								<th>Post title</th>
-								<th>Occurence</th>
-							</tr>
-						</thead>
-						<tbody>
-							<%				
-									String tres = null;
-									JSONObject tresp = null;
-									String tresu = null;
-									JSONObject tobj = null;								
-									
-									int k=0;
-									
-									for(int i=0; i< allposts.size(); i++){
-										tres = allposts.get(i).toString();	
-										tresp = new JSONObject(tres);									
-										tresu = tresp.get("_source").toString();
-										tobj = new JSONObject(tresu);
-										
-										
-												
-												//System.out.println("postdet +"+tobj3);
-												if(i==0){
-													firstpost = tobj;
-												}
-												
-												int bodyoccurencece = 0;//ut.countMatches(tobj3.get("post").toString(), mostactiveterm);
-												
-										        String str = tobj.get("post").toString()+" "+ tobj.get("post").toString();
-												str = str.toLowerCase();
-												mostactiveterm = mostactiveterm.toLowerCase();
-										        String findStr = mostactiveterm;
-												int lastIndex = 0;
-												//int count = 0;
+									String str = tobj.get("post").toString() + " " + tobj.get("post").toString();
+									str = str.toLowerCase();
+									mostactiveterm = mostactiveterm.toLowerCase();
+									String findStr = mostactiveterm;
+									int lastIndex = 0;
+									//int count = 0;
 
-												while(lastIndex != -1){
+									while (lastIndex != -1) {
 
-												    lastIndex = str.indexOf(findStr,lastIndex);
+										lastIndex = str.indexOf(findStr, lastIndex);
 
-												    if(lastIndex != -1){
-												        bodyoccurencece++;
-												       // alloccurence+=bodyoccurencece;
-												        lastIndex += findStr.length();
-												    }
-												    
-												    
-												    
-												}
-									%>
-                                    <tr>
-                                   <td><a class="blogpost_link cursor-pointer blogpost_link" id="<%=tobj.get("blogpost_id")%>" ><%=tobj.get("title") %></a><br/>
-								<a class="mt20 viewpost makeinvisible" href="<%=tobj.get("permalink") %>" target="_blank"><buttton class="btn btn-primary btn-sm mt10 visitpost">Visit Post &nbsp;<i class="fas fa-external-link-alt"></i></buttton></a>
-								</td>
-								<td align="center"><%=(bodyoccurencece) %></td>
-                                     </tr>
-                                    <% }%>
-							</tr>						
-						</tbody>
-					</table>
-					<% } %>
-				</div>
-
-			</div>
-
-			<div class="col-md-6 mt20 card card-style nobordertopleft noborderbottomleft">
-
-				<div style="" class="pt20" id="blogpost_detail">
-					<%
-                                if(firstpost.length()>0){	
-									JSONObject tobj = firstpost;
-									String title = tobj.get("title").toString().replaceAll("[^a-zA-Z]", " ");
-									String body = tobj.get("post").toString().replaceAll("[^a-zA-Z]", " ");
-									String dat = tobj.get("date").toString().substring(0,10);
-									LocalDate datee = LocalDate.parse(dat);
-									DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");
-									String date = dtf.format(datee);
-									String replace = 	"<span style=background:red;color:#fff>"+mostactiveterm+"</span>";
-									String link = tobj.get("permalink").toString();
-									
-									String maindomain="";
-									try {
-										URI uri = new URI(link);
-										String domain = uri.getHost();
-										if (domain.startsWith("www.")) {
-											maindomain = domain.substring(4);
-										} else {
-											maindomain = domain;
+										if (lastIndex != -1) {
+											bodyoccurencece++;
+											// alloccurence+=bodyoccurencece;
+											lastIndex += findStr.length();
 										}
-									} catch (Exception ex) {}
-									
 
-									title = title.replaceAll(mostactiveterm,replace);
-									String active2 = mostactiveterm.substring(0,1).toUpperCase()+mostactiveterm.substring(1,mostactiveterm.length());
-									String active3= mostactiveterm.toUpperCase();
-									
-									
-									title = title.replaceAll(mostactiveterm,replace);
-									title = title.replaceAll(active2,replace);
-									title = title.replaceAll(active3,replace);
-									
-									
-									body = body.replaceAll(mostactiveterm,replace);
-									body = body.replaceAll(active2,replace);
-									body = body.replaceAll(active3,replace);
-									%>                                    
-                                    <h5 class="text-primary p20 pt0 pb0"><%=title%></h5>
-										<div class="text-center mb20 mt20">
-											<a href="<%=request.getContextPath()%>/bloggerportfolio.jsp?tid=<%=tid.toString()%>&blogger=<%=tobj.get("blogger")%>">
-											<button class="btn stylebuttonblue">
-												<b class="float-left ultra-bold-text"><%=tobj.get("blogger")%></b> <i
-													class="far fa-user float-right blogcontenticon"></i>
-											</button>
-											</a>
-											<button class="btn stylebuttonnocolor nocursor"><%=date %></button>
-											<button class="btn stylebuttonnocolor nocursor">
-												<b class="float-left ultra-bold-text"><%=tobj.get("num_comments")%> comments</b><i
-													class="far fa-comments float-right blogcontenticon"></i>
-											</button>
-										</div>
-										<div style="height: 600px;">
-										<div class="p20 pt0 pb20 text-blog-content text-primary"
-											style="height: 550px; overflow-y: scroll;">
-											<%=body%>
-										</div>         
-										</div>             
-                     		<% } %>
+									}
+					%>
+					<tr>
+						<td><a class="blogpost_link cursor-pointer blogpost_link"
+							id="<%=tobj.get("blogpost_id")%>"><%=tobj.get("title")%></a><br />
+							<a class="mt20 viewpost makeinvisible"
+							href="<%=tobj.get("permalink")%>" target="_blank"><buttton
+									class="btn btn-primary btn-sm mt10 visitpost">Visit
+								Post &nbsp;<i class="fas fa-external-link-alt"></i></buttton></a></td>
+						<td align="center"><%=(bodyoccurencece)%></td>
+					</tr>
+					<%
+						}
+					%>
+					</tr>
+				</tbody>
+			</table>
+			<%
+				}
+			%>
+		</div>
 
-				</div>
+	</div>
+
+	<div
+		class="col-md-6 mt20 card card-style nobordertopleft noborderbottomleft">
+
+		<div style="" class="pt20" id="blogpost_detail">
+			<%
+				if (firstpost.length() > 0) {
+						JSONObject tobj = firstpost;
+						String title = tobj.get("title").toString().replaceAll("[^a-zA-Z]", " ");
+						String body = tobj.get("post").toString().replaceAll("[^a-zA-Z]", " ");
+						String dat = tobj.get("date").toString().substring(0, 10);
+						LocalDate datee = LocalDate.parse(dat);
+						DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");
+						String date = dtf.format(datee);
+						String replace = "<span style=background:red;color:#fff>" + mostactiveterm + "</span>";
+						String link = tobj.get("permalink").toString();
+
+						String maindomain = "";
+						try {
+							URI uri = new URI(link);
+							String domain = uri.getHost();
+							if (domain.startsWith("www.")) {
+								maindomain = domain.substring(4);
+							} else {
+								maindomain = domain;
+							}
+						} catch (Exception ex) {
+						}
+
+						title = title.replaceAll(mostactiveterm, replace);
+						String active2 = mostactiveterm.substring(0, 1).toUpperCase()
+								+ mostactiveterm.substring(1, mostactiveterm.length());
+						String active3 = mostactiveterm.toUpperCase();
+
+						title = title.replaceAll(mostactiveterm, replace);
+						title = title.replaceAll(active2, replace);
+						title = title.replaceAll(active3, replace);
+
+						body = body.replaceAll(mostactiveterm, replace);
+						body = body.replaceAll(active2, replace);
+						body = body.replaceAll(active3, replace);
+			%>
+			<h5 class="text-primary p20 pt0 pb0"><%=title%></h5>
+			<div class="text-center mb20 mt20">
+				<a
+					href="<%=request.getContextPath()%>/bloggerportfolio.jsp?tid=<%=tid.toString()%>&blogger=<%=tobj.get("blogger")%>">
+					<button class="btn stylebuttonblue">
+						<b class="float-left ultra-bold-text"><%=tobj.get("blogger")%></b>
+						<i class="far fa-user float-right blogcontenticon"></i>
+					</button>
+				</a>
+				<button class="btn stylebuttonnocolor nocursor"><%=date%></button>
+				<button class="btn stylebuttonnocolor nocursor">
+					<b class="float-left ultra-bold-text"><%=tobj.get("num_comments")%>
+						comments</b><i class="far fa-comments float-right blogcontenticon"></i>
+				</button>
+			</div>
+			<div style="height: 600px;">
+				<div class="p20 pt0 pb20 text-blog-content text-primary"
+					style="height: 550px; overflow-y: scroll;">
+					<%=body%>
 				</div>
 			</div>
-<link rel="stylesheet" href="assets/vendors/DataTables/dataTables.bootstrap4.min.css" />	
-<script type="text/javascript" src="assets/vendors/DataTables/datatables.min.js"></script>
- 
+			<%
+				}
+			%>
+
+		</div>
+	</div>
+</div>
+<link rel="stylesheet"
+	href="assets/vendors/DataTables/dataTables.bootstrap4.min.css" />
+<script type="text/javascript"
+	src="assets/vendors/DataTables/datatables.min.js"></script>
+
 <script>
 			
  $(document).ready(function() {
@@ -296,48 +331,47 @@ if(action.toString().equals("getstats")){
 		    } );
 	 
  } );
- </script>       		
- 	
-<%}else{ 
+ </script>
 
-	String[] yst = dt.split("-");
-	String[] yend = dte.split("-");
-	year_start = yst[0];
-	year_end = yend[0];
-	int ystint = Integer.parseInt(year_start);
-	int yendint = Integer.parseInt(year_end);
+<%
+	} else {
 
-	
-			int b=0;
-			JSONObject postyear =new JSONObject();
-			for(int y=ystint; y<=yendint; y++){ 
-					   String dtu = y + "-01-01";
-					   String dtue = y + "-12-31";
-					   if(b==0){
-							dtu = dt;
-						}else if(b==yendint){
-							dtue = dte;
-						}
-					   
-					   String totu = post._searchTotalByBody(mostactiveterm,dtu,dtue);//term._searchRangeTotal("date",dtu, dtue,termscount.get(n).toString());
-					   
-					   if(!years.has(y+"")){
-				    		years.put(y+"",y);
-				    		yearsarray.put(b,y);
-				    		b++;
-				    	}
-					   //System.out.println("totu here "+totu);
-					   postyear.put(y+"",totu);
+		String[] yst = dt.split("-");
+		String[] yend = dte.split("-");
+		year_start = yst[0];
+		year_end = yend[0];
+		int ystint = Integer.parseInt(year_start);
+		int yendint = Integer.parseInt(year_end);
+
+		int b = 0;
+		JSONObject postyear = new JSONObject();
+		for (int y = ystint; y <= yendint; y++) {
+			String dtu = y + "-01-01";
+			String dtue = y + "-12-31";
+			if (b == 0) {
+				dtu = dt;
+			} else if (b == yendint) {
+				dtue = dte;
 			}
-			termsyears.put(mostactiveterm,postyear);
 
+			String totu = post._searchTotalByBody(mostactiveterm, dtu, dtue);//term._searchRangeTotal("date",dtu, dtue,termscount.get(n).toString());
+
+			if (!years.has(y + "")) {
+				years.put(y + "", y);
+				yearsarray.put(b, y);
+				b++;
+			}
+			//System.out.println("totu here "+totu);
+			postyear.put(y + "", totu);
+		}
+		termsyears.put(mostactiveterm, postyear);
 %>
 <div class="chart-container">
-		<div class="chart" id="d3-line-basic"></div>
+	<div class="chart" id="d3-line-basic"></div>
 </div>
 
 
-	<!--end for table  -->	
+<!--end for table  -->
 <script>
 
  $(function () {
@@ -430,19 +464,15 @@ if(action.toString().equals("getstats")){
          // ];
 		
         
-         data = [<% 
-  	  		String au = mostactiveterm;//termscount.get(p).toString();
-  	  		JSONObject specific_auth= new JSONObject(termsyears.get(au).toString());
-  	  %>[<% for(int q=0; q<yearsarray.length(); q++){ 
-  		  		String yearr=yearsarray.get(q).toString(); 
-  		  		if(specific_auth.has(yearr)){ %>
+         data = [<%String au = mostactiveterm;//termscount.get(p).toString();
+				JSONObject specific_auth = new JSONObject(termsyears.get(au).toString());%>[<%for (int q = 0; q < yearsarray.length(); q++) {
+					String yearr = yearsarray.get(q).toString();
+					if (specific_auth.has(yearr)) {%>
   		  			{"date":"<%=yearr%>","close":<%=specific_auth.get(yearr)%>},
-  			<%
-  		  		}else{ %>
+  			<%} else {%>
   		  			{"date":"<%=yearr%>","close":0},
-  	   		<% } %>
-  		<%  
-  	  		}%>]];
+  	   		<%}%>
+  		<%}%>]];
 
          //console.log(data);
          // data = [];
@@ -872,9 +902,10 @@ if(action.toString().equals("getstats")){
      }
  });
  </script>
- 
 
 
-<% } %>
 
-	
+<%
+	}
+%>
+

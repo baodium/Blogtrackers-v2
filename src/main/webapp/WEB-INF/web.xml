@@ -3,6 +3,27 @@
  "http://java.sun.com/dtd/web-app_2_3.dtd" >
 
 <web-app>
+<servlet>
+  <servlet-name>jsp</servlet-name>
+  <servlet-class>org.apache.jasper.servlet.JspServlet</servlet-class>
+  <init-param>
+      <param-name>fork</param-name>
+      <param-value>false</param-value>
+  </init-param>
+  <init-param>
+      <param-name>xpoweredBy</param-name>
+      <param-value>false</param-value>
+  </init-param>
+  <init-param>                                    <!-- this should be added -->
+      <param-name>compilerSourceVM</param-name>
+      <param-value>1.7</param-value>
+  </init-param>
+  <init-param>
+      <param-name>compilerTargetVM</param-name>
+      <param-value>1.7</param-value>
+  </init-param>                                   <!-- last added line -->
+  <load-on-startup>3</load-on-startup>
+</servlet>
 	<servlet>
 		<servlet-name>AddBlog</servlet-name>
 		<display-name>AddBlog</display-name>
@@ -21,6 +42,12 @@
 		<description></description>
 		<servlet-class>util.FileUpload</servlet-class>
 	</servlet>
+	<servlet>
+		<servlet-name>KeywordTrend</servlet-name>
+		<display-name>KeywordTrend</display-name>
+		<description></description>
+		<servlet-class>util.KeywordTrend</servlet-class>
+	</servlet>
 	<servlet-mapping>
 		<servlet-name>AddBlog</servlet-name>
 		<url-pattern>/AddBlog</url-pattern>
@@ -33,19 +60,24 @@
 		<servlet-name>FileUpload</servlet-name>
 		<url-pattern>/FileUpload</url-pattern>
 	</servlet-mapping>
-<error-page>
-    <error-code>404</error-code>
-    <location>/404.html</location>
-    
-  </error-page>
-  <error-page>
-    <error-code>503</error-code>
-    <location>/503.html</location>
-    
-  </error-page>
-   <error-page>
-    <error-code>500</error-code>
-    <location>/500.html</location>
-    
-  </error-page>
+	<servlet-mapping>
+		<servlet-name>KeywordTrend</servlet-name>
+		<url-pattern>/KeywordTrend</url-pattern>
+	</servlet-mapping>
+	<error-page>
+		<error-code>404</error-code>
+		<location>/404.html</location>
+
+	</error-page>
+	<error-page>
+		<error-code>503</error-code>
+		<location>/503.html</location>
+
+	</error-page>
+	<error-page>
+		<error-code>500</error-code>
+		<location>/500.html</location>
+
+	</error-page>
+
 </web-app>

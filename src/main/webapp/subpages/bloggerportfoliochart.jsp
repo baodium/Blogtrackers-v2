@@ -24,7 +24,7 @@ Object sort = (null == request.getParameter("sort")) ? "" : request.getParameter
 Object action = (null == request.getParameter("action")) ? "" : request.getParameter("action");
 Object post_ids = (null == request.getParameter("post_ids")) ? "" : request.getParameter("post_ids");
 Object ids = (null == request.getParameter("ids")) ? "" : request.getParameter("ids");
-
+/* bloggerportfoliochart.jsp */
 
 
 Trackers tracker  = new Trackers();
@@ -263,15 +263,22 @@ if(action.toString().equals("getstats")){
 		}
 	}
 	
-	String sql = post._getBloggerPosts(selectedblogid,date_start.toString(),date_end.toString(),ids.toString());
-	mostactiveterm = post._termVectors(sql);
+	
+	JSONObject sql = post._getBloggerPosts(null,selectedblogid,date_start.toString(),date_end.toString(),ids.toString());
+	String sql_ = sql.get("posts").toString();
+	mostactiveterm = post._termVectors(sql_);
+/* 	String sql = post._getBloggerPosts(selectedblogid,date_start.toString(),date_end.toString(),ids.toString());
+	mostactiveterm = post._termVectors(sql); */
 	
 	JSONObject result = new JSONObject();
 	result.put("totalpost",totalpost);
 	result.put("totalsentiment",comb);
 	result.put("totalinfluence",normalized_score);
 	result.put("topterm",mostactiveterm);
-%>
+	
+	System.out.println("this is the result"+result);
+	
+	%>
 <%=result.toString()%>
 <% } else if(action.toString().equals("getdayonlychart")){ 
 	SimpleDateFormat DAY_NAME_ONLY = new SimpleDateFormat("EEEE");
