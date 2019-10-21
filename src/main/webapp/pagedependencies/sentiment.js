@@ -43,7 +43,7 @@ function loadChart(postid,color){
 		{   
 			//console.log(response);
 			$("#mainCarInd").delay(3000).html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />").delay(2000).html(response);
-			alert('here')
+			//alert('here')
 			/* $.getScript("assets/js/generic.js", function(data, textStatus, jqxhr) {	
 			  });*/
 		}

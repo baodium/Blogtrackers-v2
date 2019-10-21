@@ -8,6 +8,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.SQLException;
 
+
 import org.json.JSONObject;
 
 /*import com.mysql.jdbc.Connection;*/
@@ -16,6 +17,12 @@ import java.util.*;
 
 import authentication.DbConnection;
 
+import org.elasticsearch.client.*;
+import org.apache.http.HttpHost;
+import org.apache.http.util.EntityUtils;
+
+import java.net.HttpURLConnection;
+import java.net.URL;
 import org.json.JSONArray;
 
 import java.io.OutputStreamWriter;
@@ -49,6 +56,8 @@ public class Blogposts {
 				"			}\r\n" + 
 				"		}\r\n" + 
 				"}");
+		
+		
 
 		if(!from.equals("")) {
 			fr = Integer.parseInt(from)*size;
@@ -2007,6 +2016,7 @@ public ArrayList _searchPostTotal(String field, int greater, int less, String bl
 	return this._getResult(url, jsonObj);
 	}
 
+	
 	public ArrayList _getResult(String url, JSONObject jsonObj) throws Exception {
 		ArrayList<String> list = new ArrayList<String>();
 		try {
@@ -2044,14 +2054,22 @@ public ArrayList _searchPostTotal(String field, int greater, int less, String bl
 	     
 	     JSONObject myResponse = new JSONObject(response.toString());
 	    
+	     System.out.println("JSONRSps"+ myResponse);
 	     if(null!=myResponse.get("hits")) {
 		     String res = myResponse.get("hits").toString();
+		  
 		     JSONObject myRes1 = new JSONObject(res);
-		      String total = myRes1.get("total").toString();
-		      this.totalpost = total;
+		     System.out.println("myRes1-- "+myRes1);
+		     
+		     String total = myRes1.get("total").toString();
+		     JSONObject totalTmp = new JSONObject(total);
+		      
+		      this.totalpost = totalTmp.get("value").toString();
+		      
+		     
 		    
 		     JSONArray jsonArray = new JSONArray(myRes1.get("hits").toString()); 
-		     
+		 
 		     if (jsonArray != null) { 
 		        int len = jsonArray.length();
 		        for (int i=0;i<len;i++){ 
@@ -2060,7 +2078,6 @@ public ArrayList _searchPostTotal(String field, int greater, int less, String bl
 		     }
 	     }
 		}catch(Exception ex) {}
-		System.out.println("This is the list for -----"+url+"---"+list);
 	     return list;
 	     
 	}
@@ -2126,9 +2143,16 @@ public ArrayList _searchPostTotal(String field, int greater, int less, String bl
 		ArrayList<String> list = new ArrayList<String>(); 
 		System.out.println("A response :"+myResponse);
 		if(null!=myResponse.get("hits")) {
+			
 			String res = myResponse.get("hits").toString();
-			JSONObject myRes1 = new JSONObject(res);          
-			total = myRes1.get("total").toString();              
+			  
+		     JSONObject myRes1 = new JSONObject(res);
+		     System.out.println("myRes1-- "+myRes1);
+		     
+		      total = myRes1.get("total").toString();
+		     JSONObject totalTmp = new JSONObject(total);
+		      
+		     total = totalTmp.get("value").toString();            
 		}
 		}catch(Exception ex) {}
 		return  total;
@@ -2172,8 +2196,14 @@ public ArrayList _searchPostTotal(String field, int greater, int less, String bl
 		//System.out.println(myResponse.get("hits"));
 		if(null!=myResponse.get("hits")) {
 			String res = myResponse.get("hits").toString();
-			JSONObject myRes1 = new JSONObject(res);          
-			total = myRes1.get("total").toString();              
+			  
+		     JSONObject myRes1 = new JSONObject(res);
+		     System.out.println("myRes1-- "+myRes1);
+		     
+		      total = myRes1.get("total").toString();
+		     JSONObject totalTmp = new JSONObject(total);
+		      
+		     total = totalTmp.get("value").toString();               
 		}
 		}catch(Exception ex) {}
 		return  total;
@@ -2215,16 +2245,21 @@ public ArrayList _searchPostTotal(String field, int greater, int less, String bl
 
 		JSONObject myResponse = new JSONObject(response.toString());
 		ArrayList<String> list = new ArrayList<String>(); 
-		//System.out.println(myResponse.get("hits"));
+		System.out.println(myResponse.get("hits"));
 		if(null!=myResponse.get("aggregations")) {
 			String res = myResponse.get("aggregations").toString();
 			JSONObject myRes1 = new JSONObject(res); 
 			
 			
-			String res2 = myRes1.get("total").toString();
-			
-			JSONObject myRes2 = new JSONObject(res2);   
-			total = myRes2.get("value").toString(); 
+			String res2 = myResponse.get("hits").toString();
+			  
+		     JSONObject myRes2 = new JSONObject(res2);
+		     System.out.println("myRes1-- "+myRes1);
+		     
+		      total = myRes2.get("total").toString();
+		     JSONObject totalTmp = new JSONObject(total);
+		      
+		     total = totalTmp.get("value").toString(); 
 		}
 		}catch(Exception ex) {}
 		return  total;
@@ -2336,6 +2371,117 @@ public ArrayList _searchPostTotal(String field, int greater, int less, String bl
 		return count;
 	}
 	
+	/*public String _getBloggerPosts(String bloggerName, String date_from, String date_to, String ids_) throws Exception {
+	    
+		ArrayList<String> list = new ArrayList<String>();
+		JSONObject query = new JSONObject("{\r\n" + "    \"size\": 1000,\r\n" + "    \"query\": {\r\n"
+				+ "        \"bool\": {\r\n" + "            \"must\": [\r\n" + "                {\r\n"
+				+ "                    \"bool\": {\r\n" + "                        \"must\": [\r\n"
+				+ "                            {\r\n" + "                                \"term\": {\r\n"
+				+ "                                    \"blogger.keyword\": {\r\n"
+				+ "                                        \"value\": \"" + bloggerName + "\",\r\n"
+				+ "                                        \"boost\": 1.0\r\n"
+				+ "                                    }\r\n" + "                                }\r\n"
+				+ "                            },\r\n" + "                            {\r\n"
+				+ "                                \"terms\": {\r\n"
+				+ "                                    \"blogsite_id\": [" + ids_ + "],\r\n"
+				+ "                                    \"boost\": 1.0\r\n" + "                                }\r\n"
+				+ "                            }\r\n" + "                        ],\r\n"
+				+ "                        \"adjust_pure_negative\": true,\r\n"
+				+ "                        \"boost\": 1.0\r\n" + "                    }\r\n" + "                },\r\n"
+				+ "                {\r\n" + "                    \"range\": {\r\n"
+				+ "                        \"date\": {\r\n" + "                            \"from\": \"" + date_from
+				+ "\",\r\n" + "                            \"to\": \"" + date_to + "\",\r\n"
+				+ "                            \"include_lower\": true,\r\n"
+				+ "                            \"include_upper\": true,\r\n"
+				+ "                            \"boost\": 1.0\r\n" + "                        }\r\n"
+				+ "                    }\r\n" + "                }\r\n" + "            ],\r\n"
+				+ "            \"adjust_pure_negative\": true,\r\n" + "            \"boost\": 1.0\r\n" + "        }\r\n"
+				+ "    },\r\n" + "    \"_source\": {\r\n" + "        \"includes\": [\r\n" + "            \"post\"\r\n"
+				+ "        ],\r\n" + "        \"excludes\": []\r\n" + "    },\r\n" + "    \"sort\": [\r\n"
+				+ "        {\r\n" + "            \"influence_score\": {\r\n"
+				+ "                \"order\": \"desc\",\r\n" + "                \"missing\": \"_first\",\r\n"
+				+ "                \"unmapped_type\": \"float\"\r\n" + "            }\r\n" + "        },\r\n"
+				+ "        {\r\n" + "            \"date\": {\r\n" + "                \"order\": \"desc\",\r\n"
+				+ "                \"missing\": \"_first\",\r\n" + "                \"unmapped_type\": \"date\"\r\n"
+				+ "            }\r\n" + "        }\r\n" + "    ]\r\n" + "}");
+​
+		RestClient esClient = RestClient.builder(new HttpHost("localhost", 9200, "http")).build();
+		RestHighLevelClient client = new RestHighLevelClient(
+				RestClient.builder(new HttpHost("localhost", 9200, "http")));
+​
+		Request request = new Request("POST", "/blogposts/_search/?scroll=1d");
+		request.setJsonEntity(query.toString());
+​
+		Response response = esClient.performRequest(request);
+​
+		String source = null;
+		String source_ = null;
+		String result = null;
+		JSONArray jsonArray = null;
+		String jsonResponse = EntityUtils.toString(response.getEntity());
+		
+		Object j_ = new JSONObject(jsonResponse);
+		
+		JSONObject myResponse = new JSONObject(jsonResponse);
+		System.out.println("response-" + j_);
+		if (bloggerName != "" || bloggerName != null) {
+			System.out.println("nameblogger" + bloggerName);
+			if (null != myResponse.get("hits")) {
+				Object hits = myResponse.getJSONObject("hits").getJSONArray("hits");
+				Object total = myResponse.getJSONObject("hits").getJSONObject("total").get("value");
+​
+​
+				JSONObject myRes1 = new JSONObject(hits);
+				source = hits.toString();
+​
+​
+				jsonArray = new JSONArray(source);
+​
+​
+				System.out.println("DONE GETTING POSTS FOR BLOGGER");
+				if (jsonArray != null) {
+​
+					for (int i = 0; i < jsonArray.length(); i++) {
+​
+						String indx = jsonArray.get(i).toString();
+						JSONObject j = new JSONObject(indx);
+						String ids = j.get("_source").toString();
+						j = new JSONObject(ids);
+						String src = j.get("post").toString();
+​
+						list.add(src);
+					}
+​
+					System.out.println("DONE and size of list is --" + list.size());
+					result = String.join(" ", list);
+				}
+​​
+			}
+		}
+​
+		esClient.close();
+		client.close();
+​
+		result = this.escape(result);
+		System.out.println("Done Escaped the necessary");
+​
+		System.out.println("Done remmoving stop words");
+		return result.replace("(adsbygoogle = window.adsbygoogle || []).push({}); ", "");
+	}
+	
+	public static String escape(String s) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < s.length(); i++) {
+			char c = s.charAt(i);
+			// These characters are part of the query syntax and must be escaped
+			if (c == '\\' || c == '\"' || c == '/') {
+				sb.append('\\');
+			}
+			sb.append(c);
+		}
+		return sb.toString();
+	}*/
 	public ArrayList _getBloggerPostId(String bloggerName) {
 		ArrayList hd = null;
 		String res = "";
