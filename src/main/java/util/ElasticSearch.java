@@ -190,6 +190,7 @@ public class ElasticSearch {
 		     }*/
 	     }
 		}catch(Exception ex) {}
+		return url;
 	
 	     
 	

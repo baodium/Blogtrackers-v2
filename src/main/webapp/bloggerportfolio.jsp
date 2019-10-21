@@ -291,7 +291,8 @@
 			String mostactiveterm = "";
 			
 			ArrayList bloggerPostFrequency = bloggerss._getBloggerPostFrequency(ids);
-			//System.out.println("Terms here:"+termss);
+			
+			System.out.println("Terms here:"+bloggerPostFrequency);
 			
 			ArrayList blogs = blog._fetch(ids);
 			
@@ -325,6 +326,7 @@
 					String bloggerName = bloggerFreq.get(0).toString();
 					String blogsiteId = bloggerFreq.get(2).toString();
 					mostactiveblogger = bloggerName;
+					
 					selectedblogid = blogsiteId;
 				}
 			}
@@ -337,6 +339,7 @@
 				int j=0;
 				int k=0;
 				int n = 0;
+				
 			for(int i=0; i< activeblogposts.size(); i++){
 						tres = activeblogposts.get(i).toString();			
 						tresp = new JSONObject(tres);
@@ -448,7 +451,8 @@
 					   graphyears.put(y+"",totu);
 			    	   yearsarray.put(b,y);	
 			    	   b++;
-			    	   System.out.println("test here2_2");
+			    	   
+			    	   System.out.println("test here2_2"+mostactiveblogger);
 			}
 			
 			
@@ -510,16 +514,24 @@ if (outlinks.size() > 0) {
 }
 
 System.out.println("test here4");
-/* mostactiveterm = term._getMostActiveByBlogger(dt, dte, mostactiveblogger); */
+/* mostactiveterm = term._getMostActiveByBlogger(mostactiveblogger); */
+System.out.println("---''-"+mostactiveblogger+dt+dte+ids);
+JSONObject sql = post._getBloggerPosts(null,mostactiveblogger,dt,dte,ids);
+String sql_ = sql.get("posts").toString();
+mostactiveterm = post._termVectors(sql_);
+
 System.out.println("test here5");
 String totalinfluence ="";
+
 
 try{			
 	totalpost = post._searchRangeTotalByBlogger("date", dt, dte, mostactiveblogger);
 	System.out.println("test here5_1");
 	Double influence =  Double.parseDouble(post._searchRangeMaxByBloggers("date",dt, dte,mostactiveblogger));
+	System.out.println("dt--"+dt+",dte--"+dte+",mstb--"+mostactiveblogger);
 	System.out.println("test here5_2");
 	totalinfluence = influence+"";
+	System.out.println("ttl infl"+totalinfluence);
 }
 catch(Exception e){
 	totalinfluence = "0";
@@ -713,15 +725,27 @@ System.out.println("test here3");
  <%
  if (bloggerPostFrequency.size() > 0) {
 		int p = 0;
+		
+		String all_bloggers = "";
+		
 		for (int m = 0; m < bloggerPostFrequency.size(); m++) {
 			ArrayList<?> bloggerFreq = (ArrayList<?>) bloggerPostFrequency.get(m);
 			String bloggerName = bloggerFreq.get(0).toString();
+			
+			if(m>0){
+				all_bloggers += "---";
+			}
+		
 			String bloggerPostFreq = bloggerFreq.get(1).toString();
 			String blogsiteId = bloggerFreq.get(2).toString();
 				if(p==0){
 					mostactiveblogger = bloggerName;
 				}
 				if (p < 10) {
+					
+					
+					all_bloggers += bloggerName;
+					
 					%>
 					<option value="<%=blogsiteId%>_<%=bloggerName%>" <% if(mostactiveblogger.equals(bloggerName)){ %> selected <% } %>><%=bloggerName%></option>
  
@@ -729,9 +753,18 @@ System.out.println("test here3");
 					
 				}
 		}
+		
+		%>
+		<input id="all_bloggers" type="hidden" value="<%=all_bloggers%>" >
+		
+		
+		<%
+ }else{
+	 String all_bloggers = "";
  }
  %>
 </select>
+
 
 </h6>
 <!-- <h2 class="textblue styleheading">AdNovum <div class="circle"></div></h2> -->
@@ -744,7 +777,7 @@ System.out.println("test here3");
 						<h5 class="text-primary mb0">
 							<i class="fas fa-exchange-alt icondash"></i>Influence
 						</h5>
-						<h3 class="text-blue mb0 countdash dash-label total-influence"><%=NumberFormat.getNumberInstance(Locale.US).format(Float.parseFloat(totalinfluence))%></h3>				
+						<h3 id="normalized_influence" class="text-blue mb0 countdash dash-label total-influence"><%=NumberFormat.getNumberInstance(Locale.US).format(Float.parseFloat(totalinfluence))%></h3>				
 					</div>
 				</div>
 			</div>
@@ -756,6 +789,7 @@ System.out.println("test here3");
 							<i class="fas fa-search icondash"></i>Top Keyword
 						</h5>
 						<h3 class="text-blue mb0 countdash dash-label top-keyword"><%=mostactiveterm%></h3>
+						<input type="hidden" id="id__" value="<%=ids%>" />
 					</div>
 				</div>
 			</div>

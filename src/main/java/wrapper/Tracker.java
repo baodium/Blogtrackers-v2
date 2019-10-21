@@ -43,6 +43,7 @@ public class Tracker extends HttpServlet {
 		super();
 
 	}
+	
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
@@ -59,6 +60,7 @@ public class Tracker extends HttpServlet {
 	{
 		 Trackers trk = new Trackers();  
 		 Blogposts bp = new Blogposts();  
+		 
 		 
 		 PrintWriter pww = response.getWriter();
 		 HttpSession session = request.getSession();
@@ -149,7 +151,7 @@ public class Tracker extends HttpServlet {
 				pww.write("Trackername cannot be empty");
 			}
 		}else if(action.equals("update")) {
-			String[] bloggs = blogs.replaceAll(", $", "").split(",");
+String[] bloggs = blogs.replaceAll(", $", "").split(",");
 			
 			try {
 				ArrayList tracker =null;
@@ -225,7 +227,7 @@ public class Tracker extends HttpServlet {
 					
 					 if(tracker.size()>0){
 						 String modifiedDate= getDateTime();
-							
+							//seun 
 						 db.updateTable("UPDATE trackers SET tracker_name='"+tracker_name+"', description='"+description+"', date_modified='"+modifiedDate+"' WHERE  tid='"+tracker_id+"'");	
 						 //tracker = db.query("SELECT * FROM trackers WHERE tid='"+tracker_id+"' AND userid='"+userid+"'");
 						 //System.out.println("tracker here :"+tracker_name+"-"+tracker);

@@ -1,14 +1,29 @@
 // delete all blog from tracker action
 
+$(document).ready(function(){
+	var all_bloggers = $("#all_bloggers").val();
+	
+	var blogger = $('#blogger-changed').val();
+	var blg = blogger.split("_");
+	var blog_id = blg[0];
+	
+	$(".active-blog").html(blg[1]);
+	$("#blogger").val(blg[1]);
+	
+//	loadStat(blg[1], all_bloggers);
+})
+
 
 $('#blogger-changed').on("change", function(){
 
 
 	var date_start = $("#date_start").val();
 	var date_end = $("#date_end").val();
+	var all_ids = $("#id__").val();
 	var blogger = $(this).val();
-	
 	var blg = blogger.split("_");
+	
+	
 	
 	var blog_id = blg[0];
 	
@@ -17,9 +32,14 @@ $('#blogger-changed').on("change", function(){
 	
 	
 	//loadInfluence(bloog,blg[1]);
-	//console.log(blg[1]);
+	
+	var all_bloggers = $("#all_bloggers").val();
+	
+//	var all_blgs = all_bloggers.split("|-|");
+	
+	
 
-	loadStat(blg[1]);
+	loadStat(blg[1], all_bloggers,all_ids);
 	loadChart(blg[1]);
 	loadYearlyChart(blg[1]);
 	loadDailyChart(blg[1]);
@@ -28,7 +48,11 @@ $('#blogger-changed').on("change", function(){
 
 
 
-function loadStat(blogger){
+
+function loadStat(blogger, all_bloggers,ids){
+	
+
+	
 	$(".total-influence").html("<img src='images/loading.gif' />");
 	$(".total-post").html("<img src='images/loading.gif' />");
 	$(".total-sentiment").html("<img src='images/loading.gif' />");
@@ -39,6 +63,8 @@ function loadStat(blogger){
 		data: {
 			action:"getstats",
 			blogger:blogger,
+			ids:ids,
+			all_bloggers:all_bloggers,
 			date_start:$("#date_start").val(),
 			date_end:$("#date_end").val(),
 		},
@@ -50,11 +76,12 @@ function loadStat(blogger){
 		success: function(response)
 		{   
 		
-		
 		var data = JSON.parse(response);
-		$(".total-influence").html(parseInt(data.totalinfluence).toLocaleString('en'));
+		$(".total-influence").html(data.totalinfluence);
+//		$(".total-influence").html(parseInt(data.totalinfluence).toLocaleString('en'));
 		$(".total-post").html(parseInt(data.totalpost).toLocaleString('en'));
 		$(".total-sentiment").html(parseInt(data.totalsentiment).toLocaleString('en'));
+	
 		$(".top-keyword").html(data.topterm);
 		//$("#overall-chart").delay(3000).html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />").delay(2000).html(response);
 			/* $.getScript("assets/js/generic.js", function(data, textStatus, jqxhr) {	

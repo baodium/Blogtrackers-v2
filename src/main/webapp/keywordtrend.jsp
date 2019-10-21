@@ -15,7 +15,7 @@
 
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@page import="java.time.LocalDateTime"%>
+<%@page import="java.time.*"%>
 
 <%
 	Object email = (null == session.getAttribute("email")) ? "" : session.getAttribute("email");
@@ -24,12 +24,14 @@
 	Object user = (null == session.getAttribute("username")) ? "" : session.getAttribute("username");
 	Object userid = (null == session.getAttribute("user")) ? "" : session.getAttribute("user");
 	Object termites = (null == session.getAttribute("top_terms")) ? "" : session.getAttribute("top_terms");
-	
+
 	Object date_start = (null == request.getParameter("date_start")) ? "" : request.getParameter("date_start");
 	Object date_end = (null == request.getParameter("date_end")) ? "" : request.getParameter("date_end");
 	Object single = (null == request.getParameter("single_date")) ? "" : request.getParameter("single_date");
-	String sort =  (null == request.getParameter("sortby")) ? "blog" : request.getParameter("sortby").toString().replaceAll("[^a-zA-Z]", " ");
-	int selectedkeycount  = 0;
+	String sort = (null == request.getParameter("sortby"))
+			? "blog"
+			: request.getParameter("sortby").toString().replaceAll("[^a-zA-Z]", " ");
+	int selectedkeycount = 0;
 
 	if (user == null || user == "") {
 		response.sendRedirect("index.jsp");
@@ -46,7 +48,7 @@
 		ArrayList outlinks = new ArrayList();
 		ArrayList liwcpost = new ArrayList();
 
-		ArrayList allterms = new ArrayList(); 
+		ArrayList allterms = new ArrayList();
 
 		Trackers tracker = new Trackers();
 		Terms term = new Terms();
@@ -58,19 +60,19 @@
 			detail = tracker._list("DESC", "", user.toString(), "1");
 			//System.out.println("List:"+detail);
 		}
-		
+
 		boolean isowner = false;
 		JSONObject obj = null;
 		String ids = "";
-		String trackername="";
+		String trackername = "";
 		if (detail.size() > 0) {
 			//String res = detail.get(0).toString();
-			ArrayList resp = (ArrayList<?>)detail.get(0);
+			ArrayList resp = (ArrayList<?>) detail.get(0);
 
 			String tracker_userid = resp.get(1).toString();
-			
+
 			trackername = resp.get(2).toString();
-			
+
 			if (tracker_userid.equals(user.toString())) {
 				isowner = true;
 				String query = resp.get(5).toString();//obj.get("query").toString();
@@ -80,74 +82,77 @@
 				ids = query;
 			}
 		}
-		
+
 		userinfo = new DbConnection().query("SELECT * FROM usercredentials where Email = '" + email + "'");
 		if (userinfo.size() < 1 || !isowner) {
 			response.sendRedirect("index.jsp");
 		} else {
 			userinfo = (ArrayList<?>) userinfo.get(0);
 			try {
-					username = (null == userinfo.get(0)) ? "" : userinfo.get(0).toString();
-	
-					name = (null == userinfo.get(4)) ? "" : (userinfo.get(4).toString());
-					email = (null == userinfo.get(2)) ? "" : userinfo.get(2).toString();
-					phone = (null == userinfo.get(6)) ? "" : userinfo.get(6).toString();
-					String userpic = userinfo.get(9).toString();
-					String path = application.getRealPath("/").replace('\\', '/') + "images/profile_images/";
-					String filename = userinfo.get(9).toString();
-	
-					profileimage = "images/default-avatar.png";
-					if (userpic.indexOf("http") > -1) {
-						profileimage = userpic;
-					}
-					
-					File f = new File(filename);
-					
-					
-					//System.out.println("new_pat--"+path_new);
-					
-					File path_new = new File(application.getRealPath("/").replace('/', '/') + "images/profile_images"); 
-					if (f.exists() && !f.isDirectory()) {
-						profileimage = "images/profile_images/" + userinfo.get(2).toString() + ".jpg";
-					}else{
-						/* new File("/path/directory").mkdirs(); */
-						path_new.mkdirs();
-						System.out.println("pathhhhh1--"+path_new);
-					}
-					
-					
-					if (path_new.exists()) {
-						
-						String t = "/images/profile_images";
-						int p=userpic.indexOf(t);
-						System.out.println(p);
-						if (p != -1) {
-							
-							System.out.println("pic path---"+userpic);
-							System.out.println("path exists---"+userpic.substring(0, p));
-							String path_update=userpic.substring(0, p);
-							if (!path_update.equals(path_new.toString())) {
-								profileimage = "images/profile_images/" + userinfo.get(2).toString() + ".jpg";
-								/* profileimage=userpic.replace(userpic.substring(0, p), path_new.toString()); */
-								String new_file_path = path_new.toString().replace("\\images\\profile_images", "")+"/"+profileimage;
-								System.out.println("ready to be updated--"+ new_file_path);
-								/*new DbConnection().updateTable("UPDATE usercredentials SET profile_picture  = '" + pass + "' WHERE Email = '" + email + "'"); */											
-							}
-						}else{
-							path_new.mkdirs();
+				username = (null == userinfo.get(0)) ? "" : userinfo.get(0).toString();
+
+				name = (null == userinfo.get(4)) ? "" : (userinfo.get(4).toString());
+				email = (null == userinfo.get(2)) ? "" : userinfo.get(2).toString();
+				phone = (null == userinfo.get(6)) ? "" : userinfo.get(6).toString();
+				String userpic = userinfo.get(9).toString();
+				String path = application.getRealPath("/").replace('\\', '/') + "images/profile_images/";
+				String filename = userinfo.get(9).toString();
+
+				profileimage = "images/default-avatar.png";
+				if (userpic.indexOf("http") > -1) {
+					profileimage = userpic;
+				}
+
+				File f = new File(filename);
+
+				//System.out.println("new_pat--"+path_new);
+
+				File path_new = new File(
+						application.getRealPath("/").replace('/', '/') + "images/profile_images");
+				if (f.exists() && !f.isDirectory()) {
+					profileimage = "images/profile_images/" + userinfo.get(2).toString() + ".jpg";
+				} else {
+					/* new File("/path/directory").mkdirs(); */
+					path_new.mkdirs();
+					System.out.println("pathhhhh1--" + path_new);
+				}
+
+				if (path_new.exists()) {
+
+					String t = "/images/profile_images";
+					int p = userpic.indexOf(t);
+					System.out.println(p);
+					if (p != -1) {
+
+						System.out.println("pic path---" + userpic);
+						System.out.println("path exists---" + userpic.substring(0, p));
+						String path_update = userpic.substring(0, p);
+						if (!path_update.equals(path_new.toString())) {
 							profileimage = "images/profile_images/" + userinfo.get(2).toString() + ".jpg";
 							/* profileimage=userpic.replace(userpic.substring(0, p), path_new.toString()); */
-							String new_file_path = path_new.toString().replace("\\images\\profile_images", "")+"/"+profileimage;
-							System.out.println("ready to be updated--"+ new_file_path);
-							
-							new DbConnection().updateTable("UPDATE usercredentials SET profile_picture  = '" + "images/profile_images/" + userinfo.get(2).toString() + ".jpg" + "' WHERE Email = '" + email + "'");
-							System.out.println("updated");
-						}				
-					}else{
-						System.out.println("path doesnt exist");
+							String new_file_path = path_new.toString().replace("\\images\\profile_images", "")
+									+ "/" + profileimage;
+							System.out.println("ready to be updated--" + new_file_path);
+							/*new DbConnection().updateTable("UPDATE usercredentials SET profile_picture  = '" + pass + "' WHERE Email = '" + email + "'"); */
+						}
+					} else {
+						path_new.mkdirs();
+						profileimage = "images/profile_images/" + userinfo.get(2).toString() + ".jpg";
+						/* profileimage=userpic.replace(userpic.substring(0, p), path_new.toString()); */
+						String new_file_path = path_new.toString().replace("\\images\\profile_images", "") + "/"
+								+ profileimage;
+						System.out.println("ready to be updated--" + new_file_path);
+
+						new DbConnection().updateTable("UPDATE usercredentials SET profile_picture  = '"
+								+ "images/profile_images/" + userinfo.get(2).toString() + ".jpg"
+								+ "' WHERE Email = '" + email + "'");
+						System.out.println("updated");
 					}
+				} else {
+					System.out.println("path doesnt exist");
+				}
 			} catch (Exception e) {
-			
+
 			}
 			String firstname = "";
 			String[] user_name = name.split(" ");
@@ -166,47 +171,43 @@
 			SimpleDateFormat SMALL_MONTH_ONLY = new SimpleDateFormat("mm");
 			SimpleDateFormat WEEK_ONLY = new SimpleDateFormat("dd");
 			SimpleDateFormat YEAR_ONLY = new SimpleDateFormat("yyyy");
-			
-			String stdate = post._getDate(ids,"first");
-			String endate = post._getDate(ids,"last");
-			
+
+			String stdate = post._getDate(ids, "first");
+			String endate = post._getDate(ids, "last");
+
 			Date dstart = new Date();//SimpleDateFormat("yyyy-MM-dd").parse(stdate);
 			Date today = new Date();//SimpleDateFormat("yyyy-MM-dd").parse(endate);
 
-
-			Date nnow = new Date(); 
-			try{
+			Date nnow = new Date();
+			try {
 				dstart = new SimpleDateFormat("yyyy-MM-dd").parse(stdate);
-			}catch(Exception ex){
+			} catch (Exception ex) {
 				dstart = nnow;//new SimpleDateFormat("yyyy-MM-dd").parse(nnow);
 			}
-			
-			try{
+
+			try {
 				today = new SimpleDateFormat("yyyy-MM-dd").parse(endate);
-			}catch(Exception ex){
+			} catch (Exception ex) {
 				today = nnow;//new SimpleDateFormat("yyyy-MM-dd").parse(nnow);
 			}
-			  
+
 			String day = DAY_ONLY.format(today);
-			
+
 			String month = MONTH_ONLY.format(today);
-			
+
 			String smallmonth = SMALL_MONTH_ONLY.format(today);
 
 			String year = YEAR_ONLY.format(today);
 
 			String dispfrom = DATE_FORMAT.format(dstart);
 			String dispto = DATE_FORMAT.format(today);
-			
+
 			String historyfrom = DATE_FORMAT.format(dstart);
 			String historyto = DATE_FORMAT.format(today);
 
 			String dst = DATE_FORMAT2.format(dstart);
 			String dend = DATE_FORMAT2.format(today);
 
-			
-		
-			
 			String totalpost = "0";
 			ArrayList allauthors = new ArrayList();
 
@@ -215,331 +216,307 @@
 			String ddey = "31";
 			String dt = dst;
 			String dte = dend;
-			String year_start="";
-			String year_end="";
-			
-			if(!single.equals("")){
-				month = MONTH_ONLY.format(nnow); 
-				day = DAY_ONLY.format(nnow); 
-				year = YEAR_ONLY.format(nnow); 
+			String year_start = "";
+			String year_end = "";
+
+			if (!single.equals("")) {
+				month = MONTH_ONLY.format(nnow);
+				day = DAY_ONLY.format(nnow);
+				year = YEAR_ONLY.format(nnow);
 				//System.out.println("Now:"+month+"small:"+smallmonth);
-				if(month.equals("02")){
-					ddey = (Integer.parseInt(year)%4==0)?"28":"29";
-				}else if(month.equals("09") || month.equals("04") || month.equals("05") || month.equals("11")){
+				if (month.equals("02")) {
+					ddey = (Integer.parseInt(year) % 4 == 0) ? "28" : "29";
+				} else if (month.equals("09") || month.equals("04") || month.equals("05")
+						|| month.equals("11")) {
 					ddey = "30";
 				}
 			}
-			
-			termss = term._searchByRange("blogsiteid", dt, dte, ids);
-			
-			//System.out.println("start date"+date_start+"end date "+date_end);
-		if (!date_start.equals("") && !date_end.equals("")) {
-			
-			possentiment = post._searchRangeTotal("sentiment", "0", "10", ids);
-			negsentiment = post._searchRangeTotal("sentiment", "-10", "-1", ids);
-							
-			Date start = new SimpleDateFormat("yyyy-MM-dd").parse(date_start.toString());
-			Date end = new SimpleDateFormat("yyyy-MM-dd").parse(date_end.toString());
-			
-			dt = date_start.toString();
-			dte = date_end.toString();
-			
-			historyfrom = DATE_FORMAT.format(start);
-			historyto = DATE_FORMAT.format(end);
 
-			
-		} else if (single.equals("day")) {
-			 dt = year + "-" + month + "-" + day;
-			
-		} else if (single.equals("week")) {
-			
-			 dte = year + "-" + month + "-" + day;
-			int dd = Integer.parseInt(day)-7;
-			
-			Calendar cal = Calendar.getInstance();
-			cal.add(Calendar.DATE, -7);
-			Date dateBefore7Days = cal.getTime();
-			dt = YEAR_ONLY.format(dateBefore7Days) + "-" + MONTH_ONLY.format(dateBefore7Days) + "-" + DAY_ONLY.format(dateBefore7Days);
-	
-		} else if (single.equals("month")) {
-			dt = year + "-" + month + "-01";
-			dte = year + "-" + month + "-"+day;	
-		} else if (single.equals("year")) {
-			dt = year + "-01-01";
-			dte = year + "-12-"+ddey;
-			
-		}else {
-			dt = dst;
-			dte = dend;
-			
-		}  
-		
-		
-		
-		String test =  post._searchTotalByTitleAndBody("war","date", "2009-01-01","2009-12-31");//term._searchByRange("date",dt,dte, tm,"term","10");
-		System.out.println("Size="+test);	
-	
-				String[] yst = dt.split("-");
-				String[] yend = dte.split("-");
-				year_start = yst[0];
-				year_end = yend[0];
-				int ystint = new Double(year_start).intValue();
-				int yendint = new Double(year_end).intValue();
-				
-				if(yendint>Integer.parseInt(YEAR_ONLY.format(new Date()))){
-					dte = DATE_FORMAT2.format(new Date()).toString();	
-					yendint = Integer.parseInt(YEAR_ONLY.format(new Date()));
-				}
-				
-				if(ystint<2000){
-					ystint = 2000;
-					dt = "2000-01-01";
-				}
-				
-				dispfrom = DATE_FORMAT.format(new SimpleDateFormat("yyyy-MM-dd").parse(dt));
-				dispto = DATE_FORMAT.format(new SimpleDateFormat("yyyy-MM-dd").parse(dte));
-				
-				
-		ArrayList allposts = new ArrayList();	
-		
-		
-		
-		String allpost = "0";
-		String mostactiveterm="";
-		String toplocation="";
-		String mostactiveterm_id ="";
-		
-		
-		JSONArray termscount = new JSONArray();
-		
-		JSONArray posttodisplay = new JSONArray();
-		JSONObject years = new JSONObject();
-		JSONArray yearsarray = new JSONArray();
-		JSONObject locations = new JSONObject();
-		
-		JSONArray unsortedterms = new JSONArray();
-		JSONObject termstore = new JSONObject();
-		Map<String, Integer> top_terms = new HashMap<String, Integer>();
-		if (termss.size() > 0) {
-			for (int p = 0; p < termss.size(); p++) {
-				String bstr = termss.get(p).toString();
-				JSONObject bj = new JSONObject(bstr);
-				bstr = bj.get("_source").toString();
-				bj = new JSONObject(bstr);
-				String tm = bj.get("term").toString();
-				
-				String frequency = bj.get("frequency").toString();
-				String id = bj.get("id").toString();
-				//String frequency = "10";
-				int frequency2 = Integer.parseInt(frequency);
-				if (top_terms.containsKey(tm)) {
-					top_terms.put(tm, top_terms.get(tm) + frequency2);
-					frequency2 = top_terms.get(tm) + frequency2;
-				} else {
-					top_terms.put(tm, frequency2);
-				}
-				JSONObject cont = new JSONObject();
-				unsortedterms.put(frequency2+"___"+tm+"___"+id);
-				
+			termss = term._searchByRange("blogsiteid", dt, dte, ids);
+
+			//System.out.println("start date"+date_start+"end date "+date_end);
+			if (!date_start.equals("") && !date_end.equals("")) {
+
+				possentiment = post._searchRangeTotal("sentiment", "0", "10", ids);
+				negsentiment = post._searchRangeTotal("sentiment", "-10", "-1", ids);
+
+				Date start = new SimpleDateFormat("yyyy-MM-dd").parse(date_start.toString());
+				Date end = new SimpleDateFormat("yyyy-MM-dd").parse(date_end.toString());
+
+				dt = date_start.toString();
+				dte = date_end.toString();
+
+				historyfrom = DATE_FORMAT.format(start);
+				historyto = DATE_FORMAT.format(end);
+
+			} else if (single.equals("day")) {
+				dt = year + "-" + month + "-" + day;
+
+			} else if (single.equals("week")) {
+
+				dte = year + "-" + month + "-" + day;
+				int dd = Integer.parseInt(day) - 7;
+
+				Calendar cal = Calendar.getInstance();
+				cal.add(Calendar.DATE, -7);
+				Date dateBefore7Days = cal.getTime();
+				dt = YEAR_ONLY.format(dateBefore7Days) + "-" + MONTH_ONLY.format(dateBefore7Days) + "-"
+						+ DAY_ONLY.format(dateBefore7Days);
+
+			} else if (single.equals("month")) {
+				dt = year + "-" + month + "-01";
+				dte = year + "-" + month + "-" + day;
+			} else if (single.equals("year")) {
+				dt = year + "-01-01";
+				dte = year + "-12-" + ddey;
+
+			} else {
+				dt = dst;
+				dte = dend;
+
 			}
-		}
-		
-		
-		JSONArray sortedterms = term._sortJson2(unsortedterms);
-		
-		if (sortedterms.length() > 0) {																	
-				for (int i=0; i<sortedterms.length(); i++) {
+
+			String test = post._searchTotalByTitleAndBody("war", "date", "2009-01-01", "2009-12-31");//term._searchByRange("date",dt,dte, tm,"term","10");
+			System.out.println("Size=" + test);
+
+			String[] yst = dt.split("-");
+			String[] yend = dte.split("-");
+			year_start = yst[0];
+			year_end = yend[0];
+			int ystint = new Double(year_start).intValue();
+			int yendint = new Double(year_end).intValue();
+
+			if (yendint > Integer.parseInt(YEAR_ONLY.format(new Date()))) {
+				dte = DATE_FORMAT2.format(new Date()).toString();
+				yendint = Integer.parseInt(YEAR_ONLY.format(new Date()));
+			}
+
+			if (ystint < 2000) {
+				ystint = 2000;
+				dt = "2000-01-01";
+			}
+
+			dispfrom = DATE_FORMAT.format(new SimpleDateFormat("yyyy-MM-dd").parse(dt));
+			dispto = DATE_FORMAT.format(new SimpleDateFormat("yyyy-MM-dd").parse(dte));
+
+			ArrayList allposts = new ArrayList();
+
+			String allpost = "0";
+			String mostactiveterm = "";
+			String toplocation = "";
+			String mostactiveterm_id = "";
+
+			JSONArray termscount = new JSONArray();
+
+			JSONArray posttodisplay = new JSONArray();
+			JSONObject years = new JSONObject();
+			JSONArray yearsarray = new JSONArray();
+			JSONObject locations = new JSONObject();
+
+			JSONArray unsortedterms = new JSONArray();
+			JSONObject termstore = new JSONObject();
+			Map<String, Integer> top_terms = new HashMap<String, Integer>();
+			if (termss.size() > 0) {
+				for (int p = 0; p < termss.size(); p++) {
+					String bstr = termss.get(p).toString();
+					JSONObject bj = new JSONObject(bstr);
+					bstr = bj.get("_source").toString();
+					bj = new JSONObject(bstr);
+					String tm = bj.get("term").toString();
+
+					String frequency = bj.get("frequency").toString();
+					String id = bj.get("id").toString();
+					//String frequency = "10";
+					int frequency2 = Integer.parseInt(frequency);
+					if (top_terms.containsKey(tm)) {
+						top_terms.put(tm, top_terms.get(tm) + frequency2);
+						frequency2 = top_terms.get(tm) + frequency2;
+					} else {
+						top_terms.put(tm, frequency2);
+					}
+					JSONObject cont = new JSONObject();
+					unsortedterms.put(frequency2 + "___" + tm + "___" + id);
+
+				}
+			}
+
+			JSONArray sortedterms = term._sortJson2(unsortedterms);
+
+			if (sortedterms.length() > 0) {
+				for (int i = 0; i < sortedterms.length(); i++) {
 					String[] vals = sortedterms.get(i).toString().split("___");
 					String size = vals[0];
 					String tm = vals[1];
 					String terms_id = vals[2];
-					if(i==0){
-							mostactiveterm = tm;
-							mostactiveterm_id = terms_id;
-						}
-					
-				}
-		}
-		
-		JSONObject termsyears = new JSONObject();
-
-		allterms = term._searchByRange("blogsiteid", dt, dte, ids);//term._searchByRange("date", dt, dte, ids);
-		//termss = term._searchByRange("blogsiteid", dt, dte, ids);
-		
-		int postmentioned=0;
-		int blogmentioned=0;
-		int bloggermentioned=0;
-		
-		int highestfrequency = 0;
-		int highestpost =0;
-		
-		int alloccurence = 0;
-		
-		
-		
-		
-		JSONArray topterms = new JSONArray();
-		
-		JSONObject keys = new JSONObject();
-		JSONObject positions = new JSONObject();
-		int termsposition = 0;
-		if (allterms.size() > 0) {
-			for (int p = 0; p < allterms.size(); p++) {
-				String bstr = allterms.get(p).toString();
-				JSONObject bj = new JSONObject(bstr);
-				bstr = bj.get("_source").toString();
-				bj = new JSONObject(bstr);
-			     String frequency = bj.get("frequency").toString(); 
-				//String frequency = "10";
-				int freq = Integer.parseInt(frequency);
-				
-				
-				
-				String tm = bj.get("term").toString();
-				String tmid = bj.get("id").toString();
-				String blogpostid = bj.get("blogpostid").toString();
-				String blogid = bj.get("blogsiteid").toString();
-				
-				if(freq>highestfrequency){
-					highestfrequency = freq;
-					//mostactiveterm = tm;
-				}
-				
-				String postc = "0";
-				String blogc="0";
-				String bloggerc="0";
-				String language="";
-				String leadingblogger="";
-				String location="";
-				String leadingblogid="";
-				
-					
-				
-				ArrayList postdetail = post._fetch(blogpostid);
-				
-				
-				if(postdetail.size()>0){							
-					String tres3 = null;
-					JSONObject tresp3 = null;
-					String tresu3 = null;
-					JSONObject tobj3 = null;
-					
-					for(int j=0; j< 1; j++){
-						tres3 = postdetail.get(j).toString();	
-						tresp3 = new JSONObject(tres3);
-						tresu3 = tresp3.get("_source").toString();
-						tobj3 = new JSONObject(tresu3);
-						
-						leadingblogger = tobj3.get("blogger").toString();
-						language = tobj3.get("language").toString();
-						leadingblogid = tobj3.get("blogsite_id").toString();
-						location = blog._getTopLocation(leadingblogid);//tobj3.get("location").toString();
-						
+					if (i == 0) {
+						mostactiveterm = tm;
+						mostactiveterm_id = terms_id;
 					}
-				}
-				
-				
 
-				if(p==0){
-					allposts =  post._searchByTitleAndBody(tm,"date", dt,dte);//term._searchByRange("date",dt,dte, tm,"term","10");
-					toplocation = location;
-					//mostactiveterm = tm;
-					//mostactiveterm_id = tmid;
-					
-					postc = post._searchTotalAndUnique(tm,"date", dt,dte,"blogpost_id");//post._searchTotalByTitleAndBody(tm,"date", dt,dte);
-					
-					//System.out.println("postc="+postc);
-					blogc = post._searchTotalAndUnique(tm,"date", dt,dte,"blogsite_id");
-					bloggerc = post._searchTotalAndUnique(tm,"date", dt,dte,"blogger");//post._searchTotalAndUniqueBlogger(tm,"date", dt,dte,"blogger");
-					
-					
-					postmentioned+=(Integer.parseInt(postc));
-					blogmentioned+=(Integer.parseInt(blogc));
-					bloggermentioned+=(Integer.parseInt(bloggerc));
-					
-					//postm   = post._searchByTitleAndBodyTotal(tm,"date",dt,dte);
 				}
-				
-				JSONObject cont = new JSONObject();
-				
-				
-				cont.put("key", tm);
-				cont.put("id", tmid);
-				cont.put("frequency", frequency);
-				cont.put("postcount",postc);
-				cont.put("blogcount",blogc);
-				cont.put("bloggercount",bloggerc);
-				cont.put("blogsite_id",blogid);
-				cont.put("leadingblogger",leadingblogger);
-				cont.put("language",language);
-				cont.put("location",location);
-				
+			}
 
-				if(keys.has(tm)){
-					String frequ = keys.get(tm).toString();
-					String pos = positions.get(tm).toString();
-					int fr1 = Integer.parseInt(frequency);
-					int fr2 = Integer.parseInt(frequ);
-					
+			JSONObject termsyears = new JSONObject();
+
+			allterms = term._searchByRange("blogsiteid", dt, dte, ids);//term._searchByRange("date", dt, dte, ids);
+			//termss = term._searchByRange("blogsiteid", dt, dte, ids);
+
+			int postmentioned = 0;
+			int blogmentioned = 0;
+			int bloggermentioned = 0;
+
+			int highestfrequency = 0;
+			int highestpost = 0;
+
+			int alloccurence = 0;
+
+			JSONArray topterms = new JSONArray();
+
+			JSONObject keys = new JSONObject();
+			JSONObject positions = new JSONObject();
+			int termsposition = 0;
+			if (allterms.size() > 0) {
+				for (int p = 0; p < allterms.size(); p++) {
+					String bstr = allterms.get(p).toString();
+					JSONObject bj = new JSONObject(bstr);
+					bstr = bj.get("_source").toString();
+					bj = new JSONObject(bstr);
+					String frequency = bj.get("frequency").toString();
+					//String frequency = "10";
+					int freq = Integer.parseInt(frequency);
+
+					String tm = bj.get("term").toString();
+					String tmid = bj.get("id").toString();
+					String blogpostid = bj.get("blogpostid").toString();
+					String blogid = bj.get("blogsiteid").toString();
+
+					if (freq > highestfrequency) {
+						highestfrequency = freq;
+						//mostactiveterm = tm;
+					}
+
+					String postc = "0";
+					String blogc = "0";
+					String bloggerc = "0";
+					String language = "";
+					String leadingblogger = "";
+					String location = "";
+					String leadingblogid = "";
+
+					ArrayList postdetail = post._fetch(blogpostid);
+
+					if (postdetail.size() > 0) {
+						String tres3 = null;
+						JSONObject tresp3 = null;
+						String tresu3 = null;
+						JSONObject tobj3 = null;
+
+						for (int j = 0; j < 1; j++) {
+							tres3 = postdetail.get(j).toString();
+							tresp3 = new JSONObject(tres3);
+							tresu3 = tresp3.get("_source").toString();
+							tobj3 = new JSONObject(tresu3);
+
+							leadingblogger = tobj3.get("blogger").toString();
+							language = tobj3.get("language").toString();
+							leadingblogid = tobj3.get("blogsite_id").toString();
+							location = blog._getTopLocation(leadingblogid);//tobj3.get("location").toString();
+
+						}
+					}
+
+					if (p == 0) {
+						allposts = post._searchByTitleAndBody(tm, "date", dt, dte);//term._searchByRange("date",dt,dte, tm,"term","10");
+						toplocation = location;
+						//mostactiveterm = tm;
+						//mostactiveterm_id = tmid;
+
+						postc = post._searchTotalAndUnique(tm, "date", dt, dte, "blogpost_id");//post._searchTotalByTitleAndBody(tm,"date", dt,dte);
+
+						//System.out.println("postc="+postc);
+						blogc = post._searchTotalAndUnique(tm, "date", dt, dte, "blogsite_id");
+						bloggerc = post._searchTotalAndUnique(tm, "date", dt, dte, "blogger");//post._searchTotalAndUniqueBlogger(tm,"date", dt,dte,"blogger");
+
+						postmentioned += (Integer.parseInt(postc));
+						blogmentioned += (Integer.parseInt(blogc));
+						bloggermentioned += (Integer.parseInt(bloggerc));
+
+						//postm   = post._searchByTitleAndBodyTotal(tm,"date",dt,dte);
+					}
+
+					JSONObject cont = new JSONObject();
+
 					cont.put("key", tm);
-					cont.put("frequency", (fr1+fr2));
-					topterms.put(Integer.parseInt(pos),cont);
-				}else{
-					cont.put("key", tm);
+					cont.put("id", tmid);
 					cont.put("frequency", frequency);
-					keys.put(tm,frequency);
-					positions.put(tm,termsposition);
-					topterms.put(cont);
-					termscount.put(p, tm);
+					cont.put("postcount", postc);
+					cont.put("blogcount", blogc);
+					cont.put("bloggercount", bloggerc);
+					cont.put("blogsite_id", blogid);
+					cont.put("leadingblogger", leadingblogger);
+					cont.put("language", language);
+					cont.put("location", location);
+
+					if (keys.has(tm)) {
+						String frequ = keys.get(tm).toString();
+						String pos = positions.get(tm).toString();
+						int fr1 = Integer.parseInt(frequency);
+						int fr2 = Integer.parseInt(frequ);
+
+						cont.put("key", tm);
+						cont.put("frequency", (fr1 + fr2));
+						topterms.put(Integer.parseInt(pos), cont);
+					} else {
+						cont.put("key", tm);
+						cont.put("frequency", frequency);
+						keys.put(tm, frequency);
+						positions.put(tm, termsposition);
+						topterms.put(cont);
+						termscount.put(p, tm);
+					}
+					/*
+					if(!keys.has(tm)){
+						keys.put(tm,tm);
+						topterms.put(cont);
+						termscount.put(p, tm);
+					}
+					*/
 				}
-				/*
-				if(!keys.has(tm)){
-					keys.put(tm,tm);
-					topterms.put(cont);
-					termscount.put(p, tm);
-				}
-				*/
 			}
-		}
 
+			if (termscount.length() > 0) {
+				for (int n = 0; n < 1; n++) {
+					int b = 0;
+					JSONObject postyear = new JSONObject();
+					for (int y = ystint; y <= yendint; y++) {
+						String dtu = y + "-01-01";
+						String dtue = y + "-12-31";
+						if (b == 0) {
+							dtu = dt;
+						} else if (b == yendint) {
+							dtue = dte;
+						}
 
+						String totu = post._searchTotalByTitleAndBody(mostactiveterm, "date", dtu, dtue);//term._searchRangeTotal("date",dtu, dtue,termscount.get(n).toString());						   
 
+						System.out.println(mostactiveterm + ":TM:" + dtu + "," + dtue + "=" + totu);
 
-		if(termscount.length()>0){
-			for(int n=0; n<1;n++){
-				int b=0;
-				JSONObject postyear =new JSONObject();
-				for(int y=ystint; y<=yendint; y++){ 
-						   String dtu = y + "-01-01";
-						   String dtue = y + "-12-31";
-						   if(b==0){
-								dtu = dt;
-							}else if(b==yendint){
-								dtue = dte;
-							}
-						   
-						   String totu = post._searchTotalByTitleAndBody(mostactiveterm,"date", dtu,dtue);//term._searchRangeTotal("date",dtu, dtue,termscount.get(n).toString());						   
-						   
-						   System.out.println(mostactiveterm+":TM:"+dtu+","+dtue+"="+totu);
-						   
-						   if(!years.has(y+"")){
-					    		years.put(y+"",y);
-					    		yearsarray.put(b,y);
-					    		b++;
-					    	}
-						   
-						   postyear.put(y+"",totu);
+						if (!years.has(y + "")) {
+							years.put(y + "", y);
+							yearsarray.put(b, y);
+							b++;
+						}
+
+						postyear.put(y + "", totu);
+					}
+					termsyears.put(termscount.get(n).toString(), postyear);
 				}
-				termsyears.put(termscount.get(n).toString(),postyear);
 			}
-		}
-
-		
-		
 %>
 
 <!DOCTYPE html>
 <html>
+
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -573,6 +550,7 @@
 <script src="assets/js/popper.min.js"></script>
 <script src="pagedependencies/googletagmanagerscript.js"></script>
 </head>
+
 <body>
 	<%@include file="subpages/loader.jsp"%>
 	<%@include file="subpages/googletagmanagernoscript.jsp"%>
@@ -605,26 +583,28 @@
 					%>
 					<%-- <a class="cursor-pointer profilemenulink"
 						href="<%=request.getContextPath()%>/notifications.jsp"><h6 class="text-primary">
-							Notifications <b id="notificationcount" class="cursor-pointer">12</b>
-						</h6> </a> --%>
+						Notifications <b id="notificationcount" class="cursor-pointer">12</b>
+					</h6> </a> --%>
 					<a class="cursor-pointer profilemenulink"
-						href="<%=request.getContextPath()%>/addblog.jsp"><h6
-							class="text-primary">Add Blog</h6></a> <a
-						class="cursor-pointer profilemenulink"
-						href="<%=request.getContextPath()%>/profile.jsp"><h6
-							class="text-primary">Profile</h6></a> <a
-						class="cursor-pointer profilemenulink"
-						href="https://addons.mozilla.org/en-US/firefox/addon/blogtrackers/"><h6
-							class="text-primary">Plugin</h6></a> <a
-						class="cursor-pointer profilemenulink"
-						href="<%=request.getContextPath()%>/logout"><h6
-							class="text-primary">Log Out</h6></a>
+						href="<%=request.getContextPath()%>/addblog.jsp">
+						<h6 class="text-primary">Add Blog</h6>
+					</a> <a class="cursor-pointer profilemenulink"
+						href="<%=request.getContextPath()%>/profile.jsp">
+						<h6 class="text-primary">Profile</h6>
+					</a> <a class="cursor-pointer profilemenulink"
+						href="https://addons.mozilla.org/en-US/firefox/addon/blogtrackers/">
+						<h6 class="text-primary">Plugin</h6>
+					</a> <a class="cursor-pointer profilemenulink"
+						href="<%=request.getContextPath()%>/logout">
+						<h6 class="text-primary">Log Out</h6>
+					</a>
 					<%
 						} else {
 					%>
 					<a class="cursor-pointer profilemenulink"
-						href="<%=request.getContextPath()%>/login"><h6
-							class="text-primary">Login</h6></a>
+						href="<%=request.getContextPath()%>/login">
+						<h6 class="text-primary">Login</h6>
+					</a>
 
 					<%
 						}
@@ -810,33 +790,78 @@
 
 
 							<%
-									
-									if (sortedterms.length() > 0) {																	
-											for (int i=0; i<sortedterms.length(); i++) {
-												String[] vals = sortedterms.get(i).toString().split("___");
-												String size = vals[0];
-												String tm = vals[1];
-												String terms_id = vals[2];
-												
-												if(!termstore.has(tm)){
-													termstore.put(tm, tm);
-												
-													String dselected = "";
-													if(i==0){
-														dselected = "abloggerselected";
-														//mostactiveterm = tm;
-														selectedkeycount = term.getTermOcuurence(tm, dt, dte);;
-													}
-																			
-											%><a
-								class="btn btn-primary form-control select-term bloggerinactive mb20 <%=dselected%> size-<%=size%>"
-								id="<%=tm.replaceAll(" ","_")%>***<%=terms_id%>"><b><%=tm%></b></a>
-							<%
-										}
-									  }
-									}	
+								/* 								if (sortedterms.length() > 0) {																	
+																				for (int i=0; i<sortedterms.length(); i++) {
+																					String[] vals = sortedterms.get(i).toString().split("___");
+																					String size = vals[0];
+																					String tm = vals[1];
+																					String terms_id = vals[2];
+																					
+																					if(!termstore.has(tm)){
+																						termstore.put(tm, tm);
+																					
+																						String dselected = "";
+																						if(i==0){
+																							dselected = "abloggerselected";
+																							//mostactiveterm = tm;
+																							selectedkeycount = term.getTermOcuurence(tm, dt, dte);;
+																						} */
+
+										/* BY SEUN--BEGINNING */
+										Integer keyword_count = null;
+										String top_location = null;
+										Object json_type_2 = null;
+
+										if (null == session.getAttribute(tid.toString())) {
 							%>
 
+							<%-- loadKeywordDashboard(null, "<%=ids%>"); --%>
+							<%
+								} else {
+											json_type_2 = (null == session.getAttribute(tid.toString()))
+													? ""
+													: session.getAttribute(tid.toString());
+
+											System.out.println("session obj" + json_type_2);
+
+											Map<String, Integer> json = (HashMap<String, Integer>) json_type_2;
+
+											Map.Entry<String, Integer> entry1 = json.entrySet().iterator().next();
+
+											keyword_count = entry1.getValue();
+											mostactiveterm = entry1.getKey();
+
+											for (Map.Entry<String, Integer> entry : json.entrySet()) {
+							%>
+
+
+
+
+							<%-- <a
+								class="btn btn-primary form-control select-term bloggerinactive mb20 <%=dselected%> size-<%=size%>"
+							id="<%=tm.replaceAll(" ","_")%>***<%=terms_id%>"><b><%=tm%></b></a> --%>
+							<a
+								class="btn btn-primary form-control select-term bloggerinactive mb20  size-1"
+								id="<%=entry.getKey()%>***<%=entry.getValue()%>"><b><%=entry.getKey()%></b></a>
+							<%
+								}
+										}
+										/* 	}
+										  }
+										}	 */
+
+										Integer blog_mentioned = post._getBlogOrPostMentioned("blogsite_id", mostactiveterm, dt, dte, ids);
+										System.out.println(dt + dte + ids);
+
+										try {
+											top_location = post._getMostLocation(mostactiveterm, dt, dte, ids);
+
+										} catch (Exception e) {
+
+										}
+										/* Integer post_mentioned=post._getBlogOrPostMentioned("post","care",dt, dte,ids); */
+							%>
+							<!-- BY SEUN--ENDING -->
 
 						</div>
 					</div>
@@ -870,25 +895,30 @@
 						<div class="row">
 							<div class="col-md-3 mt5 mb5">
 								<h6 class="card-title mb0">Blog Mentioned</h6>
-								<h2 class="mb0 bold-text blog-mentioned"><%=NumberFormat.getNumberInstance(Locale.US).format(new Integer(blogmentioned))%></h2>
+								<%-- <h2 class="mb0 bold-text blog-mentioned"><%=NumberFormat.getNumberInstance(Locale.US).format(new Integer(blogmentioned))%>
+								</h2> --%>
+								<h2 class="mb0 bold-text blog-mentioned"><%=blog_mentioned%></h2>
 								<!-- <small class="text-success">+5% from <b>Last Week</b></small> -->
 							</div>
 
 							<div class="col-md-3 mt5 mb5">
 								<h6 class="card-title mb0">Keyword Count</h6>
-								<h2 class="mb0 bold-text blogger-mentioned"><%=NumberFormat.getNumberInstance(Locale.US).format(selectedkeycount)%></h2>
+								<h2 class="mb0 bold-text keyword-count"><%=keyword_count%></h2>
 								<!-- <small class="text-success">+5% from <b>Last Week</b></small> -->
 							</div>
 
 							<div class="col-md-3 mt5 mb5">
 								<h6 class="card-title mb0">Posts Mentioned</h6>
-								<h2 class="mb0 bold-text post-mentioned"><%=postmentioned%></h2>
+								<h2 class="mb0 bold-text post-mentioned">
+									<%-- <%=post_mentioned%> --%>
+								</h2>
 								<!-- <small class="text-success">+5% from <b>Last Week</b></small> -->
 							</div>
 
 							<div class="col-md-3 mt5 mb5">
 								<h6 class="card-title mb0">Top Posting Location</h6>
-								<h3 class="mb0 bold-text top-location"><%=toplocation%></h3>
+								
+								<h3 class="mb0 bold-text top-location"><%=(null == top_location) ? "NOT AVAILABLE" : top_location%></h3>
 								<!-- <small class="text-success">+5% from <b>Last Week</b></small> -->
 							</div>
 
@@ -928,9 +958,24 @@
 						<!--  <div class="p15 pb5 pt0" role="group">
           Export Options
           </div> -->
-						<%  
-          JSONObject firstpost = new JSONObject();
-          if(allposts.size()>0){	%>
+						<%
+							System.out.println("values1--" + mostactiveterm + "NOBLOGGER" + "," + dt + "," + dte + "," + ids);
+									JSONObject sql = post._getBloggerPosts(mostactiveterm, "NOBLOGGER", dt, dte, ids);
+
+									JSONObject firstpost = new JSONObject();
+									/*if(allposts.size()>0){ */
+
+									if (sql.getJSONArray("data").length() > 0) {
+										String perma_link = null;
+										String j = null;
+										String title = null;
+										String blogpost_id = null;
+										String date = null;
+										String num_comments = null;
+										String blogger = null;
+										String posts = null;
+										Integer occurence = null;
+						%>
 						<table id="DataTables_Table_2_wrapper" class="display"
 							style="width: 100%">
 							<thead>
@@ -940,64 +985,83 @@
 								</tr>
 							</thead>
 							<tbody>
-								<%				
+								<%
 									String tres = null;
-									JSONObject tresp = null;
-									String tresu = null;
-									JSONObject tobj = null;								
-									
-									int k=0;
-									
-									for(int i=0; i< allposts.size(); i++){
-										tres = allposts.get(i).toString();	
-										tresp = new JSONObject(tres);									
-										tresu = tresp.get("_source").toString();
-										tobj = new JSONObject(tresu);
-										
-										
-												
-												//System.out.println("postdet +"+tobj3);
-												if(i==0){
-													firstpost = tobj;
-												}
-												
-												int bodyoccurencece = 0;//ut.countMatches(tobj3.get("post").toString(), mostactiveterm);
-												
-										        String str = tobj.get("post").toString()+" "+ tobj.get("post").toString();
-												str = str.toLowerCase();
-												//mostactiveterm = mostactiveterm.toLowerCase();
-										        String findStr = mostactiveterm;
-												int lastIndex = 0;
-												//int count = 0;
+												JSONObject tresp = null;
+												String tresu = null;
+												JSONObject tobj = null;
 
-												while(lastIndex != -1){
+												int k = 0;
 
-												    lastIndex = str.indexOf(findStr,lastIndex);
+												/* for(int i=0; i< allposts.size(); i++){
+													tres = allposts.get(i).toString();	
+													tresp = new JSONObject(tres);									
+													tresu = tresp.get("_source").toString();
+													tobj = new JSONObject(tresu); */
 
-												    if(lastIndex != -1){
-												        bodyoccurencece++;
-												        alloccurence+=bodyoccurencece;
-												        lastIndex += findStr.length();
-												    }
-												    
-												    
-												    
-												}
-									%>
+												String sql_ = sql.get("data").toString();
+												for (int i = 0; i < sql.getJSONArray("data").length(); i++) {
+													Object jsonArray = sql.getJSONArray("data").get(i);
+
+													j = jsonArray.toString();
+													JSONObject j_ = new JSONObject(j);
+													perma_link = j_.get("permalink").toString();
+													title = j_.get("title").toString();
+													blogpost_id = j_.get("blogpost_id").toString();
+													date = j_.get("date").toString();
+													num_comments = j_.get("num_comments").toString();
+													blogger = j_.get("blogger").toString();
+													posts = j_.get("post").toString();
+													occurence = (Integer) j_.get("occurence");
+
+													DateTimeFormatter inputFormatter = DateTimeFormatter
+															.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH);
+													DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("dd-MM-yyy",
+															Locale.ENGLISH);
+													LocalDate date_ = LocalDate.parse(date, inputFormatter);
+													Integer d = date_.getYear();
+													/* String formattedDate = outputFormatter.format(date); */
+													System.out.println(d.toString());
+
+													String replace = "<span style=background:red;color:#fff>" + mostactiveterm + "</span>";
+													String active2 = mostactiveterm.substring(0, 1).toUpperCase()
+															+ mostactiveterm.substring(1, mostactiveterm.length());
+													String active3 = mostactiveterm.toUpperCase();
+
+													posts = posts.replace(mostactiveterm, replace);
+													posts = posts.replace(active2, replace);
+													posts = posts.replace(active3, replace);
+
+													title = title.replace(mostactiveterm, replace);
+													title = title.replace(active2, replace);
+													title = title.replace(active3, replace);
+
+													/* 	LocalDate datee = LocalDate.parse(date);
+														DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");
+														date = dtf.format(datee); */
+
+													/* BY SEUN ENDING */
+								%>
 								<tr>
 									<td><a class="blogpost_link cursor-pointer blogpost_link"
-										id="<%=tobj.get("blogpost_id")%>"><%=tobj.get("title") %></a><br />
-										<a class="mt20 viewpost makeinvisible"
-										href="<%=tobj.get("permalink") %>" target="_blank"><buttton
+										id="<%-- <%=tobj.get("blogpost_id")%> --%><%=blogpost_id%>">
+											<%-- <%=tobj.get("title") %> --%><%=title%></a><br /> <a
+										class="mt20 viewpost makeinvisible"
+										href="<%-- <%=tobj.get("permalink") %> --%><%=perma_link%>"
+										target="_blank"> <buttton
 												class="btn btn-primary btn-sm mt10 visitpost">Visit
-											Post &nbsp;<i class="fas fa-external-link-alt"></i></buttton></a></td>
-									<td align="center"><%=(bodyoccurencece) %></td>
+											Post &nbsp;<i class="fas fa-external-link-alt"></i></buttton>
+									</a></td>
+									<td align="center">
+										<%-- <%=(bodyoccurencece) %> --%><%=occurence%></td>
 								</tr>
-								<% }%>
+								<%
+									}
+								%>
 								</tr>
 							</tbody>
 						</table>
-						<% } %>
+						<%-- <% System.out.println("dd--"+title+blogpost_id+date+num_comments+blogger);} %> --%>
 					</div>
 
 				</div>
@@ -1007,67 +1071,76 @@
 
 					<div style="" class="pt20" id="blogpost_detail">
 						<%
-                                if(firstpost.length()>0){	
-									JSONObject tobj = firstpost;
-									String title = tobj.get("title").toString().replaceAll("[^a-zA-Z]", " ");
-									String body = tobj.get("post").toString().replaceAll("[^a-zA-Z]", " ");
-									String dat = tobj.get("date").toString().substring(0,10);
-									LocalDate datee = LocalDate.parse(dat);
-									DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");
-									String date = dtf.format(datee);
-									String replace = 	"<span style=background:red;color:#fff>"+mostactiveterm+"</span>";
-									String link = tobj.get("permalink").toString();
-									
-									String maindomain="";
-									try {
-										URI uri = new URI(link);
-										String domain = uri.getHost();
-										if (domain.startsWith("www.")) {
-											maindomain = domain.substring(4);
-										} else {
-											maindomain = domain;
-										}
-									} catch (Exception ex) {}
-									
-
-									title = title.replaceAll(mostactiveterm,replace);
-									String active2 = mostactiveterm.substring(0,1).toUpperCase()+mostactiveterm.substring(1,mostactiveterm.length());
-									String active3= mostactiveterm.toUpperCase();
-									
-									
-									title = title.replaceAll(mostactiveterm,replace);
-									title = title.replaceAll(active2,replace);
-									title = title.replaceAll(active3,replace);
-									
-									
-									body = body.replaceAll(mostactiveterm,replace);
-									body = body.replaceAll(active2,replace);
-									body = body.replaceAll(active3,replace);
-									%>
-						<h5 class="text-primary p20 pt0 pb0"><%=title%></h5>
+							/* JSONObject tobj = firstpost;
+										String title = tobj.get("title").toString().replaceAll("[^a-zA-Z]", " ");
+										String body = tobj.get("post").toString().replaceAll("[^a-zA-Z]", " ");
+										String dat = tobj.get("date").toString().substring(0,10);
+										LocalDate datee = LocalDate.parse(dat);
+										DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");
+										String date = dtf.format(datee);
+										String replace = 	"<span style=background:red;color:#fff>"+mostactiveterm+"</span>";
+										String link = tobj.get("permalink").toString();
+										
+										String maindomain="";
+										try {
+											URI uri = new URI(link);
+											String domain = uri.getHost();
+											if (domain.startsWith("www.")) {
+												maindomain = domain.substring(4);
+											} else {
+												maindomain = domain;
+											}
+										} catch (Exception ex) {}
+										System.out.println("dd--"+title+blogpost_id+date+num_comments+blogger);
+										
+										title = title.replaceAll(mostactiveterm,replace);
+										String active2 = mostactiveterm.substring(0,1).toUpperCase()+mostactiveterm.substring(1,mostactiveterm.length());
+										String active3= mostactiveterm.toUpperCase();
+										
+										
+										title = title.replaceAll(mostactiveterm,replace);
+										title = title.replaceAll(active2,replace);
+										title = title.replaceAll(active3,replace);
+										
+										
+										body = body.replaceAll(mostactiveterm,replace);
+										body = body.replaceAll(active2,replace);
+										body = body.replaceAll(active3,replace); */
+						%>
+						<h5 class="text-primary p20 pt0 pb0">
+							<%-- <%=title%> --%><%=title%></h5>
 						<div class="text-center mb20 mt20">
-							<%-- <a href="<%=request.getContextPath()%>/bloggerportfolio.jsp?tid=<%=tid.toString()%>&blogger=<%=tobj.get("blogger")%>"> 
-											<button class="btn stylebuttonblue">
-											--%>
+							<%-- <a href="<%=request.getContextPath()%>/bloggerportfolio.jsp?tid=<%=tid.toString()%>&blogger=<%=tobj.get("blogger")%>">
+							<button class="btn stylebuttonblue">
+								--%>
 							<button class="btn stylebuttonblue"
-								onclick="window.location.href = '<%=request.getContextPath()%>/bloggerportfolio.jsp?tid=<%=tid%>&blogger=<%=tobj.get("blogger")%>'">
-								<b class="float-left ultra-bold-text"><%=tobj.get("blogger")%></b>
-								<i class="far fa-user float-right blogcontenticon"></i>
+								onclick="window.location.href = '<%=request.getContextPath()%>/bloggerportfolio.jsp?tid=<%=tid%>&blogger=<%-- <%=tobj.get("blogger")%> --%><%=blogger%>'">
+								<b class="float-left ultra-bold-text">
+									<%-- <%=tobj.get("blogger")%> --%><%=blogger%></b> <i
+									class="far fa-user float-right blogcontenticon"></i>
 							</button>
 							</a>
-							<button class="btn stylebuttonnocolor nocursor"><%=date %></button>
 							<button class="btn stylebuttonnocolor nocursor">
-								<b class="float-left ultra-bold-text"><%=tobj.get("num_comments")%>
-									comments</b><i class="far fa-comments float-right blogcontenticon"></i>
+								<%-- <%=date %> --%><%=date%></button>
+							<button class="btn stylebuttonnocolor nocursor">
+								<b class="float-left ultra-bold-text">
+									<%-- <%=tobj.get("num_comments")%> --%><%=num_comments%>
+									comments
+								</b><i class="far fa-comments float-right blogcontenticon"></i>
 							</button>
 						</div>
 						<div style="height: 600px;">
-							<div class="p20 pt0 pb20 text-blog-content text-primary"
+							<div class="p20 pt0 pb20  text-primary"
 								style="height: 550px; overflow-y: scroll;">
-								<%=body%>
+								<%-- <%=body%> --%>
+								<p><%=posts%></p>
 							</div>
 						</div>
-						<% } %>
+						<%
+							System.out
+												.println("dd--" + title + blogpost_id + date + num_comments + blogger + mostactiveterm);
+									}
+						%>
 
 					</div>
 				</div>
@@ -1099,30 +1172,60 @@
 
 									</tr>
 								</thead>
-								<tbody>
-									<%if (topterms.length() > 0) {										
-										for (int i = 0; i < topterms.length(); i++) {
-											JSONObject jsonObj = topterms.getJSONObject(i);
-											int size = 10;
-											/* int size = Integer.parseInt(jsonObj.getString("frequency")); */
-											String terms = jsonObj.getString("key");
-											String postcount = post._searchTotalByTitleAndBody(terms,"date", dt,dte);
-											String blogcount = post._searchTotalAndUnique(terms,"date", dt,dte,"blogsite_id");
-											String bloggercount = post._searchTotalAndUnique(terms,"date", dt,dte,"blogger");
-											String language = jsonObj.getString("language");//jsonObj.getString("language");
-											String location = jsonObj.getString("location");
-											String blogger = jsonObj.getString("leadingblogger");										
-											int keycount = term.getTermOcuurence(terms, dt, dte);
-								%>
+								<tbody id="tbody" class="termtable">
+									<%
+										if (null != session.getAttribute(tid.toString())) {
+													/* for (int i = 0; i < topterms.length(); i++) {
+														JSONObject jsonObj = topterms.getJSONObject(i);
+														int size = 10;
+														/* int size = Integer.parseInt(jsonObj.getString("frequency")); */
+													/*String terms = jsonObj.getString("key");
+													String postcount = post._searchTotalByTitleAndBody(terms,"date", dt,dte);
+													String blogcount = post._searchTotalAndUnique(terms,"date", dt,dte,"blogsite_id");
+													String bloggercount = post._searchTotalAndUnique(terms,"date", dt,dte,"blogger");
+													String language = jsonObj.getString("language");//jsonObj.getString("language");
+													String location = jsonObj.getString("location");
+													String blogger = jsonObj.getString("leadingblogger");										
+													int keycount = term.getTermOcuurence(terms, dt, dte); */
+
+													//mostactiveterm = keys_.next();
+													String t_ = null;
+													Integer blog_mentioned_ = null;
+
+													//System.out.println("keys2--"+keys_.hasNext());
+
+													for (int i = 0; i < 50; i++) {
+														/* while(keys_.hasNext()) { */
+
+														//System.out.println("values2--"+key+"NOBLOGGER"+","+json.get(key)+","+dt+","+ dte+","+ids);
+														/* try{
+															JSONObject t = post._getBloggerPosts(key,"NOBLOGGER",dt, dte,ids);
+															t_ = t.get("total").toString();
+															blog_mentioned_ = post._getBlogOrPostMentioned("blogsite_id",key,dt, dte,ids);
+															top_location=post._getMostLocation(key,dt, dte,ids);
+														}
+														catch(Exception e){
+															
+														} */
+									%>
 									<tr>
-										<td><%=terms%></td>
+										<td>
+											<%-- <%=terms%> --%>
+											<%-- <%=key %> --%>
+										</td>
 										<%-- <td><%=NumberFormat.getNumberInstance(Locale.US).format(size)%></td> --%>
-										<td><%=NumberFormat.getNumberInstance(Locale.US).format(Integer.parseInt(postcount))%>
-											<%-- <sub>of <%=postcount%></sub> --%></td>
-										<td><%=NumberFormat.getNumberInstance(Locale.US).format(Integer.parseInt(blogcount))%>
-											<%-- <sub>of <%=blogcount%></sub> --%></td>
-										<td><%=NumberFormat.getNumberInstance(Locale.US).format(keycount)%>
-											<%-- <sub>of <%=bloggercount%></sub> --%></td>
+										<td>
+											<%-- <%=NumberFormat.getNumberInstance(Locale.US).format(Integer.parseInt(postcount)) %>--%>
+											<%-- <%=json.get(key) %> --%> <%-- <sub>of <%=postcount%></sub> --%>
+										</td>
+										<td>
+											<%-- <%=NumberFormat.getNumberInstance(Locale.US).format(Integer.parseInt(blogcount))%> --%>
+											<%-- <%=t_ %> --%> <%-- <sub>of <%=blogcount%></sub> --%>
+										</td>
+										<td>
+											<%-- <%=NumberFormat.getNumberInstance(Locale.US).format(keycount)%> --%>
+											<%-- <%=blog_mentioned_ %> --%> <%-- <sub>of <%=bloggercount%></sub> --%>
+										</td>
 										<%-- <td><%=blogger%></td>
 										<td><%=language%></td>
 										<td><%=location%></td> --%>
@@ -1130,8 +1233,8 @@
 									</tr>
 									<%
 										}
-									}	
-							%>
+												}
+									%>
 
 
 								</tbody>
@@ -1152,7 +1255,9 @@
 			type="hidden" id="date_start" value="<%=dt%>" /> <input
 			type="hidden" id="term_id" value="<%=mostactiveterm_id%>" /> <input
 			type="hidden" id="tid" value="<%=tid%>" /> <input type="hidden"
-			id="date_end" value="<%=dte%>" />
+			id="date_end" value="<%=dte%>" /> <input type="hidden"
+			id="all_blog_ids" value="<%=ids%>" /> <input type="hidden"
+			id="SUCCESS" class="SUCCESS" value="" />
 
 	</form>
 
@@ -1172,9 +1277,9 @@
 
 	<script type="text/javascript" src="assets/js/jquery-1.11.3.min.js"></script>
 	<script src="assets/bootstrap/js/bootstrap.js">
- </script>
+	</script>
 	<script src="assets/js/generic.js">
- </script>
+	</script>
 	<script src="assets/vendors/bootstrap-daterangepicker/moment.js"></script>
 	<script
 		src="assets/vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
@@ -1193,823 +1298,877 @@
 		src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.html5.min.js"></script>
 	<script
 		src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.print.min.js"></script>
+	<script src="pagedependencies/baseurl.js?v=38"></script>
 
 	<script>
- $(document).ready(function() {
-     $('#DataTables_Table_1_wrapper').DataTable( {
-         "scrollY": 430,
-         "scrollX": true,
-          "pagingType": "simple"
-       /*    ,
-          dom: 'Bfrtip',
-       buttons:{
-         buttons: [
-             { extend: 'pdfHtml5',orientation: 'potrait', pageSize: 'LEGAL', className: 'btn-primary stylebutton1'},
-             {extend:'csv',className: 'btn-primary stylebutton1'},
-             {extend:'excel',className: 'btn-primary stylebutton1'},
-            // {extend:'copy',className: 'btn-primary stylebutton1', text: 'Copy to Clipboard'},
-             {extend:'print',className: 'btn-primary stylebutton1'},
-         ]
-       } */
-     } );
+$(document).ready(function() {
+	loadMostPost("<%=mostactiveterm%>");
+});
 
-     $('#DataTables_Table_0_wrapper').DataTable( {
-         "scrollY": 430,
 
-          "pagingType": "simple"
-        	  /*   ,
-           dom: 'Bfrtip'
-         ,
-       buttons:{
-         buttons: [
-             { extend: 'pdfHtml5',orientation: 'potrait', pageSize: 'LEGAL', className: 'btn-primary stylebutton1'},
-             {extend:'csv',className: 'btn-primary stylebutton1'},
-             {extend:'excel',className: 'btn-primary stylebutton1'},
-            // {extend:'copy',className: 'btn-primary stylebutton1', text: 'Copy to Clipboard'},
-             {extend:'print',className: 'btn-primary stylebutton1'},
-         ]
-       } */
-     } );
+$(document).ready(function() {
+	<%if (null == session.getAttribute(tid.toString() + "_termtable")) {%>
+		  // keywords have not been computed.
+		loadtermTableBulk();
+		<%} else {
+						Object data_table = (null == session.getAttribute(tid.toString() + "_termtable"))
+								? ""
+								: session.getAttribute(tid.toString() + "_termtable");
 
-     $('#DataTables_Table_2_wrapper').DataTable( {
-         "scrollY": 480,
+						System.out.println("session obj" + data_table);%>
+		  // Keywords have been computed
+		  updateTable(<%=data_table%>);
+		  
+		<%}%>
+		
+});
+</script>
 
-          "pagingType": "simple",
-          "order": [[ 1, "desc" ]]
-        	  /*  ,
-           dom: 'Bfrtip'
-         ,
-       buttons:{
-         buttons: [
-             { extend: 'pdfHtml5',orientation: 'potrait', pageSize: 'LEGAL', className: 'btn-primary stylebutton1'},
-             {extend:'csv',className: 'btn-primary stylebutton1'},
-             {extend:'excel',className: 'btn-primary stylebutton1'},
-            // {extend:'copy',className: 'btn-primary stylebutton1', text: 'Copy to Clipboard'},
-             {extend:'print',className: 'btn-primary stylebutton1'},
-         ]
-       } */
-     } );
- } );
- </script>
+	<script>
+		$(document).ready(function () {
+			
+
+			$('#DataTables_Table_0_wrapper').DataTable({
+				"scrollY": 430,
+
+				"pagingType": "simple"
+				/*   ,
+			 dom: 'Bfrtip'
+		   ,
+		 buttons:{
+		   buttons: [
+			   { extend: 'pdfHtml5',orientation: 'potrait', pageSize: 'LEGAL', className: 'btn-primary stylebutton1'},
+			   {extend:'csv',className: 'btn-primary stylebutton1'},
+			   {extend:'excel',className: 'btn-primary stylebutton1'},
+			  // {extend:'copy',className: 'btn-primary stylebutton1', text: 'Copy to Clipboard'},
+			   {extend:'print',className: 'btn-primary stylebutton1'},
+		   ]
+		 } */
+			});
+
+			$('#DataTables_Table_2_wrapper').DataTable({
+				"scrollY": 480,
+
+				"pagingType": "simple",
+				"order": [[1, "desc"]]
+				/*  ,
+			 dom: 'Bfrtip'
+		   ,
+		 buttons:{
+		   buttons: [
+			   { extend: 'pdfHtml5',orientation: 'potrait', pageSize: 'LEGAL', className: 'btn-primary stylebutton1'},
+			   {extend:'csv',className: 'btn-primary stylebutton1'},
+			   {extend:'excel',className: 'btn-primary stylebutton1'},
+			  // {extend:'copy',className: 'btn-primary stylebutton1', text: 'Copy to Clipboard'},
+			   {extend:'print',className: 'btn-primary stylebutton1'},
+		   ]
+		 } */
+			});
+		});
+	</script>
 	<!--end for table  -->
 	<script>
- $(document).ready(function() {
-	 
-	 $('#printdoc').on('click',function(){
-			print();
-		}) ;
-   $(document)
-   						.ready(
-   								function() {
-   	var cb = function(start, end, label) {
-           //console.log(start.toISOString(), end.toISOString(), label);
-           $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
-           $('#reportrange input').val(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY')).trigger('change');
-         };
+		$(document).ready(function () {
 
-         var optionSet1 =
-       	      {   startDate: moment().subtract(29, 'days'),
-       	          endDate: moment(),
-       	          minDate: '01/01/1947',
-       	       	  linkedCalendars: false,
-       	          maxDate: moment(),
-       			  showDropdowns: true,
-       	          showWeekNumbers: true,
-       	          timePicker : false,
-   				  timePickerIncrement : 1,
-   				  timePicker12Hour : true,
-   				  dateLimit: { days: 50000 },
-          	          ranges: {
+			$('#printdoc').on('click', function () {
+				print();
+			});
+			$(document)
+				.ready(
+					function () {
+						var cb = function (start, end, label) {
+							//console.log(start.toISOString(), end.toISOString(), label);
+							$('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+							$('#reportrange input').val(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY')).trigger('change');
+						};
 
-          	        	'This Year' : [
-   						moment()
-   								.startOf('year'),
-   						moment() ],
-   				'Last Year' : [
-   						moment()
-   								.subtract(1,'year').startOf('year'),
-   						moment().subtract(1,'year').endOf('year') ]
-       	          },
-       	          opens: 'left',
-       	          applyClass: 'btn-small bg-slate-600 btn-block',
-       	          cancelClass: 'btn-small btn-default btn-block',
-       	          format: 'MM/DD/YYYY',
-       			  locale: {
-       	          applyLabel: 'Submit',
-       	          //cancelLabel: 'Clear',
-       	          fromLabel: 'From',
-       	          toLabel: 'To',
-       	          customRangeLabel: 'Custom',
-       	          daysOfWeek: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
-       	          monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-       	          firstDay: 1
-       	        }
+						var optionSet1 =
+						{
+							startDate: moment().subtract(29, 'days'),
+							endDate: moment(),
+							minDate: '01/01/1947',
+							linkedCalendars: false,
+							maxDate: moment(),
+							showDropdowns: true,
+							showWeekNumbers: true,
+							timePicker: false,
+							timePickerIncrement: 1,
+							timePicker12Hour: true,
+							dateLimit: { days: 50000 },
+							ranges: {
 
-       	      };
+								'This Year': [
+									moment()
+										.startOf('year'),
+									moment()],
+								'Last Year': [
+									moment()
+										.subtract(1, 'year').startOf('year'),
+									moment().subtract(1, 'year').endOf('year')]
+							},
+							opens: 'left',
+							applyClass: 'btn-small bg-slate-600 btn-block',
+							cancelClass: 'btn-small btn-default btn-block',
+							format: 'MM/DD/YYYY',
+							locale: {
+								applyLabel: 'Submit',
+								//cancelLabel: 'Clear',
+								fromLabel: 'From',
+								toLabel: 'To',
+								customRangeLabel: 'Custom',
+								daysOfWeek: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+								monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+								firstDay: 1
+							}
 
-
-   	// if('${datepicked}' == '')
-   	// {
-     //   $('#reportrange span').html(moment().subtract('days', 500).format('MMMM D') + ' - ' + moment().format('MMMM D'));
-     //   $('#reportrange').daterangepicker(optionSet1, cb);
-   	// }
-     //
-   	// else{
-   		// $('#reportrange span').html('${datepicked}');
-     //  $('#reportrange span').html(moment().subtract( 500, 'days').format('MMMM D, YYYY') + ' - ' + moment().format('MMMM D, YYYY'))
-   		$('#reportrange, #custom').daterangepicker(optionSet1, cb);
-   		$('#reportrange')
-   		.on(
-   				'show.daterangepicker',
-   				function() {
-   				/* 	console
-   							.log("show event fired"); */
-   				});
-   $('#reportrange')
-   		.on(
-   				'hide.daterangepicker',
-   				function() {
-   					/* console
-   							.log("hide event fired"); */
-   				});
-   $('#reportrange')
-   		.on(
-   				'apply.daterangepicker',
-   				function(ev, picker) {
-   					/* console
-   							.log("apply event fired, start/end dates are "
-   									+ picker.startDate
-   											.format('MMMM D, YYYY')
-   									+ " to "
-   									+ picker.endDate
-   											.format('MMMM D, YYYY')); */
-   					var start = picker.startDate.format('YYYY-MM-DD');
-   	            	var end = picker.endDate.format('YYYY-MM-DD');
-   	            	$("#date_start").val(start);
-   	            	$("#date_end").val(end);
-   	            	$("form#customform").submit();
-   				});
-   $('#reportrange')
-   		.on(
-   				'cancel.daterangepicker',
-   				function(ev, picker) {
-   					/* console
-   							.log("cancel event fired"); */
-   				});
-   $('#options1').click(
-   		function() {
-   			$('#reportrange').data(
-   					'daterangepicker')
-   					.setOptions(
-   							optionSet1,
-   							cb);
-   		});
-   $('#options2').click(
-   		function() {
-   			$('#reportrange').data(
-   					'daterangepicker')
-   					.setOptions(
-   							optionSet2,
-   							cb);
-   		});
-   $('#destroy').click(
-   		function() {
-   			$('#reportrange').data(
-   					'daterangepicker')
-   					.remove();
-   		});
-   		//}
-   								});
-                 // set attribute for the form
-       //$('#trackerform').attr("action","ExportJSON");
-       //$('#dateform').attr("action","ExportJSON");
+						};
 
 
-   //$('#config-demo').daterangepicker(options, function(start, end, label) { console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')'); });
- });
- </script>
+						// if('${datepicked}' == '')
+						// {
+						//   $('#reportrange span').html(moment().subtract('days', 500).format('MMMM D') + ' - ' + moment().format('MMMM D'));
+						//   $('#reportrange').daterangepicker(optionSet1, cb);
+						// }
+						//
+						// else{
+						// $('#reportrange span').html('${datepicked}');
+						//  $('#reportrange span').html(moment().subtract( 500, 'days').format('MMMM D, YYYY') + ' - ' + moment().format('MMMM D, YYYY'))
+						$('#reportrange, #custom').daterangepicker(optionSet1, cb);
+						$('#reportrange')
+							.on(
+								'show.daterangepicker',
+								function () {
+									/* 	console
+												.log("show event fired"); */
+								});
+						$('#reportrange')
+							.on(
+								'hide.daterangepicker',
+								function () {
+									/* console
+											.log("hide event fired"); */
+								});
+						$('#reportrange')
+							.on(
+								'apply.daterangepicker',
+								function (ev, picker) {
+									/* console
+											.log("apply event fired, start/end dates are "
+													+ picker.startDate
+															.format('MMMM D, YYYY')
+													+ " to "
+													+ picker.endDate
+															.format('MMMM D, YYYY')); */
+									var start = picker.startDate.format('YYYY-MM-DD');
+									var end = picker.endDate.format('YYYY-MM-DD');
+									$("#date_start").val(start);
+									$("#date_end").val(end);
+									$("form#customform").submit();
+								});
+						$('#reportrange')
+							.on(
+								'cancel.daterangepicker',
+								function (ev, picker) {
+									/* console
+											.log("cancel event fired"); */
+								});
+						$('#options1').click(
+							function () {
+								$('#reportrange').data(
+									'daterangepicker')
+									.setOptions(
+										optionSet1,
+										cb);
+							});
+						$('#options2').click(
+							function () {
+								$('#reportrange').data(
+									'daterangepicker')
+									.setOptions(
+										optionSet2,
+										cb);
+							});
+						$('#destroy').click(
+							function () {
+								$('#reportrange').data(
+									'daterangepicker')
+									.remove();
+							});
+						//}
+					});
+			// set attribute for the form
+			//$('#trackerform').attr("action","ExportJSON");
+			//$('#dateform').attr("action","ExportJSON");
+
+
+			//$('#config-demo').daterangepicker(options, function(start, end, label) { console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')'); });
+		});
+	</script>
 	<script type="text/javascript" src="assets/vendors/d3/d3.min.js"></script>
 	<script type="text/javascript" src="assets/vendors/d3/d3_tooltip.js"></script>
 	<script>
+	/* const array=new Array(); */
+	const lenn= null;
+	
+	getLineData("<%=mostactiveterm%>");
+	
+	function getLineData(term){
+		var d = {};
+		var array =[]
+		var array_2=[];
+/* 		$(".post-mentioned").html("<img src='images/loading.gif' />"); */
+		$.ajax({
+			url : app_url + "KeywordTrend",
+			method : 'POST',
+			dataType:'json',
+			data : {
+				action : "line_graph",
+				term : term,
+				all_blog_ids : $("#all_blog_ids").val(),
+				date_start : $("#date_start").val(),
+				date_end : $("#date_end").val(),
+			},
+			error : function(response) {
+				console.log("error occured line" + response);
+			},
+			success : function(response) {
+				console.log(response)
+				
+				/* console.log("arr--"+d+"--"+JSON.parse(JSON.stringify(array))); */
+				/* d=response; */
+				for(var key in response){
+					
+					var dic = Object.create(null);
 
- $(function () {
+					dic.date=key;
+					dic.close=response[key];
 
-     // Initialize chart
-     lineBasic('#d3-line-basic', 200);
+					array.push(dic);
 
-     // Chart setup
-     function lineBasic(element, height) {
+				}
+				array_2=[];
+				array_2.push(array);
+				console.log("ddddddd");
+				console.log(array_2);
+				
+				/* $(".post-mentioned").html(response.post); */
+	
+	
+		$(function () {
 
+			// Initialize chart
+			lineBasic('#d3-line-basic', 200);
 
-         // Basic setup
-         // ------------------------------
-
-         // Define main variables
-         var d3Container = d3.select(element),
-             margin = {top: 10, right: 10, bottom: 20, left: 50},
-             width = d3Container.node().getBoundingClientRect().width - margin.left - margin.right,
-             height = height - margin.top - margin.bottom;
-
-
-         // var formatPercent = d3.format(",.3f");
-         // Format data
-         // var parseDate = d3.time.format("%d-%b-%y").parse,
-         //     bisectDate = d3.bisector(function(d) { return d.date; }).left,
-         //     formatValue = d3.format(",.0f"),
-         //     formatCurrency = function(d) { return formatValue(d); }
-
-
-
-         // Construct scales
-         // ------------------------------
-
-         // Horizontal
-         var x = d3.scale.ordinal()
-             .rangeRoundBands([0, width]);
-
-         // Vertical
-         var y = d3.scale.linear()
-             .range([height, 0]);
-
-
-
-         // Create axes
-         // ------------------------------
-
-         // Horizontal
-         var xAxis = d3.svg.axis()
-             .scale(x)
-             .orient("bottom")
-            .ticks(9)
-
-           // .tickFormat(formatPercent);
-
-
-         // Vertical
-         var yAxis = d3.svg.axis()
-             .scale(y)
-             .orient("left")
-             .ticks(6);
+			// Chart setup
+			function lineBasic(element, height) {
 
 
+				// Basic setup
+				// ------------------------------
 
-         // Create chart
-         // ------------------------------
+				// Define main variables
+				var d3Container = d3.select(element),
+					margin = { top: 10, right: 10, bottom: 20, left: 50 },
+					width = d3Container.node().getBoundingClientRect().width - margin.left - margin.right,
+					height = height - margin.top - margin.bottom;
 
-         // Add SVG element
-         var container = d3Container.append("svg");
 
-         // Add SVG group
-         var svg = container
-             .attr("width", width + margin.left + margin.right)
-             .attr("height", height + margin.top + margin.bottom)
-             .append("g")
-                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+				// var formatPercent = d3.format(",.3f");
+				// Format data
+				// var parseDate = d3.time.format("%d-%b-%y").parse,
+				//     bisectDate = d3.bisector(function(d) { return d.date; }).left,
+				//     formatValue = d3.format(",.0f"),
+				//     formatCurrency = function(d) { return formatValue(d); }
 
 
 
-         // Construct chart layout
-         // ------------------------------
+				// Construct scales
+				// ------------------------------
 
-         // Line
+				// Horizontal
+				var x = d3.scale.ordinal()
+					.rangeRoundBands([0, width]);
+
+				// Vertical
+				var y = d3.scale.linear()
+					.range([height, 0]);
 
 
-         // Load data
-         // ------------------------------
 
-         // data = [[{"date": "Jan","close": 120},{"date": "Feb","close": 140},{"date": "Mar","close":160},{"date": "Apr","close": 180},{"date": "May","close": 200},{"date": "Jun","close": 220},{"date": "Jul","close": 240},{"date": "Aug","close": 260},{"date": "Sep","close": 280},{"date": "Oct","close": 300},{"date": "Nov","close": 320},{"date": "Dec","close": 340}],
-         // [{"date":"Jan","close":10},{"date":"Feb","close":20},{"date":"Mar","close":30},{"date": "Apr","close": 40},{"date": "May","close": 50},{"date": "Jun","close": 60},{"date": "Jul","close": 70},{"date": "Aug","close": 80},{"date": "Sep","close": 90},{"date": "Oct","close": 100},{"date": "Nov","close": 120},{"date": "Dec","close": 140}],
-         // ];
-		
-        
-         data = [<% if(termscount.length()>0){
-       	  for(int p=0; p<1; p++){ 
-  	  		String au = termscount.get(p).toString();
-  	  		JSONObject specific_auth= new JSONObject(termsyears.get(au).toString());
-  	  %>[<% for(int q=0; q<yearsarray.length(); q++){ 
-  		  		String yearr=yearsarray.get(q).toString(); 
-  		  		if(specific_auth.has(yearr)){ %>
-  		  	{"date":<%=yearr%>,"close":<%=specific_auth.get(yearr)%>},
+				// Create axes
+				// ------------------------------
+
+				// Horizontal
+				var xAxis = d3.svg.axis()
+					.scale(x)
+					.orient("bottom")
+					.ticks(9)
+
+				// .tickFormat(formatPercent);
+
+
+				// Vertical
+				var yAxis = d3.svg.axis()
+					.scale(y)
+					.orient("left")
+					.ticks(6);
+
+
+
+				// Create chart
+				// ------------------------------
+
+				// Add SVG element
+				var container = d3Container.append("svg");
+
+				// Add SVG group
+				var svg = container
+					.attr("width", width + margin.left + margin.right)
+					.attr("height", height + margin.top + margin.bottom)
+					.append("g")
+					.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+data=[];
+
+data=array_2;
+				// Construct chart layout
+				// ------------------------------
+
+				// Line
+
+
+				// Load data
+				// ------------------------------
+
+				// data = [[{"date": "Jan","close": 120},{"date": "Feb","close": 140},{"date": "Mar","close":160},{"date": "Apr","close": 180},{"date": "May","close": 200},{"date": "Jun","close": 220},{"date": "Jul","close": 240},{"date": "Aug","close": 260},{"date": "Sep","close": 280},{"date": "Oct","close": 300},{"date": "Nov","close": 320},{"date": "Dec","close": 340}],
+				// [{"date":"Jan","close":10},{"date":"Feb","close":20},{"date":"Mar","close":30},{"date": "Apr","close": 40},{"date": "May","close": 50},{"date": "Jun","close": 60},{"date": "Jul","close": 70},{"date": "Aug","close": 80},{"date": "Sep","close": 90},{"date": "Oct","close": 100},{"date": "Nov","close": 120},{"date": "Dec","close": 140}],
+				// ];
+
+
+				<%-- data = [<% if (termscount.length() > 0) {
+					for (int p = 0; p < 1; p++){
+			String au = termscount.get(p).toString();
+			JSONObject specific_auth = new JSONObject(termsyears.get(au).toString());
+  	  %> [<% for (int q = 0; q < yearsarray.length(); q++) {
+				String yearr = yearsarray.get(q).toString();
+				if (specific_auth.has(yearr)) { %>
+					{ "date":<%=yearr%>, "close":<%=specific_auth.get(yearr) %>},
   			<%
-  		  		}else{ %>
-  		  			{"date":"<%=yearr%>","close":0},
+  		  		}else { %>
+				{ "date": "<%=yearr%>", "close": 0 },
   	   		<% } %>
   		<%  
-  	  		}%>]<% if(p<termscount.length()-1){%>,<%}%>
+  	  		}%>]<% if (p < termscount.length() - 1) {%>,<%}%>
   	  <%	}}
-  	  %> ];
-
-         //console.log(data);
-         // data = [];
-
-         // data = [
-         // [
-         //   {
-         //     "date": "Jan",
-         //     "close": 1000
-         //   },
-         //   {
-         //     "date": "Feb",
-         //     "close": 1800
-         //   },
-         //   {
-         //     "date": "Mar",
-         //     "close": 1600
-         //   },
-         //   {
-         //     "date": "Apr",
-         //     "close": 1400
-         //   },
-         //   {
-         //     "date": "May",
-         //     "close": 2500
-         //   },
-         //   {
-         //     "date": "Jun",
-         //     "close": 500
-         //   },
-         //   {
-         //     "date": "Jul",
-         //     "close": 100
-         //   },
-         //   {
-         //     "date": "Aug",
-         //     "close": 500
-         //   },
-         //   {
-         //     "date": "Sep",
-         //     "close": 2300
-         //   },
-         //   {
-         //     "date": "Oct",
-         //     "close": 1500
-         //   },
-         //   {
-         //     "date": "Nov",
-         //     "close": 1900
-         //   },
-         //   {
-         //     "date": "Dec",
-         //     "close": 4170
-         //   }
-         // ]
-         // ];
-
-         // console.log(data);
-         var line = d3.svg.line()
-         .interpolate("monotone")
-              //.attr("width", x.rangeBand())
-             .x(function(d) { return x(d.date); })
-             .y(function(d) { return y(d.close); });
-             // .x(function(d){d.forEach(function(e){return x(d.date);})})
-             // .y(function(d){d.forEach(function(e){return y(d.close);})});
-
-
-
-         // Create tooltip
-         var tip = d3.tip()
-                .attr('class', 'd3-tip')
-                .offset([-10, 0])
-                .html(function(d) {
-                if(d === null)
-                {
-                  return "No Information Available";
-                }
-                else if(d !== null) {
-                 return d.date+" ("+d.close+")<br/> Click for more information";
-                  }
-                // return "here";
-                });
-
-            // Initialize tooltip
-            //svg.call(tip);
-
-
-           // Pull out values
-           // data.forEach(function(d) {
-           //     d.frequency = +d.close;
-           //
-           // });
-
-
-                     // Pull out values
-                     // data.forEach(function(d) {
-                     //     // d.date = parseDate(d.date);
-                     //     //d.date = +d.date;
-                     //     //d.date = d.date;
-                     //     d.close = +d.close;
-                     // });
-
-                     // Sort data
-                     // data.sort(function(a, b) {
-                     //     return a.date - b.date;
-                     // });
-
-
-                     // Set input domains
-                     // ------------------------------
-
-                     // Horizontal
-           //  console.log(data[0])
-
-
-                   // Vertical
-         // extract max value from list of json object
-         // console.log(data.length)
-             var maxvalue =
-             data.map(function(d){
-               var mvalue = [];
-               if(data.length > 1)
-             {
-               d.forEach(function(f,i){
-               mvalue[i] = f.close;
-
-               })
-             return d3.max(mvalue);
-             }
-
-             //console.log(mvalue);
-             });
-
-
-
-         ////console.log(data)
-         if(data.length == 1)
-         {
-           var returnedvalue = data[0].map(function(e){
-           return e.date
-           });
-
-         // for single json data
-         x.domain(returnedvalue);
-         // rewrite x domain
-
-         var maxvalue2 =
-         data.map(function(d){
-         return d3.max(d,function(t){return t.close});
-         });
-         y.domain([0,maxvalue2]);
-         }
-         else if(data.length > 1)
-         {
-         //console.log(data.length);
-         //console.log(data);
-
-         var returnedata = data.map(function(e){
-         // console.log(k)
-         var all = []
-         e.forEach(function(f,i){
-         all[i] = f.date;
-         //console.log(all[i])
-         })
-         return all
-         //console.log(all);
-         });
-         // console.log(returnedata);
-         // combines all the array
-         var newArr = returnedata.reduce((result,current) => {
-         return result.concat(current);
-         });
-
-         //console.log(newArr);
-         var set = new Set(newArr);
-         var filteredArray = Array.from(set);
-         //console.log(filteredArray.sort());
-         // console.log(returnedata);
-         x.domain(filteredArray);
-         y.domain([0, d3.max(maxvalue)]);
-         }
-
-
-
-
-                     //
-                     // Append chart elements
-                     //
-
-
-
-
-         // svg.call(tip);
-                      // data.map(function(d){})
-                      if(data.length == 1)
-                      {
-                        // Add line
-                      var path = svg.selectAll('.d3-line')
-                                .data(data)
-                                .enter()
-                                .append("g")
-                                .attr("class","linecontainer")
-                                .append("path")
-                                .attr("class", "d3-line d3-line-medium")
-                                .attr("d", line)
-                                // .style("fill", "rgba(0,0,0,0.54)")
-                                .style("stroke-width",2)
-                                .style("stroke", "#17394C")
-                                 //.attr("transform", "translate("+margin.left/4.7+",0)");
-                                // .datum(data)
-
-                       // add point
-                        circles = svg.append("g").attr("class","circlecontainer")
-                        			.selectAll(".circle-point")
-                                  .data(data[0])
-                                  .enter();
-
-
-                              circles
-                              // .enter()
-                              .append("circle")
-                              .attr("class","circle-point")
-                              .attr("r",3.4)
-                              .style("stroke", "#4CAF50")
-                              .style("fill","#4CAF50")
-                              .attr("cx",function(d) { return x(d.date); })
-                              .attr("cy", function(d){return y(d.close)})
-
-                             // .attr("transform", "translate("+margin.left/4.7+",0)");
-
-                              svg.selectAll(".circle-point").data(data[0])
-                              .on("mouseover",tip.show)
-                              .on("mouseout",tip.hide)
-                              .on("click",function(d){
-                            	  console.log("one:"+d.date);
-
-                               	 var d1 = 	  d.date + "-01-01";
-                                 var d2 = 	  d.date + "-12-31";
-                      				
-                                  loadTable(d1,d2);
-                              });
-                                                 svg.call(tip)
-                      }
-                      // handles multiple json parameter
-                      else if(data.length > 1)
-                      {
-                        // add multiple line
+  	  %> ]; --%>
+
+		//console.log(data);
+
+
+
+		/* data = [
+		[
+		  {
+		    "date": "Jan",
+		    "close": 1000
+		  },
+		  {
+		    "date": "Feb",
+		    "close": 1800
+		  },
+		  {
+		    "date": "Mar",
+		    "close": 1600
+		  },
+		  {
+		    "date": "Apr",
+		    "close": 1400
+		  },
+		  {
+		    "date": "May",
+		    "close": 2500
+		  },
+		  {
+		    "date": "Jun",
+		    "close": 500
+		  },
+		  {
+		    "date": "Jul",
+		    "close": 100
+		  },
+		  {
+		    "date": "Aug",
+		    "close": 500
+		  },
+		  {
+		    "date": "Sep",
+		    "close": 2300
+		  },
+		  {
+		    "date": "Oct",
+		    "close": 1500
+		  },
+		  {
+		    "date": "Nov",
+		    "close": 1900
+		  },
+		  {
+		    "date": "Dec",
+		    "close": 4170
+		  }
+		]
+		]; */
+		console.log("aaa")
+console.log(data);
+		// console.log(data);
+		var line = d3.svg.line()
+			.interpolate("monotone")
+			//.attr("width", x.rangeBand())
+			.x(function (d) { return x(d.date); })
+			.y(function (d) { return y(d.close); });
+		// .x(function(d){d.forEach(function(e){return x(d.date);})})
+		// .y(function(d){d.forEach(function(e){return y(d.close);})});
+
+
+
+		// Create tooltip
+		var tip = d3.tip()
+			.attr('class', 'd3-tip')
+			.offset([-10, 0])
+			.html(function (d) {
+				if (d === null) {
+					return "No Information Available";
+				}
+				else if (d !== null) {
+					return d.date + " (" + d.close + ")<br/> Click for more information";
+				}
+				// return "here";
+			});
+
+		// Initialize tooltip
+		//svg.call(tip);
+
+
+		// Pull out values
+		// data.forEach(function(d) {
+		//     d.frequency = +d.close;
+		//
+		// });
+
+
+		// Pull out values
+		// data.forEach(function(d) {
+		//     // d.date = parseDate(d.date);
+		//     //d.date = +d.date;
+		//     //d.date = d.date;
+		//     d.close = +d.close;
+		// });
+
+		// Sort data
+		// data.sort(function(a, b) {
+		//     return a.date - b.date;
+		// });
+
+
+		// Set input domains
+		// ------------------------------
+
+		// Horizontal
+		//  console.log(data[0])
+
+
+		// Vertical
+		// extract max value from list of json object
+		// console.log(data.length)
+		var maxvalue =
+			data.map(function (d) {
+				var mvalue = [];
+				if (data.length > 1) {
+					d.forEach(function (f, i) {
+						mvalue[i] = f.close;
+
+					})
+					return d3.max(mvalue);
+				}
+
+				//console.log(mvalue);
+			});
+
+
+
+		////console.log(data)
+		if (data.length == 1) {
+			var returnedvalue = data[0].map(function (e) {
+				return e.date
+			});
+
+			// for single json data
+			x.domain(returnedvalue);
+			// rewrite x domain
+
+			var maxvalue2 =
+				data.map(function (d) {
+					return d3.max(d, function (t) { return t.close });
+				});
+			y.domain([0, maxvalue2]);
+		}
+		else if (data.length > 1) {
+			//console.log(data.length);
+			//console.log(data);
+
+			var returnedata = data.map(function (e) {
+				// console.log(k)
+				var all = []
+				e.forEach(function (f, i) {
+					all[i] = f.date;
+					//console.log(all[i])
+				})
+				return all
+				//console.log(all);
+			});
+			// console.log(returnedata);
+			// combines all the array
+			var newArr = returnedata.reduce((result, current) => {
+				return result.concat(current);
+			});
+
+			//console.log(newArr);
+			var set = new Set(newArr);
+			var filteredArray = Array.from(set);
+			//console.log(filteredArray.sort());
+			// console.log(returnedata);
+			x.domain(filteredArray);
+			y.domain([0, d3.max(maxvalue)]);
+		}
+
+
+
+
+		//
+		// Append chart elements
+		//
+
+
+
+
+		// svg.call(tip);
+		// data.map(function(d){})
+		if (data.length == 1) {
+			// Add line
+			var path = svg.selectAll('.d3-line')
+				.data(data)
+				.enter()
+				.append("g")
+				.attr("class", "linecontainer")
+				.append("path")
+				.attr("class", "d3-line d3-line-medium")
+				.attr("d", line)
+				// .style("fill", "rgba(0,0,0,0.54)")
+				.style("stroke-width", 2)
+				.style("stroke", "#17394C")
+			//.attr("transform", "translate("+margin.left/4.7+",0)");
+			// .datum(data)
+
+			// add point
+			circles = svg.append("g").attr("class", "circlecontainer")
+				.selectAll(".circle-point")
+				.data(data[0])
+				.enter();
+
+
+			circles
+				// .enter()
+				.append("circle")
+				.attr("class", "circle-point")
+				.attr("r", 3.4)
+				.style("stroke", "#4CAF50")
+				.style("fill", "#4CAF50")
+				.attr("cx", function (d) { return x(d.date); })
+				.attr("cy", function (d) { return y(d.close) })
 
-                        var path = svg.selectAll('.d3-line')
-                                  .data(data)
-                                  .enter()
-                                  .append("path")
-                                  .attr("class", "d3-line d3-line-medium")
-                                  .attr("d", line)
-                                  // .style("fill", "rgba(0,0,0,0.54)")
-                                  .style("stroke-width", 2)
-                                  .style("stroke", function(d,i) { return color(i);})
-                                  .attr("transform", "translate("+margin.left/4.7+",0)");
-
-
-
-
-                       // add multiple circle points
-
-                           // data.forEach(function(e){
-                           // console.log(e)
-                           // })
-
-                           // console.log(data);
-
-                              var mergedarray = [].concat(...data);
-                               // console.log(mergedarray)
-                                 circles = svg.selectAll(".circle-point")
-                                     .data(mergedarray)
-                                     .enter();
-
-                                       circles
-                                       // .enter()
-                                       .append("circle")
-                                       .attr("class","circle-point")
-                                       .attr("r",3.4)
-                                       .style("stroke", "#4CAF50")
-                                       .style("fill","#4CAF50")
-                                       .attr("cx",function(d) { return x(d.date)})
-                                       .attr("cy", function(d){return y(d.close)})
-
-                                       .attr("transform", "translate("+margin.left/4.7+",0)");
-                                       svg.selectAll(".circle-point").data(mergedarray)
-                                      .on("mouseover",tip.show)
-                                      .on("mouseout",tip.hide)
-                                      .on("click",function(d){
-                                    	  console.log(d.date);
-                                    	  var d1 = 	  d.date + "-01-01";
-                                     	   var d2 = 	  d.date + "-12-31";
-                           				
-                                     	  loadTable(d1,d2);
-                                      });
-                                 //                         svg.call(tip)
-
-                               //console.log(newi);
-
-
-                                     svg.selectAll(".circle-point").data(mergedarray)
-                                     .on("mouseover",tip.show)
-                                     .on("mouseout",tip.hide)
-                                     .on("click",function(d){
-                                    	 console.log(d.date);
-
-                                   	  var d1 = 	  d.date + "-01-01";
-                                     var d2 = 	  d.date + "-12-31";
-                          				
-                                    	  loadTable(d1,d2);
-                                    	 
-                                     });
-                                                        svg.call(tip)
-
-
-
-
-
-
-
-
-
-
-                      }
-
-
-         // show data tip
-
-
-                     // Append axes
-                     // ------------------------------
-
-                     // Horizontal
-                     svg.append("g")
-                         .attr("class", "d3-axis d3-axis-horizontal d3-axis-strong")
-                         .attr("transform", "translate(0," + height + ")")
-                         .call(xAxis);
-
-                     // Vertical
-                     var verticalAxis = svg.append("g")
-                         .attr("class", "d3-axis d3-axis-vertical d3-axis-strong")
-                         .call(yAxis);
-
-
-
-
-
-                     // Add text label
-                     verticalAxis.append("text")
-                         .attr("transform", "rotate(-90)")
-                         .attr("y", 10)
-                         .attr("dy", ".71em")
-                         .style("text-anchor", "end")
-                         .style("fill", "#999")
-                         .style("font-size", 12)
-                         // .text("Frequency")
-                         ;
-					
-                     if(data.length == 1 )
-                	 {
-                	 var tick = svg.select(".d3-axis-horizontal").select(".tick");
-                	 var transformfirsttick;
-                	 //transformfirsttick =  tick[0][0].attributes[2].value;
-                    //console.log(tick[0][0].attributes[2]);
-                    //transformfirsttick = "translate(31.5,0)"
-                    //console.log(tick[0][0]);
-                    // handle based on browser
-                    var browser = "";
-                    c = navigator.userAgent.search("Chrome");
-                    f = navigator.userAgent.search("Firefox");
-                    m8 = navigator.userAgent.search("MSIE 8.0");
-                    m9 = navigator.userAgent.search("MSIE 9.0");
-                    if (c > -1) {
-                        browser = "Chrome";
-                        // chrome browser
-                    transformfirsttick =  tick[0][0].attributes[1].value;
-
-                    } else if (f > -1) {
-                        browser = "Firefox";
-                         // firefox browser
-                     transformfirsttick =  tick[0][0].attributes[2].value;
-                    } else if (m9 > -1) {
-                        browser ="MSIE 9.0";
-                    } else if (m8 > -1) {
-                        browser ="MSIE 8.0";
-                    }
-                    
-                    svg.select(".circlecontainer").attr("transform", transformfirsttick);
-                    svg.select(".linecontainer").attr("transform", transformfirsttick);
-                    
-                    
-                    
-                    //console.log(browser);
-                    
-                	 }
-
-
-             // Append tooltip
-             // -------------------------
-
-
-
-
-
-
-         // Resize chart
-         // ------------------------------
-
-         // Call function on window resize
-         $(window).on('resize', resize);
-
-         // Call function on sidebar width change
-         $('.sidebar-control').on('click', resize);
-
-         // Resize function
-         //
-         // Since D3 doesn't support SVG resize by default,
-         // we need to manually specify parts of the graph that need to
-         // be updated on window resize
-         function resize() {
-
-           // Layout variables
-           width = d3Container.node().getBoundingClientRect().width - margin.left - margin.right;
-           //
-           //
-           // // Layout
-           // // -------------------------
-           //
-           // // Main svg width
-           container.attr("width", width + margin.left + margin.right);
-           //
-           // // Width of appended group
-           svg.attr("width", width + margin.left + margin.right);
-           //
-           //
-           // // Axes
-           // // -------------------------
-           //
-           // // Horizontal range
-           x.rangeRoundBands([0, width]);
-           //
-           // // Horizontal axis
-           svg.selectAll('.d3-axis-horizontal').call(xAxis);
-           //
-           //
-           // // Chart elements
-           // // -------------------------
-           //
-           // // Line path
-           svg.selectAll('.d3-line').attr("d", line);
-
-
-
-             svg.selectAll(".circle-point")
-             .attr("cx",function(d) { return x(d.date);})
-             .attr("cy", function(d){return y(d.close)});
-
-             if(data.length == 1 )
-        	 {
-        	 var tick = svg.select(".d3-axis-horizontal").select(".tick");
-        	 var transformfirsttick;
-        	 //transformfirsttick =  tick[0][0].attributes[2].value;
-            //console.log(tick[0][0].attributes[2]);
-            //transformfirsttick = "translate(31.5,0)"
-            //console.log(tick[0][0]);
-            // handle based on browser
-            var browser = "";
-            c = navigator.userAgent.search("Chrome");
-            f = navigator.userAgent.search("Firefox");
-            m8 = navigator.userAgent.search("MSIE 8.0");
-            m9 = navigator.userAgent.search("MSIE 9.0");
-            if (c > -1) {
-                browser = "Chrome";
-                // chrome browser
-            transformfirsttick =  tick[0][0].attributes[1].value;
-
-            } else if (f > -1) {
-                browser = "Firefox";
-                 // firefox browser
-             transformfirsttick =  tick[0][0].attributes[2].value;
-            } else if (m9 > -1) {
-                browser ="MSIE 9.0";
-            } else if (m8 > -1) {
-                browser ="MSIE 8.0";
-            }
-            
-            svg.select(".circlecontainer").attr("transform", transformfirsttick);
-            svg.select(".linecontainer").attr("transform", transformfirsttick);
-            
-            
-            
-            //console.log(browser);
-            
-        	 }
-           //
-           // // Crosshair
-           // svg.selectAll('.d3-crosshair-overlay').attr("width", width);
-
-         }
+			// .attr("transform", "translate("+margin.left/4.7+",0)");
+
+			svg.selectAll(".circle-point").data(data[0])
+				.on("mouseover", tip.show)
+				.on("mouseout", tip.hide)
+				.on("click", function (d) {
+					console.log("one:" + d.date);
+
+					var d1 = d.date + "-01-01";
+					var d2 = d.date + "-12-31";
+
+					loadTable(d1, d2);
+				});
+			svg.call(tip)
+		}
+		// handles multiple json parameter
+		else if (data.length > 1) {
+			// add multiple line
+
+			var path = svg.selectAll('.d3-line')
+				.data(data)
+				.enter()
+				.append("path")
+				.attr("class", "d3-line d3-line-medium")
+				.attr("d", line)
+				// .style("fill", "rgba(0,0,0,0.54)")
+				.style("stroke-width", 2)
+				.style("stroke", function (d, i) { return color(i); })
+				.attr("transform", "translate(" + margin.left / 4.7 + ",0)");
+
+
+
+
+			// add multiple circle points
+
+			// data.forEach(function(e){
+			// console.log(e)
+			// })
+
+			// console.log(data);
+
+			var mergedarray = [].concat(...data);
+			// console.log(mergedarray)
+			circles = svg.selectAll(".circle-point")
+				.data(mergedarray)
+				.enter();
+
+			circles
+				// .enter()
+				.append("circle")
+				.attr("class", "circle-point")
+				.attr("r", 3.4)
+				.style("stroke", "#4CAF50")
+				.style("fill", "#4CAF50")
+				.attr("cx", function (d) { return x(d.date) })
+				.attr("cy", function (d) { return y(d.close) })
+
+				.attr("transform", "translate(" + margin.left / 4.7 + ",0)");
+			svg.selectAll(".circle-point").data(mergedarray)
+				.on("mouseover", tip.show)
+				.on("mouseout", tip.hide)
+				.on("click", function (d) {
+					console.log(d.date);
+					var d1 = d.date + "-01-01";
+					var d2 = d.date + "-12-31";
+
+					loadTable(d1, d2);
+				});
+			//                         svg.call(tip)
+
+			//console.log(newi);
+
+
+			svg.selectAll(".circle-point").data(mergedarray)
+				.on("mouseover", tip.show)
+				.on("mouseout", tip.hide)
+				.on("click", function (d) {
+					console.log(d.date);
+
+					var d1 = d.date + "-01-01";
+					var d2 = d.date + "-12-31";
+
+					loadTable(d1, d2);
+
+				});
+			svg.call(tip)
+
+
+
+
+
+
+
+
+
+
+		}
+
+
+		// show data tip
+
+
+		// Append axes
+		// ------------------------------
+
+		// Horizontal
+		svg.append("g")
+			.attr("class", "d3-axis d3-axis-horizontal d3-axis-strong")
+			.attr("transform", "translate(0," + height + ")")
+			.call(xAxis);
+
+		// Vertical
+		var verticalAxis = svg.append("g")
+			.attr("class", "d3-axis d3-axis-vertical d3-axis-strong")
+			.call(yAxis);
+
+
+
+
+
+		// Add text label
+		verticalAxis.append("text")
+			.attr("transform", "rotate(-90)")
+			.attr("y", 10)
+			.attr("dy", ".71em")
+			.style("text-anchor", "end")
+			.style("fill", "#999")
+			.style("font-size", 12)
+			// .text("Frequency")
+			;
+
+		if (data.length == 1) {
+			var tick = svg.select(".d3-axis-horizontal").select(".tick");
+			var transformfirsttick;
+			//transformfirsttick =  tick[0][0].attributes[2].value;
+			//console.log(tick[0][0].attributes[2]);
+			//transformfirsttick = "translate(31.5,0)"
+			//console.log(tick[0][0]);
+			// handle based on browser
+			var browser = "";
+			c = navigator.userAgent.search("Chrome");
+			f = navigator.userAgent.search("Firefox");
+			m8 = navigator.userAgent.search("MSIE 8.0");
+			m9 = navigator.userAgent.search("MSIE 9.0");
+			if (c > -1) {
+				browser = "Chrome";
+				// chrome browser
+				transformfirsttick = tick[0][0].attributes[1].value;
+
+			} else if (f > -1) {
+				browser = "Firefox";
+				// firefox browser
+				transformfirsttick = tick[0][0].attributes[2].value;
+			} else if (m9 > -1) {
+				browser = "MSIE 9.0";
+			} else if (m8 > -1) {
+				browser = "MSIE 8.0";
+			}
+
+			svg.select(".circlecontainer").attr("transform", transformfirsttick);
+			svg.select(".linecontainer").attr("transform", transformfirsttick);
+
+
+
+			//console.log(browser);
+
+		}
+
+
+		// Append tooltip
+		// -------------------------
+
+
+
+
+
+
+		// Resize chart
+		// ------------------------------
+
+		// Call function on window resize
+		$(window).on('resize', resize);
+
+		// Call function on sidebar width change
+		$('.sidebar-control').on('click', resize);
+
+		// Resize function
+		//
+		// Since D3 doesn't support SVG resize by default,
+		// we need to manually specify parts of the graph that need to
+		// be updated on window resize
+		function resize() {
+
+			// Layout variables
+			width = d3Container.node().getBoundingClientRect().width - margin.left - margin.right;
+			//
+			//
+			// // Layout
+			// // -------------------------
+			//
+			// // Main svg width
+			container.attr("width", width + margin.left + margin.right);
+			//
+			// // Width of appended group
+			svg.attr("width", width + margin.left + margin.right);
+			//
+			//
+			// // Axes
+			// // -------------------------
+			//
+			// // Horizontal range
+			x.rangeRoundBands([0, width]);
+			//
+			// // Horizontal axis
+			svg.selectAll('.d3-axis-horizontal').call(xAxis);
+			//
+			//
+			// // Chart elements
+			// // -------------------------
+			//
+			// // Line path
+			svg.selectAll('.d3-line').attr("d", line);
+
+
+
+			svg.selectAll(".circle-point")
+				.attr("cx", function (d) { return x(d.date); })
+				.attr("cy", function (d) { return y(d.close) });
+
+			if (data.length == 1) {
+				var tick = svg.select(".d3-axis-horizontal").select(".tick");
+				var transformfirsttick;
+				//transformfirsttick =  tick[0][0].attributes[2].value;
+				//console.log(tick[0][0].attributes[2]);
+				//transformfirsttick = "translate(31.5,0)"
+				//console.log(tick[0][0]);
+				// handle based on browser
+				var browser = "";
+				c = navigator.userAgent.search("Chrome");
+				f = navigator.userAgent.search("Firefox");
+				m8 = navigator.userAgent.search("MSIE 8.0");
+				m9 = navigator.userAgent.search("MSIE 9.0");
+				if (c > -1) {
+					browser = "Chrome";
+					// chrome browser
+					transformfirsttick = tick[0][0].attributes[1].value;
+
+				} else if (f > -1) {
+					browser = "Firefox";
+					// firefox browser
+					transformfirsttick = tick[0][0].attributes[2].value;
+				} else if (m9 > -1) {
+					browser = "MSIE 9.0";
+				} else if (m8 > -1) {
+					browser = "MSIE 8.0";
+				}
+
+				svg.select(".circlecontainer").attr("transform", transformfirsttick);
+				svg.select(".linecontainer").attr("transform", transformfirsttick);
+
+
+
+				//console.log(browser);
+
+			}
+			//
+			// // Crosshair
+			// svg.selectAll('.d3-crosshair-overlay').attr("width", width);
+
+		}
      }
- });
- </script>
+ })		}
+		});
+	};
+	</script>
 
 	<!--word cloud  -->
 	<script>
-     var color = d3.scale.linear()
-             .domain([0,1,2,3,4,5,6,10,15,20,80])
-             .range(["#17394C", "#F5CC0E", "#CE0202", "#aaa", "#999", "#888", "#777", "#666", "#555", "#444", "#333", "#222"]);
+		var color = d3.scale.linear()
+			.domain([0, 1, 2, 3, 4, 5, 6, 10, 15, 20, 80])
+			.range(["#17394C", "#F5CC0E", "#CE0202", "#aaa", "#999", "#888", "#777", "#666", "#555", "#444", "#333", "#222"]);
 
- </script>
+	</script>
 
 
 
@@ -2020,10 +2179,11 @@
 	<script src="pagedependencies/keywordtrends.js?v=7831690"></script>
 
 	<script>
-$(".blogger-mentioned").html("<%=alloccurence%>");
-</script>
+		$(".blogger-mentioned").html("<%=alloccurence%>");
+	</script>
 
 </body>
+
 </html>
 
 <% }} %>

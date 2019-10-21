@@ -165,7 +165,7 @@
 <script src="pagedependencies/googletagmanagerscript.js"></script>
 </head>
 <body>
-	<%@include file="subpages/loader.jsp"%>
+	<%-- <%@include file="subpages/loader.jsp"%> --%>
 	<noscript>
 		<%@include file="subpages/googletagmanagernoscript.jsp"%>
 	</noscript>
@@ -341,8 +341,9 @@
 							ArrayList blogs = new ArrayList();
 							int bpost = 0;
 							ArrayList resut = new ArrayList();
-
+try{
 							for (int i = 0; i < results.size(); i++) {
+								
 								resut = (ArrayList) results.get(i);
 
 								int totalblog = 0;
@@ -371,7 +372,7 @@
 									String[] blogCount = query.split(",");
 
 									totalblog = blogCount.length;
-									bloggerCount = bloggers._getBloggerById(query);
+									bloggerCount = bloggers._getBloggerById(query); 
 									/*
 									String stdate = post._getDate(query,"first");
 									String endate = post._getDate(query,"last");
@@ -501,7 +502,7 @@
 				</div>
 			</div>
 			<%
-				}
+				}}catch(Exception e){}
 						}
 			%>
 		</div>

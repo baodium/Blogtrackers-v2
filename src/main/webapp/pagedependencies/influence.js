@@ -80,6 +80,8 @@ $(document).delegate('.blogpost_link', 'click', function(){
 
 function loadChart(blogger,blog_id){
 	$("#chart-container").html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />");
+	
+
 	$.ajax({
 		url: app_url+"subpages/influencechart.jsp",
 		method: 'POST',
@@ -172,6 +174,7 @@ function loadTerms(blogger,blog_id){
 			action:"getchart",
 			post_ids:$("#postby"+blger).val(),
 			blogger:blogger,
+			all_blog_ids:$("#all_blog_ids").val(),
 			date_start:$("#date_start").val(),
 			sort:"influence_score",
 			date_end:$("#date_end").val(),

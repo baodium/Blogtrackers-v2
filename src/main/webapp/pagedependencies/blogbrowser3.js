@@ -691,9 +691,6 @@ $('.trackcreationsection1').removeClass('hidden');
 
 // show the create tracker from dialog handler
 $('.createtrackerbtn').on("click", function(){
-	
-	
-			
 	// console.log(typeof loggedinstatus)
 	if(loggedinstatus === "true")
 	{

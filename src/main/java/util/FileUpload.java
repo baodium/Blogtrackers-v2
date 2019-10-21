@@ -36,6 +36,7 @@ public class FileUpload extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		
 		ServletFileUpload upload = new ServletFileUpload(new DiskFileItemFactory());
 		PrintWriter out = response.getWriter();
 

@@ -340,7 +340,7 @@ public class Blogs extends DbConnection{
 		blogids = "("+blogids+")";
 		
 		try {
-		result = db.query("select blogsite_name, totalposts, blogsite_id from blogsites where blogsite_id in "+blogids+" order by totalposts DESC");		
+		result = db.query("select blogsite_name, totalposts, blogsite_id, blogsite_url from blogsites where blogsite_id in "+blogids+" order by totalposts DESC");		
 			
 		}catch(Exception e){
 		}

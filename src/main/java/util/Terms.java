@@ -6,6 +6,7 @@ import java.net.HttpURLConnection;
 import java.net.URL; 
 import org.json.JSONObject;
 
+import authentication.AutomatedCrawlerConnect;
 import authentication.DbConnection;
 
 import org.json.JSONArray;
@@ -274,6 +275,8 @@ public ArrayList _searchByRange(String field,String greater, String less, String
 		
 	//jsonObj = new JSONObject(que3);
     String url = base_url+"_search";
+    System.out.println("term_url"+url);
+    System.out.println("term_jsonobj"+jsonObj);
     return this._getResult(url,jsonObj);
   
 }
@@ -312,6 +315,7 @@ public ArrayList getTermsByBlogger(String blogger,String date_start, String date
 	DbConnection db = new DbConnection();
 	
 	try {
+
 		//response = db.queryJSON("SELECT * FROM terms WHERE blogpostid IN "+blog_ids+" ");
 		response = db.queryJSON("SELECT (select blogpost_id from blogposts bp where bp.blogpost_id = tm.blogpostid AND bp.blogger='"+blogger+"' ) as blogpostid, tm.blogsiteid as blogsiteid, tm.blogpostid as blogpostid, tm.term as term, tm.frequency as frequency FROM terms tm ORDER BY tm.frequency DESC LIMIT 50 ");
 	}catch(Exception e){
@@ -337,19 +341,26 @@ public String _getMostActiveByBlog(String date_start, String date_end, String bl
 	return "";
 }
 
-public String _getMostActiveByBlogger(String blogger,String date_start, String date_end) throws Exception {
+//public String _getMostActiveByBlogger(String blogger,String date_start, String date_end) throws Exception {
+public String _getMostActiveByBlogger(String blogger) throws Exception {
 	
 
 	ArrayList response =new ArrayList();
 	DbConnection db = new DbConnection();
 	
 	try {
+//		ArrayList bloggers = new DbConnection().query("SELECT * FROM user_blog WHERE userid='" + username + "'");
+//		System.out.println(bloggers.size());
 		//response = db.queryJSON("SELECT * FROM terms WHERE blogpostid IN "+blog_ids+" ");
-		response = db.queryJSON("SELECT (select blogpost_id from blogposts bp where bp.blogpost_id = tm.blogpostid AND bp.blogger='"+blogger+"' ) as blogpostid, tm.blogsiteid as blogsiteid, tm.blogpostid as blogpostid, tm.term as term, tm.frequency as frequency   FROM terms tm ORDER BY tm.frequency DESC LIMIT 1 ");
+		response = db.query("SELECT (select blogpost_id from blogposts bp where bp.blogpost_id = tm.blogpostid AND bp.blogger='"+blogger+"' ) as blogpostid, tm.blogsiteid as blogsiteid, tm.blogpostid as blogpostid, tm.term as term, tm.frequency as frequency   FROM terms tm ORDER BY tm.frequency DESC LIMIT 1 ");
+//		response = db.queryJSON("SELECT (select blogpost_id from blogposts bp where bp.blogpost_id = tm.blogpostid AND bp.blogger='"+blogger+"' ) as blogpostid, tm.blogsiteid as blogsiteid, tm.blogpostid as blogpostid, tm.term as term, tm.frequency as frequency   FROM terms tm ORDER BY tm.frequency DESC LIMIT 1 ");
 		System.out.println(blogger);
 		ArrayList hd = (ArrayList)response.get(0);
-		return hd.get(5).toString();
+		System.out.println( "-----------"+hd);
+		return hd.get(3).toString();
+		
 	}catch(Exception e){
+		System.out.println(e);
 		return "";
 	}
 	
@@ -579,6 +590,7 @@ public ArrayList _getResult(String url, JSONObject jsonObj) throws Exception {
 		     }
 	    }
 	}catch(Exception ex) {}
+		/* System.out.println(list); */
 	   return  list;
 }
 
