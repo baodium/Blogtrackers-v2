@@ -2,6 +2,7 @@ package util;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -91,9 +92,10 @@ public class KeywordTrend extends HttpServlet {
 				System.out.println("bloger men-----" + blog_mentioned + mostactiveterm.toString()
 						+ date_start.toString() + date_end.toString() + all_blog_ids.toString());
 
-				result_blogmentioned.put("blogmentioned", blog_mentioned.toString());
+				result_blogmentioned.put("blogmentioned", NumberFormat.getNumberInstance(Locale.US).format(new Integer(blog_mentioned.toString()))); 
 				String new_result = result_blogmentioned.toString();
 				result_blogmentioned = new JSONObject(new_result);
+				
 				out.write(result_blogmentioned.toString());
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -135,7 +137,7 @@ public class KeywordTrend extends HttpServlet {
 						+ date_end.toString() + all_blog_ids.toString());
 
 				System.out.println("post_str" + posts.toString());
-				result_posts.put("post", posts.toString());
+				result_posts.put("post",NumberFormat.getNumberInstance(Locale.US).format(new Integer(posts.toString())) );
 				String new_result = result_posts.toString();
 				result_posts = new JSONObject(new_result);
 
