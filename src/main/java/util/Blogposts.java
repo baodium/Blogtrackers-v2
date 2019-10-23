@@ -36,7 +36,7 @@ public class Blogposts {
 	String elasticUrl  = hm.get("elasticUrl");
 	
 
-
+	
 	Stopwords stop = new Stopwords();
 
 	String totalpost;
@@ -1908,7 +1908,7 @@ public class Blogposts {
 		JSONObject myResponse = new JSONObject();
 		try {
 
-			RestClient esClient = RestClient.builder(new HttpHost("144.167.35.73", 9200, "http")).build();
+			RestClient esClient = RestClient.builder(new HttpHost(elasticUrl, 9200, "http")).build();
 
 			Request request = new Request(requestType, endPoint);
 			request.setJsonEntity(query.toString());
@@ -2241,7 +2241,7 @@ public class Blogposts {
 //		LinkedHashMap<String, Integer> sortedMap = new LinkedHashMap<>();
 		// Map<String, Integer> hm1 = new HashMap<>();
 		Map<String, Integer> hm1 = new HashMap<String, Integer>();
-		System.out.println(data.length());
+		System.out.println(data.length() + elasticUrl);
 		if (data.length() > 0) {
 
 			JSONObject query = new JSONObject("{\r\n" + "    \"doc\": {\r\n" + "      \"post\": \"" + data + "\"\r\n"
@@ -2299,6 +2299,7 @@ public class Blogposts {
 	public String _getMostKeywordDashboard(String BloggerName, String date_from, String date_to, String ids_)
 			throws Exception {
 		//
+		
 		ArrayList<String> list = new ArrayList<String>();
 		JSONObject query = new JSONObject();
 		String result = null;

@@ -503,7 +503,7 @@
 </head>
 <body>
 	<%@include file="subpages/loader.jsp"%>
-	--%>
+
 	<%@include file="subpages/googletagmanagernoscript.jsp"%>
 	<div class="modal-notifications">
 		<div class="row">
@@ -2806,11 +2806,12 @@ var mymarker = [
 				},
 				error: function(response)
 				{		
-					console.log("This is failure"+response);
-					
 					$(".word-cld").html("FAILED TO COMPUTE TERMS.. RETRYING.. PLEASE WAIT.... <img src='images/loading.gif' />g");
 					$(".word-cld").html("<div style='min-height: 420px;'><div class='chart-container word-cld'><div class='chart' id='tagcloudcontainer'><div class='jvectormap-zoomin zoombutton' id='zoom_in'>+</div><div class='jvectormap-zoomout zoombutton' id='zoom_out'>−</div></div></div></div>");
 					wordtagcloud("#tagcloudcontainer",450,{"NO KEYWORD":1});
+					console.log("This is failure"+response);
+					
+					
 
 				},
 				success: function(response)
@@ -2818,7 +2819,7 @@ var mymarker = [
 				 console.log(response)
 				console.log("this is the response"+data)
 				
-				$(".word-cld").html("<div style='min-height: 420px;'><div class='chart-container word-cld'><div class='chart' id='tagcloudcontainer'><div class='jvectormap-zoomin zoombutton' id='zoom_in'>+</div><div class='jvectormap-zoomout zoombutton' id='zoom_out'>−</div></div></div></div>");
+				    $(".word-cld").html("<div style='min-height: 420px;'><div class='chart-container word-cld'><div class='chart' id='tagcloudcontainer'><div class='jvectormap-zoomin zoombutton' id='zoom_in'>+</div><div class='jvectormap-zoomout zoombutton' id='zoom_out'>−</div></div></div></div>");
 				wordtagcloud("#tagcloudcontainer",450,response); 
 				}
 			});
