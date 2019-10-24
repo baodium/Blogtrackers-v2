@@ -828,8 +828,12 @@
 											System.out.println("--->"+res);
 											 --%>
 											<%
-												JSONArray language_data = post._getMostLanguage(dt, dte, ids, 10);
-
+											JSONArray language_data=new JSONArray();
+											try{
+												language_data= post._getMostLanguage(dt, dte, ids, 10);
+											}catch(Exception e){
+												
+											}
 														if (language_data.length() > 0) {
 															JSONObject lang_total = new JSONObject();
 
@@ -2718,6 +2722,10 @@ var gdpData = {
 					location.put("UA", "48.379433, 31.165581");
 					location.put("RU", "61.524010, 105.318756");
 					location.put("PA", "8.967, -79.458");
+					
+					location.put("CA", "36.7783, -119.4179");
+					location.put("BG", "42.7339, 25.4858");
+					
 					location.put("TR", "38.9637, 35.2433");
 					location.put("FR", "46.2276, 2.2137");
 					location.put("PL", "51.9194, 19.1451");
@@ -2732,7 +2740,10 @@ var gdpData = {
 					location.put("IS", "64.147209,-21.942400");
 					location.put("NO", "59.913818,10.738740");
 					location.put("RO", "45.943161,24.966761");
-					location.put("RS", "44.815071,20.460480");%>
+					location.put("RS", "44.815071,20.460480");
+					
+					
+					%>
 // map marker location by longitude and latitude
 var mymarker = [
 	<%if (locations.size() > 0) {

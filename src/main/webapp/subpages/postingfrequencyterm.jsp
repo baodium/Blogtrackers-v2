@@ -14,56 +14,59 @@
 	pageEncoding="UTF-8"%>
 
 <%
-Object date_start = (null == request.getParameter("date_start")) ? "" : request.getParameter("date_start");
-Object date_end = (null == request.getParameter("date_end")) ? "" : request.getParameter("date_end");
-//Object post_ids = (null == request.getParameter("post_ids")) ? "" : request.getParameter("post_ids");
+	Object date_start = (null == request.getParameter("date_start")) ? "" : request.getParameter("date_start");
+	Object date_end = (null == request.getParameter("date_end")) ? "" : request.getParameter("date_end");
+	//Object post_ids = (null == request.getParameter("post_ids")) ? "" : request.getParameter("post_ids");
 
-Object action = (null == request.getParameter("action")) ? "" : request.getParameter("action");
-Object blogger = (null == request.getParameter("blogger")) ? "" : request.getParameter("blogger");
-Object tid = (null == request.getParameter("tid")) ? "" : request.getParameter("tid");
+	Object action = (null == request.getParameter("action")) ? "" : request.getParameter("action");
+	Object blogger = (null == request.getParameter("blogger")) ? "" : request.getParameter("blogger");
+	Object tid = (null == request.getParameter("tid")) ? "" : request.getParameter("tid");
 
-String dt = date_start.toString();
-String dte = date_end.toString();
-String pids = new Blogposts()._getPostIdsByBloggerName("date",dt, dte,blogger.toString(),"date","DESC");
+	String dt = date_start.toString();
+	String dte = date_end.toString();
+	String pids = new Blogposts()._getPostIdsByBloggerName("date", dt, dte, blogger.toString(), "date", "DESC");
 
-ArrayList allterms = new Terms()._searchByRange("blogpostid", dt, dte, pids);//_searchByRange(dt, dte, post_ids.toString());
-Object all_blog_ids = (null == request.getParameter("all_blog_ids")) ? "" : request.getParameter("all_blog_ids");
+	ArrayList allterms = new Terms()._searchByRange("blogpostid", dt, dte, pids);//_searchByRange(dt, dte, post_ids.toString());
+	Object all_blog_ids = (null == request.getParameter("all_blog_ids"))
+			? ""
+			: request.getParameter("all_blog_ids");
 
-int highestfrequency = 0;
+	int highestfrequency = 0;
 
-Blogposts post = new Blogposts();
-JSONArray topterms = new JSONArray();
-JSONObject keys = new JSONObject();
-String mostusedkeyword="";
-if (allterms.size() > 0) {
-	for (int p = 0; p < allterms.size(); p++) {
-		String bstr = allterms.get(p).toString();
-		JSONObject bj = new JSONObject(bstr);
-		bstr = bj.get("_source").toString();
-		bj = new JSONObject(bstr);
-		String frequency = bj.get("frequency").toString();
-		int freq = Integer.parseInt(frequency);
-		
-		String tm = bj.get("term").toString();
-		if(freq>highestfrequency){
-			highestfrequency = freq;
-			mostusedkeyword = tm;
-		}
-		
-		JSONObject cont = new JSONObject();
-		cont.put("key", tm);
-		cont.put("frequency", frequency);
-		if(!keys.has(tm)){
-			keys.put(tm,tm);
-			/* topterms.put(cont); */
+	Blogposts post = new Blogposts();
+	JSONArray topterms = new JSONArray();
+	JSONObject keys = new JSONObject();
+	String mostusedkeyword = "";
+	if (allterms.size() > 0) {
+		for (int p = 0; p < allterms.size(); p++) {
+			String bstr = allterms.get(p).toString();
+			JSONObject bj = new JSONObject(bstr);
+			bstr = bj.get("_source").toString();
+			bj = new JSONObject(bstr);
+			String frequency = bj.get("frequency").toString();
+			int freq = Integer.parseInt(frequency);
+
+			String tm = bj.get("term").toString();
+			if (freq > highestfrequency) {
+				highestfrequency = freq;
+				mostusedkeyword = tm;
+			}
+
+			JSONObject cont = new JSONObject();
+			cont.put("key", tm);
+			cont.put("frequency", frequency);
+			if (!keys.has(tm)) {
+				keys.put(tm, tm);
+				/* topterms.put(cont); */
+			}
 		}
 	}
-}
 
-if(action.toString().equals("gettopkeyword")){
+	if (action.toString().equals("gettopkeyword")) {
 %>
 <%=mostusedkeyword%>
-<%}else{ 
+<%
+	} else {
 %>
 <!-- <div class="tagcloudcontainer" style="min-height: 420px;">
 </div> -->
@@ -99,50 +102,64 @@ var word_count2 = {};
 <%}
 	}%> --%>
 
-	<%
-	/* outlinks = outl._searchByRange("date", dt, dte, ids); */
-	JSONObject d = new JSONObject();
-	if (null == session.getAttribute(blogger.toString()+"_wordcloud_"+tid.toString())){
-		
-	try{
-	String sql = post._getMostKeywordDashboard(blogger.toString(),dt,dte,all_blog_ids.toString());
-	Map<String, Integer> res = new HashMap<String, Integer>();
+	<%/* outlinks = outl._searchByRange("date", dt, dte, ids); */
+				JSONObject d = new JSONObject();
+				String highest = null;
+				if (null == session.getAttribute(blogger.toString() + "_wordcloud_" + tid.toString())) {
 
-	res=post._keywordTermvctors(sql);
-	/* /* JSONObject res=post._keywordTermvctors(sql); */ 
-	d = new JSONObject(res);
-	String s = res.toString();
-	JSONObject o = new JSONObject(res);
-	
-	/* Map<String, Integer> json = (HashMap<String, Integer>)json_type_2; */
-						
-	System.out.println("testing w---" + d);
-	
-	session.setAttribute(blogger.toString()+"_wordcloud_"+tid.toString(), d);
-	%>
+					try {
+						String sql = post._getMostKeywordDashboard(blogger.toString(), dt, dte,
+								all_blog_ids.toString());
+						Map<String, Integer> res = new HashMap<String, Integer>();
 
-	wordtagcloud("#tagcloudcontainer",450,<%=d%>); 
+						res = post._keywordTermvctors(sql);
+
+						Map.Entry<String, Integer> entry1 = res.entrySet().iterator().next();
+						highest = entry1.getKey();
+
+						/* /* JSONObject res=post._keywordTermvctors(sql); */
+						d = new JSONObject();
+						d.put("data", res);
+						d.put("highest", highest);
+
+						String s = res.toString();
+						JSONObject o = new JSONObject(res);
+
+						/* Map<String, Integer> json = (HashMap<String, Integer>)json_type_2; */
+
+						System.out.println("testing w---" + res);
+
+						session.setAttribute(blogger.toString() + "_wordcloud_" + tid.toString(), d.get("data"));
+						session.setAttribute(blogger.toString() + "_topkeyword_" + tid.toString(), d.get("highest"));%>
+
+	wordtagcloud("#tagcloudcontainer",450,<%=d.get("data")%>); 
 	<%-- wordtagcloud("#tagcloudcontainer",450,<%=d%>);  --%>
 	console.log("session not collected");
-	console.log(<%=d%>);
+	console.log(<%=d.get("data")%>);
+	$('.most-used-keyword').html("<%=d.get("highest")%>");
 	
-	<% }catch(Exception e){%>
+	<%} catch (Exception e) {%>
 	
 	wordtagcloud("#tagcloudcontainer",450,{'NO KEYWORDS':1});
 	
 	
-	<%} 
-	
-	
-	
-	} else{
-	
-		Object d_ = (null == session.getAttribute(blogger.toString()+"_wordcloud_"+tid.toString()))? "": session.getAttribute(blogger.toString()+"_wordcloud_"+tid.toString());
-		System.out.println("tester"+d);
-	%>
-	wordtagcloud("#tagcloudcontainer",450,<%=d_%>); 
+	<%}
+
+				} else {
+
+					Object d_ = (null == session.getAttribute(blogger.toString() + "_wordcloud_" + tid.toString()))
+							? ""
+							: session.getAttribute(blogger.toString() + "_wordcloud_" + tid.toString());
+
+					JSONObject ddd = new JSONObject(d_.toString());
+					System.out.println("tester" + ddd);%>
 	console.log("session collected");
-	console.log(<%=d_%>);
+	console.log(<%=ddd.get("data")%>);
+	console.log("<%=ddd.get("highest")%>");
+	
+	wordtagcloud("#tagcloudcontainer",450,<%=ddd.get("data")%>); 
+	$('.most-used-keyword').html("<%=ddd.get("highest")%>");	
+
 	
 	<%}%>
 /* wordtagcloud("#tagcloudcontainer",450,word_count2); */
@@ -302,11 +319,15 @@ function wordtagcloud(element, height) {
 	     
 	 } --%>
  </script>
-<% } 
-if(action.toString().equals("")){%>
+<%
+	}
+	if (action.toString().equals("")) {
+%>
 
 
-<%} %>
+<%
+	}
+%>
 
 
 

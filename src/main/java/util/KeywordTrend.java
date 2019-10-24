@@ -80,6 +80,8 @@ public class KeywordTrend extends HttpServlet {
 		JSONObject result_location = new JSONObject();
 		JSONObject result_posts = new JSONObject();
 		JSONObject sql = new JSONObject();
+
+		String sql__ = null;
 		List<Map<String, Integer>> items = new ArrayList<>();
 
 		if (action.toString().equals("getblogmentioned")) {
@@ -92,10 +94,11 @@ public class KeywordTrend extends HttpServlet {
 				System.out.println("bloger men-----" + blog_mentioned + mostactiveterm.toString()
 						+ date_start.toString() + date_end.toString() + all_blog_ids.toString());
 
-				result_blogmentioned.put("blogmentioned", NumberFormat.getNumberInstance(Locale.US).format(new Integer(blog_mentioned.toString()))); 
+				result_blogmentioned.put("blogmentioned",
+						NumberFormat.getNumberInstance(Locale.US).format(new Integer(blog_mentioned.toString())));
 				String new_result = result_blogmentioned.toString();
 				result_blogmentioned = new JSONObject(new_result);
-				
+
 				out.write(result_blogmentioned.toString());
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -103,41 +106,44 @@ public class KeywordTrend extends HttpServlet {
 			}
 //		doGet(request, response);
 		} else if (action.toString().equals("getmostlocation")) {
+			PrintWriter out = response.getWriter();
 			try {
-				PrintWriter out = response.getWriter();
+
 				top_location = post._getMostLocation(mostactiveterm.toString(), date_start.toString(),
 						date_end.toString(), all_blog_ids.toString());
-
-				System.out.println("loacation---" + top_location.toString() + mostactiveterm.toString()
-						+ date_start.toString() + date_end.toString() + all_blog_ids.toString());
-
-				System.out.println("location_str" + top_location.toString());
-				result_location.put("toplocation", top_location.toString());
-				String new_result = result_location.toString();
-				result_location = new JSONObject(new_result);
-
-				System.out.println("locationfinal_str" + result_location.toString());
-				out.write(result_location.toString());
 			} catch (Exception e) {
+
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			System.out.println("loacation---" + top_location.toString() + mostactiveterm.toString()
+					+ date_start.toString() + date_end.toString() + all_blog_ids.toString());
+
+			System.out.println("location_str" + top_location.toString());
+			result_location.put("toplocation", top_location.toString());
+			String new_result = result_location.toString();
+			result_location = new JSONObject(new_result);
+
+			System.out.println("locationfinal_str" + result_location.toString());
+			out.write(result_location.toString());
 
 		} else if (action.toString().equals("getmostpost")) {
 			try {
 				PrintWriter out = response.getWriter();
-				sql = post._getBloggerPosts(mostactiveterm.toString(), "NOBLOGGER", date_start.toString(),
-						date_end.toString(), all_blog_ids.toString());
-				posts = sql.get("total").toString();
+//				sql = post._getBloggerPosts(mostactiveterm.toString(), "NOBLOGGER", date_start.toString(),
+//						date_end.toString(), all_blog_ids.toString());
+				sql__ = post._countPostMentioned(mostactiveterm.toString(), date_start.toString(), date_end.toString(),
+						all_blog_ids.toString());
+//				posts = sql.get("total").toString();
 				// posts = post._getBlogOrPostMentioned("post",
 				// mostactiveterm.toString(),date_start.toString(), date_end.toString(),
 				// date_end.toString());
 
-				System.out.println("post---" + posts.toString() + mostactiveterm.toString() + date_start.toString()
+				System.out.println("post---" + sql__ + mostactiveterm.toString() + date_start.toString()
 						+ date_end.toString() + all_blog_ids.toString());
 
-				System.out.println("post_str" + posts.toString());
-				result_posts.put("post",NumberFormat.getNumberInstance(Locale.US).format(new Integer(posts.toString())) );
+				System.out.println("post_str" + sql__.toString());
+				result_posts.put("post", NumberFormat.getNumberInstance(Locale.US).format(new Integer(sql__)));
 				String new_result = result_posts.toString();
 				result_posts = new JSONObject(new_result);
 
@@ -172,18 +178,21 @@ public class KeywordTrend extends HttpServlet {
 					String t_ = null;
 					Integer blog_mentioned_ = null;
 
-					for (int i = 0; i < 50; i++) {
+					for (int i = 0; i < 500; i++) {
 						/* while(keys_.hasNext()) { */
 						Map.Entry<String, Integer> key_ = itr.next();
 						String key = key_.getKey();
 						// System.out.println("values2--"+key+"NOBLOGGER"+","+json.get(key)+","+dt+","+
 						// dte+","+ids);
 						try {
-							JSONObject t = post._getBloggerPosts(key, "NOBLOGGER", date_start.toString(),
-									date_end.toString(), all_blog_ids.toString());
-							t_ = t.get("total").toString();
+							// JSONObject t = post._getBloggerPosts(key, "NOBLOGGER",
+							// date_start.toString(),date_end.toString(), all_blog_ids.toString());
+							t_ = post._countPostMentioned(key, date_start.toString(), date_end.toString(),
+									all_blog_ids.toString());
+							// t_ = t.get("total").toString();
 							blog_mentioned_ = post._getBlogOrPostMentioned("blogsite_id", key, date_start.toString(),
 									date_end.toString(), all_blog_ids.toString());
+
 //							top_location = post._getMostLocation(key, date_start.toString(), date_end.toString(),
 //									all_blog_ids.toString());
 							posts_occured_data = new JSONObject();
@@ -209,7 +218,7 @@ public class KeywordTrend extends HttpServlet {
 
 			}
 		} else if (action.toString().equals("line_graph")) {
-			
+
 			try {
 				PrintWriter out = response.getWriter();
 				sql = post._getBloggerPosts(mostactiveterm.toString(), "NOBLOGGER", date_start.toString(),
@@ -229,7 +238,7 @@ public class KeywordTrend extends HttpServlet {
 					String blogger = null;
 
 					Integer occurence = null;
-					
+
 					HashMap<String, Integer> hm2 = new HashMap<String, Integer>();
 
 					String sql_ = sql.get("data").toString();
@@ -258,7 +267,7 @@ public class KeywordTrend extends HttpServlet {
 
 						hm2 = new HashMap<String, Integer>();
 						hm2.put(d.toString(), (Integer) occurence);
-						System.out.println(d.toString() + "-+" + occurence+"date-"+date);
+						System.out.println(d.toString() + "-+" + occurence + "date-" + date);
 						items.add(i, hm2);
 
 						String replace = "<span style=background:red;color:#fff>" + mostactiveterm + "</span>";
@@ -274,18 +283,16 @@ public class KeywordTrend extends HttpServlet {
 						title = title.replaceAll(active2, replace);
 						title = title.replaceAll(active3, replace);
 
-						
-
-						
 					}
-					
+
 				}
 				System.out.println("items--" + items);
-				Map<String, Integer> json = (HashMap<String, Integer>)items.stream().flatMap(m -> m.entrySet().stream())
+				Map<String, Integer> json = (HashMap<String, Integer>) items.stream()
+						.flatMap(m -> m.entrySet().stream())
 						.collect(toMap(Map.Entry::getKey, Map.Entry::getValue, Integer::sum));
-				System.out.println("map"+map);
+				System.out.println("map" + map);
 				JSONObject mapped = new JSONObject(json);
-				System.out.println("map2"+mapped);
+				System.out.println("map2" + mapped);
 				out.write(mapped.toString());
 			} catch (Exception e) {
 

@@ -131,18 +131,7 @@ function loadInfluence(start_date,end_date){
 	
 	var blogger = $("#author").val();
 	var blog_id =$("#blogid").val();
-	
-	//$("#date_start").val(start_date);
-	//$("#date_end").val(end_date);
-	
-
-/*	getTopLocation(blogger,blog_id,start_date,end_date);
-	loadTopKeyword(blogger,blog_id,start_date,end_date);
-	
-	
-	loadSentiments(blogger,blog_id,start_date,end_date);*/
-	
-	
+		
 	$.ajax({
 		url: app_url+"subpages/postingfrequencyinfluence.jsp",
 		method: 'POST',
@@ -194,6 +183,7 @@ function loadInfluence(start_date,end_date){
 function loadTerms(blogger,blog_id,start_date,end_date){
 	/*$("#tagcloudbox").html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />");*/
 	$("#tagcloudbox").html("<img src='images/loading.gif' /> COMPUTING TERMS PLEASE WAIT....");
+	$(".most-used-keyword").html("<img src='images/loading.gif'/>");
 	var blger = blogger.replaceAll(" ","__");
 	$.ajax({
 		url: app_url+"subpages/postingfrequencyterm.jsp",
@@ -213,7 +203,7 @@ function loadTerms(blogger,blog_id,start_date,end_date){
 		},
 		success: function(response)
 		{   
-			//console.log(response);
+			console.log(response.highest);
 			$("#tagcloudbox").html("<img src='images/loading.gif' /> COMPUTING TERMS PLEASE WAIT....").html(response);
 			/* $.getScript("assets/js/generic.js", function(data, textStatus, jqxhr) {	
 			  });*/

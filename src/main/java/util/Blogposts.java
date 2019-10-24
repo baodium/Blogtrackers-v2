@@ -33,10 +33,8 @@ public class Blogposts {
 
 	String base_url = hm.get("elasticIndex") + "blogposts/"; // - For testing server
 
-	String elasticUrl  = hm.get("elasticUrl");
-	
+	String elasticUrl = hm.get("elasticUrl");
 
-	
 	Stopwords stop = new Stopwords();
 
 	String totalpost;
@@ -78,7 +76,21 @@ public class Blogposts {
 	}
 
 	public String _getTotal() {
-		return this.totalpost;
+		JSONObject query = new JSONObject(
+				"{\r\n" + "    \"query\": {\r\n" + "        \"match_all\": {}\r\n" + "    }\r\n" + "}");
+
+		String total = null;
+		JSONObject myResponse;
+		try {
+			myResponse = this._makeElasticRequest(query, "POST", "/blogposts/_count?");
+			if (null != myResponse.get("count")) {
+				Object hits = myResponse.get("count");
+				total = hits.toString();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return total;
 	}
 
 	public ArrayList _getBloggerByBlogId(String field, String greater, String less, String blog_ids) throws Exception {
@@ -1955,6 +1967,40 @@ public class Blogposts {
 		return all_data;
 	}
 
+	public String _count(JSONObject query) {
+		String total = null;
+		JSONObject myResponse;
+		try {
+			myResponse = this._makeElasticRequest(query, "POST", "/blogposts/_count?");
+			if (null != myResponse.get("count")) {
+				Object hits = myResponse.get("count");
+				total = hits.toString();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return total;
+	}
+
+	public String _countPostMentioned(String term, String date_from, String date_to, String ids_) {
+		JSONObject query = new JSONObject("{\r\n" + "\r\n" + "    \"query\": {\r\n" + "        \"bool\": {\r\n"
+				+ "            \"adjust_pure_negative\": true,\r\n" + "            \"must\": [\r\n"
+				+ "                {\r\n" + "                    \"term\": {\r\n"
+				+ "                        \"post\": \""+term+"\"\r\n" + "                    }\r\n"
+				+ "                },\r\n" + "                {\r\n" + "                    \"terms\": {\r\n"
+				+ "                        \"blogsite_id\": ["+ids_+"],\r\n"
+				+ "                        \"boost\": 1\r\n" + "                    }\r\n" + "                },\r\n"
+				+ "                {\r\n" + "                    \"range\": {\r\n"
+				+ "                        \"date\": {\r\n" + "                            \"include_lower\": true,\r\n"
+				+ "                            \"include_upper\": true,\r\n"
+				+ "                            \"from\": \""+date_from+"\",\r\n"
+				+ "                            \"boost\": 1,\r\n"
+				+ "                            \"to\": \""+date_to+"\"\r\n" + "                        }\r\n"
+				+ "                    }\r\n" + "                }\r\n" + "            ],\r\n"
+				+ "            \"boost\": 1\r\n" + "        }\r\n" + "    }\r\n" + "\r\n" + "}");
+		return this._count(query);
+	}
+
 	public String _getMostLocation(String term, String date_from, String date_to, String ids_) throws Exception {
 		ArrayList<String> list = new ArrayList<String>();
 		HashMap<String, Integer> hm2 = new HashMap<String, Integer>();
@@ -2278,7 +2324,7 @@ public class Blogposts {
 
 			Map.Entry<String, Integer> entry = hm1.entrySet().iterator().next();
 			source = entry.getKey().toUpperCase();
-			
+
 			Integer value = entry.getValue();
 			String highest = entry.getKey();
 
@@ -2299,7 +2345,7 @@ public class Blogposts {
 	public String _getMostKeywordDashboard(String BloggerName, String date_from, String date_to, String ids_)
 			throws Exception {
 		//
-		
+
 		ArrayList<String> list = new ArrayList<String>();
 		JSONObject query = new JSONObject();
 		String result = null;
@@ -2481,26 +2527,24 @@ public class Blogposts {
 
 	}
 
-	public int countOccurences(String str, String word)  
-	{ 
-	    // split the string by spaces in a 
-	    String a[] = str.split(" "); 
-	    
-	    String str_=null;
-	    
-	    // search for pattern in a 
-	    int count = 0; 
-	    for (int i = 0; i < a.length; i++)  
-	    { 
-	    // if match found increase count 
-	    	str_=a[i].toLowerCase();
-	    if (word.equals(str_)) 
-	        count++; 
-	    } 
-	  
-	    return count; 
-	} 
-	
+	public int countOccurences(String str, String word) {
+		// split the string by spaces in a
+		String a[] = str.split("\\W+");
+
+		String str_ = null;
+
+		// search for pattern in a
+		int count = 0;
+		for (int i = 0; i < a.length; i++) {
+			// if match found increase count
+			str_ = a[i].toLowerCase();
+			if (word.equals(str_))
+				count++;
+		}
+
+		return count;
+	}
+
 	public JSONObject _getBloggerPosts(String term, String bloggerName, String date_from, String date_to, String ids_)
 			throws Exception {
 //	
@@ -2548,13 +2592,13 @@ public class Blogposts {
 		} else {
 			query = new JSONObject("{\r\n" + "    \"size\": 1000,\r\n" + "    \"query\": {\r\n"
 					+ "        \"bool\": {\r\n" + "            \"must\": [\r\n" + "                {\r\n"
-					+ "                    \"term\": {\r\n" + "                        \"post\": \""+term+"\"\r\n"
+					+ "                    \"term\": {\r\n" + "                        \"post\": \"" + term + "\"\r\n"
 					+ "                    }\r\n" + "                },\r\n" + "                {\r\n"
-					+ "                    \"terms\": {\r\n" + "                        \"blogsite_id\": ["+ids_+"],\r\n" + "                        \"boost\": 1\r\n"
-					+ "                    }\r\n" + "                },\r\n" + "                {\r\n"
-					+ "                    \"range\": {\r\n" + "                        \"date\": {\r\n"
-					+ "                            \"from\": \""+date_from+"\",\r\n"
-					+ "                            \"to\": \""+date_to+"\",\r\n"
+					+ "                    \"terms\": {\r\n" + "                        \"blogsite_id\": [" + ids_
+					+ "],\r\n" + "                        \"boost\": 1\r\n" + "                    }\r\n"
+					+ "                },\r\n" + "                {\r\n" + "                    \"range\": {\r\n"
+					+ "                        \"date\": {\r\n" + "                            \"from\": \"" + date_from
+					+ "\",\r\n" + "                            \"to\": \"" + date_to + "\",\r\n"
 					+ "                            \"include_lower\": true,\r\n"
 					+ "                            \"include_upper\": true,\r\n"
 					+ "                            \"boost\": 1\r\n" + "                        }\r\n"
@@ -2584,7 +2628,7 @@ public class Blogposts {
 		String num_comments = null;
 		String blogger = null;
 		int occurence = 0;
-		
+
 		JSONArray all = new JSONArray();
 
 		System.out.println("DONE GETTING POSTS FOR BLOGGER");
@@ -2600,10 +2644,10 @@ public class Blogposts {
 				j = new JSONObject(ids);
 
 				String src = j.get("post").toString();
-				src=src.replaceAll("\\<.*?>", "");
+				src = src.replaceAll("\\<.*?>", "");
 				if (bloggerName == "NOBLOGGER") {
 					if (j.get("title").toString() != null || j.get("title").toString() != "") {
-						occurence = this.countOccurences(src,term);
+						occurence = this.countOccurences(src, term);
 //						System.out.println(term+"----------------------"+occurence);
 						title = j.get("title").toString();
 						blogpost_id = j.get("blogpost_id").toString();
@@ -2649,86 +2693,74 @@ public class Blogposts {
 		return all_data;
 	}
 
-	/*public ArrayList _testbloggertranslate(String blogger, String start) throws Exception {
-
-		JSONObject jsonObj = new JSONObject(
-				"{\r\n" + "    \"query\": \"SELECT post FROM blogposts where blogger='" + blogger + "'\"\r\n" + "}");
-
-		System.out.println("ress--" + jsonObj);
-		String url = "http://localhost:9200/_xpack/sql/translate";
-
-		return this._getsqlTranslated(url, jsonObj, start);
-	}
-*/
-	/*public ArrayList _getsqlTranslated(String url, JSONObject jsonObj, String start) throws Exception {
-		ArrayList<String> list = new ArrayList<String>();
-		ArrayList<String> list2 = new ArrayList<String>();
-
-		try {
-
-			URL obj = new URL(url);
-			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-
-			con.setDoOutput(true);
-			con.setDoInput(true);
-
-			con.setRequestProperty("Content-Type", "application/json; charset=utf-32");
-			con.setRequestProperty("Content-Type", "application/json");
-			con.setRequestProperty("Accept-Charset", "UTF-32");
-			con.setRequestProperty("Accept", "application/json");
-			con.setRequestMethod("POST");
-
-			DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-
-			// OutputStreamWriter wr1 = new OutputStreamWriter(con.getOutputStream());
-			wr.write(jsonObj.toString().getBytes());
-			wr.flush();
-
-			int responseCode = con.getResponseCode();
-			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-//			System.out.println("--"+in);
-			String inputLine;
-			StringBuffer response = new StringBuffer();
-
-			while ((inputLine = in.readLine()) != null) {
-				response.append(inputLine);
-//				 System.out.println(inputLine);
-
-				list.add(inputLine);
-
-			}
-			in.close();
-
-			JSONObject myResponse = new JSONObject(response.toString());
-//			System.out.println(myResponse);
-
-		} catch (Exception ex) {
-		}
-
-		// GETTING THE IDS
-		String url2 = base_url_test + "_search?";
-		JSONObject jsonObj2 = new JSONObject(list.get(0));
-		ArrayList res = this._getResult(url2, jsonObj2);
-
-		try {
-			if (res.size() > 0) {
-
-				for (int i = 0; i < res.size(); i++) {
-					String indx = res.get(i).toString();
-					JSONObject j = new JSONObject(indx);
-					String ids = j.get(start).toString();
-					j = new JSONObject(ids);
-					String src = j.get("post").toString();
-
-					list2.add(src);
-				}
-			}
-		} catch (Exception e) {
-			System.err.println(e);
-		}
-		return list2;
-
-	}*/
+	/*
+	 * public ArrayList _testbloggertranslate(String blogger, String start) throws
+	 * Exception {
+	 * 
+	 * JSONObject jsonObj = new JSONObject( "{\r\n" +
+	 * "    \"query\": \"SELECT post FROM blogposts where blogger='" + blogger +
+	 * "'\"\r\n" + "}");
+	 * 
+	 * System.out.println("ress--" + jsonObj); String url =
+	 * "http://localhost:9200/_xpack/sql/translate";
+	 * 
+	 * return this._getsqlTranslated(url, jsonObj, start); }
+	 */
+	/*
+	 * public ArrayList _getsqlTranslated(String url, JSONObject jsonObj, String
+	 * start) throws Exception { ArrayList<String> list = new ArrayList<String>();
+	 * ArrayList<String> list2 = new ArrayList<String>();
+	 * 
+	 * try {
+	 * 
+	 * URL obj = new URL(url); HttpURLConnection con = (HttpURLConnection)
+	 * obj.openConnection();
+	 * 
+	 * con.setDoOutput(true); con.setDoInput(true);
+	 * 
+	 * con.setRequestProperty("Content-Type", "application/json; charset=utf-32");
+	 * con.setRequestProperty("Content-Type", "application/json");
+	 * con.setRequestProperty("Accept-Charset", "UTF-32");
+	 * con.setRequestProperty("Accept", "application/json");
+	 * con.setRequestMethod("POST");
+	 * 
+	 * DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+	 * 
+	 * // OutputStreamWriter wr1 = new OutputStreamWriter(con.getOutputStream());
+	 * wr.write(jsonObj.toString().getBytes()); wr.flush();
+	 * 
+	 * int responseCode = con.getResponseCode(); BufferedReader in = new
+	 * BufferedReader(new InputStreamReader(con.getInputStream())); //
+	 * System.out.println("--"+in); String inputLine; StringBuffer response = new
+	 * StringBuffer();
+	 * 
+	 * while ((inputLine = in.readLine()) != null) { response.append(inputLine); //
+	 * System.out.println(inputLine);
+	 * 
+	 * list.add(inputLine);
+	 * 
+	 * } in.close();
+	 * 
+	 * JSONObject myResponse = new JSONObject(response.toString()); //
+	 * System.out.println(myResponse);
+	 * 
+	 * } catch (Exception ex) { }
+	 * 
+	 * // GETTING THE IDS String url2 = base_url_test + "_search?"; JSONObject
+	 * jsonObj2 = new JSONObject(list.get(0)); ArrayList res = this._getResult(url2,
+	 * jsonObj2);
+	 * 
+	 * try { if (res.size() > 0) {
+	 * 
+	 * for (int i = 0; i < res.size(); i++) { String indx = res.get(i).toString();
+	 * JSONObject j = new JSONObject(indx); String ids = j.get(start).toString(); j
+	 * = new JSONObject(ids); String src = j.get("post").toString();
+	 * 
+	 * list2.add(src); } } } catch (Exception e) { System.err.println(e); } return
+	 * list2;
+	 * 
+	 * }
+	 */
 
 	public String _getrawquery(String url, JSONObject jsonObj) throws Exception {
 		ArrayList<String> list = new ArrayList<String>();
@@ -2793,25 +2825,25 @@ public class Blogposts {
 		return strName;
 	}
 
-/*	public String _getbloggermostterms(String blogger) throws Exception {
-
-		// GETTING THE TERMS
-		ArrayList list = this._testbloggertranslate(blogger, "_source");
-		JSONObject list_ = new JSONObject(list);
-
-		String url = base_url_test + "_termvectors";
-		JSONObject jsonObj = new JSONObject(
-				"{\r\n" + "    \"doc\": {\r\n" + "      \"post\": \"" + list.get(0) + "\"\r\n" + "    },\r\n"
-						+ "    \"term_statistics\" : true,\r\n" + "    \"field_statistics\" : true,\r\n"
-						+ "    \"positions\": false,\r\n" + "    \"offsets\": false,\r\n" + "    \"filter\" : {\r\n"
-						+ "      \"max_num_terms\" : 25,\r\n" + "      \"min_term_freq\" : 1,\r\n"
-						+ "      \"min_doc_freq\" : 1,\r\n" + "      \"min_word_length\":1\r\n" + "    }\r\n" + "}");
-
-//				ArrayList res2 = this._getResult(url3, jsonObj3);
-		System.out.println("This is the term query for -----" + url + "-----" + jsonObj);
-//				System.out.println("term vector -----" + list);
-
-		return this._getrawquery(url, jsonObj);
-	}
-*/
+	/*
+	 * public String _getbloggermostterms(String blogger) throws Exception {
+	 * 
+	 * // GETTING THE TERMS ArrayList list = this._testbloggertranslate(blogger,
+	 * "_source"); JSONObject list_ = new JSONObject(list);
+	 * 
+	 * String url = base_url_test + "_termvectors"; JSONObject jsonObj = new
+	 * JSONObject( "{\r\n" + "    \"doc\": {\r\n" + "      \"post\": \"" +
+	 * list.get(0) + "\"\r\n" + "    },\r\n" + "    \"term_statistics\" : true,\r\n"
+	 * + "    \"field_statistics\" : true,\r\n" + "    \"positions\": false,\r\n" +
+	 * "    \"offsets\": false,\r\n" + "    \"filter\" : {\r\n" +
+	 * "      \"max_num_terms\" : 25,\r\n" + "      \"min_term_freq\" : 1,\r\n" +
+	 * "      \"min_doc_freq\" : 1,\r\n" + "      \"min_word_length\":1\r\n" +
+	 * "    }\r\n" + "}");
+	 * 
+	 * // ArrayList res2 = this._getResult(url3, jsonObj3);
+	 * System.out.println("This is the term query for -----" + url + "-----" +
+	 * jsonObj); // System.out.println("term vector -----" + list);
+	 * 
+	 * return this._getrawquery(url, jsonObj); }
+	 */
 }
