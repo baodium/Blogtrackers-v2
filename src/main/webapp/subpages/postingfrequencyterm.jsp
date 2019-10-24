@@ -129,7 +129,7 @@ var word_count2 = {};
 
 						System.out.println("testing w---" + res);
 
-						session.setAttribute(blogger.toString() + "_wordcloud_" + tid.toString(), d.get("data"));
+						session.setAttribute(blogger.toString() + "_wordcloud_" + tid.toString(), d);
 						session.setAttribute(blogger.toString() + "_topkeyword_" + tid.toString(), d.get("highest"));%>
 
 	wordtagcloud("#tagcloudcontainer",450,<%=d.get("data")%>); 
