@@ -339,7 +339,7 @@ userinfo = (ArrayList<?>)userinfo.get(0);
     <!-- AdminBSB Themes. You can choose a theme from css/themes instead of get all themes -->
     <link href="material/css/themes/all-themes.css" rel="stylesheet" />
 
-     <script src="https://d3js.org/d3.v4.min.js"></script>
+     <script src="https://d3js.org/d3.v5.min.js"></script>
     <link rel="stylesheet" type="text/css" href="multiline.css">
 
     <style type="text/css">
@@ -1263,7 +1263,7 @@ userinfo = (ArrayList<?>)userinfo.get(0);
     	    				 		    var margin = 50;
     	    				 		    var duration = 250;
 
-    	    				 		    var lineOpacity = "0.25";
+    	    				 		    var lineOpacity = "0.5";
     	    				 		    var lineOpacityHover = "0.85";
     	    				 		    var otherLinesOpacityHover = "0.1";
     	    				 		    var lineStroke = "1.5px";
