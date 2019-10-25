@@ -76,12 +76,12 @@ System.out.println("LOGIN_EMAIL--" + email);
 <script src="https://apis.google.com/js/platform.js"></script>
 
 <script type="text/javascript" src="js/login_validation.js?v=907"></script>
-<script src="pagedependencies/googletagmanagerscript.js"></script>
-</head>
+<!-- <script src="pagedependencies/googletagmanagerscript.js"></script>
+ --></head>
 
 <body class="bgwhite">
-	<%@include file="subpages/loader.jsp"%>
-	<%@include file="subpages/googletagmanagernoscript.jsp"%>
+	<%@include file="subpages/loader.jsp"%><%-- 
+	<%@include file="subpages/googletagmanagernoscript.jsp"%> --%>
 	<nav
 		class="navbar navbar-inverse bg-primary d-md-block d-sm-block d-xs-block d-lg-none d-xl-none">
 		<div class="container-fluid">

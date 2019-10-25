@@ -897,13 +897,13 @@
 								<h6 class="card-title mb0">Blog Mentioned</h6>
 								<%-- <h2 class="mb0 bold-text blog-mentioned"><%=NumberFormat.getNumberInstance(Locale.US).format(new Integer(blogmentioned))%>
 								</h2> --%>
-								<h2 class="mb0 bold-text blog-mentioned"><%=blog_mentioned%></h2>
+								<h2 class="mb0 bold-text blog-mentioned"><%=NumberFormat.getNumberInstance(Locale.US).format(new Integer(blog_mentioned))%></h2>
 								<!-- <small class="text-success">+5% from <b>Last Week</b></small> -->
 							</div>
 
 							<div class="col-md-3 mt5 mb5">
 								<h6 class="card-title mb0">Keyword Count</h6>
-								<h2 class="mb0 bold-text keyword-count"><%=keyword_count%></h2>
+								<h2 class="mb0 bold-text keyword-count"><%=NumberFormat.getNumberInstance(Locale.US).format(new Integer(keyword_count))%></h2>
 								<!-- <small class="text-success">+5% from <b>Last Week</b></small> -->
 							</div>
 

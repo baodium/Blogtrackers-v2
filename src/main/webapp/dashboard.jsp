@@ -503,7 +503,7 @@
 </head>
 <body>
 	<%@include file="subpages/loader.jsp"%>
-	--%>
+
 	<%@include file="subpages/googletagmanagernoscript.jsp"%>
 	<div class="modal-notifications">
 		<div class="row">
@@ -828,8 +828,12 @@
 											System.out.println("--->"+res);
 											 --%>
 											<%
-												JSONArray language_data = post._getMostLanguage(dt, dte, ids, 10);
-
+											JSONArray language_data=new JSONArray();
+											try{
+												language_data= post._getMostLanguage(dt, dte, ids, 10);
+											}catch(Exception e){
+												
+											}
 														if (language_data.length() > 0) {
 															JSONObject lang_total = new JSONObject();
 
@@ -2719,6 +2723,10 @@ var gdpData = {
 					location.put("UA", "48.379433, 31.165581");
 					location.put("RU", "61.524010, 105.318756");
 					location.put("PA", "8.967, -79.458");
+					
+					location.put("CA", "36.7783, -119.4179");
+					location.put("BG", "42.7339, 25.4858");
+					
 					location.put("TR", "38.9637, 35.2433");
 					location.put("FR", "46.2276, 2.2137");
 					location.put("PL", "51.9194, 19.1451");
@@ -2734,7 +2742,10 @@ var gdpData = {
 					location.put("IS", "64.147209,-21.942400");
 					location.put("NO", "59.913818,10.738740");
 					location.put("RO", "45.943161,24.966761");
-					location.put("RS", "44.815071,20.460480");%>
+					location.put("RS", "44.815071,20.460480");
+					
+					
+					%>
 // map marker location by longitude and latitude
 var mymarker = [
 	<%if (locations.size() > 0) {
@@ -2766,26 +2777,9 @@ var mymarker = [
 	
 	var word_count2 = {}; 
 	
-	/* var res = {}; */
-	   <%JSONArray sortedterms = term._sortJson2(unsortedterms);
-					System.out.println("TM:" + sortedterms);
-					if (sortedterms.length() > 0) {
-						for (int i = 0; i < sortedterms.length(); i++) {
-							String[] vals = sortedterms.get(i).toString().split("___");
-							int size = Integer.parseInt(vals[0].trim());
-							String tm = vals[1];
-							String terms_id = vals[2];
 
-							if (!termstore.has(tm)) {
-								termstore.put(tm, tm);%>			    		
-						<%-- {"text":"<%=terms.toString() %>","size":<%=size %>}, --%>
-						 word_count2["<%=tm.toString()%>"] = <%=size%> 
-						 System.out.println("--->"+tm.toString());
-	 				<%}
-						}
-					}%>
 		
-		console.log("--->"+word_count2)
+		
 		
 		$(document).ready(function(){
 
@@ -2825,11 +2819,12 @@ var mymarker = [
 				},
 				error: function(response)
 				{		
-					console.log("This is failure"+response);
-					
 					$(".word-cld").html("FAILED TO COMPUTE TERMS.. RETRYING.. PLEASE WAIT.... <img src='images/loading.gif' />g");
 					$(".word-cld").html("<div style='min-height: 420px;'><div class='chart-container word-cld'><div class='chart' id='tagcloudcontainer'><div class='jvectormap-zoomin zoombutton' id='zoom_in'>+</div><div class='jvectormap-zoomout zoombutton' id='zoom_out'>−</div></div></div></div>");
 					wordtagcloud("#tagcloudcontainer",450,{"NO KEYWORD":1});
+					console.log("This is failure"+response);
+					
+					
 
 				},
 				success: function(response)
@@ -2837,7 +2832,7 @@ var mymarker = [
 				 console.log(response)
 				console.log("this is the response"+data)
 				
-				$(".word-cld").html("<div style='min-height: 420px;'><div class='chart-container word-cld'><div class='chart' id='tagcloudcontainer'><div class='jvectormap-zoomin zoombutton' id='zoom_in'>+</div><div class='jvectormap-zoomout zoombutton' id='zoom_out'>−</div></div></div></div>");
+				    $(".word-cld").html("<div style='min-height: 420px;'><div class='chart-container word-cld'><div class='chart' id='tagcloudcontainer'><div class='jvectormap-zoomin zoombutton' id='zoom_in'>+</div><div class='jvectormap-zoomout zoombutton' id='zoom_out'>−</div></div></div></div>");
 				wordtagcloud("#tagcloudcontainer",450,response); 
 				}
 			});

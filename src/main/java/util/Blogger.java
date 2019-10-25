@@ -55,7 +55,7 @@ public class Blogger {
 		
 		try {
 
-			result = db.query("select distinct blogger_name, sum(blogpost_count) as totalpost, blogsite_id from blogger where blogsite_id in "+blogids+" group by blogger_name order by totalpost desc limit 50");		
+			result = db.query("select distinct blogger_name, sum(blogpost_count) as totalpost, blogsite_id from blogger where blogger_name!=\"\" and blogsite_id in "+blogids+" group by blogger_name order by totalpost desc limit 50");		
 			
 		}catch(Exception e){
 		}

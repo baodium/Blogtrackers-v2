@@ -13,11 +13,13 @@ $('.select-term').on("click", function() {
 
 	term = t2[0];
 	var freq = t2[1];
+	/*freq=parseInt(freq);*/
+	//console.log("freq--"+freq.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
 	/* var tm = term.replaceAll("_", " "); */
 
 	$(".active-term").html(term);
 	/* console.log(freq); */
-	$(".keyword-count").html(freq);
+	$(".keyword-count").html(freq.replace(/\B(?=(\d{3})+(?!\d))/g, ","));
 
 	// loadInfluence(bloog,blg[1]);
 	$("#term").val(term);
@@ -110,7 +112,7 @@ function loadBlogMentioned(term) {
 		},
 		success : function(response) {
 			console.log(response)
-			$(".blog-mentioned").html(response.blogmentioned);
+			$(".blog-mentioned").html(parseInt(response.blogmentioned));
 		}
 	});
 }
@@ -298,6 +300,7 @@ $('.blogpost_link')
 				function() {
 
 					var post_id = $(this).attr("id");
+					
 
 					$("#blogpost_detail")
 							.html(

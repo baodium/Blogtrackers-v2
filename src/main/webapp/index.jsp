@@ -15,6 +15,8 @@ Object error_message = (null == session.getAttribute("error_message")) ? "" : se
 Object success_message = (null == session.getAttribute("success_message")) ? "" : session.getAttribute("success_message");
 String pi = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
 
+
+
 System.out.println("INDEX--" + request.getHeader("referer"));
 
 /*  if(request.getHeader("referer").equals(null)){
@@ -33,6 +35,7 @@ String username ="";
 String name="";
 String phone="";
 String date_modified = "";
+
 userinfo = DbConnection.query("SELECT * FROM usercredentials where Email = '"+email+"'");
 if (userinfo.size()<1) {
 	//response.sendRedirect("login.jsp");

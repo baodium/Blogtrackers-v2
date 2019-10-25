@@ -14,75 +14,78 @@
 	pageEncoding="UTF-8"%>
 
 <%
-Object date_start = (null == request.getParameter("date_start")) ? "" : request.getParameter("date_start");
-Object date_end = (null == request.getParameter("date_end")) ? "" : request.getParameter("date_end");
-//Object post_ids = (null == request.getParameter("post_ids")) ? "" : request.getParameter("post_ids");
+	Object date_start = (null == request.getParameter("date_start")) ? "" : request.getParameter("date_start");
+	Object date_end = (null == request.getParameter("date_end")) ? "" : request.getParameter("date_end");
+	//Object post_ids = (null == request.getParameter("post_ids")) ? "" : request.getParameter("post_ids");
 
-Object action = (null == request.getParameter("action")) ? "" : request.getParameter("action");
-Object blogger = (null == request.getParameter("blogger")) ? "" : request.getParameter("blogger");
+	Object action = (null == request.getParameter("action")) ? "" : request.getParameter("action");
+	Object blogger = (null == request.getParameter("blogger")) ? "" : request.getParameter("blogger");
+	Object tid = (null == request.getParameter("tid")) ? "" : request.getParameter("tid");
 
-String dt = date_start.toString();
-String dte = date_end.toString();
-String pids = new Blogposts()._getPostIdsByBloggerName("date",dt, dte,blogger.toString(),"date","DESC");
+	String dt = date_start.toString();
+	String dte = date_end.toString();
+	String pids = new Blogposts()._getPostIdsByBloggerName("date", dt, dte, blogger.toString(), "date", "DESC");
 
-ArrayList allterms = new Terms()._searchByRange("blogpostid", dt, dte, pids);//_searchByRange(dt, dte, post_ids.toString());
-Object all_blog_ids = (null == request.getParameter("all_blog_ids")) ? "" : request.getParameter("all_blog_ids");
+	ArrayList allterms = new Terms()._searchByRange("blogpostid", dt, dte, pids);//_searchByRange(dt, dte, post_ids.toString());
+	Object all_blog_ids = (null == request.getParameter("all_blog_ids"))
+			? ""
+			: request.getParameter("all_blog_ids");
 
-int highestfrequency = 0;
+	int highestfrequency = 0;
 
-Blogposts post = new Blogposts();
-JSONArray topterms = new JSONArray();
-JSONObject keys = new JSONObject();
-String mostusedkeyword="";
-if (allterms.size() > 0) {
-	for (int p = 0; p < allterms.size(); p++) {
-		String bstr = allterms.get(p).toString();
-		JSONObject bj = new JSONObject(bstr);
-		bstr = bj.get("_source").toString();
-		bj = new JSONObject(bstr);
-		String frequency = bj.get("frequency").toString();
-		int freq = Integer.parseInt(frequency);
-		
-		String tm = bj.get("term").toString();
-		if(freq>highestfrequency){
-			highestfrequency = freq;
-			mostusedkeyword = tm;
-		}
-		
-		JSONObject cont = new JSONObject();
-		cont.put("key", tm);
-		cont.put("frequency", frequency);
-		if(!keys.has(tm)){
-			keys.put(tm,tm);
-			/* topterms.put(cont); */
+	Blogposts post = new Blogposts();
+	JSONArray topterms = new JSONArray();
+	JSONObject keys = new JSONObject();
+	String mostusedkeyword = "";
+	if (allterms.size() > 0) {
+		for (int p = 0; p < allterms.size(); p++) {
+			String bstr = allterms.get(p).toString();
+			JSONObject bj = new JSONObject(bstr);
+			bstr = bj.get("_source").toString();
+			bj = new JSONObject(bstr);
+			String frequency = bj.get("frequency").toString();
+			int freq = Integer.parseInt(frequency);
+
+			String tm = bj.get("term").toString();
+			if (freq > highestfrequency) {
+				highestfrequency = freq;
+				mostusedkeyword = tm;
+			}
+
+			JSONObject cont = new JSONObject();
+			cont.put("key", tm);
+			cont.put("frequency", frequency);
+			if (!keys.has(tm)) {
+				keys.put(tm, tm);
+				/* topterms.put(cont); */
+			}
 		}
 	}
-}
 
-if(action.toString().equals("gettopkeyword")){
+	if (action.toString().equals("gettopkeyword")) {
 %>
 <%=mostusedkeyword%>
-<%}else{ 
+<%
+	} else {
 %>
 <!-- <div class="tagcloudcontainer" style="min-height: 420px;">
-</div> -->	
+</div> -->
 
- <div class="chart-container">
- <div class="chart" id="tagcloudcontainer"></div>
- <div class="jvectormap-zoomin zoombutton" id="zoom_in">+</div>
-								<div class="jvectormap-zoomout zoombutton" id="zoom_out" >−</div> 
+<div class="chart-container">
+	<div class="chart" id="tagcloudcontainer"></div>
+	<div class="jvectormap-zoomin zoombutton" id="zoom_in">+</div>
+	<div class="jvectormap-zoomout zoombutton" id="zoom_out">−</div>
 </div>
-       
+
 
 
 <!--word cloud  -->
- <script type="text/javascript" src="assets/vendors/d3/d3.min.js"></script>
- <script src="assets/vendors/wordcloud/d3.layout.cloud.js"></script>
- <script type="text/javascript" src="assets/vendors/d3/d3_tooltip.js"></script>
- <script type="text/javascript" src="assets/js/jquery.inview.js"></script>
- <script type="text/javascript"
-		src="chartdependencies/keywordtrendd3.js"></script>
- <script>
+<script type="text/javascript" src="assets/vendors/d3/d3.min.js"></script>
+<script src="assets/vendors/wordcloud/d3.layout.cloud.js"></script>
+<script type="text/javascript" src="assets/vendors/d3/d3_tooltip.js"></script>
+<script type="text/javascript" src="assets/js/jquery.inview.js"></script>
+<script type="text/javascript" src="chartdependencies/keywordtrendd3.js"></script>
+<script>
  /*
      var frequency_list = [{"text":"study","size":40},{"text":"motion","size":15},{"text":"forces","size":10},{"text":"electricity","size":15},{"text":"movement","size":10},{"text":"relation","size":5},{"text":"things","size":10},{"text":"force","size":5},{"text":"ad","size":5},{"text":"energy","size":85},{"text":"living","size":5},{"text":"nonliving","size":5},{"text":"laws","size":15},{"text":"speed","size":45},{"text":"velocity","size":30},{"text":"define","size":5},{"text":"constraints","size":5},{"text":"universe","size":10},{"text":"distinguished","size":5},{"text":"chemistry","size":5},{"text":"biology","size":5},{"text":"includes","size":5},{"text":"radiation","size":5},{"text":"sound","size":5},{"text":"structure","size":5},{"text":"atoms","size":5},{"text":"including","size":10},{"text":"atomic","size":10},{"text":"nuclear","size":10},{"text":"cryogenics","size":10},{"text":"solid-state","size":10},{"text":"particle","size":10},{"text":"plasma","size":10},{"text":"deals","size":5},{"text":"merriam-webster","size":5},{"text":"dictionary","size":10},{"text":"analysis","size":5},{"text":"conducted","size":5},{"text":"order","size":5},{"text":"understand","size":5},{"text":"behaves","size":5},{"text":"en","size":5},{"text":"wikipedia","size":5},{"text":"wiki","size":5},{"text":"physics-","size":5},{"text":"physical","size":5},{"text":"behaviour","size":5},{"text":"collinsdictionary","size":5},{"text":"english","size":5},{"text":"time","size":35},{"text":"distance","size":35},{"text":"wheels","size":5},{"text":"revelations","size":5},{"text":"minute","size":5},{"text":"acceleration","size":20},{"text":"torque","size":5},{"text":"wheel","size":5},{"text":"rotations","size":5},{"text":"resistance","size":5},{"text":"momentum","size":5},{"text":"measure","size":10},{"text":"direction","size":10},{"text":"car","size":5},{"text":"add","size":5},{"text":"traveled","size":5},{"text":"weight","size":5},{"text":"electrical","size":5},{"text":"power","size":5}];
 */
@@ -90,36 +93,75 @@ if(action.toString().equals("gettopkeyword")){
 
 var word_count2 = {}; 
 
-<%if (topterms.length() > 0) {
+<%-- <%if (topterms.length() > 0) {
 	 for (int i = 0; i < topterms.length(); i++) {
 		 JSONObject jsonObj = topterms.getJSONObject(i);
 			int size = Integer.parseInt(jsonObj.getString("frequency"));%>
-		<%-- {"text":"<%=terms.toString() %>","size":<%=size %>}, --%>
+		{"text":"<%=terms.toString() %>","size":<%=size %>},
 		 word_count2["<%=jsonObj.getString("key")%>"] = <%=size%> 
 <%}
-	}%>
+	}%> --%>
 
-	<%
-	/* outlinks = outl._searchByRange("date", dt, dte, ids); */
-	String sql = post._getMostKeywordDashboard(blogger.toString(),dt,dte,all_blog_ids.toString());
-	Map<String, Integer> res = new HashMap<String, Integer>();
+	<%/* outlinks = outl._searchByRange("date", dt, dte, ids); */
+				JSONObject d = new JSONObject();
+				String highest = null;
+				if (null == session.getAttribute(blogger.toString() + "_wordcloud_" + tid.toString())) {
 
-	res=post._keywordTermvctors(sql);
-	/* /* JSONObject res=post._keywordTermvctors(sql); */ 
-	JSONObject d = new JSONObject(res);
-	String s = res.toString();
-	JSONObject o = new JSONObject(res);
+					try {
+						String sql = post._getMostKeywordDashboard(blogger.toString(), dt, dte,
+								all_blog_ids.toString());
+						Map<String, Integer> res = new HashMap<String, Integer>();
+
+						res = post._keywordTermvctors(sql);
+
+						Map.Entry<String, Integer> entry1 = res.entrySet().iterator().next();
+						highest = entry1.getKey();
+
+						/* /* JSONObject res=post._keywordTermvctors(sql); */
+						d = new JSONObject();
+						d.put("data", res);
+						d.put("highest", highest);
+
+						String s = res.toString();
+						JSONObject o = new JSONObject(res);
+
+						/* Map<String, Integer> json = (HashMap<String, Integer>)json_type_2; */
+
+						System.out.println("testing w---" + res);
+
+						session.setAttribute(blogger.toString() + "_wordcloud_" + tid.toString(), d);
+						session.setAttribute(blogger.toString() + "_topkeyword_" + tid.toString(), d.get("highest"));%>
+
+	wordtagcloud("#tagcloudcontainer",450,<%=d.get("data")%>); 
+	<%-- wordtagcloud("#tagcloudcontainer",450,<%=d%>);  --%>
+	console.log("session not collected");
+	console.log(<%=d.get("data")%>);
+	$('.most-used-keyword').html("<%=d.get("highest")%>");
 	
-	/* Map<String, Integer> json = (HashMap<String, Integer>)json_type_2; */
-						
-	System.out.println("testing w---" + d);%>
-		  	
+	<%} catch (Exception e) {%>
+	
+	wordtagcloud("#tagcloudcontainer",450,{'NO KEYWORDS':1});
+	
+	
+	<%}
 
-	/* System.out.println("--->"+res); */
+				} else {
 
-	console.log("blogger--"+"<%=blogger.toString()%>"+"date_from--"+"<%=dt%>"+"date_to--"+"<%=dte%>"+"all_ids--"+"<%=all_blog_ids.toString()%>")
-	<%-- wordtagcloud("#tagcloudcontainer",450,<%=res%>); --%>
-	wordtagcloud("#tagcloudcontainer",450,<%=d%>); 
+					Object d_ = (null == session.getAttribute(blogger.toString() + "_wordcloud_" + tid.toString()))
+							? ""
+							: session.getAttribute(blogger.toString() + "_wordcloud_" + tid.toString());
+
+					JSONObject ddd = new JSONObject(d_.toString());
+					System.out.println("tester" + ddd);%>
+	console.log("session collected");
+	console.log(<%=ddd.get("data")%>);
+	console.log("<%=ddd.get("highest")%>");
+	
+	wordtagcloud("#tagcloudcontainer",450,<%=ddd.get("data")%>); 
+	$('.most-used-keyword').html("<%=ddd.get("highest")%>");	
+
+	
+	<%}%>
 /* wordtagcloud("#tagcloudcontainer",450,word_count2); */
 
 <%-- wordtagcloud("#tagcloudcontainer",450);
@@ -277,4 +319,21 @@ function wordtagcloud(element, height) {
 	     
 	 } --%>
  </script>
- <% } %>
+<%
+	}
+	if (action.toString().equals("")) {
+%>
+
+
+<%
+	}
+%>
+
+
+
+
+
+
+
+
+

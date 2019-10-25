@@ -61,7 +61,7 @@
 
 	
 	/* String sql = post._getBloggerPosts(blogger,"2000-01-01","2019-10-11","142,153,229,148,127,46,3,170,154,72,38,224,157,128,61,112,140,116,125,193,173,74,249,250,243,263,98,69,62,78,117,73,135,133,100,143,77,233,221,163,132,147,150,43,242,111,101,86,199,251,118,106,121,129,49,48,66,91,176,124,167,215,141,166,17,220,119,236,230,225,252,20,130,22,76,235,85,245,79,26,109,80,131,253,105,226,137,115,52,53,65,213,96,238,210,136,239,27,206,107,63,57,204,205,216,208,36,102,134,108,113,59,54,88"); 
-	String result = post._termVectors(sql);  */
+	 String result = post._termVectors(sql);  */
 	
 	
 	//JSONArray sql = post. _getMostLanguage("2000-01-01", "2019-10-11", "142,153,229,148,127,46,3,170,154,72,38,224,157,128,61,112,140,116,125,193,173,74,249,250,243,263,98,69,62,78,117,73,135,133,100,143,77,233,221,163,132,147,150,43,242,111,101,86,199,251,118,106,121,129,49,48,66,91,176,124,167,215,141,166,17,220,119,236,230,225,252,20,130,22,76,235,85,245,79,26,109,80,131,253,105,226,137,115,52,53,65,213,96,238,210,136,239,27,206,107,63,57,204,205,216,208,36,102,134,108,113,59,54,88",10);
@@ -79,8 +79,8 @@
 	JSONObject res=post._keywordTermvctors(sql);	
 	System.out.println("--->"+res); */
 	
-/* 	JSONObject sql = post._getBloggerPosts("care","NOBLOGGER","2000-01-01","2019-10-11","813,815,809,811,812,806,808,817,644,652,616,641,732,761,709,128");
-	
+JSONObject sql = post._getBloggerPosts("","tine","2017-04-22","2017-04-22","697");
+	/* 		
 	String sql_ = sql.get("data").toString();
 	
 	
@@ -191,13 +191,13 @@
     String formatDateTime = date.format(formatter);
 
     System.out.println("After : " + formatDateTime); */
-    
+ /*    
     DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH);
     DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("dd-MM-yyy", Locale.ENGLISH);
     LocalDate date = LocalDate.parse("2014-12-10T00:00:00.000Z", inputFormatter);
     Integer d = date.getYear();
     /* String formattedDate = outputFormatter.format(date); */
-    System.out.println(d); // prints 10-04-2018
+    /* System.out.println(d); */ // prints 10-04-2018
 	
 	
 	
@@ -288,7 +288,7 @@
 			%>
 			<p>His trackers</p>
 			  <%--  <h1>HIGHEST TERM --><%=result%></h1>   --%>
-			 <%-- <h1>HIGHEST TERM --><%=res%></h1> --%>
+			 <h1>HIGHEST TERM --><%=sql%></h1> 
 <%-- 			   <h1>POSTS--><%
 			   JSONObject j = new JSONObject();
 			   for(int i=0; i<sql.length();i++){
