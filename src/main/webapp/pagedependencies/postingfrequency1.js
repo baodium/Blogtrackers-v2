@@ -1,11 +1,11 @@
 //$('.blogger-select').on("click", function(e){
-
+	
 	$(document).delegate('.topics1', 'click', function(){
-		
+
 	$(".blogger-select").removeClass("abloggerselected");
 	//console.log("here 2")	;
 	$("body").addClass("loaded");
-	//$(this).addClass("abloggerselected");
+	$(this).addClass("abloggerselected");
 
 	var date_start = $("#date_start").val();
 	var date_end = $("#date_end").val();
@@ -14,23 +14,28 @@
 	
 	var blg = blogger.split("***");
 	
+	
 	var id = this.id;
     var name = $(this).attr('name');
 	
 	var bloog = blg[0];
 	bloog = name.replaceAll("__"," ");
 	
-	
 	$(".activeblogger").html(bloog);
 	$(".activeblog").html(blg[2]);
 	
 	$("#author").val(bloog);
-	$("#blogid").val(id);
+	$("#blogid").val(blg[1]);
 	
-	
+	loadTerms(bloog,$("#all_blog_ids").val(),date_start,date_end);
+	console.log(blogger+$("#all_blog_ids").val()+date_start+date_end)
 	loadInfluence(date_start,date_end);
 	getTotalPost(bloog,id,date_start,date_end);
 	//loadChart(bloog,id,date_start,date_end);
+	
+	getTopLocation(bloog,$("#all_blog_ids").val(),date_start,date_end);
+	loadTopKeyword(bloog,$("#all_blog_ids").val(),date_start,date_end);	
+	loadSentiments(bloog,$("#all_blog_ids").val(),date_start,date_end);
 
 });
 
@@ -96,8 +101,7 @@ $('.blogpost_link').on("click", function(){
 
 function loadChart(blogger,blog_id,start_date,end_date){
 	/*alert("get the charts man")*/
-	//alert('oba go!')
-	//console.log("blog_id--"+blogger)
+	console.log("blog_id--"+blogger)
 	$("#chart-container").html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />");
 	$.ajax({
 		url: app_url+"subpages/postingfrequencychart.jsp",
@@ -118,10 +122,10 @@ function loadChart(blogger,blog_id,start_date,end_date){
 		success: function(response)
 		{   
 
-		$("#chart-container").delay(3000).html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />").delay(2000).html(response);
+		$("#chart-container").html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />").html(response);
 
 			 $.getScript("pagedependencies/baseurl.js?v=93", function(data, textStatus, jqxhr) {	});
-			 $.getScript("pagedependencies/postingfrequency.js?v=78878909", function(data, textStatus, jqxhr) {	});
+			 $.getScript("pagedependencies/postingfrequency1.js?v=78878909", function(data, textStatus, jqxhr) {	});
 		}
 	});
 	
@@ -133,18 +137,7 @@ function loadInfluence(start_date,end_date){
 	
 	var blogger = $("#author").val();
 	var blog_id =$("#blogid").val();
-	
-	//$("#date_start").val(start_date);
-	//$("#date_end").val(end_date);
-	
-
-	getTopLocation(blogger,blog_id,start_date,end_date);
-	loadTopKeyword(blogger,blog_id,start_date,end_date);
-	
-	loadTerms(blogger,blog_id,start_date,end_date);
-	loadSentiments(blogger,blog_id,start_date,end_date);
-	
-	
+		
 	$.ajax({
 		url: app_url+"subpages/postingfrequencyinfluence.jsp",
 		method: 'POST',
@@ -183,9 +176,6 @@ function loadInfluence(start_date,end_date){
 			 
 			//$("#influence_table").html(response);
 			loadSinglePost(blogger,blog_id,start_date,end_date);
-			
-			
-	        
 			/* $.getScript("assets/js/generic.js", function(data, textStatus, jqxhr) {	
 			  });*/
 		}
@@ -197,10 +187,9 @@ function loadInfluence(start_date,end_date){
 
 
 function loadTerms(blogger,blog_id,start_date,end_date){
-	$("#tagcloudbox").html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />");
-	
-
-    
+	/*$("#tagcloudbox").html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />");*/
+	$("#tagcloudbox").html("<img src='images/loading.gif' /> COMPUTING TERMS PLEASE WAIT....");
+	$(".most-used-keyword").html("<img src='images/loading.gif'/>");
 	var blger = blogger.replaceAll(" ","__");
 	$.ajax({
 		url: app_url+"subpages/postingfrequencyterm.jsp",
@@ -220,11 +209,8 @@ function loadTerms(blogger,blog_id,start_date,end_date){
 		},
 		success: function(response)
 		{   
-			//console.log(response);
-			$('.keyword_chart').removeClass('hidden');
-	        $('#keyword_loader').addClass('hidden');
-	        
-			$("#tagcloudbox").delay(3000).html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />").delay(2000).html(response);
+			console.log(response.highest);
+			$("#tagcloudbox").html("<img src='images/loading.gif' /> COMPUTING TERMS PLEASE WAIT....").html(response);
 			/* $.getScript("assets/js/generic.js", function(data, textStatus, jqxhr) {	
 			  });*/
 		}
@@ -233,6 +219,7 @@ function loadTerms(blogger,blog_id,start_date,end_date){
 }
 
 function loadTopKeyword(blogger,blog_id,start_date,end_date){
+	//alert(blogger+blog_id+start_date+end_date)
 	$(".most-used-keyword").html("");
 	var blger = blogger.replaceAll(" ","__");
 	$.ajax({
@@ -280,7 +267,7 @@ function loadSentiments(blogger,blog_id,start_date,end_date){
 		success: function(response)
 		{   
 			//console.log(response);
-			$("#entity_table").delay(3000).html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />").delay(2000).html(response);
+			$("#entity_table").html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />").html(response);
 			/* $.getScript("assets/js/generic.js", function(data, textStatus, jqxhr) {	
 			  });*/
 		}
@@ -313,7 +300,7 @@ function loadSinglePost(blogger,blog_id,start_date,end_date){
 		{   
 			//console.log(response);
 			//$("#blogpost_detail").html(response);
-			$("#blogpost_detail").delay(3000).html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />").delay(2000).html(response);
+			$("#blogpost_detail").html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />").html(response);
 			$.getScript("assets/js/generic.js", function(data, textStatus, jqxhr) {	
 			  });
 	

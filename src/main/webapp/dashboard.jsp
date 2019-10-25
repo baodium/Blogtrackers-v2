@@ -1349,6 +1349,9 @@
 									String bloggerInf = bloggerInfluence.get(0).toString();
 									String bloggerInfFreq = bloggerInfluence.get(1).toString();
 									if (k < 10) {
+										
+										
+										
 										k++;
 			%>
 		{letter:"<%=bloggerInf%>", frequency:<%=bloggerInfFreq%>, name:"<%=bloggerInf%>", type:"blogger"},
@@ -2608,6 +2611,8 @@ var gdpData = {
   "SL": 1.9,
   "SG": 217.38,
   "SK": 86.26,
+  
+  
   "SI": 46.44,
   "SB": 0.67,
   "ZA": 354.41,
@@ -2707,6 +2712,7 @@ var gdpData = {
     {latLng: [26.02, 50.55], name: 'Bahrain'},
     
     {latLng: [0.33, 6.73], name: 'São Tomé and Príncipe'}
+    
     */ 
 <%JSONObject location = new JSONObject();
 					location.put("Vatican City", "41.90, 12.45");

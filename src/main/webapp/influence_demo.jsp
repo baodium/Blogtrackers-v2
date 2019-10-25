@@ -1144,7 +1144,7 @@ userinfo = (ArrayList<?>)userinfo.get(0);
     	
     	 var count = $('.thanks').length;
     	 
-    	 alert(count);
+    	 //alert(count);
     	 
     	 if(count > 0){
     		 
@@ -1258,7 +1258,8 @@ userinfo = (ArrayList<?>)userinfo.get(0);
     	    			/////////start graph stuff
 
     	    				
-    	    				 			var width = 750;
+    	    				 			var width = $('#chart').width();
+    	    							//var width = 700;
     	    				 		    var height = 400;
     	    				 		    var margin = 50;
     	    				 		    var duration = 250;
@@ -1306,7 +1307,7 @@ userinfo = (ArrayList<?>)userinfo.get(0);
 
     	    				 		    /* Add SVG */
     	    				 		    var svg = d3.select("#chart").append("svg")
-    	    				 		      .attr("width", (width+margin)+"px")
+    	    				 		      .attr("width", width+margin)
     	    				 		      .attr("height", (height+margin)+"px")
     	    				 		      .append('g')
     	    				 		      .attr("transform", `translate(${margin}, ${margin})`);

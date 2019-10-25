@@ -1273,7 +1273,8 @@ authoryears.put(mostactiveblogger,postyear);
     	    			/////////start graph stuff
 
     	    				
-    	    				 			var width = 750;
+    	    				 			//var width = 750;
+    	    				 			var width = $('#chart-container').width();
     	    				 		    var height = 200;
     	    				 		    var margin = 30;
     	    				 		    var duration = 250;
@@ -1442,23 +1443,81 @@ authoryears.put(mostactiveblogger,postyear);
     	    				 		          });
 
 
-    	    				 		    /* Add Axis into SVG */
-    	    				 		    var xAxis = d3.svg.axis(xScale).ticks(5);
-    	    				 		    var yAxis = d3.svg.axis(yScale).ticks(5);
+    	    				 		   /* Add Axis into SVG */
+    	      				 		    //var xAxis = d3.svg.axis(xScale).ticks(9);
+    	      				 		    //var yAxis = d3.svg.axis(yScale).ticks(6);
+    	      				 		    
+    	      				 		    
+    	      				 		     // Construct scales
+    	    				          // ------------------------------
+    	    				
+    	    				          // Horizontal
+    	    				          var x = d3.scale.ordinal()
+    	    				              .rangeRoundBands([0, width]);
+    	    				
+    	    				          // Vertical
+    	    				          var y = d3.scale.linear()
+    	    				              .range([height, 0]);
+    	    				
+    	    				console.log('xxxxx'+x);
+    	    				console.log('yyyyyy'+y);
+    	    				
+    	    				          // Create axes
+    	    				          // ------------------------------
+    	    				
+    	    				          // Horizontal
+    	    				          var xAxis = d3.svg.axis()
+    	    				              .scale(xScale)
+    	    				              .orient("bottom")
+    	    				             .ticks(5)
+    	    				
+    	    				            // .tickFormat(formatPercent);
+    	    				
+    	    				
+    	    				          // Vertical
+    	    				          var yAxis = d3.svg.axis()
+    	    				              .scale(yScale)
+    	    				              .orient("left")
+    	    				              .ticks(5);
+    	    				          
+    	    				          
+    	    				          ///////////////////
 
-    	    				 		    svg.append("g")
-    	    				 		      .attr("class", "x axis")
-    	    				 		      .attr("transform", `translate(0, ${height-margin})`)
-    	    				 		      .call(xAxis);
+    	      				 		 //   svg.append("g")
+    	      				 		    //  .attr("class", "x axis")
+    	      				 		   //   .attr("transform", `translate(0, ${height-margin})`)
+    	      				 		    //  .call(xAxis);
 
-    	    				 		    svg.append("g")
-    	    				 		      .attr("class", "y axis")
-    	    				 		      .call(yAxis)
-    	    				 		      .append('text')
-    	    				 		      .attr("y", 15)
-    	    				 		      .attr("transform", "rotate(-90)")
-    	    				 		      .attr("fill", "black")
-    	    				 		      .text("Total values");
+    	      				 		   // svg.append("g")
+    	      				 		     // .attr("class", "y axis")
+    	      				 		    //  .call(yAxis)
+    	      				 		    //  .append('text')
+    	      				 		     // .attr("y", 15)
+    	      				 		     // .attr("transform", "rotate(-90)")
+    	      				 		     // .attr("fill", "black")
+    	      				 		     // .text("Total values");
+    	      				 		    
+    	      				 		    //////////////
+    	      				 		    
+    	      				 		    
+    	      				 		    
+    	      				 		    // Append axes
+    	    			              // ------------------------------
+    	    			
+    	    			              // Horizontal
+    	    			              svg.append("g")
+    	    			                  .attr("class", "x axis d3-axis d3-axis-horizontal d3-axis-strong")
+    	    			                  .attr("transform", `translate(0, ${height-margin})`)
+    	    			                  .call(xAxis);
+    	    			
+    	    			              // Vertical
+    	    			               svg.append("g")
+    	    			                  .attr("class", "y axis d3-axis d3-axis-vertical d3-axis-strong")
+    	    			                  .call(yAxis)
+    	    			                  .append('text')
+    	    			                  .attr("y", 15)
+    	    			                  .attr("fill", "black")
+    	    			              	  .text("Total values");
     	    				 		
     	    				 	/////////end graph stuff	
     	    				  
