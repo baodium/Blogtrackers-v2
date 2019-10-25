@@ -568,6 +568,7 @@
 								placeholder="Search Bloggers" />
 						</div>
 						<div class="scrolly"
+						
 							style="height: 270px; padding-right: 10px !important;">
 
 							<%
@@ -579,6 +580,7 @@
 										ArrayList<?> bloggerFreq = (ArrayList<?>) bloggerPostFrequency.get(m);
 										String bloggerName = bloggerFreq.get(0).toString();
 										String bloggerPostFreq = bloggerFreq.get(1).toString();
+										
 										String blogsiteId = bloggerFreq.get(2).toString();
 										if (p < 10) {
 											p++;
@@ -1312,7 +1314,7 @@
 					JSONObject specific_auth = new JSONObject(authoryears.get(au).toString());%>[<%for (int q = 0; q < yearsarray.length(); q++) {
 						String yearr = yearsarray.get(q).toString();
 						if (specific_auth.has(yearr)) {%>
-		  			{"date":"<%=yearr%>","close":<%=specific_auth.get(yearr)%>},
+		  			{"date":"<%=yearr%>","close":"<%=specific_auth.get(yearr)%>"},
 			<%} else {%>
 		  			{"date":"<%=yearr%>","close":0},
 	   		<%}%>
@@ -1601,6 +1603,7 @@ console.log("here");
 
                            svg.selectAll(".circle-point").data(data[0])
                            .on("mouseover",tip.show)
+                         
                            .on("mouseout",tip.hide)
                            .on("click",function(d){
                         	   var d1 = 	  d.date + "-01-01";
@@ -1609,8 +1612,9 @@ console.log("here");
 
                         	   console.log("reloaded");
                         	   loadInfluence(d1,d2); 
-                        	   
+                        	  
                            });
+                           console.log('sel----'+$(".blogger-select").val());
                                               svg.call(tip)
                }
                // handles multiple json parameter
@@ -1667,6 +1671,8 @@ console.log("here");
                             	   var d2 = 	  d.date + "-12-31";
                    				
                             	   loadInfluence(d1,d2);
+                            	   
+                            	   
                             	});
                           //                         svg.call(tip)
 
@@ -1893,6 +1899,8 @@ console.log("here");
 	console.log(word_count2); --%>
 	
 	 $(document).ready(function() {	
+		 
+		 console.log("<%=mostactiveblogger%>"+"<%=ids%>"+"<%=dt%>"+"<%=dte%>")
 		 loadTerms("<%=mostactiveblogger%>","<%=ids%>","<%=dt%>","<%=dte%>");
 	
 	<%-- $(".tagcloudbox").html("<img src='images/loading.gif' /> COMPUTING TERMS PLEASE WAIT...."); 

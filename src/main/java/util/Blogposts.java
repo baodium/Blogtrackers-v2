@@ -1278,7 +1278,7 @@ public class Blogposts {
 
 		String arg2 = pars.toString();
 		String que = "{\"query\": {\"constant_score\":{\"filter\":{\"terms\":{\"blogsite_id\":" + arg2 + "}}}}}";
-
+System.out.println(que);
 		JSONObject jsonObj = new JSONObject(que);
 		ArrayList result = this._getResult(url, jsonObj);
 		return this._getResult(url, jsonObj);

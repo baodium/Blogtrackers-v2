@@ -2180,7 +2180,7 @@ authoryears.put(mostactiveblogger,postyear);
 		src="chartdependencies/keywordtrendd3.js"></script>
 	<!--word cloud  -->
 	<script>
- 	var word_count2 = {}; 
+<%--  	var word_count2 = {}; 
 	   <%if (topterms.size() > 0) {
 						for (String terms : topterms.keySet()) {
 							int size = topterms.get(terms);%>
@@ -2191,13 +2191,17 @@ authoryears.put(mostactiveblogger,postyear);
 						word_count2["No Terms Available"] = 2 */
 					<%}%>
 	
-wordtagcloud("#tagcloudcontainer",450,word_count2);
+wordtagcloud("#tagcloudcontainer",450,word_count2); --%>
+$(document).ready(function() {	
+	$.getScript("pagedependencies/postingfrequency.js?v=900", function(data, textStatus, jqxhr) {	 });
+	 loadTerms("<%=mostactiveblogger%>","<%=ids%>","<%=dt%>","<%=dte%>"); 
+	 })
 	
 	
  </script>
 <script src="pagedependencies/baseurl.js"></script>
  
-<script src="pagedependencies/influence1.js?v=578967"></script>
+<script src="pagedependencies/influence.js?v=578967"></script>
 	
 </body>
 </html>
