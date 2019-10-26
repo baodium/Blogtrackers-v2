@@ -962,11 +962,11 @@
 					</div>
 				</div>
 				<div class="float-right">
-					<a
+					<a id="hrefkeyword"
 						href="<%=request.getContextPath()%>/keywordtrend.jsp?tid=<%=tid%>"><button
-							class="btn buttonportfolio2 mt10">
-							<b class="float-left semi-bold-text">Keyword Trend Analysis </b>
-							<b class="fas fa-search float-right icondash2"></b>
+							class="btn buttonportfolio2 mt10" id = "keywordbtn">
+							<b class="float-left semi-bold-text ">Keyword Trend Analysis </b>
+							<b class="fas fa-search float-right icondash2 "></b>
 						</button></a>
 				</div>
 			</div>
@@ -2792,6 +2792,7 @@ var mymarker = [
 	<%if (null == session.getAttribute(tid.toString())) {%>
 		  // keywords have not been computed.
 		loadKeywordDashboard(null, "<%=ids%>")
+
 		<%} else {
 						Object json_type_2 = (null == session.getAttribute(tid.toString()))
 								? ""
@@ -2811,6 +2812,8 @@ var mymarker = [
 		
 		function loadKeywordDashboard(blogger,ids){
 			 $(".word-cld").html("<img src='images/loading.gif' /> COMPUTING TERMS PLEASE WAIT...."); 
+			 $('#keywordbtn').prop("disabled", true);
+			 $("#hrefkeyword").attr("href", "");
 			$.ajax({
 				url: app_url+"subpages/dashboardcharts.jsp",
 				method: 'POST',
@@ -2829,8 +2832,6 @@ var mymarker = [
 					$(".word-cld").html("<div style='min-height: 420px;'><div class='chart-container word-cld'><div class='chart' id='tagcloudcontainer'><div class='jvectormap-zoomin zoombutton' id='zoom_in'>+</div><div class='jvectormap-zoomout zoombutton' id='zoom_out'>−</div></div></div></div>");
 					wordtagcloud("#tagcloudcontainer",450,{"NO KEYWORD":1});
 					console.log("This is failure"+response);
-					
-					
 
 				},
 				success: function(response)
@@ -2840,6 +2841,8 @@ var mymarker = [
 				
 				    $(".word-cld").html("<div style='min-height: 420px;'><div class='chart-container word-cld'><div class='chart' id='tagcloudcontainer'><div class='jvectormap-zoomin zoombutton' id='zoom_in'>+</div><div class='jvectormap-zoomout zoombutton' id='zoom_out'>−</div></div></div></div>");
 				wordtagcloud("#tagcloudcontainer",450,response); 
+				$('#keywordbtn').prop("disabled", false);
+				$("#hrefkeyword").attr("href", "<%=request.getContextPath()%>/keywordtrend.jsp?tid=<%=tid%>");
 				}
 			});
 		}
