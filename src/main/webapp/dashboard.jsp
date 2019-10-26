@@ -916,6 +916,7 @@
 					</div>
 				</div>
 
+
 				<div class="float-right">
 					<a href="postingfrequency.jsp?tid=<%=tid%>"><button
 							class="btn buttonportfolio2 mt10">
@@ -1348,6 +1349,9 @@
 									String bloggerInf = bloggerInfluence.get(0).toString();
 									String bloggerInfFreq = bloggerInfluence.get(1).toString();
 									if (k < 10) {
+										
+										
+										
 										k++;
 			%>
 		{letter:"<%=bloggerInf%>", frequency:<%=bloggerInfFreq%>, name:"<%=bloggerInf%>", type:"blogger"},
@@ -2607,6 +2611,8 @@ var gdpData = {
   "SL": 1.9,
   "SG": 217.38,
   "SK": 86.26,
+  
+  
   "SI": 46.44,
   "SB": 0.67,
   "ZA": 354.41,
@@ -2706,6 +2712,7 @@ var gdpData = {
     {latLng: [26.02, 50.55], name: 'Bahrain'},
     
     {latLng: [0.33, 6.73], name: 'São Tomé and Príncipe'}
+    
     */ 
 <%JSONObject location = new JSONObject();
 					location.put("Vatican City", "41.90, 12.45");
@@ -2735,6 +2742,7 @@ var gdpData = {
 					location.put("IE", "53.4129, -8.2439");
 					location.put("IT", "41.871941,12.567380");
 					location.put("ES", "40.463669,-3.749220");
+					location.put("CA", "36.514618, -119.869456");
 					location.put("AU", "-25.274399,133.775131");
 					location.put("HU", "47.162495,19.503304");
 					location.put("IS", "64.147209,-21.942400");

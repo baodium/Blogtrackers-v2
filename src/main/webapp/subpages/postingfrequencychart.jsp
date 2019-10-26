@@ -218,7 +218,7 @@ Blogs blog  = new Blogs();
            return "No Information Available";
          }
          else if(d !== null) {
-          return d.date+" ("+d.close+")<br/> Click for more information";
+          return d.date+" ("+d.close+")<br/> Cliccck for more information";
            }
          // return "here";
          });

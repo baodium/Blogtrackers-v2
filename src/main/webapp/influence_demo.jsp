@@ -339,7 +339,7 @@ userinfo = (ArrayList<?>)userinfo.get(0);
     <!-- AdminBSB Themes. You can choose a theme from css/themes instead of get all themes -->
     <link href="material/css/themes/all-themes.css" rel="stylesheet" />
 
-     <script src="https://d3js.org/d3.v4.min.js"></script>
+     <script src="https://d3js.org/d3.v5.min.js"></script>
     <link rel="stylesheet" type="text/css" href="multiline.css">
 
     <style type="text/css">
@@ -1144,7 +1144,7 @@ userinfo = (ArrayList<?>)userinfo.get(0);
     	
     	 var count = $('.thanks').length;
     	 
-    	 alert(count);
+    	 //alert(count);
     	 
     	 if(count > 0){
     		 
@@ -1258,12 +1258,13 @@ userinfo = (ArrayList<?>)userinfo.get(0);
     	    			/////////start graph stuff
 
     	    				
-    	    				 			var width = 750;
+    	    				 			var width = $('#chart').width();
+    	    							//var width = 700;
     	    				 		    var height = 400;
     	    				 		    var margin = 50;
     	    				 		    var duration = 250;
 
-    	    				 		    var lineOpacity = "0.25";
+    	    				 		    var lineOpacity = "0.5";
     	    				 		    var lineOpacityHover = "0.85";
     	    				 		    var otherLinesOpacityHover = "0.1";
     	    				 		    var lineStroke = "1.5px";
@@ -1306,7 +1307,7 @@ userinfo = (ArrayList<?>)userinfo.get(0);
 
     	    				 		    /* Add SVG */
     	    				 		    var svg = d3.select("#chart").append("svg")
-    	    				 		      .attr("width", (width+margin)+"px")
+    	    				 		      .attr("width", width+margin)
     	    				 		      .attr("height", (height+margin)+"px")
     	    				 		      .append('g')
     	    				 		      .attr("transform", `translate(${margin}, ${margin})`);

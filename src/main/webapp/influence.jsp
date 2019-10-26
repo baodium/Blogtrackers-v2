@@ -991,14 +991,12 @@ authoryears.put(mostactiveblogger,postyear);
 	<script
 		src="assets/vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
 	<!-- Start for tables  -->
-	<script type="text/javascript"
-		src="assets/vendors/DataTables/datatables.min.js"></script>
+	<script type="text/javascript" src="assets/vendors/DataTables/datatables.min.js"></script>
 	<script type="text/javascript"
 		src="assets/vendors/DataTables/dataTables.bootstrap4.min.js"></script>
 	<script
 		src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.flash.min.js"></script>
-	<script
-		src="assets/vendors/DataTables/Buttons-1.5.1/js/dataTables.buttons.min.js"></script>
+	<script src="assets/vendors/DataTables/Buttons-1.5.1/js/dataTables.buttons.min.js"></script>
 	<script src="assets/vendors/DataTables/pdfmake-0.1.32/pdfmake.min.js"></script>
 	<script src="assets/vendors/DataTables/pdfmake-0.1.32/vfs_fonts.js"></script>
 	<script
@@ -1022,6 +1020,16 @@ authoryears.put(mostactiveblogger,postyear);
     
  /////////////////////////////////////////////////////
     
+ 
+  //////start time converting function
+ 	
+ function convertTime(str) {
+  var date = new Date(str);
+  return [date.getFullYear()];
+}
+ 
+ 
+ ///////end time converting function
  
     var uche = [];
      
@@ -1265,7 +1273,8 @@ authoryears.put(mostactiveblogger,postyear);
     	    			/////////start graph stuff
 
     	    				
-    	    				 			var width = 750;
+    	    				 			//var width = 750;
+    	    				 			var width = $('#chart-container').width();
     	    				 		    var height = 200;
     	    				 		    var margin = 30;
     	    				 		    var duration = 250;
@@ -1380,13 +1389,31 @@ authoryears.put(mostactiveblogger,postyear);
     	    				 		      .selectAll("circle")
     	    				 		      .data(d => d.values).enter()
     	    				 		      .append("g")
+    	    				 		      
+    	    				 		      .on("click",function(d){
+  				 		    	  
+			  				 		       var tempYear = convertTime(d.date);
+			                        	   var d1 = 	  tempYear + "-01-01";
+			                        	   var d2 = 	  tempYear + "-12-31";
+			                        	  
+			                        	   loadInfluence(d1,d2) 
+    	    				 		     })
     	    				 		      .attr("class", "circle")  
     	    				 		      .on("mouseover", function(d) {
     	    				 		          d3.select(this)     
     	    				 		            .style("cursor", "pointer")
     	    				 		            .append("text")
-    	    				 		            .attr("class", "text")
-    	    				 		            .text(`${d.price}`)
+    	    				 		            .attr("class", "text d3-tip")
+    	    				 		            .text(function(d) {
+    	    				 		                if(d.price === 0)
+    	    				 		                {
+    	    				 		                  return "No Information Available";
+    	    				 		                }
+    	    				 		                else if(d.price !== 0) {
+    	    				 		                 return d.price+"(Click for more information)";
+    	    				 		                  }
+    	    				 		                // return "here";
+    	    				 		                })
     	    				 		            .attr("x", d => xScale(d.date) + 5)
     	    				 		            .attr("y", d => yScale(d.price) - 10);
     	    				 		        })
@@ -1416,23 +1443,81 @@ authoryears.put(mostactiveblogger,postyear);
     	    				 		          });
 
 
-    	    				 		    /* Add Axis into SVG */
-    	    				 		    var xAxis = d3.svg.axis(xScale).ticks(5);
-    	    				 		    var yAxis = d3.svg.axis(yScale).ticks(5);
+    	    				 		   /* Add Axis into SVG */
+    	      				 		    //var xAxis = d3.svg.axis(xScale).ticks(9);
+    	      				 		    //var yAxis = d3.svg.axis(yScale).ticks(6);
+    	      				 		    
+    	      				 		    
+    	      				 		     // Construct scales
+    	    				          // ------------------------------
+    	    				
+    	    				          // Horizontal
+    	    				          var x = d3.scale.ordinal()
+    	    				              .rangeRoundBands([0, width]);
+    	    				
+    	    				          // Vertical
+    	    				          var y = d3.scale.linear()
+    	    				              .range([height, 0]);
+    	    				
+    	    				console.log('xxxxx'+x);
+    	    				console.log('yyyyyy'+y);
+    	    				
+    	    				          // Create axes
+    	    				          // ------------------------------
+    	    				
+    	    				          // Horizontal
+    	    				          var xAxis = d3.svg.axis()
+    	    				              .scale(xScale)
+    	    				              .orient("bottom")
+    	    				             .ticks(5)
+    	    				
+    	    				            // .tickFormat(formatPercent);
+    	    				
+    	    				
+    	    				          // Vertical
+    	    				          var yAxis = d3.svg.axis()
+    	    				              .scale(yScale)
+    	    				              .orient("left")
+    	    				              .ticks(5);
+    	    				          
+    	    				          
+    	    				          ///////////////////
 
-    	    				 		    svg.append("g")
-    	    				 		      .attr("class", "x axis")
-    	    				 		      .attr("transform", `translate(0, ${height-margin})`)
-    	    				 		      .call(xAxis);
+    	      				 		 //   svg.append("g")
+    	      				 		    //  .attr("class", "x axis")
+    	      				 		   //   .attr("transform", `translate(0, ${height-margin})`)
+    	      				 		    //  .call(xAxis);
 
-    	    				 		    svg.append("g")
-    	    				 		      .attr("class", "y axis")
-    	    				 		      .call(yAxis)
-    	    				 		      .append('text')
-    	    				 		      .attr("y", 15)
-    	    				 		      .attr("transform", "rotate(-90)")
-    	    				 		      .attr("fill", "black")
-    	    				 		      .text("Total values");
+    	      				 		   // svg.append("g")
+    	      				 		     // .attr("class", "y axis")
+    	      				 		    //  .call(yAxis)
+    	      				 		    //  .append('text')
+    	      				 		     // .attr("y", 15)
+    	      				 		     // .attr("transform", "rotate(-90)")
+    	      				 		     // .attr("fill", "black")
+    	      				 		     // .text("Total values");
+    	      				 		    
+    	      				 		    //////////////
+    	      				 		    
+    	      				 		    
+    	      				 		    
+    	      				 		    // Append axes
+    	    			              // ------------------------------
+    	    			
+    	    			              // Horizontal
+    	    			              svg.append("g")
+    	    			                  .attr("class", "x axis d3-axis d3-axis-horizontal d3-axis-strong")
+    	    			                  .attr("transform", `translate(0, ${height-margin})`)
+    	    			                  .call(xAxis);
+    	    			
+    	    			              // Vertical
+    	    			               svg.append("g")
+    	    			                  .attr("class", "y axis d3-axis d3-axis-vertical d3-axis-strong")
+    	    			                  .call(yAxis)
+    	    			                  .append('text')
+    	    			                  .attr("y", 15)
+    	    			                  .attr("fill", "black")
+    	    			              	  .text("Total values");
     	    				 		
     	    				 	/////////end graph stuff	
     	    				  
@@ -2180,23 +2265,30 @@ authoryears.put(mostactiveblogger,postyear);
 		src="chartdependencies/keywordtrendd3.js"></script>
 	<!--word cloud  -->
 	<script>
-<%--  	var word_count2 = {}; 
-	   <%if (topterms.size() > 0) {
-						for (String terms : topterms.keySet()) {
-							int size = topterms.get(terms);%>
-						 word_count2["<%=terms.toString()%>"] = <%=size%> 
-	 <%}
-					}else if(topterms.size() == 0){%>
-						word_count2["NoKeywords"] = 5/* 
-						word_count2["No Terms Available"] = 2 */
-					<%}%>
+ 	var word_count2 = {}; 
+	  
 	
-wordtagcloud("#tagcloudcontainer",450,word_count2); --%>
-$(document).ready(function() {	
-	$.getScript("pagedependencies/postingfrequency.js?v=900", function(data, textStatus, jqxhr) {	 });
-	 loadTerms("<%=mostactiveblogger%>","<%=ids%>","<%=dt%>","<%=dte%>"); 
-	 })
-	
+/* wordtagcloud("#tagcloudcontainer",450,word_count2); */
+<%
+/* outlinks = outl._searchByRange("date", dt, dte, ids); */
+/* String sql = post._getMostKeywordDashboard(null,dt,dte,ids);
+JSONObject res=post._keywordTermvctors(sql);	
+System.out.println("--->"+res); */
+
+
+String sql = post._getMostKeywordDashboard(mostactiveblogger,dt,dte,ids);
+Map<String, Integer> res = new HashMap<String, Integer>();
+
+res=post._keywordTermvctors(sql);
+/* /* JSONObject res=post._keywordTermvctors(sql); */ 
+JSONObject d = new JSONObject(res);
+String s = res.toString();
+JSONObject o = new JSONObject(res);
+%>
+
+<%-- wordtagcloud("#tagcloudcontainer",450,<%=res%>); --%>
+
+wordtagcloud("#tagcloudcontainer",450,<%=d%>); 
 	
  </script>
 <script src="pagedependencies/baseurl.js"></script>
