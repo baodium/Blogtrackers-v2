@@ -1117,14 +1117,24 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
     	 
     	 if(count > 0){
     		 
-    		 
+    		 var all_selected_names = '';
+    		 var i = 1;
     		 $( ".thanks" ).each(function( index ) {
     			 
+    			 
+    			 if(i > 1){
+    				 all_selected_names += ' , ';
+    			 }
+    			 
+    			 
        		  		var ind = index;
+       		  		
        		  		
     		    	blog_name = 	$(this).attr('name');
     		    	
     		    	blog_id = 	this.id;
+    		    	
+    		    	all_selected_names += blog_name;
     		    		
     		    		
     		    ////start ajax
@@ -1206,7 +1216,7 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
     		  
     		    ///////end ajax
     		    		
-    		    		
+    		    		i++;
     		    		
     		    		});
     		 
@@ -1224,7 +1234,6 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
     	    				  });
     	    				  
     	    			/////////start graph stuff
-
       	    				
   				 			//var width = 750;
   				 			var width = $('#chart-container').width();
@@ -1426,8 +1435,6 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
 				          var y = d3.scale.linear()
 				              .range([height, 0]);
 				
-				console.log('xxxxx'+x);
-				console.log('yyyyyy'+y);
 				
 				          // Create axes
 				          // ------------------------------

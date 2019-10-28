@@ -1225,7 +1225,7 @@ authoryears.put(mostactiveblogger,postyear);
     		  				
     		  					var string3 = value.toString();
     		  				
-    		  					arr1.push({date: string2 ,price: string3});
+    		  					arr1.push({date: string2 ,price: string3, name:response.name});
     		  					
     			  				
     				  		});
@@ -1395,6 +1395,10 @@ authoryears.put(mostactiveblogger,postyear);
 			  				 		       var tempYear = convertTime(d.date);
 			                        	   var d1 = 	  tempYear + "-01-01";
 			                        	   var d2 = 	  tempYear + "-12-31";
+			                        	   
+			                        	   bloog = d.name.replaceAll("__"," ");
+			                        	   
+			                        	   $('.activeblogger').html(bloog);
 			                        	  
 			                        	   loadInfluence(d1,d2) 
     	    				 		     })
@@ -1459,8 +1463,6 @@ authoryears.put(mostactiveblogger,postyear);
     	    				          var y = d3.scale.linear()
     	    				              .range([height, 0]);
     	    				
-    	    				console.log('xxxxx'+x);
-    	    				console.log('yyyyyy'+y);
     	    				
     	    				          // Create axes
     	    				          // ------------------------------
