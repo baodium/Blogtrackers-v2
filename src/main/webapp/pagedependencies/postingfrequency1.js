@@ -50,8 +50,10 @@
 		 
 	 }
 	////////////end collecting names
+	 
 	
-	$(".activeblogger").html(bloog);
+	
+	$(".activeblogger").html(all_selected_names);
 	$(".activeblog").html(blg[2]);
 	
 	$("#author").val(bloog);
@@ -240,6 +242,7 @@ function loadTerms(blogger,blog_id,start_date,end_date){
 		success: function(response)
 		{   
 			console.log(response.highest);
+			$('.activeblogger').html(blogger);
 			$("#tagcloudbox").html("<img src='images/loading.gif' /> COMPUTING TERMS PLEASE WAIT....").html(response);
 			/* $.getScript("assets/js/generic.js", function(data, textStatus, jqxhr) {	
 			  });*/
