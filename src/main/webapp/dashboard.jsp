@@ -832,7 +832,7 @@
 											try{
 												language_data= post._getMostLanguage(dt, dte, ids, 10);
 											}catch(Exception e){
-												
+												System.out.println("Language error--"+e);
 											}
 														if (language_data.length() > 0) {
 															JSONObject lang_total = new JSONObject();

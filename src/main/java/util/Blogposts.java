@@ -11,6 +11,8 @@ import org.json.JSONObject;
 /*import com.mysql.jdbc.Connection;*/
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import authentication.DbConnection;
 
@@ -1278,7 +1280,7 @@ public class Blogposts {
 
 		String arg2 = pars.toString();
 		String que = "{\"query\": {\"constant_score\":{\"filter\":{\"terms\":{\"blogsite_id\":" + arg2 + "}}}}}";
-System.out.println(que);
+		System.out.println(que);
 		JSONObject jsonObj = new JSONObject(que);
 		ArrayList result = this._getResult(url, jsonObj);
 		return this._getResult(url, jsonObj);
@@ -1916,7 +1918,7 @@ System.out.println(que);
 	 * cal.getTime(); }
 	 */
 	public JSONObject _makeElasticRequest(JSONObject query, String requestType, String endPoint) throws Exception {
-
+		
 		JSONObject myResponse = new JSONObject();
 		try {
 
@@ -1932,8 +1934,9 @@ System.out.println(que);
 			myResponse = new JSONObject(jsonResponse);
 
 			esClient.close();
+			
 		} catch (Exception e) {
-
+			// System.out.println("Error for elastic request -- > "+e);
 		}
 		return myResponse;
 
@@ -1986,18 +1989,18 @@ System.out.println(que);
 		JSONObject query = new JSONObject("{\r\n" + "\r\n" + "    \"query\": {\r\n" + "        \"bool\": {\r\n"
 				+ "            \"adjust_pure_negative\": true,\r\n" + "            \"must\": [\r\n"
 				+ "                {\r\n" + "                    \"term\": {\r\n"
-				+ "                        \"post\": \""+term+"\"\r\n" + "                    }\r\n"
+				+ "                        \"post\": \"" + term + "\"\r\n" + "                    }\r\n"
 				+ "                },\r\n" + "                {\r\n" + "                    \"terms\": {\r\n"
-				+ "                        \"blogsite_id\": ["+ids_+"],\r\n"
+				+ "                        \"blogsite_id\": [" + ids_ + "],\r\n"
 				+ "                        \"boost\": 1\r\n" + "                    }\r\n" + "                },\r\n"
 				+ "                {\r\n" + "                    \"range\": {\r\n"
 				+ "                        \"date\": {\r\n" + "                            \"include_lower\": true,\r\n"
 				+ "                            \"include_upper\": true,\r\n"
-				+ "                            \"from\": \""+date_from+"\",\r\n"
-				+ "                            \"boost\": 1,\r\n"
-				+ "                            \"to\": \""+date_to+"\"\r\n" + "                        }\r\n"
-				+ "                    }\r\n" + "                }\r\n" + "            ],\r\n"
-				+ "            \"boost\": 1\r\n" + "        }\r\n" + "    }\r\n" + "\r\n" + "}");
+				+ "                            \"from\": \"" + date_from + "\",\r\n"
+				+ "                            \"boost\": 1,\r\n" + "                            \"to\": \"" + date_to
+				+ "\"\r\n" + "                        }\r\n" + "                    }\r\n" + "                }\r\n"
+				+ "            ],\r\n" + "            \"boost\": 1\r\n" + "        }\r\n" + "    }\r\n" + "\r\n" + "}");
+		System.out.println("query for elastic _countPostMentioned --> " + query);
 		return this._count(query);
 	}
 
@@ -2053,7 +2056,7 @@ System.out.println(que);
 		String idx = null;
 		String language = null;
 		JSONArray jsonArray = new JSONArray();
-
+		System.out.println("query for elastic _getMostLocation --> " + query);
 		if (null != myResponse.get("aggregations")) {
 			Object buckets = myResponse.getJSONObject("aggregations").getJSONObject("groupby").getJSONArray("buckets");
 			val = buckets.toString();
@@ -2192,7 +2195,7 @@ System.out.println(que);
 		String idx = null;
 		String language = null;
 		JSONArray jsonArray = new JSONArray();
-
+		System.out.println("query for elastic _getBlogOrPostMentioned --> " + query);
 		if (null != myResponse.get("aggregations")) {
 			Object buckets = myResponse.getJSONObject("aggregations").getJSONObject("groupby").getJSONArray("buckets")
 					.get(0);
@@ -2245,7 +2248,7 @@ System.out.println(que);
 		String idx = null;
 		String language = null;
 		JSONArray jsonArray = new JSONArray();
-
+		System.out.println("query for elastic _getMostLanguage --> " + query);
 		if (null != myResponse.get("aggregations")) {
 			Object buckets = myResponse.getJSONObject("aggregations").getJSONObject("groupby").getJSONArray("buckets");
 			val = buckets.toString();
@@ -2253,29 +2256,27 @@ System.out.println(que);
 
 			System.out.println("DONE GETTING POSTS FOR BLOGGER");
 
-		}
+			if (jsonArray != null) {
 
-		if (jsonArray != null) {
+				for (int i = 0; i < limit; i++) {
+					JSONObject da = new JSONObject();
+					idx = jsonArray.get(i).toString();
 
-			for (int i = 0; i < limit; i++) {
-				JSONObject da = new JSONObject();
-				idx = jsonArray.get(i).toString();
+					JSONObject j = new JSONObject(idx);
+					freq = (Integer) j.get("doc_count");
 
-				JSONObject j = new JSONObject(idx);
-				freq = (Integer) j.get("doc_count");
+					Object k = j.getJSONObject("key").get("dat");
+					language = k.toString();
 
-				Object k = j.getJSONObject("key").get("dat");
-				language = k.toString();
+					da.put("letter", language);
+					da.put("frequency", freq);
 
-				da.put("letter", language);
-				da.put("frequency", freq);
+					all.put(da);
+					hm2.put(language, freq);
+				}
 
-				all.put(da);
-				hm2.put(language, freq);
 			}
-
 		}
-
 		return all;
 	}
 
@@ -2399,7 +2400,7 @@ System.out.println(que);
 					+ "                \"unmapped_type\": \"float\"\r\n" + "            }\r\n" + "        }\r\n"
 					+ "    ]\r\n" + "}");
 		}
-
+		System.out.println("query for elastic _getMostKeywordDashboard --> " + query);
 		JSONArray jsonArray = this._elastic(query).getJSONArray("hit_array");
 
 		System.out.println("DONE GETTING POSTS FOR BLOGGER");
@@ -2426,6 +2427,8 @@ System.out.println(que);
 		System.out.println("Done Escaped the necessary");
 
 		System.out.println("Done remmoving stop words");
+		result = result.replace("o.style.setproperty", "");
+		result = result.replace("o.style.setProperty", "");
 		return result.replace("(adsbygoogle = window.adsbygoogle || []).push({}); ", "");
 	}
 
@@ -2528,7 +2531,13 @@ System.out.println(que);
 	}
 
 	public int countOccurences(String str, String word) {
-		// split the string by spaces in a
+		/*
+		 * // split the string by spaces in a Pattern pt =
+		 * Pattern.compile("[^a-zA-Z0-9]"); Matcher match = pt.matcher(str);
+		 * 
+		 * while (match.find()) { String s = match.group(); str =
+		 * str.replaceAll("\\" + s, " "); }
+		 */
 		String a[] = str.split("\\W+");
 
 		String str_ = null;
@@ -2615,7 +2624,7 @@ System.out.println(que);
 					+ "            }\r\n" + "        }\r\n" + "    ]\r\n" + "}");
 		}
 
-		System.out.println("query" + query);
+		System.out.println("query for elastic _getBloggerPosts --> " + query);
 
 		JSONObject elas = this._elastic(query);
 		JSONArray jsonArray = elas.getJSONArray("hit_array");
@@ -2645,9 +2654,16 @@ System.out.println(que);
 
 				String src = j.get("post").toString();
 				src = src.replaceAll("\\<.*?>", "");
+
+				src = src.replaceAll("\\<.*?>", "");
+				src = this.escape(src);
+				src = src.replace("o.style.setproperty", "");
+				src = src.replace("o.style.setProperty", "");
+				src = src.replace("(adsbygoogle = window.adsbygoogle || []).push({}); ", "");
+
 				if (bloggerName == "NOBLOGGER") {
 					if (j.get("title").toString() != null || j.get("title").toString() != "") {
-						occurence = this.countOccurences(src, term);
+						occurence = this.countOccurences(src, term.trim());
 //						System.out.println(term+"----------------------"+occurence);
 						title = j.get("title").toString();
 						blogpost_id = j.get("blogpost_id").toString();
@@ -2679,15 +2695,13 @@ System.out.println(que);
 			result = String.join(" ", list);
 		}
 
-		result.replaceAll("\\<.*?>", "");
-
-		result = this.escape(result);
 		System.out.println("Done Escaped the necessary");
 
 		System.out.println("Done remmoving stop words");
 
 		all_data.put("total", total);
-		all_data.put("posts", result.replace("(adsbygoogle = window.adsbygoogle || []).push({}); ", ""));
+
+		all_data.put("posts", result);
 		all_data.put("data", all);
 
 		return all_data;

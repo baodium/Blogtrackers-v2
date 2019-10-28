@@ -1719,19 +1719,9 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
 <!--word cloud  -->
  <script>
  
- var word_count2 = {}; 
- 
- <%if (topterms.length() > 0) {
-	 for (int i = 0; i < topterms.length(); i++) {
-		 JSONObject jsonObj = topterms.getJSONObject(i);
-			int size = Integer.parseInt(jsonObj.getString("frequency"));%>
-		<%-- {"text":"<%=terms.toString() %>","size":<%=size %>}, --%>
-		 word_count2["<%=jsonObj.getString("key")%>"] = <%=size%> 
-<%}
-	}else if(topterms.length() == 0){%>
-	word_count2["NoKeywords"] = 5/* 
-	word_count2["No Terms Available"] = 2 */
-	<%}%>
+$(document).ready(function(){
+	loadTerms("<%=mostactiveblogger%>",$("#blogid").val(),"<%=dt%>","<%=dte%>");
+})
 	
 	//console.log(word_count2);
 	<%
@@ -1740,23 +1730,23 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
 	JSONObject res=post._keywordTermvctors(sql);	
 	System.out.println("--->"+res); */ 
 	
-	String sql = post._getMostKeywordDashboard(mostactiveblogger,dt,dte,ids);
-	Map<String, Integer> res = new HashMap<String, Integer>();
+	//String sql = post._getMostKeywordDashboard(mostactiveblogger,dt,dte,ids);
+	//Map<String, Integer> res = new HashMap<String, Integer>();
 
-	res=post._keywordTermvctors(sql);
+	//res=post._keywordTermvctors(sql);
 	/* /* JSONObject res=post._keywordTermvctors(sql); */ 
-	JSONObject d = new JSONObject(res);
-	String s = res.toString();
-	JSONObject o = new JSONObject(res);
+	//JSONObject d = new JSONObject(res);
+	//String s = res.toString();
+	//JSONObject o = new JSONObject(res);
 	
 	/* Map<String, Integer> json = (HashMap<String, Integer>)json_type_2; */
 						
-	System.out.println("testing w" + d);
+	//System.out.println("testing w" + d);
 	%>
 	
 	<%-- wordtagcloud("#tagcloudcontainer",450,<%=res%>);  --%>
-	wordtagcloud("#tagcloudcontainer",450,<%=d%>); 
-	
+	<%-- wordtagcloud("#tagcloudcontainer",450,<%=d%>); 
+	 --%>
  /* wordtagcloud("#tagcloudcontainer",450,word_count2); */
 
  </script>

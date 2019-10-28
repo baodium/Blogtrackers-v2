@@ -855,10 +855,12 @@
 
 										try {
 											top_location = post._getMostLocation(mostactiveterm, dt, dte, ids);
+											top_location =(null == top_location || "" == top_location) ? "NOT AVAILABLE" : top_location;
 
 										} catch (Exception e) {
 
 										}
+										top_location =(null == top_location || "" == top_location) ? "NOT AVAILABLE" : top_location;
 										/* Integer post_mentioned=post._getBlogOrPostMentioned("post","care",dt, dte,ids); */
 							%>
 							<!-- BY SEUN--ENDING -->
@@ -918,7 +920,7 @@
 							<div class="col-md-3 mt5 mb5">
 								<h6 class="card-title mb0">Top Posting Location</h6>
 
-								<h3 class="mb0 bold-text top-location"><%=(null == top_location) ? "NOT AVAILABLE" : top_location%></h3>
+								<h3 class="mb0 bold-text top-location"><%=(null == top_location || "" == top_location) ? "NOT AVAILABLE" : top_location%></h3>
 								<!-- <small class="text-success">+5% from <b>Last Week</b></small> -->
 							</div>
 
@@ -1895,6 +1897,9 @@ console.log(data);
 					var d2 = d.date + "-12-31";
 
 					loadTable(d1, d2);
+					loadBlogMentioned(d1, d2);
+					loadMostLocation(d1, d2);
+					loadMostPost(d1, d2);
 				});
 			svg.call(tip)
 		}

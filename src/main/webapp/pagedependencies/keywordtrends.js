@@ -26,9 +26,10 @@ $('.select-term').on("click", function() {
 	$('#d3-line-basic').html('');
 	
 	/* $("#term_id").val(term_id); */
-	loadBlogMentioned(term);
-	loadMostLocation(term);
-	loadMostPost(term);
+	loadBlogMentioned(date_start, date_end);
+	
+	loadMostLocation(date_start, date_end);
+	loadMostPost(date_start, date_end);
 	getLineData(term);
 
 	/* loadStat(tm); */
@@ -94,7 +95,7 @@ $('.searchkeywords').on("keyup", function(e) {
  * }); }
  */
 
-function loadBlogMentioned(term) {
+function loadBlogMentioned(date_start,date_end) {
 	$(".blog-mentioned").html("<img src='images/loading.gif' />");
 	$.ajax({
 		url : app_url + "KeywordTrend",
@@ -102,10 +103,10 @@ function loadBlogMentioned(term) {
 		dataType : 'json',
 		data : {
 			action : "getblogmentioned",
-			term : term,
+			term : $("#term").val(),
 			all_blog_ids : $("#all_blog_ids").val(),
-			date_start : $("#date_start").val(),
-			date_end : $("#date_end").val(),
+			date_start : date_start,
+			date_end :  date_end,
 		},
 		error : function(response) {
 			console.log("error occured blog mentioned" + response);
@@ -117,7 +118,7 @@ function loadBlogMentioned(term) {
 	});
 }
 
-function loadMostLocation(term) {
+function loadMostLocation(date_start,date_end) {
 	$(".top-location").html("<img src='images/loading.gif' />");
 	$.ajax({
 		url : app_url + "KeywordTrend",
@@ -125,7 +126,7 @@ function loadMostLocation(term) {
 		dataType : 'json',
 		data : {
 			action : "getmostlocation",
-			term : term,
+			term : $("#term").val(),
 			all_blog_ids : $("#all_blog_ids").val(),
 			date_start : $("#date_start").val(),
 			date_end : $("#date_end").val(),
@@ -140,7 +141,7 @@ function loadMostLocation(term) {
 	});
 }
 
-function loadMostPost(term) {
+function loadMostPost(date_start,date_end) {
 	$(".post-mentioned").html("<img src='images/loading.gif' />");
 	$.ajax({
 		url : app_url + "KeywordTrend",
@@ -148,7 +149,7 @@ function loadMostPost(term) {
 		dataType : 'json',
 		data : {
 			action : "getmostpost",
-			term : term,
+			term : $("#term").val(),
 			all_blog_ids : $("#all_blog_ids").val(),
 			date_start : $("#date_start").val(),
 			date_end : $("#date_end").val(),
