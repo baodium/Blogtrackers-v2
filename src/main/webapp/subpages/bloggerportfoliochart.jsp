@@ -270,10 +270,11 @@ if(action.toString().equals("getstats")){
 		}
 	}
 	
-	
+	try{
 	JSONObject sql = post._getBloggerPosts(null,selectedblogid,date_start.toString(),date_end.toString(),ids.toString());
 	String sql_ = sql.get("posts").toString();
 	mostactiveterm = post._termVectors(sql_);
+	}catch(Exception e){}
 /* 	String sql = post._getBloggerPosts(selectedblogid,date_start.toString(),date_end.toString(),ids.toString());
 	mostactiveterm = post._termVectors(sql); */
 	
@@ -287,6 +288,15 @@ if(action.toString().equals("getstats")){
 	
 	%>
 <%=result.toString()%>
+<%}else if(action.toString().equals("gettopkeyword")){ 
+
+
+
+
+%>
+
+
+
 <% } else if(action.toString().equals("getdayonlychart")){ 
 	SimpleDateFormat DAY_NAME_ONLY = new SimpleDateFormat("EEEE");
 	
@@ -1125,6 +1135,8 @@ if(action.toString().equals("getstats")){
  </script>
  
 
+
+
 <% }else{ %>
 
 		 <div class="chart" id="d3-line-basic"></div>
@@ -1687,6 +1699,8 @@ if(action.toString().equals("getstats")){
  });
  </script>
 
-<% } %>
+<% }  %>
+
+
 
 	

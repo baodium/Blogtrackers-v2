@@ -22,6 +22,7 @@ $('.blogger-select').on("click", function(e){
 	$("#blogid").val(blg[1]);
 	
 	loadTerms(bloog,$("#all_blog_ids").val(),date_start,date_end);
+	
 	console.log(blogger+$("#all_blog_ids").val()+date_start+date_end)
 	loadInfluence(date_start,date_end);
 	getTotalPost(bloog,blg[1],date_start,date_end);
@@ -213,7 +214,7 @@ function loadTerms(blogger,blog_id,start_date,end_date){
 }
 
 function loadTopKeyword(blogger,blog_id,start_date,end_date){
-	$(".most-used-keyword").html("");
+	$(".most-used-keyword").html("<img src='images/loading.gif' />");
 	var blger = blogger.replaceAll(" ","__");
 	$.ajax({
 		url: app_url+"subpages/postingfrequencyterm.jsp",

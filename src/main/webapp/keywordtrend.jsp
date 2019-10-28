@@ -791,21 +791,21 @@
 
 							<%
 								/* 								if (sortedterms.length() > 0) {																	
-																				for (int i=0; i<sortedterms.length(); i++) {
-																					String[] vals = sortedterms.get(i).toString().split("___");
-																					String size = vals[0];
-																					String tm = vals[1];
-																					String terms_id = vals[2];
-																					
-																					if(!termstore.has(tm)){
-																						termstore.put(tm, tm);
-																					
-																						String dselected = "";
-																						if(i==0){
-																							dselected = "abloggerselected";
-																							//mostactiveterm = tm;
-																							selectedkeycount = term.getTermOcuurence(tm, dt, dte);;
-																						} */
+																						for (int i=0; i<sortedterms.length(); i++) {
+																							String[] vals = sortedterms.get(i).toString().split("___");
+																							String size = vals[0];
+																							String tm = vals[1];
+																							String terms_id = vals[2];
+																							
+																							if(!termstore.has(tm)){
+																								termstore.put(tm, tm);
+																							
+																								String dselected = "";
+																								if(i==0){
+																									dselected = "abloggerselected";
+																									//mostactiveterm = tm;
+																									selectedkeycount = term.getTermOcuurence(tm, dt, dte);;
+																								} */
 
 										/* BY SEUN--BEGINNING */
 										Integer keyword_count = null;
@@ -855,10 +855,12 @@
 
 										try {
 											top_location = post._getMostLocation(mostactiveterm, dt, dte, ids);
+											top_location =(null == top_location || "" == top_location) ? "NOT AVAILABLE" : top_location;
 
 										} catch (Exception e) {
 
 										}
+										top_location =(null == top_location || "" == top_location) ? "NOT AVAILABLE" : top_location;
 										/* Integer post_mentioned=post._getBlogOrPostMentioned("post","care",dt, dte,ids); */
 							%>
 							<!-- BY SEUN--ENDING -->
@@ -917,8 +919,8 @@
 
 							<div class="col-md-3 mt5 mb5">
 								<h6 class="card-title mb0">Top Posting Location</h6>
-								
-								<h3 class="mb0 bold-text top-location"><%=(null == top_location) ? "NOT AVAILABLE" : top_location%></h3>
+
+								<h3 class="mb0 bold-text top-location"><%=(null == top_location || "" == top_location) ? "NOT AVAILABLE" : top_location%></h3>
 								<!-- <small class="text-success">+5% from <b>Last Week</b></small> -->
 							</div>
 
@@ -1072,40 +1074,40 @@
 					<div style="" class="pt20" id="blogpost_detail">
 						<%
 							/* JSONObject tobj = firstpost;
-										String title = tobj.get("title").toString().replaceAll("[^a-zA-Z]", " ");
-										String body = tobj.get("post").toString().replaceAll("[^a-zA-Z]", " ");
-										String dat = tobj.get("date").toString().substring(0,10);
-										LocalDate datee = LocalDate.parse(dat);
-										DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");
-										String date = dtf.format(datee);
-										String replace = 	"<span style=background:red;color:#fff>"+mostactiveterm+"</span>";
-										String link = tobj.get("permalink").toString();
-										
-										String maindomain="";
-										try {
-											URI uri = new URI(link);
-											String domain = uri.getHost();
-											if (domain.startsWith("www.")) {
-												maindomain = domain.substring(4);
-											} else {
-												maindomain = domain;
-											}
-										} catch (Exception ex) {}
-										System.out.println("dd--"+title+blogpost_id+date+num_comments+blogger);
-										
-										title = title.replaceAll(mostactiveterm,replace);
-										String active2 = mostactiveterm.substring(0,1).toUpperCase()+mostactiveterm.substring(1,mostactiveterm.length());
-										String active3= mostactiveterm.toUpperCase();
-										
-										
-										title = title.replaceAll(mostactiveterm,replace);
-										title = title.replaceAll(active2,replace);
-										title = title.replaceAll(active3,replace);
-										
-										
-										body = body.replaceAll(mostactiveterm,replace);
-										body = body.replaceAll(active2,replace);
-										body = body.replaceAll(active3,replace); */
+													String title = tobj.get("title").toString().replaceAll("[^a-zA-Z]", " ");
+													String body = tobj.get("post").toString().replaceAll("[^a-zA-Z]", " ");
+													String dat = tobj.get("date").toString().substring(0,10);
+													LocalDate datee = LocalDate.parse(dat);
+													DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");
+													String date = dtf.format(datee);
+													String replace = 	"<span style=background:red;color:#fff>"+mostactiveterm+"</span>";
+													String link = tobj.get("permalink").toString();
+													
+													String maindomain="";
+													try {
+														URI uri = new URI(link);
+														String domain = uri.getHost();
+														if (domain.startsWith("www.")) {
+															maindomain = domain.substring(4);
+														} else {
+															maindomain = domain;
+														}
+													} catch (Exception ex) {}
+													System.out.println("dd--"+title+blogpost_id+date+num_comments+blogger);
+													
+													title = title.replaceAll(mostactiveterm,replace);
+													String active2 = mostactiveterm.substring(0,1).toUpperCase()+mostactiveterm.substring(1,mostactiveterm.length());
+													String active3= mostactiveterm.toUpperCase();
+													
+													
+													title = title.replaceAll(mostactiveterm,replace);
+													title = title.replaceAll(active2,replace);
+													title = title.replaceAll(active3,replace);
+													
+													
+													body = body.replaceAll(mostactiveterm,replace);
+													body = body.replaceAll(active2,replace);
+													body = body.replaceAll(active3,replace); */
 						%>
 						<h5 class="text-primary p20 pt0 pb0">
 							<%-- <%=title%> --%><%=title%></h5>
@@ -1115,16 +1117,14 @@
 								--%>
 							<button class="btn stylebuttonblue"
 								onclick="window.location.href = '<%=request.getContextPath()%>/bloggerportfolio.jsp?tid=<%=tid%>&blogger=<%-- <%=tobj.get("blogger")%> --%><%=blogger%>'">
-								<b class="float-left ultra-bold-text">
-									<%-- <%=tobj.get("blogger")%> --%><%=blogger%></b> <i
-									class="far fa-user float-right blogcontenticon"></i>
+								<b class="float-left ultra-bold-text"> <%-- <%=tobj.get("blogger")%> --%><%=blogger%></b>
+								<i class="far fa-user float-right blogcontenticon"></i>
 							</button>
 							</a>
 							<button class="btn stylebuttonnocolor nocursor">
 								<%-- <%=date %> --%><%=date%></button>
 							<button class="btn stylebuttonnocolor nocursor">
-								<b class="float-left ultra-bold-text">
-									<%-- <%=tobj.get("num_comments")%> --%><%=num_comments%>
+								<b class="float-left ultra-bold-text"> <%-- <%=tobj.get("num_comments")%> --%><%=num_comments%>
 									comments
 								</b><i class="far fa-comments float-right blogcontenticon"></i>
 							</button>
@@ -1210,8 +1210,7 @@
 									%>
 									<tr>
 										<td>
-											<%-- <%=terms%> --%>
-											<%-- <%=key %> --%>
+											<%-- <%=terms%> --%> <%-- <%=key %> --%>
 										</td>
 										<%-- <td><%=NumberFormat.getNumberInstance(Locale.US).format(size)%></td> --%>
 										<td>
@@ -1898,6 +1897,9 @@ console.log(data);
 					var d2 = d.date + "-12-31";
 
 					loadTable(d1, d2);
+					loadBlogMentioned(d1, d2);
+					loadMostLocation(d1, d2);
+					loadMostPost(d1, d2);
 				});
 			svg.call(tip)
 		}
@@ -2186,4 +2188,7 @@ console.log(data);
 
 </html>
 
-<% }} %>
+<%
+	}
+	}
+%>
