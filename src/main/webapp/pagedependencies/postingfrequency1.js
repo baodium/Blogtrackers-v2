@@ -5,7 +5,7 @@
 	$(".blogger-select").removeClass("abloggerselected");
 	//console.log("here 2")	;
 	$("body").addClass("loaded");
-	$(this).addClass("abloggerselected");
+	//$(this).addClass("abloggerselected");
 
 	var date_start = $("#date_start").val();
 	var date_end = $("#date_end").val();
@@ -20,6 +20,36 @@
 	
 	var bloog = blg[0];
 	bloog = name.replaceAll("__"," ");
+	
+	
+	
+	///////////////start collecting names
+	 var count = $('.thanks').length;
+	 
+	 if(count > 0){
+		 
+		 var all_selected_names = '';
+		 var i = 1;
+		 $( ".thanks" ).each(function( index ) {
+			 
+			 
+			 if(i > 1){
+				 all_selected_names += ' , ';
+			 }
+			 
+	    	blog_name = 	$(this).attr('name');
+	    	
+	    	blog_id = 	this.id;
+	    	
+	    	all_selected_names += blog_name;
+	    		
+	    	i++;
+		    		
+		});
+		 
+		 
+	 }
+	////////////end collecting names
 	
 	$(".activeblogger").html(bloog);
 	$(".activeblog").html(blg[2]);
