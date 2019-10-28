@@ -2295,7 +2295,7 @@ wordtagcloud("#tagcloudcontainer",450,<%=d%>);
  </script>
 <script src="pagedependencies/baseurl.js"></script>
  
-<script src="pagedependencies/influence.js?v=578967"></script>
+<script src="pagedependencies/influence1.js?v=578967"></script>
 	
 </body>
 </html>
