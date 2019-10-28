@@ -1558,7 +1558,7 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
          "scrollX": true,
           "pagingType": "simple",
         	  "columnDefs": [
-        	      { "width": "75%", "targets": 0 },
+        	      { "width": "65%", "targets": 0 },
         	      { "width": "25%", "targets": 0 }
         	    ]
        /*    ,

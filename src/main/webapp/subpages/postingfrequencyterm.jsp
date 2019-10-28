@@ -105,7 +105,17 @@ var word_count2 = {};
 	<%/* outlinks = outl._searchByRange("date", dt, dte, ids); */
 				JSONObject d = new JSONObject();
 				String highest = null;
-				if (null == session.getAttribute(blogger.toString() + "_wordcloud_" + tid.toString()+ date_start.toString()+ date_end.toString())) {
+				
+		        String[] arrOfStrStart = date_start.toString().split("-");
+		        String[] arrOfStrEnd = date_end.toString().split("-");
+		        
+		        List<String> itemListStart = Arrays.asList(arrOfStrStart);
+		        List<String> itemListEnd = Arrays.asList(arrOfStrEnd);
+		        
+		        String dateStartNew = itemListStart.get(0);
+		        String dateEndNew = itemListEnd.get(0);
+		        
+				if (null == session.getAttribute(blogger.toString() + "_wordcloud_" + tid.toString()+ dateStartNew + dateEndNew)) {
 
 					try {
 						String sql = post._getMostKeywordDashboard(blogger.toString(), dt, dte,
@@ -129,8 +139,8 @@ var word_count2 = {};
 
 						System.out.println("testing w---" + res);
 
-						session.setAttribute(blogger.toString() + "_wordcloud_" + tid.toString()+ date_start.toString()+ date_end.toString(), d);
-						session.setAttribute(blogger.toString() + "_topkeyword_" + tid.toString()+ date_start.toString()+ date_end.toString(), d.get("highest"));%>
+						session.setAttribute(blogger.toString() + "_wordcloud_" + tid.toString()+ dateStartNew + dateEndNew, d);
+						session.setAttribute(blogger.toString() + "_topkeyword_" + tid.toString()+ dateStartNew + dateEndNew, d.get("highest"));%>
 
 	wordtagcloud("#tagcloudcontainer",450,<%=d.get("data")%>); 
 	<%-- wordtagcloud("#tagcloudcontainer",450,<%=d%>);  --%>
@@ -147,9 +157,9 @@ var word_count2 = {};
 
 				} else {
 
-					Object d_ = (null == session.getAttribute(blogger.toString() + "_wordcloud_" + tid.toString()+ date_start.toString()+ date_end.toString()))
+					Object d_ = (null == session.getAttribute(blogger.toString() + "_wordcloud_" + tid.toString()+ dateStartNew + dateEndNew))
 							? ""
-							: session.getAttribute(blogger.toString() + "_wordcloud_" + tid.toString()+ date_start.toString()+ date_end.toString());
+							: session.getAttribute(blogger.toString() + "_wordcloud_" + tid.toString()+ dateStartNew + dateEndNew);
 
 					JSONObject ddd = new JSONObject(d_.toString());
 					System.out.println("tester" + ddd);%>

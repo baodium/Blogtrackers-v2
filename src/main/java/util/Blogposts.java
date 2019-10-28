@@ -1918,7 +1918,7 @@ public class Blogposts {
 	 * cal.getTime(); }
 	 */
 	public JSONObject _makeElasticRequest(JSONObject query, String requestType, String endPoint) throws Exception {
-		
+
 		JSONObject myResponse = new JSONObject();
 		try {
 
@@ -1934,7 +1934,7 @@ public class Blogposts {
 			myResponse = new JSONObject(jsonResponse);
 
 			esClient.close();
-			
+
 		} catch (Exception e) {
 			// System.out.println("Error for elastic request -- > "+e);
 		}
@@ -2346,7 +2346,7 @@ public class Blogposts {
 	public String _getMostKeywordDashboard(String BloggerName, String date_from, String date_to, String ids_)
 			throws Exception {
 		//
-
+//		BloggerName="Stephen Lendman,South Front";
 		ArrayList<String> list = new ArrayList<String>();
 		JSONObject query = new JSONObject();
 		String result = null;
@@ -2370,35 +2370,105 @@ public class Blogposts {
 					+ "                \"unmapped_type\": \"float\"\r\n" + "            }\r\n" + "        }\r\n"
 					+ "    ]\r\n" + "}");
 		} else {
-			query = new JSONObject("{\r\n" + "    \"size\": 10000,\r\n" + "    \"query\": {\r\n"
-					+ "        \"bool\": {\r\n" + "            \"must\": [\r\n" + "                {\r\n"
-					+ "                    \"bool\": {\r\n" + "                        \"must\": [\r\n"
-					+ "                            {\r\n" + "                                \"term\": {\r\n"
-					+ "                                    \"blogger.keyword\": {\r\n"
-					+ "                                        \"value\": \"" + BloggerName + "\",\r\n"
-					+ "                                        \"boost\": 1.0\r\n"
-					+ "                                    }\r\n" + "                                }\r\n"
-					+ "                            },\r\n" + "                            {\r\n"
-					+ "                                \"terms\": {\r\n"
-					+ "                                    \"blogsite_id\": [" + ids_ + "],\r\n"
-					+ "                                    \"boost\": 1.0\r\n" + "                                }\r\n"
-					+ "                            }\r\n" + "                        ],\r\n"
-					+ "                        \"adjust_pure_negative\": true,\r\n"
-					+ "                        \"boost\": 1.0\r\n" + "                    }\r\n"
-					+ "                },\r\n" + "                {\r\n" + "                    \"range\": {\r\n"
-					+ "                        \"date\": {\r\n" + "                            \"from\": \"" + date_from
-					+ "\",\r\n" + "                            \"to\": \"" + date_to + "\",\r\n"
-					+ "                            \"include_lower\": true,\r\n"
-					+ "                            \"include_upper\": true,\r\n"
-					+ "                            \"boost\": 1.0\r\n" + "                        }\r\n"
-					+ "                    }\r\n" + "                }\r\n" + "            ],\r\n"
-					+ "            \"adjust_pure_negative\": true,\r\n" + "            \"boost\": 1.0\r\n"
-					+ "        }\r\n" + "    },\r\n" + "    \"_source\": {\r\n" + "        \"includes\": [\r\n"
-					+ "            \"post\"\r\n" + "        ],\r\n" + "        \"excludes\": []\r\n" + "    },\r\n"
-					+ "    \"sort\": [\r\n" + "        {\r\n" + "            \"influence_score\": {\r\n"
-					+ "                \"order\": \"desc\",\r\n" + "                \"missing\": \"_first\",\r\n"
-					+ "                \"unmapped_type\": \"float\"\r\n" + "            }\r\n" + "        }\r\n"
-					+ "    ]\r\n" + "}");
+			query = new JSONObject("{\r\n" + 
+					"    \"size\": 10000,\r\n" + 
+					"    \"query\": {\r\n" + 
+					"        \"bool\": {\r\n" + 
+					"            \"adjust_pure_negative\": true,\r\n" + 
+					"            \"must\": [\r\n" + 
+					"                {\r\n" + 
+					"                    \"bool\": {\r\n" + 
+					"                        \"adjust_pure_negative\": true,\r\n" + 
+					"                        \"must\": [\r\n" + 
+					"                            {\r\n" + 
+					"                                \"terms\": {\r\n" + 
+					"                                    \"blogger.keyword\": ["+BloggerName+"],\r\n" + 
+					"                                    \"boost\": 1\r\n" + 
+					"                                }\r\n" + 
+					"                            },\r\n" + 
+					"                            {\r\n" + 
+					"                                \"terms\": {\r\n" + 
+					"                                    \"blogsite_id\": ["+ids_+"],\r\n" + 
+					"                                    \"boost\": 1\r\n" + 
+					"                                }\r\n" + 
+					"                            }\r\n" + 
+					"                        ],\r\n" + 
+					"                        \"boost\": 1\r\n" + 
+					"                    }\r\n" + 
+					"                },\r\n" + 
+					"                {\r\n" + 
+					"                    \"range\": {\r\n" + 
+					"                        \"date\": {\r\n" + 
+					"                            \"include_lower\": true,\r\n" + 
+					"                            \"include_upper\": true,\r\n" + 
+					"                            \"from\": \""+date_from+"\",\r\n" + 
+					"                            \"boost\": 1,\r\n" + 
+					"                            \"to\": \""+date_to+"\"\r\n" + 
+					"                        }\r\n" + 
+					"                    }\r\n" + 
+					"                }\r\n" + 
+					"            ],\r\n" + 
+					"            \"boost\": 1\r\n" + 
+					"        }\r\n" + 
+					"    },\r\n" + 
+					"    \"_source\": {\r\n" + 
+					"        \"excludes\": [],\r\n" + 
+					"        \"includes\": [\r\n" + 
+					"            \"post\"\r\n" + 
+					"        ]\r\n" + 
+					"    },\r\n" + 
+					"    \"sort\": [\r\n" + 
+					"        {\r\n" + 
+					"            \"influence_score\": {\r\n" + 
+					"                \"unmapped_type\": \"float\",\r\n" + 
+					"                \"missing\": \"_first\",\r\n" + 
+					"                \"order\": \"desc\"\r\n" + 
+					"            }\r\n" + 
+					"        }\r\n" + 
+					"    ]\r\n" + 
+					"}");
+			/*
+			 * query = new JSONObject("{\r\n" + "    \"size\": 10000,\r\n" +
+			 * "    \"query\": {\r\n" + "        \"bool\": {\r\n" +
+			 * "            \"must\": [\r\n" + "                {\r\n" +
+			 * "                    \"bool\": {\r\n" +
+			 * "                        \"must\": [\r\n" +
+			 * "                            {\r\n" +
+			 * "                                \"term\": {\r\n" +
+			 * "                                    \"blogger.keyword\": {\r\n" +
+			 * "                                        \"value\": \"" + BloggerName +
+			 * "\",\r\n" + "                                        \"boost\": 1.0\r\n" +
+			 * "                                    }\r\n" +
+			 * "                                }\r\n" +
+			 * "                            },\r\n" + "                            {\r\n" +
+			 * "                                \"terms\": {\r\n" +
+			 * "                                    \"blogsite_id\": [" + ids_ + "],\r\n" +
+			 * "                                    \"boost\": 1.0\r\n" +
+			 * "                                }\r\n" + "                            }\r\n"
+			 * + "                        ],\r\n" +
+			 * "                        \"adjust_pure_negative\": true,\r\n" +
+			 * "                        \"boost\": 1.0\r\n" + "                    }\r\n" +
+			 * "                },\r\n" + "                {\r\n" +
+			 * "                    \"range\": {\r\n" +
+			 * "                        \"date\": {\r\n" +
+			 * "                            \"from\": \"" + date_from + "\",\r\n" +
+			 * "                            \"to\": \"" + date_to + "\",\r\n" +
+			 * "                            \"include_lower\": true,\r\n" +
+			 * "                            \"include_upper\": true,\r\n" +
+			 * "                            \"boost\": 1.0\r\n" +
+			 * "                        }\r\n" + "                    }\r\n" +
+			 * "                }\r\n" + "            ],\r\n" +
+			 * "            \"adjust_pure_negative\": true,\r\n" +
+			 * "            \"boost\": 1.0\r\n" + "        }\r\n" + "    },\r\n" +
+			 * "    \"_source\": {\r\n" + "        \"includes\": [\r\n" +
+			 * "            \"post\"\r\n" + "        ],\r\n" +
+			 * "        \"excludes\": []\r\n" + "    },\r\n" + "    \"sort\": [\r\n" +
+			 * "        {\r\n" + "            \"influence_score\": {\r\n" +
+			 * "                \"order\": \"desc\",\r\n" +
+			 * "                \"missing\": \"_first\",\r\n" +
+			 * "                \"unmapped_type\": \"float\"\r\n" + "            }\r\n" +
+			 * "        }\r\n" + "    ]\r\n" + "}");
+			 */
 		}
 		System.out.println("query for elastic _getMostKeywordDashboard --> " + query);
 		JSONArray jsonArray = this._elastic(query).getJSONArray("hit_array");
