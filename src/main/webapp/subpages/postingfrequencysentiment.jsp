@@ -19,8 +19,8 @@ Object date_end = (null == request.getParameter("date_end")) ? "" : request.getP
 Object blogger = (null == request.getParameter("blogger")) ? "" : request.getParameter("blogger");
 Object blog_id = (null == request.getParameter("blog_id")) ? "" : request.getParameter("blog_id");
 
-Object postids = (null == request.getParameter("post_ids")) ? "" : request.getParameter("post_ids");
-
+//Object postids = (null == request.getParameter("post_ids")) ? "" : request.getParameter("post_ids");
+Object action = (null == request.getParameter("action")) ? "" : request.getParameter("action");
 String bloggerstr = blogger.toString().replaceAll("_"," ");
 Blogpost_entitysentiment blogpostsentiment  = new Blogpost_entitysentiment();
 ArrayList allentitysentiments = new ArrayList(); 
@@ -28,9 +28,16 @@ String dt = date_start.toString();
 String dte = date_end.toString();
 String year_start="";
 String year_end="";	
-String pids = new Blogposts()._getPostIdsByBloggerName("date",dt, dte,blogger.toString(),"date","DESC");
 
-allentitysentiments = blogpostsentiment._searchByRange("date", dt, dte, pids);
+
+
+/* allentitysentiments = blogpostsentiment._searchByRange("date", dt, dte, blogsiteId); */
+if(action.toString().equals("getsentimenttable")){
+	String pids = new Blogposts()._getPostIdsByBloggerName("date",dt, dte,blogger.toString(),"date","DESC");
+	System.out.println("date..."+ dt+ dte+ pids);
+	
+	allentitysentiments = blogpostsentiment._searchByRange("date", dt, dte, pids);
+	
 %>
 <link rel="stylesheet" href="assets/css/table.css" />
 <link rel="stylesheet" href="assets/css/style.css" />
@@ -45,7 +52,8 @@ allentitysentiments = blogpostsentiment._searchByRange("date", dt, dte, pids);
                                 </thead>
                                 <tbody>
                                 <%
-                                if(allentitysentiments.size()>0){							
+                                if(allentitysentiments.size()>0){	
+                                	System.out.println("date...");
 									String tres = null;
 									JSONObject tresp = null;
 									String tresu = null;
@@ -104,4 +112,6 @@ allentitysentiments = blogpostsentiment._searchByRange("date", dt, dte, pids);
 	 
  } );
  </script>
+ 
+ <%} %>
 	<!--end for table  -->

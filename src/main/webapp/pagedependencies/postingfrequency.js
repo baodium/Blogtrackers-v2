@@ -23,7 +23,7 @@ $('.blogger-select').on("click", function(e){
 	
 	loadTerms(bloog,$("#all_blog_ids").val(),date_start,date_end);
 	
-	console.log(blogger+$("#all_blog_ids").val()+date_start+date_end)
+	console.log(blogger+$("#all_blog_ids").val()+date_start+date_end);
 	loadInfluence(date_start,date_end);
 	getTotalPost(bloog,blg[1],date_start,date_end);
 	loadChart(bloog,blg[1],date_start,date_end);
@@ -31,6 +31,7 @@ $('.blogger-select').on("click", function(e){
 	getTopLocation(bloog,$("#all_blog_ids").val(),date_start,date_end);
 	loadTopKeyword(bloog,$("#all_blog_ids").val(),date_start,date_end);	
 	loadSentiments(bloog,$("#all_blog_ids").val(),date_start,date_end);
+
 
 });
 
@@ -243,11 +244,12 @@ function loadTopKeyword(blogger,blog_id,start_date,end_date){
 function loadSentiments(blogger,blog_id,start_date,end_date){
 	$("#entity_table").html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />");
 	var blger = blogger.replaceAll(" ","__");
+	
 	$.ajax({
 		url: app_url+"subpages/postingfrequencysentiment.jsp",
 		method: 'POST',
 		data: {
-			action:"getchart",
+			action:"getsentimenttable",
 			blogger:blogger,
 			post_ids:$("#postby"+blger).val(),
 			date_start:start_date,

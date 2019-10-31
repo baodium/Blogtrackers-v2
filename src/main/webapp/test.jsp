@@ -79,7 +79,8 @@
 	JSONObject res=post._keywordTermvctors(sql);	
 	System.out.println("--->"+res); */
 	
-JSONObject sql = post._getBloggerPosts("","tine","2017-04-22","2017-04-22","697");
+/* JSONObject sql = post._getBloggerPosts("","tine","2017-04-22","2017-04-22","697"); */
+
 	/* 		
 	String sql_ = sql.get("data").toString();
 	
@@ -199,7 +200,8 @@ JSONObject sql = post._getBloggerPosts("","tine","2017-04-22","2017-04-22","697"
     /* String formattedDate = outputFormatter.format(date); */
     /* System.out.println(d); */ // prints 10-04-2018
 	
-	
+    ArrayList allposts=post._getBloggerByBloggerName("date","2008-10-18", "2019-10-30","NASHA","date","DESC");
+
 	
 	PrintWriter pww = response.getWriter();
 	
@@ -288,7 +290,32 @@ JSONObject sql = post._getBloggerPosts("","tine","2017-04-22","2017-04-22","697"
 			%>
 			<p>His trackers</p>
 			  <%--  <h1>HIGHEST TERM --><%=result%></h1>   --%>
-			 <h1>HIGHEST TERM --><%=sql%></h1> 
+			  
+			  <%
+			    if(allposts.size()>0){	
+			        
+					String tres = null;
+					JSONObject tresp = null;
+					String tresu = null;
+					JSONObject tobj = null;
+					String date =null;
+					int j=0;
+					int k=0;
+					for(int i=0; i< allposts.size(); i++){
+							tres = allposts.get(i).toString();	
+						tresp = new JSONObject(tres);
+						tresu = tresp.get("_source").toString();
+						tobj = new JSONObject(tresu);
+						String dat = tobj.get("date").toString().substring(0,10);
+						LocalDate datee = LocalDate.parse(dat);
+						DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");
+						date = dtf.format(datee);
+						
+						k++; 
+			  
+			  %>
+			 <h1>HIGHEST TERM --><%=tobj.get("title")%>  ------ <%= tobj.get("post").toString()%></h1> 
+			 <% }}%>
 <%-- 			   <h1>POSTS--><%
 			   JSONObject j = new JSONObject();
 			   for(int i=0; i<sql.length();i++){

@@ -24,9 +24,10 @@
 
 	String dt = date_start.toString();
 	String dte = date_end.toString();
-	String pids = new Blogposts()._getPostIdsByBloggerName("date", dt, dte, blogger.toString(), "date", "DESC");
+	
+	//String pids = new Blogposts()._getPostIdsByBloggerName("date", dt, dte, blogger.toString(), "date", "DESC");
 
-	ArrayList allterms = new Terms()._searchByRange("blogpostid", dt, dte, pids);//_searchByRange(dt, dte, post_ids.toString());
+	//ArrayList allterms = new Terms()._searchByRange("blogpostid", dt, dte, pids);//_searchByRange(dt, dte, post_ids.toString());
 	Object all_blog_ids = (null == request.getParameter("all_blog_ids"))
 			? ""
 			: request.getParameter("all_blog_ids");
@@ -37,7 +38,7 @@
 	JSONArray topterms = new JSONArray();
 	JSONObject keys = new JSONObject();
 	String mostusedkeyword = "";
-	if (allterms.size() > 0) {
+/* 	if (allterms.size() > 0) {
 		for (int p = 0; p < allterms.size(); p++) {
 			String bstr = allterms.get(p).toString();
 			JSONObject bj = new JSONObject(bstr);
@@ -58,9 +59,9 @@
 			if (!keys.has(tm)) {
 				keys.put(tm, tm);
 				/* topterms.put(cont); */
-			}
+/* 			}
 		}
-	}
+	} */ 
 
 	if (action.toString().equals("gettopkeyword")) {
 %>

@@ -35,7 +35,7 @@ String trackername="";
 Trackers tracker  = new Trackers();
 Blogposts post  = new Blogposts();
 Blogs blog  = new Blogs();
-Terms term  = new Terms();
+/* Terms term  = new Terms(); */
 Blogger bloggerss = new Blogger();
 Blogpost_entitysentiment blogpostsentiment  = new Blogpost_entitysentiment();
 ArrayList allterms = new ArrayList(); 
@@ -535,12 +535,15 @@ userinfo = (ArrayList<?>)userinfo.get(0);
 												dselected = "abloggerselected";
 												activew = "thanks";
 												mostactiveblogger = bloggerName;
-												//String pids = post._getPostIdsByBloggerName("date",dt, dte,bloggerName,"date","DESC");
-												allterms = term._searchByRange("blogsiteid", dt, dte, blogsiteId);//_searchByRange("blogpostid",dt, dte,postids);
+												String pids = post._getPostIdsByBloggerName("date",dt, dte,"'"+bloggerName+"'","date","DESC");
+												//allterms = term._searchByRange("blogsiteid", dt, dte, blogsiteId);//_searchByRange("blogpostid",dt, dte,postids);
 												System.out.println("Most active blogger:"+mostactiveblogger);
-												allentitysentiments = blogpostsentiment._searchByRange("date", dt, dte, blogsiteId);
-												 selectedid=blogsiteId; 
-												allposts = post._getBloggerByBloggerName("date",dt, dte,bloggerName,"date","DESC");							
+												allentitysentiments = blogpostsentiment._searchByRange("date", dt, dte, pids);
+												selectedid=blogsiteId; 
+												
+												
+												allposts = post._getBloggerByBloggerName("date",dt, dte,bloggerName,"date","DESC");	
+												System.out.println("date---"+dt+ dte+bloggerName+"date"+"DESC"+blogsiteId);
 										}else{
 												dselected = "";
 												activew = "";
@@ -576,7 +579,7 @@ userinfo = (ArrayList<?>)userinfo.get(0);
 
 <%
 
-int highestfrequency = 0;
+/* int highestfrequency = 0;
 JSONArray topterms = new JSONArray();
 JSONObject keys = new JSONObject();
 System.out.println("All terms: "+allterms);
@@ -624,8 +627,8 @@ if (allterms.size() > 0) {
 			topterms.put(cont);
 		}
 		*/
-	}
-}
+/* 	}
+}  */
 
 
 
@@ -734,7 +737,7 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
 
 <div class="row mb0">
   <div class="col-md-6 mt20 ">
-    <div class="card card-style mt20">
+    <div class="card card-style mt20" style="min-height: 480px;">
       <div class="card-body  p30 pt5 pb5">
         <div><p class="text-primary mt10">Keywords of <b class="text-blue activeblogger"><%=mostactiveblogger%></b></p></div>
         
@@ -833,19 +836,20 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
 									JSONObject tresp = null;
 									String tresu = null;
 									JSONObject tobj = null;
+									String date =null;
 									int j=0;
 									int k=0;
 									for(int i=0; i< allposts.size(); i++){
-										tres = allposts.get(i).toString();	
+ 										tres = allposts.get(i).toString();	
 										tresp = new JSONObject(tres);
 										tresu = tresp.get("_source").toString();
 										tobj = new JSONObject(tresu);
 										String dat = tobj.get("date").toString().substring(0,10);
 										LocalDate datee = LocalDate.parse(dat);
 										DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");
-										String date = dtf.format(datee);
+										date = dtf.format(datee);
 										
-										k++;
+										k++; 
 									%>
                                     <tr>
                                    <td><a class="blogpost_link cursor-pointer" id="<%=tobj.get("blogpost_id")%>" ><%=tobj.get("title") %></a><br/>
@@ -903,7 +907,7 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
 										<div class="p20 pt0 pb20 text-blog-content text-primary"
 											style="height: 550px; overflow-y: scroll;">
 
-											<%=tobj.get("post").toString().replaceAll("[^a-zA-Z]", " ")%>
+											<%=tobj.get("post").toString()%>
 
 										</div>
 										</div>       
@@ -1369,7 +1373,7 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
                         	   getTopLocation(bloog,$("#all_blog_ids").val(),d1,d2);
                         	   loadTerms(bloog,$("#all_blog_ids").val(),d1,d2);	
                         		loadSentiments(bloog,$("#all_blog_ids").val(),d1,d2);
-                        		
+                        		getTotalPost(bloog,"",d1,d2);
                         	  // loadInfluence(d1,d2); 
                         	   
                            })
@@ -1563,6 +1567,7 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
      $('#DataTables_Table_0_wrapper').DataTable( {
          "scrollY": 430,
          "scrollX": true,
+         "order": [],
           "pagingType": "simple",
         	  "columnDefs": [
         	      { "width": "65%", "targets": 0 },

@@ -949,7 +949,7 @@
 
 		<div id="combined-div">
 
-			<div class="row m0 mt20 mb0 d-flex align-items-stretch">
+			<div class="row m0 mt20 mb0 d-flex align-items-stretch" style="min-height: 500px;">
 				<div
 					class="col-md-6 mt20 card card-style nobordertopright noborderbottomright"
 					id="post-list">
@@ -1349,7 +1349,7 @@ $(document).ready(function() {
 				"scrollY": 480,
 
 				"pagingType": "simple",
-				"order": [[1, "desc"]]
+				"order": []
 				/*  ,
 			 dom: 'Bfrtip'
 		   ,
