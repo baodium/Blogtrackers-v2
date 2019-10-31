@@ -1120,30 +1120,19 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
     
     	 
     	 if(count > 0){
-    		 
-    		 var all_selected_names = '';
-    		 var i = 1;
+    		
     		 $( ".thanks" ).each(function( index ) {
     			 
-    			 
-    			 if(i > 1){
-    				 all_selected_names += ' , ';
-    			 }
-    			 
-    			 
        		  		var ind = index;
-       		  		
        		  		
     		    	blog_name = 	$(this).attr('name');
     		    	
     		    	blog_id = 	this.id;
     		    	
-    		    	all_selected_names += blog_name;
     		    		
     		    		
     		    ////start ajax
     		    	
-    		        
     		    	$.ajax({
     		  			url: app_url + "PostingFrequencyTest",
     		  			method: 'POST',
@@ -1219,8 +1208,6 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
     		    	
     		  
     		    ///////end ajax
-    		    		
-    		    		i++;
     		    		
     		    		});
     		 
