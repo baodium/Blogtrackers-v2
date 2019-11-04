@@ -1228,7 +1228,7 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
     	    				  });
     	    				  
     	    			/////////start graph stuff
-      	    				
+      	    				console.log(data);
   				 			//var width = 750;
   				 			var width = $('#chart-container').width();
   				 		    var height = 200;
