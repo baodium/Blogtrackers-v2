@@ -20,6 +20,8 @@
 <%
 	Object email = (null == session.getAttribute("email")) ? "" : session.getAttribute("email");
 	Object tid = (null == request.getParameter("tid")) ? "" : request.getParameter("tid");
+	
+	
 
 	Object user = (null == session.getAttribute("username")) ? "" : session.getAttribute("username");
 	Object userid = (null == session.getAttribute("user")) ? "" : session.getAttribute("user");
@@ -1277,6 +1279,7 @@
 	<script type="text/javascript" src="assets/js/jquery-1.11.3.min.js"></script>
 	<script src="assets/bootstrap/js/bootstrap.js">
 	</script>
+	
 	<script src="assets/js/generic.js">
 	</script>
 	<script src="assets/vendors/bootstrap-daterangepicker/moment.js"></script>
@@ -1284,6 +1287,7 @@
 		src="assets/vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
 	<!-- Start for tables  -->
 	<script type="text/javascript"
+	
 		src="assets/vendors/DataTables/datatables.min.js"></script>
 	<script type="text/javascript"
 		src="assets/vendors/DataTables/dataTables.bootstrap4.min.js"></script>

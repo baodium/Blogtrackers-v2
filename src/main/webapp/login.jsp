@@ -9,12 +9,14 @@ System.out.println("LOGIN--" + request.getHeader("referer"));
 System.out.println("LOGIN_EMAIL--" + email);
 	if (email != null && email != "") {
 		response.sendRedirect("dashboard.jsp");		
-	} else if (request.getHeader("referer").equals(p +"/forgotpassword.jsp")){
+	} 
+	/* else if (request.getHeader("referer").equals(p +"/forgotpassword.jsp")){
 		response.sendRedirect("ChangePassword.jsp");
-	} else if (request.getHeader("referer").equals(p +"/ChangePassword.jsp")){
+	}  */
+	/* else if (request.getHeader("referer").equals(p +"/ChangePassword.jsp")){
 		session.invalidate();
 		response.sendRedirect("ChangePassword.jsp");
-	}
+	} */
 	/* else if (request.getHeader("referer").equals(p +"/ChangePassword.jsp")){
 		session.invalidate();
 		response.sendRedirect("ChangePassword.jsp");

@@ -89,6 +89,10 @@
 			JSONObject tresp = null;
 			String tresu = null;
 			JSONObject tobj = null;
+			
+			
+			
+			
 
 			int k = 0;
 			int tloc = 0;
@@ -126,10 +130,12 @@
 <%
 	} else if (action.toString().equals("gettable")) {
 		System.out.println("start:" + dt + ",End:" + dte);
+		
+		
 %>
 
 <%
-	ArrayList allposts = post._searchByTitleAndBody(mostactiveterm, "date", dt, dte);//term._searchByRange("date",dt,dte, tm,"term","10");
+	//ArrayList allposts = post._searchByTitleAndBody(mostactiveterm, "date", dt, dte);//term._searchByRange("date",dt,dte, tm,"term","10");
 %>
 
 

@@ -935,6 +935,7 @@ public class Blogposts {
 	public ArrayList _searchByTitleAndBody(String term, String sortby, String start, String end) throws Exception {
 
 		int size = 20;
+		term = null;
 		/*
 		 * ArrayList response =new ArrayList(); DbConnection db = new DbConnection();
 		 * String count = "0"; try { response =
@@ -966,7 +967,7 @@ public class Blogposts {
 				+ "\",\r\n" + "                            \"lte\": \"" + end + "\"\r\n"
 				+ "                        }\r\n" + "                    }\r\n" + "                }\r\n"
 				+ "            }\r\n" + "        }\r\n" + "    }");
-
+		System.out.println("query for elastic _searchByTitleAndBody --> " + jsonObj);
 		String url = base_url + "_search?size=" + size;
 		// System.out.println(url);
 		return this._getResult(url, jsonObj);
@@ -1988,10 +1989,26 @@ public class Blogposts {
 	}
 
 	public String _countPostMentioned(String term, String date_from, String date_to, String ids_) {
-		JSONObject query = new JSONObject("{\r\n" + "\r\n" + "    \"query\": {\r\n" + "        \"bool\": {\r\n"
+//		term = null;
+//		JSONObject query = new JSONObject("{\r\n" + "\r\n" + "    \"query\": {\r\n" + "        \"bool\": {\r\n"
+//				+ "            \"adjust_pure_negative\": true,\r\n" + "            \"must\": [\r\n"
+//				+ "                {\r\n" + "                    \"term\": {\r\n"
+//				+ "                        \"post\": \"" + term + "\"\r\n" + "                    }\r\n"
+//				+ "                },\r\n" + "                {\r\n" + "                    \"terms\": {\r\n"
+//				+ "                        \"blogsite_id\": [" + ids_ + "],\r\n"
+//				+ "                        \"boost\": 1\r\n" + "                    }\r\n" + "                },\r\n"
+//				+ "                {\r\n" + "                    \"range\": {\r\n"
+//				+ "                        \"date\": {\r\n" + "                            \"include_lower\": true,\r\n"
+//				+ "                            \"include_upper\": true,\r\n"
+//				+ "                            \"from\": \"" + date_from + "\",\r\n"
+//				+ "                            \"boost\": 1,\r\n" + "                            \"to\": \"" + date_to
+//				+ "\"\r\n" + "                        }\r\n" + "                    }\r\n" + "                }\r\n"
+//				+ "            ],\r\n" + "            \"boost\": 1\r\n" + "        }\r\n" + "    }\r\n" + "\r\n" + "}");
+
+		JSONObject query = new JSONObject("{\r\n" + "    \"query\": {\r\n" + "        \"bool\": {\r\n"
 				+ "            \"adjust_pure_negative\": true,\r\n" + "            \"must\": [\r\n"
-				+ "                {\r\n" + "                    \"term\": {\r\n"
-				+ "                        \"post\": \"" + term + "\"\r\n" + "                    }\r\n"
+				+ "                {\r\n" + "                    \"terms\": {\r\n"
+				+ "                        \"post\": [" + term + "]\r\n" + "                    }\r\n"
 				+ "                },\r\n" + "                {\r\n" + "                    \"terms\": {\r\n"
 				+ "                        \"blogsite_id\": [" + ids_ + "],\r\n"
 				+ "                        \"boost\": 1\r\n" + "                    }\r\n" + "                },\r\n"
@@ -2001,7 +2018,8 @@ public class Blogposts {
 				+ "                            \"from\": \"" + date_from + "\",\r\n"
 				+ "                            \"boost\": 1,\r\n" + "                            \"to\": \"" + date_to
 				+ "\"\r\n" + "                        }\r\n" + "                    }\r\n" + "                }\r\n"
-				+ "            ],\r\n" + "            \"boost\": 1\r\n" + "        }\r\n" + "    }\r\n" + "\r\n" + "}");
+				+ "            ],\r\n" + "            \"boost\": 1\r\n" + "        }\r\n" + "    }\r\n" + "}");
+
 		System.out.println("query for elastic _countPostMentioned --> " + query);
 		return this._count(query);
 	}
@@ -2013,12 +2031,69 @@ public class Blogposts {
 		JSONArray all = new JSONArray();
 		String res = null;
 
-		JSONObject query = new JSONObject("{\r\n" + "    \"size\": 0,\r\n" + "    \"query\": {\r\n"
-				+ "        \"bool\": {\r\n" + "            \"must\": [\r\n" + "                {\r\n"
-				+ "                    \"match\": {\r\n" + "                        \"post\": \"" + term + "\"\r\n"
-				+ "                    }\r\n" + "                },\r\n" + "                {\r\n"
-				+ "                    \"bool\": {\r\n" + "                        \"must\": [\r\n"
-				+ "                            {\r\n" + "                                \"terms\": {\r\n"
+		/*
+		 * JSONObject query = new JSONObject("{\r\n" + "    \"size\": 0,\r\n" +
+		 * "    \"query\": {\r\n" + "        \"bool\": {\r\n" +
+		 * "            \"must\": [\r\n" + "                {\r\n" +
+		 * "                    \"match\": {\r\n" +
+		 * "                        \"post\": \"" + term + "\"\r\n" +
+		 * "                    }\r\n" + "                },\r\n" +
+		 * "                {\r\n" + "                    \"bool\": {\r\n" +
+		 * "                        \"must\": [\r\n" +
+		 * "                            {\r\n" +
+		 * "                                \"terms\": {\r\n" +
+		 * "                                    \"blogsite_id\": [" + ids_ + "],\r\n" +
+		 * "                                    \"boost\": 1\r\n" +
+		 * "                                }\r\n" +
+		 * "                            },\r\n" + "                            {\r\n" +
+		 * "                                \"exists\": {\r\n" +
+		 * "                                    \"field\": \"location\",\r\n" +
+		 * "                                    \"boost\": 1\r\n" +
+		 * "                                }\r\n" + "                            }\r\n"
+		 * + "                        ],\r\n" +
+		 * "                        \"adjust_pure_negative\": true,\r\n" +
+		 * "                        \"boost\": 1\r\n" + "                    }\r\n" +
+		 * "                },\r\n" + "                {\r\n" +
+		 * "                    \"range\": {\r\n" +
+		 * "                        \"date\": {\r\n" +
+		 * "                            \"from\": \"" + date_from + "\",\r\n" +
+		 * "                            \"to\": \"" + date_to + "\",\r\n" +
+		 * "                            \"include_lower\": true,\r\n" +
+		 * "                            \"include_upper\": true,\r\n" +
+		 * "                            \"boost\": 1\r\n" +
+		 * "                        }\r\n" + "                    }\r\n" +
+		 * "                }\r\n" + "            ],\r\n" +
+		 * "            \"adjust_pure_negative\": true,\r\n" +
+		 * "            \"boost\": 1\r\n" + "        }\r\n" + "    },\r\n" +
+		 * "    \"_source\": false,\r\n" + "    \"stored_fields\": \"_none_\",\r\n" +
+		 * "    \"aggregations\": {\r\n" + "        \"groupby\": {\r\n" +
+		 * "            \"composite\": {\r\n" + "                \"size\": 1000,\r\n" +
+		 * "                \"sources\": [\r\n" + "                    {\r\n" +
+		 * "                        \"dat\": {\r\n" +
+		 * "                            \"terms\": {\r\n" +
+		 * "                                \"field\": \"location.keyword\",\r\n" +
+		 * "                                \"missing_bucket\": true,\r\n" +
+		 * "                                \"order\": \"asc\"\r\n" +
+		 * "                            }\r\n" + "                        }\r\n" +
+		 * "                    }\r\n" + "                ]\r\n" + "            },\r\n"
+		 * + "            \"aggregations\": {\r\n" + "                \"dat\": {\r\n" +
+		 * "                    \"filter\": {\r\n" +
+		 * "                        \"exists\": {\r\n" +
+		 * "                            \"field\": \"location\",\r\n" +
+		 * "                            \"boost\": 1\r\n" +
+		 * "                        }\r\n" + "                    }\r\n" +
+		 * "                }\r\n" + "            }\r\n" + "        }\r\n" + "    }\r\n"
+		 * + "}");
+		 */
+
+		JSONObject query = new JSONObject("{\r\n" + "    \"size\": 0,\r\n" + "    \"stored_fields\": \"_none_\",\r\n"
+				+ "    \"query\": {\r\n" + "        \"bool\": {\r\n" + "            \"adjust_pure_negative\": true,\r\n"
+				+ "            \"must\": [\r\n" + "                {\r\n" + "                    \"terms\": {\r\n"
+				+ "                        \"post\": [" + term + "]\r\n" + "                    }\r\n"
+				+ "                },\r\n" + "                {\r\n" + "                    \"bool\": {\r\n"
+				+ "                        \"adjust_pure_negative\": true,\r\n"
+				+ "                        \"must\": [\r\n" + "                            {\r\n"
+				+ "                                \"terms\": {\r\n"
 				+ "                                    \"blogsite_id\": [" + ids_ + "],\r\n"
 				+ "                                    \"boost\": 1\r\n" + "                                }\r\n"
 				+ "                            },\r\n" + "                            {\r\n"
@@ -2026,23 +2101,20 @@ public class Blogposts {
 				+ "                                    \"field\": \"location\",\r\n"
 				+ "                                    \"boost\": 1\r\n" + "                                }\r\n"
 				+ "                            }\r\n" + "                        ],\r\n"
-				+ "                        \"adjust_pure_negative\": true,\r\n"
 				+ "                        \"boost\": 1\r\n" + "                    }\r\n" + "                },\r\n"
 				+ "                {\r\n" + "                    \"range\": {\r\n"
-				+ "                        \"date\": {\r\n" + "                            \"from\": \"" + date_from
-				+ "\",\r\n" + "                            \"to\": \"" + date_to + "\",\r\n"
-				+ "                            \"include_lower\": true,\r\n"
+				+ "                        \"date\": {\r\n" + "                            \"include_lower\": true,\r\n"
 				+ "                            \"include_upper\": true,\r\n"
-				+ "                            \"boost\": 1\r\n" + "                        }\r\n"
-				+ "                    }\r\n" + "                }\r\n" + "            ],\r\n"
-				+ "            \"adjust_pure_negative\": true,\r\n" + "            \"boost\": 1\r\n" + "        }\r\n"
-				+ "    },\r\n" + "    \"_source\": false,\r\n" + "    \"stored_fields\": \"_none_\",\r\n"
-				+ "    \"aggregations\": {\r\n" + "        \"groupby\": {\r\n" + "            \"composite\": {\r\n"
-				+ "                \"size\": 1000,\r\n" + "                \"sources\": [\r\n"
-				+ "                    {\r\n" + "                        \"dat\": {\r\n"
-				+ "                            \"terms\": {\r\n"
-				+ "                                \"field\": \"location.keyword\",\r\n"
+				+ "                            \"from\": \"" + date_from + "\",\r\n"
+				+ "                            \"boost\": 1,\r\n" + "                            \"to\": \"" + date_to
+				+ "\"\r\n" + "                        }\r\n" + "                    }\r\n" + "                }\r\n"
+				+ "            ],\r\n" + "            \"boost\": 1\r\n" + "        }\r\n" + "    },\r\n"
+				+ "    \"_source\": false,\r\n" + "    \"aggregations\": {\r\n" + "        \"groupby\": {\r\n"
+				+ "            \"composite\": {\r\n" + "                \"size\": 1000,\r\n"
+				+ "                \"sources\": [\r\n" + "                    {\r\n"
+				+ "                        \"dat\": {\r\n" + "                            \"terms\": {\r\n"
 				+ "                                \"missing_bucket\": true,\r\n"
+				+ "                                \"field\": \"location.keyword\",\r\n"
 				+ "                                \"order\": \"asc\"\r\n" + "                            }\r\n"
 				+ "                        }\r\n" + "                    }\r\n" + "                ]\r\n"
 				+ "            },\r\n" + "            \"aggregations\": {\r\n" + "                \"dat\": {\r\n"
@@ -2159,37 +2231,80 @@ public class Blogposts {
 
 		JSONArray all = new JSONArray();
 
-		JSONObject query = new JSONObject("{\r\n" + "    \"size\": 0,\r\n" + "    \"query\": {\r\n"
-				+ "        \"bool\": {\r\n" + "            \"must\": [\r\n" + "                {\r\n"
-				+ "                    \"bool\": {\r\n" + "                        \"must\": [\r\n"
-				+ "                            {\r\n" + "                                \"term\": {\r\n"
-				+ "                                    \"post\": \"" + term + "\"\r\n"
-				+ "                                }\r\n" + "                            },\r\n"
+		/*
+		 * JSONObject query = new JSONObject("{\r\n" + "    \"size\": 0,\r\n" +
+		 * "    \"query\": {\r\n" + "        \"bool\": {\r\n" +
+		 * "            \"must\": [\r\n" + "                {\r\n" +
+		 * "                    \"bool\": {\r\n" +
+		 * "                        \"must\": [\r\n" +
+		 * "                            {\r\n" +
+		 * "                                \"term\": {\r\n" +
+		 * "                                    \"post\": \"" + term + "\"\r\n" +
+		 * "                                }\r\n" +
+		 * "                            },\r\n" + "                            {\r\n" +
+		 * "                                \"terms\": {\r\n" +
+		 * "                                    \"blogsite_id\": [" + ids_ + "],\r\n" +
+		 * "                                    \"boost\": 1\r\n" +
+		 * "                                }\r\n" + "                            }\r\n"
+		 * + "                        ],\r\n" +
+		 * "                        \"adjust_pure_negative\": true,\r\n" +
+		 * "                        \"boost\": 1\r\n" + "                    }\r\n" +
+		 * "                },\r\n" + "                {\r\n" +
+		 * "                    \"range\": {\r\n" +
+		 * "                        \"date\": {\r\n" +
+		 * "                            \"from\": \"" + date_from + "\",\r\n" +
+		 * "                            \"to\": \"" + date_to + "\",\r\n" +
+		 * "                            \"include_lower\": true,\r\n" +
+		 * "                            \"include_upper\": true,\r\n" +
+		 * "                            \"boost\": 1\r\n" +
+		 * "                        }\r\n" + "                    }\r\n" +
+		 * "                }\r\n" + "            ],\r\n" +
+		 * "            \"adjust_pure_negative\": true,\r\n" +
+		 * "            \"boost\": 1\r\n" + "        }\r\n" + "    },\r\n" +
+		 * "    \"_source\": false,\r\n" + "    \"stored_fields\": \"_none_\",\r\n" +
+		 * "    \"aggregations\": {\r\n" + "        \"groupby\": {\r\n" +
+		 * "            \"filters\": {\r\n" + "                \"filters\": [\r\n" +
+		 * "                    {\r\n" + "                        \"match_all\": {\r\n"
+		 * + "                            \"boost\": 1\r\n" +
+		 * "                        }\r\n" + "                    }\r\n" +
+		 * "                ],\r\n" + "                \"other_bucket\": false,\r\n" +
+		 * "                \"other_bucket_key\": \"_other_\"\r\n" +
+		 * "            },\r\n" + "            \"aggregations\": {\r\n" +
+		 * "                \"dat\": {\r\n" +
+		 * "                    \"cardinality\": {\r\n" +
+		 * "                        \"field\": \"" + field + "\"\r\n" +
+		 * "                    }\r\n" + "                }\r\n" + "            }\r\n" +
+		 * "        }\r\n" + "    }\r\n" + "}");
+		 */
+		JSONObject query = new JSONObject("{\r\n" + "    \"size\": 0,\r\n" + "    \"stored_fields\": \"_none_\",\r\n"
+				+ "    \"query\": {\r\n" + "        \"bool\": {\r\n" + "            \"adjust_pure_negative\": true,\r\n"
+				+ "            \"must\": [\r\n" + "                {\r\n" + "                    \"bool\": {\r\n"
+				+ "                        \"adjust_pure_negative\": true,\r\n"
+				+ "                        \"must\": [\r\n" + "                            {\r\n"
+				+ "                                \"terms\": {\r\n" + "                                    \"post\": ["
+				+ term + "]\r\n" + "                                }\r\n" + "                            },\r\n"
 				+ "                            {\r\n" + "                                \"terms\": {\r\n"
 				+ "                                    \"blogsite_id\": [" + ids_ + "],\r\n"
 				+ "                                    \"boost\": 1\r\n" + "                                }\r\n"
 				+ "                            }\r\n" + "                        ],\r\n"
-				+ "                        \"adjust_pure_negative\": true,\r\n"
 				+ "                        \"boost\": 1\r\n" + "                    }\r\n" + "                },\r\n"
 				+ "                {\r\n" + "                    \"range\": {\r\n"
-				+ "                        \"date\": {\r\n" + "                            \"from\": \"" + date_from
-				+ "\",\r\n" + "                            \"to\": \"" + date_to + "\",\r\n"
-				+ "                            \"include_lower\": true,\r\n"
+				+ "                        \"date\": {\r\n" + "                            \"include_lower\": true,\r\n"
 				+ "                            \"include_upper\": true,\r\n"
+				+ "                            \"from\": \"" + date_from + "\",\r\n"
+				+ "                            \"boost\": 1,\r\n" + "                            \"to\": \"" + date_to
+				+ "\"\r\n" + "                        }\r\n" + "                    }\r\n" + "                }\r\n"
+				+ "            ],\r\n" + "            \"boost\": 1\r\n" + "        }\r\n" + "    },\r\n"
+				+ "    \"_source\": false,\r\n" + "    \"aggregations\": {\r\n" + "        \"groupby\": {\r\n"
+				+ "            \"filters\": {\r\n" + "                \"other_bucket\": false,\r\n"
+				+ "                \"other_bucket_key\": \"_other_\",\r\n" + "                \"filters\": [\r\n"
+				+ "                    {\r\n" + "                        \"match_all\": {\r\n"
 				+ "                            \"boost\": 1\r\n" + "                        }\r\n"
-				+ "                    }\r\n" + "                }\r\n" + "            ],\r\n"
-				+ "            \"adjust_pure_negative\": true,\r\n" + "            \"boost\": 1\r\n" + "        }\r\n"
-				+ "    },\r\n" + "    \"_source\": false,\r\n" + "    \"stored_fields\": \"_none_\",\r\n"
-				+ "    \"aggregations\": {\r\n" + "        \"groupby\": {\r\n" + "            \"filters\": {\r\n"
-				+ "                \"filters\": [\r\n" + "                    {\r\n"
-				+ "                        \"match_all\": {\r\n" + "                            \"boost\": 1\r\n"
-				+ "                        }\r\n" + "                    }\r\n" + "                ],\r\n"
-				+ "                \"other_bucket\": false,\r\n"
-				+ "                \"other_bucket_key\": \"_other_\"\r\n" + "            },\r\n"
+				+ "                    }\r\n" + "                ]\r\n" + "            },\r\n"
 				+ "            \"aggregations\": {\r\n" + "                \"dat\": {\r\n"
-				+ "                    \"cardinality\": {\r\n" + "                        \"field\": \"" + field
-				+ "\"\r\n" + "                    }\r\n" + "                }\r\n" + "            }\r\n"
-				+ "        }\r\n" + "    }\r\n" + "}");
+				+ "                    \"cardinality\": {\r\n"
+				+ "                        \"field\": \"blogsite_id\"\r\n" + "                    }\r\n"
+				+ "                }\r\n" + "            }\r\n" + "        }\r\n" + "    }\r\n" + "}");
 
 		JSONObject myResponse = this._makeElasticRequest(query, "POST", "/blogposts/_search/?");
 		String val = null;
@@ -2583,6 +2698,8 @@ public class Blogposts {
 		 */
 		String a[] = str.split("\\W+");
 
+		String wrd[] = word.split(",");
+
 		String str_ = null;
 
 		// search for pattern in a
@@ -2590,8 +2707,10 @@ public class Blogposts {
 		for (int i = 0; i < a.length; i++) {
 			// if match found increase count
 			str_ = a[i].toLowerCase();
-			if (word.equals(str_))
-				count++;
+			for (int j = 0; j < wrd.length; j++) {
+				if (wrd[j].equals(str_))
+					count++;
+			}
 		}
 
 		return count;
@@ -2642,54 +2761,55 @@ public class Blogposts {
 					+ "    ]\r\n" + "}");
 
 		} else {
+//			query = new JSONObject("{\r\n" + "    \"size\": 1000,\r\n" + "    \"query\": {\r\n"
+//					+ "        \"bool\": {\r\n" + "            \"must\": [\r\n" + "                {\r\n"
+//					+ "                    \"term\": {\r\n" + "                        \"post\": \"" + term + "\"\r\n"
+//					+ "                    }\r\n" + "                },\r\n" + "                {\r\n"
+//					+ "                    \"terms\": {\r\n" + "                        \"blogsite_id\": [" + ids_
+//					+ "],\r\n" + "                        \"boost\": 1\r\n" + "                    }\r\n"
+//					+ "                },\r\n" + "                {\r\n" + "                    \"range\": {\r\n"
+//					+ "                        \"date\": {\r\n" + "                            \"from\": \"" + date_from
+//					+ "\",\r\n" + "                            \"to\": \"" + date_to + "\",\r\n"
+//					+ "                            \"include_lower\": true,\r\n"
+//					+ "                            \"include_upper\": true,\r\n"
+//					+ "                            \"boost\": 1\r\n" + "                        }\r\n"
+//					+ "                    }\r\n" + "                }\r\n" + "            ],\r\n"
+//					+ "            \"adjust_pure_negative\": true,\r\n" + "            \"boost\": 1\r\n"
+//					+ "        }\r\n" + "    },\r\n" + "    \"_source\": {\r\n" + "        \"includes\": [\r\n"
+//					+ "            \r\n" + "            \"title\",\r\n" + "            \"post\",\r\n"
+//					+ "            \"blogpost_id\",\r\n" + "            \"permalink\",\r\n"
+//					+ "            \"num_comments\",\r\n" + "            \"date\",\r\n"
+//					+ "            \"num_comments\",\r\n" + "            \"blogger\"\r\n" + "        ],\r\n"
+//					+ "        \"excludes\": []\r\n" + "    },\r\n" + "    \"sort\": [\r\n" + "        {\r\n"
+//					+ "            \"influence_score\": {\r\n" + "                \"order\": \"desc\",\r\n"
+//					+ "                \"missing\": \"_last\",\r\n" + "                \"unmapped_type\": \"float\"\r\n"
+//					+ "            }\r\n" + "        }\r\n" + "    ]\r\n" + "}");
+
 			query = new JSONObject("{\r\n" + "    \"size\": 1000,\r\n" + "    \"query\": {\r\n"
-					+ "        \"bool\": {\r\n" + "            \"must\": [\r\n" + "                {\r\n"
-					+ "                    \"term\": {\r\n" + "                        \"post\": \"" + term + "\"\r\n"
-					+ "                    }\r\n" + "                },\r\n" + "                {\r\n"
-					+ "                    \"terms\": {\r\n" + "                        \"blogsite_id\": [" + ids_
-					+ "],\r\n" + "                        \"boost\": 1\r\n" + "                    }\r\n"
+					+ "        \"bool\": {\r\n" + "            \"adjust_pure_negative\": true,\r\n"
+					+ "            \"must\": [\r\n" + "                {\r\n" + "                    \"terms\": {\r\n"
+					+ "                        \"post\": [" + term + "]\r\n" + "                    }\r\n"
+					+ "                },\r\n" + "                {\r\n" + "                    \"terms\": {\r\n"
+					+ "                        \"blogsite_id\": [" + ids_ + "],\r\n"
+					+ "                        \"boost\": 1\r\n" + "                    }\r\n"
 					+ "                },\r\n" + "                {\r\n" + "                    \"range\": {\r\n"
-					+ "                        \"date\": {\r\n" + "                            \"from\": \"" + date_from
-					+ "\",\r\n" + "                            \"to\": \"" + date_to + "\",\r\n"
+					+ "                        \"date\": {\r\n"
 					+ "                            \"include_lower\": true,\r\n"
 					+ "                            \"include_upper\": true,\r\n"
-					+ "                            \"boost\": 1\r\n" + "                        }\r\n"
-					+ "                    }\r\n" + "                }\r\n" + "            ],\r\n"
-					+ "            \"adjust_pure_negative\": true,\r\n" + "            \"boost\": 1\r\n"
-					+ "        }\r\n" + "    },\r\n" + "    \"_source\": {\r\n" + "        \"includes\": [\r\n"
-					+ "            \r\n" + "            \"title\",\r\n" + "            \"post\",\r\n"
+					+ "                            \"from\": \"" + date_from + "\",\r\n"
+					+ "                            \"boost\": 1,\r\n" + "                            \"to\": \""
+					+ date_to + "\"\r\n" + "                        }\r\n" + "                    }\r\n"
+					+ "                }\r\n" + "            ],\r\n" + "            \"boost\": 1\r\n" + "        }\r\n"
+					+ "    },\r\n" + "    \"_source\": {\r\n" + "        \"excludes\": [],\r\n"
+					+ "        \"includes\": [\r\n" + "            \"title\",\r\n" + "            \"post\",\r\n"
 					+ "            \"blogpost_id\",\r\n" + "            \"permalink\",\r\n"
 					+ "            \"num_comments\",\r\n" + "            \"date\",\r\n"
-					+ "            \"num_comments\",\r\n" + "            \"blogger\"\r\n" + "        ],\r\n"
-					+ "        \"excludes\": []\r\n" + "    },\r\n" + "    \"sort\": [\r\n" + "        {\r\n"
-					+ "            \"influence_score\": {\r\n" + "                \"order\": \"desc\",\r\n"
-					+ "                \"missing\": \"_last\",\r\n" + "                \"unmapped_type\": \"float\"\r\n"
+					+ "            \"num_comments\",\r\n" + "            \"blogger\"\r\n" + "        ]\r\n"
+					+ "    },\r\n" + "    \"sort\": [\r\n" + "        {\r\n" + "            \"influence_score\": {\r\n"
+					+ "                \"unmapped_type\": \"float\",\r\n"
+					+ "                \"missing\": \"_last\",\r\n" + "                \"order\": \"desc\"\r\n"
 					+ "            }\r\n" + "        }\r\n" + "    ]\r\n" + "}");
 		}
-
-		JSONObject query2= new JSONObject("{\r\n" + "    \"size\": 1000,\r\n" + "    \"query\": {\r\n" + "        \"bool\": {\r\n"
-				+ "            \"adjust_pure_negative\": true,\r\n" + "            \"must\": [\r\n"
-				+ "                {\r\n" + "                    \"terms\": {\r\n"
-				+ "                        \"post\": ["+term+"]\r\n" + "                    }\r\n"
-				+ "                },\r\n" + "                {\r\n" + "                    \"terms\": {\r\n"
-				+ "                        \"blogsite_id\": ["+ids_+"],\r\n"
-				+ "                        \"boost\": 1\r\n" + "                    }\r\n" + "                },\r\n"
-				+ "                {\r\n" + "                    \"range\": {\r\n"
-				+ "                        \"date\": {\r\n" + "                            \"include_lower\": true,\r\n"
-				+ "                            \"include_upper\": true,\r\n"
-				+ "                            \"from\": \""+date_from+"\",\r\n"
-				+ "                            \"boost\": 1,\r\n"
-				+ "                            \"to\": \""+date_to+"\"\r\n" + "                        }\r\n"
-				+ "                    }\r\n" + "                }\r\n" + "            ],\r\n"
-				+ "            \"boost\": 1\r\n" + "        }\r\n" + "    },\r\n" + "    \"_source\": {\r\n"
-				+ "        \"excludes\": [],\r\n" + "        \"includes\": [\r\n" + "            \"title\",\r\n"
-				+ "            \"post\",\r\n" + "            \"blogpost_id\",\r\n" + "            \"permalink\",\r\n"
-				+ "            \"num_comments\",\r\n" + "            \"date\",\r\n"
-				+ "            \"num_comments\",\r\n" + "            \"blogger\"\r\n" + "        ]\r\n" + "    },\r\n"
-				+ "    \"sort\": [\r\n" + "        {\r\n" + "            \"influence_score\": {\r\n"
-				+ "                \"unmapped_type\": \"float\",\r\n" + "                \"missing\": \"_last\",\r\n"
-				+ "                \"order\": \"desc\"\r\n" + "            }\r\n" + "        }\r\n" + "    ]\r\n"
-				+ "}");
 
 		System.out.println("query for elastic _getBloggerPosts --> " + query);
 
@@ -2730,7 +2850,7 @@ public class Blogposts {
 
 				if (bloggerName == "NOBLOGGER") {
 					if (j.get("title").toString() != null || j.get("title").toString() != "") {
-						occurence = this.countOccurences(src, term.trim());
+						occurence = this.countOccurences(src, term);
 //						System.out.println(term+"----------------------"+occurence);
 						title = j.get("title").toString();
 						blogpost_id = j.get("blogpost_id").toString();
