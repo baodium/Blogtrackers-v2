@@ -41,7 +41,7 @@
 	    	
 	    	blog_id = 	this.id;
 	    	
-	    	all_selected_names += blog_name;
+	    	all_selected_names += '"'+blog_name+'"';
 	    		
 	    	i++;
 		    		
@@ -69,7 +69,8 @@
 	
 	getTopLocation(bloog,$("#all_blog_ids").val(),date_start,date_end);
 	loadTopKeyword(bloog,$("#all_blog_ids").val(),date_start,date_end);	
-	loadSentiments(bloog,$("#all_blog_ids").val(),date_start,date_end);
+	loadSentiments(all_selected_names,$("#all_blog_ids").val(),date_start,date_end);
+	/*alert(bloog);*/
 
 });
 
@@ -284,13 +285,14 @@ function loadTopKeyword(blogger,blog_id,start_date,end_date){
 function loadSentiments(blogger,blog_id,start_date,end_date){
 	$("#entity_table").html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />");
 	var blger = blogger.replaceAll(" ","__");
+	
 	$.ajax({
 		url: app_url+"subpages/postingfrequencysentiment.jsp",
 		method: 'POST',
 		data: {
-			action:"getchart",
+			action:"getsentimenttable",
 			blogger:blogger,
-			post_ids:$("#postby"+blger).val(),
+			//post_ids:$("#postby"+blger).val(),
 			date_start:start_date,
 			date_end:end_date,
 		},

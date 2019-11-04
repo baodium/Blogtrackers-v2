@@ -135,10 +135,11 @@
 
 
 
-<div class="row m0 mt20 mb0 d-flex align-items-stretch">
+<div class="row m0 mt20 mb0 d-flex align-items-stretch"style="min-height: 500px;">
+
 				<div
 					class="col-md-6 mt20 card card-style nobordertopright noborderbottomright"
-					id="post-list">
+					id="post-list" >
 					<div class="card-body p0 pt20 pb20" style="min-height: 420px;">
 						<p>
 							Posts that mentioned <b class="text-green active-term"><%=mostactiveterm%></b>
@@ -352,9 +353,10 @@
 		    $('#DataTables_Table_2_wrapper').DataTable( {
 		        "scrollY": 480,
 		        "scrollX": true,
+		        "order": [],
 		         "pagingType": "simple",
 		        	 "bLengthChange": false,
-		             "order": [[ 1, "desc" ]]
+		             //"order": [[ 1, "desc" ]]
 		      /*    ,
 		         dom: 'Bfrtip',
 		         "columnDefs": [

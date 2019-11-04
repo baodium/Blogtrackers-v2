@@ -37,7 +37,7 @@ public class Blogpost_entitysentiment {
 		}
 
 		String arg2 = pars.toString();
-		String que="{\r\n" + 
+		JSONObject jsonObj = new JSONObject("{\r\n" + 
 				"  \"query\": {\r\n" + 
 				"    \"bool\": {\r\n" + 
 				"      \"must\": [\r\n" + 
@@ -53,8 +53,10 @@ public class Blogpost_entitysentiment {
 				"      ]\r\n" + 
 				"    }\r\n" + 
 				"  }\r\n" + 
-				"}";
-		JSONObject jsonObj = new JSONObject(que);
+				"}");
+		
+		
+		System.out.println("blogpostentity--"+jsonObj);
 		String url = base_url+"_search?size=200";
 		return this._getResult(url,jsonObj);
 	}

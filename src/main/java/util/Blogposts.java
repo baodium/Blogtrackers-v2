@@ -262,13 +262,15 @@ public class Blogposts {
 		ArrayList result = new ArrayList();
 		ArrayList resut = new ArrayList();
 		try {
-			result = db.query("SELECT blogpost_id FROM blogposts WHERE blogger = '" + bloggers + "' AND " + field
+			result = db.query("SELECT blogpost_id FROM blogposts WHERE blogger in( " + bloggers + ") AND " + field
 					+ ">='" + greater + "' AND " + field + "<='" + less + "' ORDER BY " + sort + " " + order + " LIMIT "
 					+ size + "");
 			// result = db.queryJSON("SELECT * FROM blogposts WHERE blogger = '"+bloggers+"'
 			// AND "+field+">="+greater+" AND "+field+"<="+less+" ORDER BY date ASC LIMIT
 			// "+size+"");
-
+System.out.println("SELECT1 blogpost_id FROM blogposts WHERE blogger in( " + bloggers + ") AND " + field
+					+ ">='" + greater + "' AND " + field + "<='" + less + "' ORDER BY " + sort + " " + order + " LIMIT "
+					+ size + "");
 		} catch (Exception e) {
 
 		}
