@@ -1,6 +1,6 @@
 // delete all blog from tracker action
 
-$('.topics1').on("click", function() {
+$(document).delegate('.topics1', 'click', function(){
 
 	$(".topics1").removeClass("abloggerselected");
 	$(this).addClass("abloggerselected");
@@ -10,20 +10,42 @@ $('.topics1').on("click", function() {
 	var value = $(this).attr("value");
 	var name = $(this).attr("name");
 
-//	var t2 = term.split("***");
-//
-//	term = t2[0];
-//	var freq = t2[1];
-	/*freq=parseInt(freq);*/
-	//console.log("freq--"+freq.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-	/* var tm = term.replaceAll("_", " "); */
+///////////////start collecting names
+	 var count = $('.thanks').length;
+	 
+	 if(count > 0){
+		 
+		 var all_selected_names = '';
+		 var i = 1;
+		 $( ".thanks" ).each(function( index ) {
+			 
+			 
+			 if(i > 1){
+				 all_selected_names += ' , ';
+			 }
+			 
+	    	blog_name = 	$(this).attr('name');
+	    	
+	    	blog_id = 	this.id;
+	    	
+	    	all_selected_names += '"'+blog_name+'"';
+	    		
+	    	i++;
+		    		
+		});
+		 
+		 
+	 }
+	////////////end collecting names
+	 
+	 alert(all_selected_names);
 
-	$(".active-term").html(term);
+	$(".active-term").html(all_selected_names);
 	/* console.log(freq); */
 	$(".keyword-count").html(value.replace(/\B(?=(\d{3})+(?!\d))/g, ","));
 
 	// loadInfluence(bloog,blg[1]);
-	$("#term").val(name);
+	$("#term").val(all_selected_names);
 	$('#d3-line-basic').html('');
 	
 	/* $("#term_id").val(term_id); */
