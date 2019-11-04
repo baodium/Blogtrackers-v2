@@ -44,9 +44,12 @@ ArrayList allentitysentiments = new ArrayList();
 
 userinfo = new DbConnection().query("SELECT * FROM usercredentials where Email = '"+email+"'");
 if (userinfo.size()<1) {
-	response.sendRedirect("login.jsp");
-}else{
+	response.sendRedirect("index.jsp");
+}
+else{
 userinfo = (ArrayList<?>)userinfo.get(0);
+
+
 	try{
 	username = (null==userinfo.get(0))?"":userinfo.get(0).toString();
 	
@@ -145,10 +148,10 @@ userinfo = (ArrayList<?>)userinfo.get(0);
 		}
 	}
 	
-	if (!isowner) {
+/* 	if (!isowner) {
 		response.sendRedirect("index.jsp");
 	}
-
+ */
 	SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MMM d, yyyy");
 	SimpleDateFormat DATE_FORMAT2 = new SimpleDateFormat("yyyy-MM-dd");
 

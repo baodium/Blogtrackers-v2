@@ -268,7 +268,7 @@ public class Blogposts {
 			// result = db.queryJSON("SELECT * FROM blogposts WHERE blogger = '"+bloggers+"'
 			// AND "+field+">="+greater+" AND "+field+"<="+less+" ORDER BY date ASC LIMIT
 			// "+size+"");
-System.out.println("SELECT1 blogpost_id FROM blogposts WHERE blogger in( " + bloggers + ") AND " + field
+			System.out.println("SELECT1 blogpost_id FROM blogposts WHERE blogger in( " + bloggers + ") AND " + field
 					+ ">='" + greater + "' AND " + field + "<='" + less + "' ORDER BY " + sort + " " + order + " LIMIT "
 					+ size + "");
 		} catch (Exception e) {
@@ -2372,63 +2372,34 @@ System.out.println("SELECT1 blogpost_id FROM blogposts WHERE blogger in( " + blo
 					+ "                \"unmapped_type\": \"float\"\r\n" + "            }\r\n" + "        }\r\n"
 					+ "    ]\r\n" + "}");
 		} else {
-			query = new JSONObject("{\r\n" + 
-					"    \"size\": 10000,\r\n" + 
-					"    \"query\": {\r\n" + 
-					"        \"bool\": {\r\n" + 
-					"            \"adjust_pure_negative\": true,\r\n" + 
-					"            \"must\": [\r\n" + 
-					"                {\r\n" + 
-					"                    \"bool\": {\r\n" + 
-					"                        \"adjust_pure_negative\": true,\r\n" + 
-					"                        \"must\": [\r\n" + 
-					"                            {\r\n" + 
-					"                                \"terms\": {\r\n" + 
-					"                                    \"blogger.keyword\": ["+BloggerName+"],\r\n" + 
-					"                                    \"boost\": 1\r\n" + 
-					"                                }\r\n" + 
-					"                            },\r\n" + 
-					"                            {\r\n" + 
-					"                                \"terms\": {\r\n" + 
-					"                                    \"blogsite_id\": ["+ids_+"],\r\n" + 
-					"                                    \"boost\": 1\r\n" + 
-					"                                }\r\n" + 
-					"                            }\r\n" + 
-					"                        ],\r\n" + 
-					"                        \"boost\": 1\r\n" + 
-					"                    }\r\n" + 
-					"                },\r\n" + 
-					"                {\r\n" + 
-					"                    \"range\": {\r\n" + 
-					"                        \"date\": {\r\n" + 
-					"                            \"include_lower\": true,\r\n" + 
-					"                            \"include_upper\": true,\r\n" + 
-					"                            \"from\": \""+date_from+"\",\r\n" + 
-					"                            \"boost\": 1,\r\n" + 
-					"                            \"to\": \""+date_to+"\"\r\n" + 
-					"                        }\r\n" + 
-					"                    }\r\n" + 
-					"                }\r\n" + 
-					"            ],\r\n" + 
-					"            \"boost\": 1\r\n" + 
-					"        }\r\n" + 
-					"    },\r\n" + 
-					"    \"_source\": {\r\n" + 
-					"        \"excludes\": [],\r\n" + 
-					"        \"includes\": [\r\n" + 
-					"            \"post\"\r\n" + 
-					"        ]\r\n" + 
-					"    },\r\n" + 
-					"    \"sort\": [\r\n" + 
-					"        {\r\n" + 
-					"            \"influence_score\": {\r\n" + 
-					"                \"unmapped_type\": \"float\",\r\n" + 
-					"                \"missing\": \"_first\",\r\n" + 
-					"                \"order\": \"desc\"\r\n" + 
-					"            }\r\n" + 
-					"        }\r\n" + 
-					"    ]\r\n" + 
-					"}");
+			query = new JSONObject("{\r\n" + "    \"size\": 10000,\r\n" + "    \"query\": {\r\n"
+					+ "        \"bool\": {\r\n" + "            \"adjust_pure_negative\": true,\r\n"
+					+ "            \"must\": [\r\n" + "                {\r\n" + "                    \"bool\": {\r\n"
+					+ "                        \"adjust_pure_negative\": true,\r\n"
+					+ "                        \"must\": [\r\n" + "                            {\r\n"
+					+ "                                \"terms\": {\r\n"
+					+ "                                    \"blogger.keyword\": [" + BloggerName + "],\r\n"
+					+ "                                    \"boost\": 1\r\n" + "                                }\r\n"
+					+ "                            },\r\n" + "                            {\r\n"
+					+ "                                \"terms\": {\r\n"
+					+ "                                    \"blogsite_id\": [" + ids_ + "],\r\n"
+					+ "                                    \"boost\": 1\r\n" + "                                }\r\n"
+					+ "                            }\r\n" + "                        ],\r\n"
+					+ "                        \"boost\": 1\r\n" + "                    }\r\n"
+					+ "                },\r\n" + "                {\r\n" + "                    \"range\": {\r\n"
+					+ "                        \"date\": {\r\n"
+					+ "                            \"include_lower\": true,\r\n"
+					+ "                            \"include_upper\": true,\r\n"
+					+ "                            \"from\": \"" + date_from + "\",\r\n"
+					+ "                            \"boost\": 1,\r\n" + "                            \"to\": \""
+					+ date_to + "\"\r\n" + "                        }\r\n" + "                    }\r\n"
+					+ "                }\r\n" + "            ],\r\n" + "            \"boost\": 1\r\n" + "        }\r\n"
+					+ "    },\r\n" + "    \"_source\": {\r\n" + "        \"excludes\": [],\r\n"
+					+ "        \"includes\": [\r\n" + "            \"post\"\r\n" + "        ]\r\n" + "    },\r\n"
+					+ "    \"sort\": [\r\n" + "        {\r\n" + "            \"influence_score\": {\r\n"
+					+ "                \"unmapped_type\": \"float\",\r\n"
+					+ "                \"missing\": \"_first\",\r\n" + "                \"order\": \"desc\"\r\n"
+					+ "            }\r\n" + "        }\r\n" + "    ]\r\n" + "}");
 			/*
 			 * query = new JSONObject("{\r\n" + "    \"size\": 10000,\r\n" +
 			 * "    \"query\": {\r\n" + "        \"bool\": {\r\n" +
@@ -2695,6 +2666,30 @@ System.out.println("SELECT1 blogpost_id FROM blogposts WHERE blogger in( " + blo
 					+ "                \"missing\": \"_last\",\r\n" + "                \"unmapped_type\": \"float\"\r\n"
 					+ "            }\r\n" + "        }\r\n" + "    ]\r\n" + "}");
 		}
+
+		JSONObject query2= new JSONObject("{\r\n" + "    \"size\": 1000,\r\n" + "    \"query\": {\r\n" + "        \"bool\": {\r\n"
+				+ "            \"adjust_pure_negative\": true,\r\n" + "            \"must\": [\r\n"
+				+ "                {\r\n" + "                    \"terms\": {\r\n"
+				+ "                        \"post\": ["+term+"]\r\n" + "                    }\r\n"
+				+ "                },\r\n" + "                {\r\n" + "                    \"terms\": {\r\n"
+				+ "                        \"blogsite_id\": ["+ids_+"],\r\n"
+				+ "                        \"boost\": 1\r\n" + "                    }\r\n" + "                },\r\n"
+				+ "                {\r\n" + "                    \"range\": {\r\n"
+				+ "                        \"date\": {\r\n" + "                            \"include_lower\": true,\r\n"
+				+ "                            \"include_upper\": true,\r\n"
+				+ "                            \"from\": \""+date_from+"\",\r\n"
+				+ "                            \"boost\": 1,\r\n"
+				+ "                            \"to\": \""+date_to+"\"\r\n" + "                        }\r\n"
+				+ "                    }\r\n" + "                }\r\n" + "            ],\r\n"
+				+ "            \"boost\": 1\r\n" + "        }\r\n" + "    },\r\n" + "    \"_source\": {\r\n"
+				+ "        \"excludes\": [],\r\n" + "        \"includes\": [\r\n" + "            \"title\",\r\n"
+				+ "            \"post\",\r\n" + "            \"blogpost_id\",\r\n" + "            \"permalink\",\r\n"
+				+ "            \"num_comments\",\r\n" + "            \"date\",\r\n"
+				+ "            \"num_comments\",\r\n" + "            \"blogger\"\r\n" + "        ]\r\n" + "    },\r\n"
+				+ "    \"sort\": [\r\n" + "        {\r\n" + "            \"influence_score\": {\r\n"
+				+ "                \"unmapped_type\": \"float\",\r\n" + "                \"missing\": \"_last\",\r\n"
+				+ "                \"order\": \"desc\"\r\n" + "            }\r\n" + "        }\r\n" + "    ]\r\n"
+				+ "}");
 
 		System.out.println("query for elastic _getBloggerPosts --> " + query);
 
