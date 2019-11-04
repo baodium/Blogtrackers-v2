@@ -2712,10 +2712,10 @@ public class Blogposts {
 			// if match found increase count
 			str_ = a[i].toLowerCase();
 			for (int j = 0; j < wrd.length; j++) {
-				System.out.println("This is the splitted word-"+wrd[j]+"--"+str_);
+//				System.out.println("This is the splitted word-"+wrd[j]+"--"+str_);
 				if (wrd[j].trim().equals(str_.trim())) {
 					count++;
-					System.out.println("Count =="+count);
+//					System.out.println("Count =="+count);
 				}
 			}
 		}

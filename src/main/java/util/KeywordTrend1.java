@@ -229,7 +229,7 @@ public class KeywordTrend1 extends HttpServlet {
 				JSONObject result = new JSONObject();
 
 				System.out.println("terms_ma--"+all_selected_terms);
-				sql = post._getBloggerPosts(all_selected_terms, "NOBLOGGER", date_start.toString(),
+				sql = post._getBloggerPosts(mostactiveterm, "NOBLOGGER", date_start.toString(),
 						date_end.toString(), all_blog_ids.toString());
 
 				JSONObject firstpost = new JSONObject();
@@ -312,6 +312,7 @@ public class KeywordTrend1 extends HttpServlet {
 					}
 
 				}
+				
 				System.out.println("items--" + items);
 				Map<String, Integer> json = (HashMap<String, Integer>) items.stream()
 						.flatMap(m -> m.entrySet().stream())
