@@ -60,7 +60,7 @@ $(document).delegate('.topics1', 'click', function(){
 	/* loadStat(tm); */
 	/* loadChart(tm); */
 
-	loadTable(date_start, date_end);
+	loadTable(date_start, date_end, all_selected_names1);
 });
 var r = /a/;
 // console.log(typeof r.test('a')); // true
@@ -277,7 +277,7 @@ function updateTable(response) {
 			});
 }*/
 
-function loadTable(date_start, date_end) {
+function loadTable(date_start, date_end, term_string) {
 
 	$("#post-list")
 			.html(
@@ -298,6 +298,7 @@ function loadTable(date_start, date_end) {
 					tid : $("#tid").val(),
 					date_start : date_start,
 					date_end : date_end,
+					term_string : term_string
 				},
 				error : function(response) {
 					console.log(response);

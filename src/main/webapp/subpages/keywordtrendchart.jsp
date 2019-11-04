@@ -23,6 +23,8 @@
 	String mostactiveterm = (null == request.getParameter("term"))
 			? ""
 			: request.getParameter("term").toString();
+	
+	String term_string = (null == request.getParameter("term_string")) ? "": request.getParameter("term_string");
 
 	Object sort = (null == request.getParameter("sort")) ? "" : request.getParameter("sort");
 	Object action = (null == request.getParameter("action")) ? "" : request.getParameter("action");
@@ -148,7 +150,7 @@
 					id="post-list" >
 					<div class="card-body p0 pt20 pb20" style="min-height: 420px;">
 						<p>
-							Posts that mentioned <b class="text-green active-term"><%=mostactiveterm%></b>
+							Posts that mentioned <b class="text-green active-term"><%=term_string%></b>
 						</p>
 						<!--  <div class="p15 pb5 pt0" role="group">
           Export Options
