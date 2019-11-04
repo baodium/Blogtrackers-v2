@@ -156,6 +156,7 @@ function loadMostLocation(date_start,date_end) {
 			date_start : $("#date_start").val(),
 			date_end : $("#date_end").val(),
 		},
+		
 		error : function(response) {
 			console.log("error occured location" + response);
 		},

@@ -1336,7 +1336,8 @@ $(document).ready(function() {
 		  // keywords have not been computed.
 		loadtermTableBulk();
 		<%} else {
-						Object data_table = (null == session.getAttribute(tid.toString() + "_termtable"))
+			
+									Object data_table = (null == session.getAttribute(tid.toString() + "_termtable"))
 								? ""
 								: session.getAttribute(tid.toString() + "_termtable");
 

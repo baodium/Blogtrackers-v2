@@ -38,7 +38,7 @@ String date_modified = "";
 
 userinfo = DbConnection.query("SELECT * FROM usercredentials where Email = '"+email+"'");
 if (userinfo.size()<1) {
-	//response.sendRedirect("login.jsp");
+	response.sendRedirect("login.jsp");
 }
 else{
 /* else if(!request.getHeader("referer").equals(p +"/forgotpassword.jsp") || !request.getHeader("referer").equals(p +"/ChangePassword.jsp") || ! request.getHeader("referer").equals(p+"/")){ */
@@ -49,6 +49,8 @@ else{
 	System.out.println("INDEX--" + request.getHeader("referer"));
 	System.out.println("INDEX--" + pi+"/");
 userinfo = (ArrayList<?>)userinfo.get(0);
+
+
 try{
 	username = (null==userinfo.get(0))?"":userinfo.get(0).toString();
 	

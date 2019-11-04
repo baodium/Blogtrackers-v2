@@ -106,7 +106,7 @@ function loadBlogMentioned(date_start,date_end) {
 			term : $("#term").val(),
 			all_blog_ids : $("#all_blog_ids").val(),
 			date_start : date_start,
-			date_end :  date_end,
+			date_end :  date_end
 		},
 		error : function(response) {
 			console.log("error occured blog mentioned" + response);
@@ -121,6 +121,7 @@ function loadBlogMentioned(date_start,date_end) {
 function loadMostLocation(date_start,date_end) {
 	$(".top-location").html("<img src='images/loading.gif' />");
 	$.ajax({
+		
 		url : app_url + "KeywordTrend",
 		method : 'POST',
 		dataType : 'json',
@@ -129,7 +130,7 @@ function loadMostLocation(date_start,date_end) {
 			term : $("#term").val(),
 			all_blog_ids : $("#all_blog_ids").val(),
 			date_start : $("#date_start").val(),
-			date_end : $("#date_end").val(),
+			date_end : $("#date_end").val()
 		},
 		error : function(response) {
 			console.log("error occured location" + response);
@@ -152,7 +153,7 @@ function loadMostPost(date_start,date_end) {
 			term : $("#term").val(),
 			all_blog_ids : $("#all_blog_ids").val(),
 			date_start : $("#date_start").val(),
-			date_end : $("#date_end").val(),
+			date_end : $("#date_end").val()
 		},
 		error : function(response) {
 			console.log("error occured posts" + response);
