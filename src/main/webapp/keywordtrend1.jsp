@@ -1683,9 +1683,13 @@ $(document).ready(function() {
     	
     	var highest_date_index = 0;
    		var highest_price_index = 0;
+   		
+   		var highest_date_name = '';
+   		var highest_price_name = '';
     		
   		var highest_date = 0;
   		var highest_price = 0;
+  		
     	
     	 var count = $('.thanks').length;
     	 
@@ -1743,6 +1747,7 @@ $(document).ready(function() {
     		  					if(d > highest_date){
     		  						highest_date = key;
     		  						highest_date_index = response.index;
+    		  						highest_date_name = response.name;
     		  						
     		  						
     		  						
@@ -1751,6 +1756,7 @@ $(document).ready(function() {
     		  					if(p > highest_price){
     		  						highest_price = value;
     		  						highest_price_index = response.index;
+    		  						highest_price_name = response.name;
     		  						
     		  					}
     		  					
@@ -1831,18 +1837,9 @@ $(document).ready(function() {
     	    				  });
     	    				  
     	    			/////////start graph stuff
-    	    			console.log('after playing with response');
-      	    				console.log(data);
-      	    				alert(highest_date_index);
-      	    				alert(highest_date);
-      	    				
-      	    				indexy = data.findIndex(x => x.values.date === highest_date);
-	    				    if(indexy > 1){
-	    				    	
-	    				    	longt = indexy;
-	    				    }
+    	    				indexy = data.findIndex(x => x.name === highest_date_name);
 	    				    
-      	    				console.log(indexy);
+	    				    
       	    				
   				 			//var width = 750;
   				 			var width = $('#chart-container').width();
@@ -1877,7 +1874,7 @@ $(document).ready(function() {
   				 		    /* Scale */
   				 		    var xScale = d3.time.scale()
   				 		   // var xScale = d3.scaleTime()
-  				 		      .domain(d3.extent(data[highest_date_index].values, d => d.date))
+  				 		      .domain(d3.extent(data[indexy].values, d => d.date))
   				 		      .range([0, width-margin]);
 
   				 		   //var yScale = d3.scaleLinear()

@@ -1111,6 +1111,9 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
     	
     	var highest_date_index = 0;
    		var highest_price_index = 0;
+   		
+   		var highest_date_name = '';
+   		var highest_price_name = '';
     		
   		var highest_date = 0;
   		var highest_price = 0;
@@ -1167,12 +1170,15 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
     		  					if(d > highest_date){
     		  						highest_date = key;
     		  						highest_date_index = response.index;
+    		  						highest_date_name = response.name;
     		  						
     		  					}
     		  					
     		  					if(p > highest_price){
     		  						highest_price = value;
     		  						highest_price_index = response.index;
+    		  						highest_price_name = response.name;
+    		  						
     		  						
     		  					}
     		  					
@@ -1225,7 +1231,10 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
     	    				  });
     	    				  
     	    			/////////start graph stuff
-      	    				console.log(data);
+    	    				indexy = data.findIndex(x => x.name === highest_date_name);
+  	    				   
+  	    				    
+    	    			
   				 			//var width = 750;
   				 			var width = $('#chart-container').width();
   				 		    var height = 200;
@@ -1259,7 +1268,7 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
   				 		    /* Scale */
   				 		    var xScale = d3.time.scale()
   				 		   // var xScale = d3.scaleTime()
-  				 		      .domain(d3.extent(data[highest_date_index].values, d => d.date))
+  				 		      .domain(d3.extent(data[indexy].values, d => d.date))
   				 		      .range([0, width-margin]);
 
   				 		   //var yScale = d3.scaleLinear()

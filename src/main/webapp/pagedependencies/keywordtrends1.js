@@ -16,12 +16,14 @@ $(document).delegate('.topics1', 'click', function(){
 	 if(count > 0){
 		 
 		 var all_selected_names = '';
+		 var all_selected_names1 = '';
 		 var i = 1;
 		 $( ".thanks" ).each(function( index ) {
 			 
 			 
 			 if(i > 1){
 				 all_selected_names += ' , ';
+				 all_selected_names1 += ' , ';
 			 }
 			 
 	    	blog_name = 	$(this).attr('name');
@@ -29,6 +31,7 @@ $(document).delegate('.topics1', 'click', function(){
 	    	blog_id = 	this.id;
 	    	
 	    	all_selected_names += '"'+blog_name+'"';
+	    	all_selected_names1 += blog_name;
 	    		
 	    	i++;
 		    		
@@ -38,9 +41,8 @@ $(document).delegate('.topics1', 'click', function(){
 	 }
 	////////////end collecting names
 	 
-	 alert(all_selected_names);
-
-	$(".active-term").html(all_selected_names);
+	
+	$(".active-term").html(all_selected_names1);
 	/* console.log(freq); */
 	$(".keyword-count").html(value.replace(/\B(?=(\d{3})+(?!\d))/g, ","));
 
@@ -121,7 +123,7 @@ $('.searchkeywords').on("keyup", function(e) {
 function loadBlogMentioned(date_start,date_end) {
 	$(".blog-mentioned").html("<img src='images/loading.gif' />");
 	$.ajax({
-		url : app_url + "KeywordTrend",
+		url : app_url + "KeywordTrend1",
 		method : 'POST',
 		dataType : 'json',
 		data : {
@@ -144,7 +146,7 @@ function loadBlogMentioned(date_start,date_end) {
 function loadMostLocation(date_start,date_end) {
 	$(".top-location").html("<img src='images/loading.gif' />");
 	$.ajax({
-		url : app_url + "KeywordTrend",
+		url : app_url + "KeywordTrend1",
 		method : 'POST',
 		dataType : 'json',
 		data : {
@@ -167,7 +169,7 @@ function loadMostLocation(date_start,date_end) {
 function loadMostPost(date_start,date_end) {
 	$(".post-mentioned").html("<img src='images/loading.gif' />");
 	$.ajax({
-		url : app_url + "KeywordTrend",
+		url : app_url + "KeywordTrend1",
 		method : 'POST',
 		dataType : 'json',
 		data : {
@@ -191,7 +193,7 @@ function loadtermTableBulk() {
 	$(".termtable").html(
 			"<img src='images/loading.gif' /> TERMS LOADING PLEASE WAIT ...");
 	$.ajax({
-		url : app_url + "KeywordTrend",
+		url : app_url + "KeywordTrend1",
 		method : 'POST',
 		dataType : 'json',
 		data : {
