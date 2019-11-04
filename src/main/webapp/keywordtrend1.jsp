@@ -1694,21 +1694,50 @@ $(document).ready(function() {
     	
     	 var count = $('.thanks').length;
     	 
-    
+   
     	 
     	 if(count > 0){
     		
+    		 
+///////////////start collecting names
+    		 var county = $('.thanks').length;
+    		 
+    		 if(county > 0){
+    			 
+    			 var all_selected_names = '';
+    			 var i = 1;
+    			 $( ".thanks" ).each(function( index ) {
+    				 
+    				 
+    				 if(i > 1){
+    					 all_selected_names += ' , ';
+    				 }
+    				 
+    		    	blog_name = $(this).attr('name');
+    		    	
+    		    	
+    		    	all_selected_names += '"'+blog_name+'"';
+    		    	
+    		    		
+    		    	i++;
+    			    		
+    			});
+    			 
+    			 
+    		 }
+    		////////////end collecting names
+    		 
+    		 
+    		 
+    		 
     		 $( ".thanks" ).each(function( index ) {
     			 
        		  		var ind = index;
        		  		
     		    	name = 	$(this).attr('name');
     		    	
-    		    	
-    		    	
     		    	id = 	$(this).attr('value');
     		    	
-    		    
     		    	
     		    		
     		    		
@@ -1721,6 +1750,7 @@ $(document).ready(function() {
     					data : {
     						action : "line_graph",
     						term : name,
+    						all_selected_names : all_selected_names,
     						index:ind,
     						async: false,
     						all_blog_ids : $("#all_blog_ids").val(),

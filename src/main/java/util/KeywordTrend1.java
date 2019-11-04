@@ -58,6 +58,8 @@ public class KeywordTrend1 extends HttpServlet {
 		String date_end = (null == request.getParameter("date_end")) ? "" : request.getParameter("date_end");
 		String mostactiveterm = (null == request.getParameter("term")) ? "" : request.getParameter("term").toString();
 		
+		String all_selected_terms = (null == request.getParameter("all_selected_names")) ? "" : request.getParameter("all_selected_names").toString();
+		
 		Object index = (null == request.getParameter("index")) ? "" : request.getParameter("index");
 	
 
