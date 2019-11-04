@@ -57,9 +57,8 @@ public class KeywordTrend1 extends HttpServlet {
 		String date_start = (null == request.getParameter("date_start")) ? "" : request.getParameter("date_start");
 		String date_end = (null == request.getParameter("date_end")) ? "" : request.getParameter("date_end");
 		String mostactiveterm = (null == request.getParameter("term")) ? "" : request.getParameter("term").toString();
-		
+
 		Object index = (null == request.getParameter("index")) ? "" : request.getParameter("index");
-	
 
 		String sort = (null == request.getParameter("sort")) ? "" : request.getParameter("sort");
 		String action = (null == request.getParameter("action")) ? "" : request.getParameter("action");
@@ -224,9 +223,9 @@ public class KeywordTrend1 extends HttpServlet {
 
 			try {
 				PrintWriter out = response.getWriter();
-				
+
 				JSONObject result = new JSONObject();
-				
+
 				sql = post._getBloggerPosts(mostactiveterm.toString(), "NOBLOGGER", date_start.toString(),
 						date_end.toString(), all_blog_ids.toString());
 
@@ -244,6 +243,7 @@ public class KeywordTrend1 extends HttpServlet {
 					String blogger = null;
 
 					Integer occurence = null;
+					String mostActiveTerms[] = null;
 
 					HashMap<String, Integer> hm2 = new HashMap<String, Integer>();
 
@@ -276,18 +276,34 @@ public class KeywordTrend1 extends HttpServlet {
 						System.out.println(d.toString() + "-+" + occurence + "date-" + date);
 						items.add(i, hm2);
 
-						String replace = "<span style=background:red;color:#fff>" + mostactiveterm + "</span>";
-						String active2 = mostactiveterm.substring(0, 1).toUpperCase()
-								+ mostactiveterm.substring(1, mostactiveterm.length());
-						String active3 = mostactiveterm.toUpperCase();
+						mostActiveTerms = mostactiveterm.split(",");
 
-						posts = posts.replaceAll(mostactiveterm, replace);
-						posts = posts.replaceAll(active2, replace);
-						posts = posts.replaceAll(active3, replace);
+//						for (int k = 0; k < mostActiveTerms.length; i++) {
+							String replace = "<span style=background:red;color:#fff>" + mostactiveterm + "</span>";
+							String active2 = mostactiveterm.substring(0, 1).toUpperCase()
+									+ mostactiveterm.substring(1, mostactiveterm.length());
+							String active3 = mostactiveterm.toUpperCase();
 
-						title = title.replaceAll(mostactiveterm, replace);
-						title = title.replaceAll(active2, replace);
-						title = title.replaceAll(active3, replace);
+							posts = posts.replaceAll(mostactiveterm, replace);
+							posts = posts.replaceAll(active2, replace);
+							posts = posts.replaceAll(active3, replace);
+
+							title = title.replaceAll(mostactiveterm, replace);
+							title = title.replaceAll(active2, replace);
+							title = title.replaceAll(active3, replace);
+//							String replace = "<span style=background:red;color:#fff>" + mostActiveTerms[k]+ "</span>";
+//							String active2 = mostActiveTerms[k].substring(0, 1).toUpperCase()
+//									+ mostActiveTerms[k].substring(1, mostActiveTerms[k].length());
+//							String active3 = mostActiveTerms[k].toUpperCase();
+//
+//							posts = posts.replaceAll(mostActiveTerms[k], replace);
+//							posts = posts.replaceAll(active2, replace);
+//							posts = posts.replaceAll(active3, replace);
+//
+//							title = title.replaceAll(mostActiveTerms[k], replace);
+//							title = title.replaceAll(active2, replace);
+//							title = title.replaceAll(active3, replace);
+//						}
 
 					}
 
@@ -299,14 +315,11 @@ public class KeywordTrend1 extends HttpServlet {
 				System.out.println("map" + map);
 				JSONObject mapped = new JSONObject(json);
 				System.out.println("map2" + mapped);
-				
-				
-				
-				
+
 				result.put("values", mapped);
 				result.put("name", mostactiveterm);
 				result.put("index", index);
-				
+
 				out.write(result.toString());
 			} catch (Exception e) {
 
