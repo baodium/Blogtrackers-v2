@@ -1718,6 +1718,9 @@ $(document).ready(function() {
     		    	
     		    	all_selected_names += '"'+blog_name+'"';
     		    	
+/*     		    	all_selected_names += '"'+blog_name+'"';
+    		    	all_selected_names1 += blog_name; */
+    		    	
     		    		
     		    	i++;
     			    		
@@ -1870,7 +1873,7 @@ $(document).ready(function() {
     	    			/////////start graph stuff
     	    				indexy = data.findIndex(x => x.name === highest_date_name);
 	    				    
-	    				    
+	    				    console.log(data);
       	    				
   				 			//var width = 750;
   				 			var width = $('#chart-container').width();

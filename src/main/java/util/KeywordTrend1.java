@@ -228,7 +228,8 @@ public class KeywordTrend1 extends HttpServlet {
 
 				JSONObject result = new JSONObject();
 
-				sql = post._getBloggerPosts(mostactiveterm.toString(), "NOBLOGGER", date_start.toString(),
+				System.out.println("terms_ma--"+all_selected_terms);
+				sql = post._getBloggerPosts(all_selected_terms, "NOBLOGGER", date_start.toString(),
 						date_end.toString(), all_blog_ids.toString());
 
 				JSONObject firstpost = new JSONObject();
@@ -278,7 +279,8 @@ public class KeywordTrend1 extends HttpServlet {
 						System.out.println(d.toString() + "-+" + occurence + "date-" + date);
 						items.add(i, hm2);
 
-						mostActiveTerms = mostactiveterm.split(",");
+						mostActiveTerms = all_selected_terms.split(",");
+						
 
 //						for (int k = 0; k < mostActiveTerms.length; i++) {
 							String replace = "<span style=background:red;color:#fff>" + mostactiveterm + "</span>";
@@ -314,6 +316,7 @@ public class KeywordTrend1 extends HttpServlet {
 				Map<String, Integer> json = (HashMap<String, Integer>) items.stream()
 						.flatMap(m -> m.entrySet().stream())
 						.collect(toMap(Map.Entry::getKey, Map.Entry::getValue, Integer::sum));
+				
 				System.out.println("map" + map);
 				JSONObject mapped = new JSONObject(json);
 				System.out.println("map2" + mapped);

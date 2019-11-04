@@ -2464,6 +2464,7 @@ public class Blogposts {
 			throws Exception {
 		//
 //		BloggerName="Stephen Lendman,South Front";
+		System.out.println("postingfreqbloggers" + BloggerName);
 		ArrayList<String> list = new ArrayList<String>();
 		JSONObject query = new JSONObject();
 		String result = null;
@@ -2696,9 +2697,12 @@ public class Blogposts {
 		 * while (match.find()) { String s = match.group(); str =
 		 * str.replaceAll("\\" + s, " "); }
 		 */
+		word = word.replaceAll("\"", "");
+		System.out.println("This is the word-" + word);
 		String a[] = str.split("\\W+");
 
 		String wrd[] = word.split(",");
+//		System.out.println("This is the word-" + wrd[1]);
 
 		String str_ = null;
 
@@ -2708,8 +2712,11 @@ public class Blogposts {
 			// if match found increase count
 			str_ = a[i].toLowerCase();
 			for (int j = 0; j < wrd.length; j++) {
-				if (wrd[j].equals(str_))
+				System.out.println("This is the splitted word-"+wrd[j]+"--"+str_);
+				if (wrd[j].trim().equals(str_.trim())) {
 					count++;
+					System.out.println("Count =="+count);
+				}
 			}
 		}
 
@@ -2851,7 +2858,7 @@ public class Blogposts {
 				if (bloggerName == "NOBLOGGER") {
 					if (j.get("title").toString() != null || j.get("title").toString() != "") {
 						occurence = this.countOccurences(src, term);
-//						System.out.println(term+"----------------------"+occurence);
+						System.out.println(term + "----------------------" + occurence);
 						title = j.get("title").toString();
 						blogpost_id = j.get("blogpost_id").toString();
 						permalink = j.get("permalink").toString();
