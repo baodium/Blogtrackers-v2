@@ -200,7 +200,9 @@
     /* String formattedDate = outputFormatter.format(date); */
     /* System.out.println(d); */ // prints 10-04-2018
 	
-    ArrayList allposts=post._getBloggerByBloggerName("date","2008-10-18", "2019-10-30","NASHA","date","DESC");
+    //ArrayList allposts=post._getBloggerByBloggerName("date","2008-10-18", "2019-10-30","NASHA","date","DESC");
+    
+    JSONObject allposts = post._newGetBloggerByBloggerName("date", "2008-10-18", "2019-10-30", "NASHA", "DESC");
 
 	
 	PrintWriter pww = response.getWriter();
@@ -289,9 +291,47 @@
 				} */
 			%>
 			<p>His trackers</p>
-			  <%--  <h1>HIGHEST TERM --><%=result%></h1>   --%>
+			   
+			  
 			  
 			  <%
+			  Object hits_array = allposts.getJSONArray("hit_array");
+			  String resul = null;
+			  
+			  resul = hits_array.toString();
+			  JSONArray all = new JSONArray(resul);
+			  String tres = null;
+				JSONObject tresp = null;
+				String tresu = null;
+				JSONObject tobj = null;
+				String date =null;
+				int j=0;
+				int k=0;
+				
+				
+				for(int i=0; i< all.length(); i++){
+					tres = all.get(i).toString();	
+					tresp = new JSONObject(tres);
+					
+					tresu = tresp.get("_source").toString();
+					tobj = new JSONObject(tresu);
+					
+					Object date_ = tresp.getJSONObject("fields").getJSONArray("date").get(0);
+					String dat = date_.toString().substring(0,10);
+					LocalDate datee = LocalDate.parse(dat);
+					DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");
+					date = dtf.format(datee);
+					
+			/* 		
+					LocalDate datee = LocalDate.parse(dat);
+					DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");
+					date = dtf.format(datee); */
+			  
+			  %>
+			  <h1>HIGHEST TERM --><%=tobj.get("title")%></h1>   
+			  
+			  <%} %>
+			 <%--  <%
 			    if(allposts.size()>0){	
 			        
 					String tres = null;
@@ -301,7 +341,7 @@
 					String date =null;
 					int j=0;
 					int k=0;
-					for(int i=0; i< allposts.size(); i++){
+					for(int i=0; i< 5; i++){
 							tres = allposts.get(i).toString();	
 						tresp = new JSONObject(tres);
 						tresu = tresp.get("_source").toString();
@@ -315,7 +355,25 @@
 			  
 			  %>
 			 <h1>HIGHEST TERM --><%=tobj.get("title")%>  ------ <%= tobj.get("post").toString()%></h1> 
-			 <% }}%>
+			 
+			 <td><a class="blogpost_link cursor-pointer" id="<%=tobj.get("blogpost_id")%>" ><%=tobj.get("title") %></a><br/>
+								<a class="mt20 viewpost makeinvisible" href="<%=tobj.get("permalink") %>" target="_blank"><buttton class="btn btn-primary btn-sm mt10 visitpost">Visit Post &nbsp;<i class="fas fa-external-link-alt"></i></buttton></a></td>
+								<td align="center"><%=date %></td>
+								
+			 <% }}%> --%>
+			 
+			 
+			 
+			 
+			 
+			 
+			 
+			 
+			 
+			 
+			 
+			 
+			 
 <%-- 			   <h1>POSTS--><%
 			   JSONObject j = new JSONObject();
 			   for(int i=0; i<sql.length();i++){

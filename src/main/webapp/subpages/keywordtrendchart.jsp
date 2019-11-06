@@ -172,6 +172,8 @@
 										String blogger = null;
 										String posts = null;
 										Integer occurence = null;
+										
+										String mostActiveTerms[] = null;
 						%>
 						<table id="DataTables_Table_2_wrapper" class="display"
 							style="width: 100%">
@@ -224,14 +226,28 @@
 													String active2 = mostactiveterm.substring(0, 1).toUpperCase()
 															+ mostactiveterm.substring(1, mostactiveterm.length());
 													String active3 = mostactiveterm.toUpperCase();
+													
+													System.out.println("mostactiveterms--"+mostactiveterm);
+													
+													mostActiveTerms = mostactiveterm.split(",");
+													
+													String mostactiveterm_=null;
+													
+													for (int i_ = 0; i_ < mostActiveTerms.length; i_++){
+														
+														System.out.println("mostactiveterms--=.."+mostActiveTerms[i_]);
+														mostactiveterm_ = mostActiveTerms[i_].replaceAll("\"", "");
+														mostactiveterm_ =  mostactiveterm.trim();
+														
+														posts = posts.replaceAll(mostactiveterm_, replace);
+														posts = posts.replaceAll(active2, replace);
+														posts = posts.replaceAll(active3, replace);
 
-													posts = posts.replaceAll(mostactiveterm, replace);
-													posts = posts.replaceAll(active2, replace);
-													posts = posts.replaceAll(active3, replace);
-
-													title = title.replaceAll(mostactiveterm, replace);
-													title = title.replaceAll(active2, replace);
-													title = title.replaceAll(active3, replace);
+														title = title.replaceAll(mostactiveterm_, replace);
+														title = title.replaceAll(active2, replace);
+														title = title.replaceAll(active3, replace);
+													}
+												
 
 													/* 	LocalDate datee = LocalDate.parse(date);
 														DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");

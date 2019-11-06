@@ -288,6 +288,68 @@ public class Blogposts {
 		return ids;
 	}
 
+	public JSONObject _newGetBloggerByBloggerName(String field, String greater, String less, String bloggers, String order) throws Exception {
+
+		JSONObject query = new JSONObject("{\r\n" + "    \"size\": 50,\r\n" + "    \"query\": {\r\n"
+				+ "        \"bool\": {\r\n" + "            \"must\": [\r\n" + "                {\r\n"
+				+ "                    \"terms\": {\r\n" + "                        \"blogger.keyword\": ["+bloggers+"],\r\n" + "                        \"boost\": 1.0\r\n"
+				+ "                    }\r\n" + "                },\r\n" + "                {\r\n"
+				+ "                    \"range\": {\r\n" + "                        \"date\": {\r\n"
+				+ "                            \"from\": \""+greater+"\",\r\n"
+				+ "                            \"to\": \""+less+"\",\r\n"
+				+ "                            \"include_lower\": true,\r\n"
+				+ "                            \"include_upper\": true,\r\n"
+				+ "                            \"boost\": 1.0\r\n" + "                        }\r\n"
+				+ "                    }\r\n" + "                }\r\n" + "            ],\r\n"
+				+ "            \"adjust_pure_negative\": true,\r\n" + "            \"boost\": 1.0\r\n" + "        }\r\n"
+				+ "    },\r\n" + "    \"_source\": {\r\n" + "        \"includes\": [\r\n"
+				+ "            \"@version\",\r\n" + "            \"blogger\",\r\n" + "            \"blogpost_id\",\r\n"
+				+ "            \"blogsite_id\",\r\n" + "            \"categories\",\r\n"
+				+ "            \"influence_score\",\r\n" + "            \"language\",\r\n"
+				+ "            \"location\",\r\n" + "            \"num_comments\",\r\n"
+				+ "            \"num_inlinks\",\r\n" + "            \"num_outlinks\",\r\n"
+				+ "            \"permalink\",\r\n" + "            \"post\",\r\n" + "            \"post_length\",\r\n"
+				+ "            \"sentiment\",\r\n" + "            \"tags\",\r\n" + "            \"title\"\r\n"
+				+ "        ],\r\n" + "        \"excludes\": []\r\n" + "    },\r\n" + "    \"docvalue_fields\": [\r\n"
+				+ "        {\r\n" + "            \"field\": \"@timestamp\",\r\n"
+				+ "            \"format\": \"epoch_millis\"\r\n" + "        },\r\n" + "        {\r\n"
+				+ "            \"field\": \"date\",\r\n" + "            \"format\": \"yyyy-MM-dd\"\r\n"
+				+ "        }\r\n" + "    ],\r\n" + "    \"sort\": [\r\n" + "        {\r\n"
+				+ "            \""+field+"\": {\r\n" + "                \"order\": \""+order+"\",\r\n"
+				+ "                \"missing\": \"_first\",\r\n" + "                \"unmapped_type\": \"date\"\r\n"
+				+ "            }\r\n" + "        }\r\n" + "    ]\r\n" + "}");
+
+		ArrayList<String> list = new ArrayList<String>();
+
+		String source = null;
+
+		System.out.println("this is the query-" + query);
+		JSONArray jsonArray = null;
+
+		JSONObject all_data = new JSONObject();
+
+		try {
+			JSONObject myResponse = this._makeElasticRequest(query, "POST", "/blogposts/_search/?scroll=1d");
+			System.out.println(hm.get("elasticIndex") + "==" + query);
+
+			if (null != myResponse.get("hits")) {
+
+				Object hits = myResponse.getJSONObject("hits").getJSONArray("hits");
+				Object total = myResponse.getJSONObject("hits").getJSONObject("total").get("value");
+				source = hits.toString();
+				jsonArray = new JSONArray(source);
+				System.out.println("DONE GETTING POSTS FOR BLOGGER");
+
+				all_data.put("total", total.toString());
+				all_data.put("hit_array", jsonArray);
+
+			}
+		} catch (Exception e) {
+		}
+		return all_data;
+	}
+
+	
 	public ArrayList _getBloggerByBloggerName(String field, String greater, String less, String bloggers, String sort,
 			String order) throws Exception {
 		int size = 50;
@@ -295,13 +357,17 @@ public class Blogposts {
 		String count = "0";
 		ArrayList result = new ArrayList();
 		try {
-			result = db.queryJSON("SELECT *  FROM blogposts WHERE blogger = '" + bloggers + "' AND " + field + ">='"
-					+ greater + "' AND " + field + "<='" + less + "' ORDER BY " + sort + " " + order + " LIMIT " + size
-					+ "");
+//			result = db.queryJSON("SELECT *  FROM blogposts WHERE blogger = '" + bloggers + "' AND " + field + ">='"
+//					+ greater + "' AND " + field + "<='" + less + "' ORDER BY " + sort + " " + order + " LIMIT " + size
+//					+ "");
+
+//			return all_data;
 			// result = db.queryJSON("SELECT * FROM blogposts WHERE blogger = '"+bloggers+"'
 			// AND "+field+">="+greater+" AND "+field+"<="+less+" ORDER BY date ASC LIMIT
 			// "+size+"");
-
+//			System.out.println("blogpost _getBloggerByBloggerName--"+"SELECT *  FROM blogposts WHERE blogger = '" + bloggers + "' AND " + field + ">='"
+//					+ greater + "' AND " + field + "<='" + less + "' ORDER BY " + sort + " " + order + " LIMIT " + size
+//					+ "");
 		} catch (Exception e) {
 			return result;
 		}
@@ -1327,9 +1393,9 @@ public class Blogposts {
 		} catch (Exception e) {
 			return count;
 		}
-		System.out.println("id--" + blog_ids);
-		System.out.println("greater--" + greater);
-		System.out.println("less--" + less);
+//		System.out.println("id--" + blog_ids);
+//		System.out.println("greater--" + greater);
+//		System.out.println("less--" + less);
 		return count;
 
 //		String[] args = blog_ids.split(","); 
@@ -1418,9 +1484,9 @@ public class Blogposts {
 			return count;
 		}
 
-		System.out.println("field--" + field);
-		System.out.println("greater--" + greater);
-		System.out.println("less--" + less);
+//		System.out.println("field--" + field);
+//		System.out.println("greater--" + greater);
+//		System.out.println("less--" + less);
 		return count;
 
 		/*
@@ -2373,8 +2439,11 @@ public class Blogposts {
 
 			System.out.println("DONE GETTING POSTS FOR BLOGGER");
 
-			if (jsonArray != null) {
+			if (jsonArray.length() < 10) {
+				limit = jsonArray.length();
+			}
 
+			if (jsonArray != null) {
 				for (int i = 0; i < limit; i++) {
 					JSONObject da = new JSONObject();
 					idx = jsonArray.get(i).toString();

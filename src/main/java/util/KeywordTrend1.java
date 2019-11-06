@@ -228,7 +228,7 @@ public class KeywordTrend1 extends HttpServlet {
 
 				JSONObject result = new JSONObject();
 
-				System.out.println("terms_ma--"+all_selected_terms);
+//				System.out.println("terms_ma--"+all_selected_terms);
 				sql = post._getBloggerPosts(mostactiveterm, "NOBLOGGER", date_start.toString(),
 						date_end.toString(), all_blog_ids.toString());
 
@@ -252,7 +252,7 @@ public class KeywordTrend1 extends HttpServlet {
 
 					String sql_ = sql.get("data").toString();
 					for (int i = 0; i < sql.getJSONArray("data").length(); i++) {
-						System.out.println(sql.getJSONArray("data").length());
+//						System.out.println(sql.getJSONArray("data").length());
 						Object jsonArray = sql.getJSONArray("data").get(i);
 
 						j = jsonArray.toString();
@@ -272,11 +272,11 @@ public class KeywordTrend1 extends HttpServlet {
 						LocalDate date_ = LocalDate.parse(date, inputFormatter);
 						Integer d = date_.getYear();
 						/* String formattedDate = outputFormatter.format(date); */
-						System.out.println(d.toString());
+//						System.out.println(d.toString());
 
 						hm2 = new HashMap<String, Integer>();
 						hm2.put(d.toString(), (Integer) occurence);
-						System.out.println(d.toString() + "-+" + occurence + "date-" + date);
+//						System.out.println(d.toString() + "-+" + occurence + "date-" + date);
 						items.add(i, hm2);
 
 						mostActiveTerms = all_selected_terms.split(",");

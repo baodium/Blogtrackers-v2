@@ -112,11 +112,15 @@ if(action.toString().equals("gettotal")){
 <% }else{
 	//ArrayList allauthors = post._getBloggerByBloggerName("date",dt, dte,blogger.toString(),"influence_score","DESC");
 	//System.out.println("bloggers:"+blogger.toString());
-ArrayList allauthors=post._getBloggerByBloggerName("date",dt, dte,blogger.toString().toLowerCase(),sort.toString(),"DESC");
+	
+	
+//ArrayList allauthors=post._getBloggerByBloggerName("date",dt, dte,blogger.toString().toLowerCase(),sort.toString(),"DESC");
+
+JSONObject allauthors = post._newGetBloggerByBloggerName("date", dt, dte, blogger.toString().toLowerCase(), "DESC");
 %>
 
 <%
-                                if(allauthors.size()>0){							
+                                /* if(allauthors.size()>0){							
 									String tres = null;
 									JSONObject tresp = null;
 									String tresu = null;
@@ -133,7 +137,35 @@ ArrayList allauthors=post._getBloggerByBloggerName("date",dt, dte,blogger.toStri
 										DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");
 										String date = dtf.format(datee);
 										
-										k++;
+										k++; */
+										
+										Object hits_array = allauthors.getJSONArray("hit_array");
+										  String resul = null;
+										  
+										  resul = hits_array.toString();
+										  JSONArray all = new JSONArray(resul);
+										if(all.length()>0){	  
+										  	String tres = null;
+											JSONObject tresp = null;
+											String tresu = null;
+											JSONObject tobj = null;
+											String date =null;
+											int j=0;
+											int k=0;
+											
+											
+											for(int i=0; i< 1; i++){
+												tres = all.get(i).toString();	
+												tresp = new JSONObject(tres);
+												
+												tresu = tresp.get("_source").toString();
+												tobj = new JSONObject(tresu);
+												
+												Object date_ = tresp.getJSONObject("fields").getJSONArray("date").get(0);
+												String dat = date_.toString().substring(0,10);
+												LocalDate datee = LocalDate.parse(dat);
+												DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");
+												date = dtf.format(datee);
 									%>                                    
                                     <h5 class="text-primary p20 pt0 pb0"><%=tobj.get("title").toString().replaceAll("[^a-zA-Z]", " ")%></h5>
 										<div class="text-center mb20 mt20">

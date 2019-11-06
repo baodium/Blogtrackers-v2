@@ -324,7 +324,8 @@ userinfo = (ArrayList<?>)userinfo.get(0);
 
 	toplocation = blog._getTopLocation(mostactiveblogid);
 
-	ArrayList allposts = new ArrayList();
+	/* ArrayList allposts = new ArrayList(); */
+	JSONObject allposts = new JSONObject();
 	
 	JSONObject authoryears = new JSONObject();
 	JSONObject years = new JSONObject();
@@ -525,6 +526,7 @@ userinfo = (ArrayList<?>)userinfo.get(0);
 					String dselected = "";
 					String selectedid="";
 					String activew = "";
+					String pids = null;
 					if (bloggerPostFrequency.size() > 0) {
 						int p = 0;
 						for (int m = 0; m < bloggerPostFrequency.size(); m++) {
@@ -538,14 +540,15 @@ userinfo = (ArrayList<?>)userinfo.get(0);
 												dselected = "abloggerselected";
 												activew = "thanks";
 												mostactiveblogger = bloggerName;
-												String pids = post._getPostIdsByBloggerName("date",dt, dte,"'"+bloggerName+"'","date","DESC");
+												//pids = post._getPostIdsByBloggerName("date",dt, dte,"'"+bloggerName+"'","date","DESC");
 												//allterms = term._searchByRange("blogsiteid", dt, dte, blogsiteId);//_searchByRange("blogpostid",dt, dte,postids);
 												System.out.println("Most active blogger:"+mostactiveblogger);
-												allentitysentiments = blogpostsentiment._searchByRange("date", dt, dte, pids);
+												//allentitysentiments = blogpostsentiment._searchByRange("date", dt, dte, pids);
 												selectedid=blogsiteId; 
 												
 												
-												allposts = post._getBloggerByBloggerName("date",dt, dte,bloggerName,"date","DESC");	
+												//allposts = post._getBloggerByBloggerName("date",dt, dte,bloggerName,"date","DESC");	
+												allposts = post._newGetBloggerByBloggerName("date", dt, dte, bloggerName, "DESC");
 												System.out.println("date---"+dt+ dte+bloggerName+"date"+"DESC"+blogsiteId);
 										}else{
 												dselected = "";
@@ -833,7 +836,7 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
                         <tbody>
                             
 						<%
-                                if(allposts.size()>0){	
+/*                                 if(allposts.size()>0){	
                                 
 									String tres = null;
 									JSONObject tresp = null;
@@ -852,7 +855,35 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
 										DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");
 										date = dtf.format(datee);
 										
-										k++; 
+										k++;  */
+										
+										Object hits_array = allposts.getJSONArray("hit_array");
+										  String resul = null;
+										  
+										  resul = hits_array.toString();
+										  JSONArray all = new JSONArray(resul);
+										if(all.length()>0){	  
+										  	String tres = null;
+											JSONObject tresp = null;
+											String tresu = null;
+											JSONObject tobj = null;
+											String date =null;
+											int j=0;
+											int k=0;
+											
+											
+											for(int i=0; i< all.length(); i++){
+												tres = all.get(i).toString();	
+												tresp = new JSONObject(tres);
+												
+												tresu = tresp.get("_source").toString();
+												tobj = new JSONObject(tresu);
+												
+												Object date_ = tresp.getJSONObject("fields").getJSONArray("date").get(0);
+												String dat = date_.toString().substring(0,10);
+												LocalDate datee = LocalDate.parse(dat);
+												DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");
+												date = dtf.format(datee);
 									%>
                                     <tr>
                                    <td><a class="blogpost_link cursor-pointer" id="<%=tobj.get("blogpost_id")%>" ><%=tobj.get("title") %></a><br/>
@@ -872,7 +903,7 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
        <div style="" class="pt20" id="blogpost_detail">
   		
 				<%
-                                if(allposts.size()>0){							
+                  /*               if(allposts.size()>0){							
 									String tres = null;
 									JSONObject tresp = null;
 									String tresu = null;
@@ -889,7 +920,32 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
 										DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");
 										String date = dtf.format(datee);
 										
-										k++;
+										k++; */
+										
+										
+										if(all.length()>0){	  
+										  	String tres = null;
+											JSONObject tresp = null;
+											String tresu = null;
+											JSONObject tobj = null;
+											String date =null;
+											int j=0;
+											int k=0;
+											
+											
+											for(int i=0; i< 1; i++){
+												tres = all.get(i).toString();	
+												tresp = new JSONObject(tres);
+												
+												tresu = tresp.get("_source").toString();
+												tobj = new JSONObject(tresu);
+												
+												Object date_ = tresp.getJSONObject("fields").getJSONArray("date").get(0);
+												String dat = date_.toString().substring(0,10);
+												LocalDate datee = LocalDate.parse(dat);
+												DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");
+												date = dtf.format(datee);
+										
 									%>                                    
                                     <h5 class="text-primary p20 pt0 pb0"><%=tobj.get("title")%></h5>
 										<div class="text-center mb20 mt20">

@@ -2811,7 +2811,7 @@ var mymarker = [
 		
 		
 		function loadKeywordDashboard(blogger,ids){
-			 $(".word-cld").html("<img src='images/loading.gif' /> COMPUTING TERMS PLEASE WAIT...."); 
+			 $(".word-cld").html("<img src='images/loading.gif' /> COMPUTING TERMS FOR <b style='color : blue;  font-size: 20px;'><%=NumberFormat.getNumberInstance(Locale.US).format(new Double(totalpost).intValue())%></b> POSTS PLEASE WAIT...."); 
 			 $('#keywordbtn').prop("disabled", true);
 			 $("#hrefkeyword").attr("href", "");
 			$.ajax({

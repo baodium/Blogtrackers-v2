@@ -1056,6 +1056,8 @@
 															+ mostactiveterm.substring(1, mostactiveterm.length());
 													String active3 = mostactiveterm.toUpperCase();
 
+													System.out.println("mostactiveterms--="+mostactiveterm);
+													
 													posts = posts.replace(mostactiveterm, replace);
 													posts = posts.replace(active2, replace);
 													posts = posts.replace(active3, replace);
