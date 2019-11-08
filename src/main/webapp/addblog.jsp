@@ -420,22 +420,24 @@
 <input type="file" class="offset-md-4 col-md-4 form-control"/> 
 </div> -->
 	</div>
-
+	<div>
+<table  id="bloglist" style="width: 100%">
 	<div class="col-md-12 mt10 mb50 pl0 pr0">
 		<h2 class="text-primary addblogtitle bold-text">Blogs Added</h2>
-		<table cellpadding="4" id="bloglist" style="width: 100%">
+		
 			<thead>
 				<tr>
-					<td class="text-primary"></td>
-					<th class="text-primary">Blog Name</th>
-					<th class="text-primary">Status</th>
-					<th class="text-primary">No. of Posts</th>
-					<th class="text-primary">Latest Update</th>
-					<th></th>
+					<td class="text-primary">id</td>
+					<td class="text-primary">Blog Name</td>
+					<td class="text-primary">Status</td>
+					<td class="text-primary">No. of Posts</td>
+					<td class="text-primary">Latest Update</td>
+					<td></td>
 				</tr>
 			</thead>
 			<tbody id="tbody">
 				<%
+				int k_count = 0; 
 					try {
 						
 						if (results_blogadded.size() > 0) {
@@ -471,6 +473,7 @@
 								
 								
 								String status = (String) blog.get(3);
+								System.out.println("id--"+blog.get(0));
 								String statusstyle = "";
 								if (status.equalsIgnoreCase("crawled")) {
 									statusstyle = "table-success";
@@ -494,7 +497,7 @@
 					<td class="text-primary text-left blogstatus"><%=status%></td>
 					<td class="text-primary text-left"><%=total_post%></td>
 					<td class="text-primary text-left"><%=last_crawled%></td>
-					<td><i class="text-primary icontrackersize cursor-pointer deleteblog text-center" data-toggle="tooltip" id="<%=blog.get(0)%>_select" data-placement="top" title="Delete Blog"></i></td>
+					<td><i class="text-primary icontrackersize cursor-pointer deleteblog text-center" data-toggle="tooltip" id="<%=blog.get(0)%>" data-placement="top" title="Delete Blog"></i></td>
 					<%-- <td class="text-primary text-center"><i id="<%=k + 1%>"
 						class="text-primary icontrackersize cursor-pointer deleteblog deletebtn text-center"
 						onclick= "<%  %>"
@@ -503,6 +506,7 @@
 				</tr>
 
 				<%
+				k_count = k_count + 1;
 					}
 						}
 					} catch (Exception e) {
@@ -524,6 +528,7 @@
 				%> --%>
 			</tbody>
 		</table>
+		</div>
 	</div>
 	<%-- <p class="text-primary p30 pt30 pb0">Enter the URL of the Blog <b>(with http://)</b> and press Enter to save</p>
 <form method="add" method="post" autocomplete="off" action="<%=request.getContextPath()%>/addblog.jsp">
@@ -663,17 +668,21 @@ $(document).ready(function() {
 } );
 </script> -->
 	<!--end for table  -->
-
+<script type="text/javascript" src="assets/vendors/DataTables/datatables.min.js"></script>
+	 <script type="text/javascript" src="assets/vendors/DataTables/dataTables.bootstrap4.min.js"></script>
 	<script type="text/javascript" src="assets/js/toastr.js"></script>
 
 	<script type="text/javascript" src="pagedependencies/baseurl.js"></script>
 	<script src="assets/js/generic.js">
+	
+	 
 		
 	</script>
 	<script src="pagedependencies/addblog.js?v=148906">
 		
 	</script>
 	<script type="text/javascript">
+	
 	$(document).ready(function () {
 
 	    $("#selected_file").change(function (event) {
@@ -753,7 +762,8 @@ $(document).ready(function() {
 	    	                	table_data +="<tr class="+statusstyle+">"
 	    	                	/* (null == userinfo.get(6)) ? "" : userinfo.get(6).toString(); */
 	    	                	/* try{results_blogadded.size();}catch(Exception e){} */
-	    	                	table_data +='<td>'+(<%results_blogadded.size();%>+i+1)+'</td>'
+	    	                	
+	    	                	table_data +='<td>'+(<%=k_count%>+i+1)+'</td>'
 	    	                	table_data +='<td>'+data.success.url[i]+'</td>'
 	    	                	table_data +='<td>'+status+'</td>'
 	    	                	table_data +='<td>'+'</td>'
@@ -762,8 +772,8 @@ $(document).ready(function() {
 	    	                	table_data +='</tr>'
 	    	                	console.log(data[i]);
 	    	                }
-	    	                
-	    					 $('#tbody').append(table_data); 
+	                		$('#tbody').append(table_data); 
+	                		location.reload();
 	    					/* document.getElementById("tbody").appendChild(table_data); */
 	                }
 	                if("exists" in data){
@@ -789,6 +799,41 @@ $(document).ready(function() {
 	    });
 
 	});
+	<%-- <td><i class="text-primary icontrackersize cursor-pointer deleteblog text-center" data-toggle="tooltip" id="<%=blog.get(0)%>_select" data-placement="top" title="Delete Blog"></i></td> --%>
+	$('.deleteblog').on("click",function(e){
+		
+		console.log( $(this).attr('id'))
+			
+	})
+
+
+	
+
+	 
+/* 	    $('#bloglist').DataTable( {
+	           "scrollY": 430,
+	           "scrollX": true, 
+	            "order": [], 
+	            "pagingType": "simple", 
+	          	    "columnDefs": [
+	          	      { "width": "20%", "targets": 0 },
+	          	      { "width": "20%", "targets": 0 }
+	          	    ]  
+	       } );  */
+	       
+	    $(document).ready( function () {
+	        $('#bloglist').DataTable({
+	        	"autoWidth": true
+	          /*   "scrollY": 430,
+	            "scrollX": true, */
+	          /*   "order": [], */
+	             /* "pagingType": "simple", */
+	          /*  	  "columnDefs": [
+	           	      { "width": "100%", "targets": 0 },
+	           	      { "width": "100%", "targets": 0 }
+	           	    ] */
+	        	});          
+	    } );
 	</script>
 </body>
 </html>

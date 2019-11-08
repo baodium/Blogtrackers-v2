@@ -76,7 +76,7 @@ $('.createbtn').on("click",function(e){
 });
 
 
-	$('.deletebtn').on("click",function(e){
+	$('.deleteblog').on("click",function(e){
 		e.preventDefault();
 		console.log(this);
 		id = $(this).attr('id');
@@ -93,6 +93,8 @@ $('.createbtn').on("click",function(e){
 				},
 				success:function(response){
 					if(response=="true"){
+						alert('Are you sure you want to delete blog ?')
+						
 						toastr.success("Blog successfully deleted");
 						location.reload();
 					}else{

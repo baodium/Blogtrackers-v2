@@ -99,9 +99,9 @@ public class Weblog {
 	}
 
 	public boolean _deleteBlog(String username, String id) {
-		boolean deleted = new DbConnection()
-				.updateTable("delete FROM user_blog WHERE userid='" + username + "' AND id = '" + id + "'");
+		boolean deleted = new DbConnection().updateTable("delete FROM user_blog WHERE userid='" + username + "' AND id = '" + id + "'");
 		System.out.println("deleting"+username+" and "+id);
+		System.out.println("delete FROM user_blog WHERE userid='" + username + "' AND id = '" + id + "'");
 		if (deleted) {
 			System.out.println("deletedd"+username+" and "+id);
 			return true;

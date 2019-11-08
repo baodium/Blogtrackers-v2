@@ -38,7 +38,7 @@ String date_modified = "";
 
 userinfo = DbConnection.query("SELECT * FROM usercredentials where Email = '"+email+"'");
 if (userinfo.size()<1) {
-	response.sendRedirect("login.jsp");
+	//response.sendRedirect("dashboard.jsp");
 }
 else{
 /* else if(!request.getHeader("referer").equals(p +"/forgotpassword.jsp") || !request.getHeader("referer").equals(p +"/ChangePassword.jsp") || ! request.getHeader("referer").equals(p+"/")){ */
@@ -182,7 +182,7 @@ try{
     <div class="text-center" style="margin-left:0px;">
       <h6 class="text-primary m0 bolder profiletext"><%=name%></h6>
       <p class="text-primary profiletext"><%=email%></p>
-    </div>
+    </div>notificationcolor
 
   </div>
   <div id="othersection" class="col-md-12 mt10" style="clear:both">
@@ -230,7 +230,7 @@ try{
   <ul class="nav navbar-nav" style="display:block;">
   <li class="dropdown dropdown-user cursor-pointer float-right">
   <a class="dropdown-toggle profiletoggle"  data-toggle="dropdown">
-    <i class="fas fa-circle" id="notificationcolor"></i>
+    <i class="fas fa-circle" id=""></i>
   <img src="<%=profileimage%>" width="50" height="50" alt="" class="" />
   <span><%=username%></span>
   <!-- <ul class="profilemenu dropdown-menu dropdown-menu-left">
