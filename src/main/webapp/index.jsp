@@ -230,7 +230,7 @@ try{
   <ul class="nav navbar-nav" style="display:block;">
   <li class="dropdown dropdown-user cursor-pointer float-right">
   <a class="dropdown-toggle profiletoggle"  data-toggle="dropdown">
-    <i class="fas fa-circle" id=""></i>
+   <!--  <i class="fas fa-circle" id=""></i> -->
   <img src="<%=profileimage%>" width="50" height="50" alt="" class="" />
   <span><%=username%></span>
   <!-- <ul class="profilemenu dropdown-menu dropdown-menu-left">

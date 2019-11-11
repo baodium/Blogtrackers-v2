@@ -589,8 +589,8 @@
 				<ul class="nav navbar-nav" style="display: block;">
 					<li class="dropdown dropdown-user cursor-pointer float-right">
 						<a class="dropdown-toggle " id="profiletoggle"
-						data-toggle="dropdown"> <i class="fas fa-circle"
-							id="notificationcolor"></i> <img src="<%=profileimage%>"
+						data-toggle="dropdown"> <!-- <i class="fas fa-circle"
+							id="notificationcolor"> --></i> <img src="<%=profileimage%>"
 							width="50" height="50"
 							onerror="this.src='images/default-avatar.png'" alt="" class="" />
 							<span class="bold-text"><%=user_name[0]%></span> <!-- <ul class="profilemenu dropdown-menu dropdown-menu-left">

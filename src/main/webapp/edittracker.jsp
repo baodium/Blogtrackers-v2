@@ -239,7 +239,7 @@ if(ids.length()>0 && post._getBlogPostById(ids) !=""){
 	  <ul class="nav navbar-nav" style="display:block;">
 		  <li class="dropdown dropdown-user cursor-pointer float-right">
 		  <a class="dropdown-toggle " id="profiletoggle" data-toggle="dropdown">
-		    <i class="fas fa-circle" id="notificationcolor"></i>
+		    <!-- <i class="fas fa-circle" id="notificationcolor"></i> -->
 		   
 		  <img src="<%=profileimage%>" width="50" height="50" onerror="this.src='images/default-avatar.png'" alt="" class="" />
 		  <span><%=username%></span></a>
