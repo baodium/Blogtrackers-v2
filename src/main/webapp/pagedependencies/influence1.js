@@ -19,17 +19,54 @@ $(document).delegate('.topics1', 'click', function(){
 	var bloog = blg[0];
 	bloog = name.replaceAll("__"," ");
 	
-	$(".activeblogger").html(bloog);
-	$(".activeblog").html(blg[2]);
 	
-	$("#author").val(bloog);
-	$("#blogid").val(id);
+///////////////start collecting names
+	 var count = $('.thanks').length;
+	 
+	 if(count > 0){
+		 
+		 var all_selected_names = '';
+		 var all_selected_names1 = '';
+		 var all_selected_id = '';
+		 var i = 1;
+		 $( ".thanks" ).each(function( index ) {
+			 
+			 
+			 if(i > 1){
+				 all_selected_names += ' , ';
+				 all_selected_names1 += ' , ';
+				 all_selected_id += ' , ';
+			 }
+			 
+	    	blog_name = 	$(this).attr('name');
+	    	
+	    	blog_id = 	this.id;
+	    	
+	    	all_selected_names += '"'+blog_name+'"';
+	    	all_selected_names1 += blog_name;
+	    	
+	    	all_selected_id += blog_id;
+	    		
+	    	i++;
+		    		
+		});
+		 
+		 
+	 }
+	////////////end collecting names
+	 
+	
+	$(".activeblogger").html(all_selected_names1);
+	$(".activeblog").html(all_selected_names1);
+	
+	$("#author").val(all_selected_names1);
+	$("#blogid").val(all_selected_id);
 	
 	//loadChart(bloog,blg[1]);
 	
 	loadInfluence(date_start,date_end);
 	
-	loadStat(bloog,id);
+	loadStat(all_selected_names1,id);
 });
 
 
