@@ -1386,6 +1386,8 @@ public class Blogposts {
 		try {
 			ArrayList response = DbConnection.query("SELECT count(*) as total FROM blogposts WHERE blogsite_id IN "
 					+ blog_ids + " AND date>='" + greater + "' AND date<='" + less + "' ");
+			System.out.println("query for _searchRangeTotal" + "SELECT count(*) as total FROM blogposts WHERE blogsite_id IN "
+					+ blog_ids + " AND date>='" + greater + "' AND date<='" + less + "' ");
 			if (response.size() > 0) {
 				ArrayList hd = (ArrayList) response.get(0);
 				count = hd.get(0).toString();
@@ -1475,6 +1477,8 @@ public class Blogposts {
 
 		try {
 			ArrayList response = DbConnection.query("SELECT count(*) as total FROM blogposts WHERE blogger = '"
+					+ bloggers + "' AND " + field + ">='" + greater + "' AND " + field + "<='" + less + "' ");
+			System.out.println("query for _searchRangeTotalByBlogger --" + "SELECT count(*) as total FROM blogposts WHERE blogger = '"
 					+ bloggers + "' AND " + field + ">='" + greater + "' AND " + field + "<='" + less + "' ");
 			if (response.size() > 0) {
 				ArrayList hd = (ArrayList) response.get(0);

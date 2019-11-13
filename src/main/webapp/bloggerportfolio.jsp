@@ -518,7 +518,7 @@ System.out.println("test here4");
 System.out.println("---''-"+mostactiveblogger+dt+dte+ids);
 JSONObject sql = post._getBloggerPosts(null,mostactiveblogger,dt,dte,ids);
 String sql_ = sql.get("posts").toString();
-mostactiveterm = post._termVectors(sql_);
+mostactiveterm = post._termVectors(sql_); 
 
 System.out.println("test here5");
 String totalinfluence ="";
