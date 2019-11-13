@@ -68,6 +68,7 @@
 				/* new File("/path/directory").mkdirs(); */
 				path_new.mkdirs();
 				System.out.println("pathhhhh1--"+path_new);
+				profileimage = "images/default-avatar.png";
 			}
 			
 			
@@ -99,6 +100,7 @@
 					System.out.println("updated");
 				}				
 			}else{
+				profileimage = "images/default-avatar.png";
 				System.out.println("path doesnt exist");
 			}
 		} catch (Exception e) {
@@ -427,11 +429,12 @@
 		
 			<thead>
 				<tr>
-					<td class="text-primary">id</td>
-					<td class="text-primary">Blog Name</td>
-					<td class="text-primary">Status</td>
-					<td class="text-primary">No. of Posts</td>
-					<td class="text-primary">Latest Update</td>
+					<td class="text-primary" style="word-wrap:break-word; text-align: center; vertical-align: middle;">id</td>
+					<td class="text-primary" style="width: 20%; word-wrap:break-word;  text-align: center; vertical-align: middle;">Blog Name</td> 
+    
+					<td class="text-primary" style="width: 20%; word-wrap:break-word;  text-align: center; vertical-align: middle;">Status</td>
+					<td class="text-primary" style="width: 20%; word-wrap:break-word;  text-align: center; vertical-align: middle;">No. of Posts</td>
+					<td class="text-primary" style="width: 20%; word-wrap:break-word;  text-align: center; vertical-align: middle;">Latest Update</td>
 					<td></td>
 				</tr>
 			</thead>
@@ -490,13 +493,13 @@
 								//testing git
 				%>
 
-				<tr class="<%=statusstyle%>">
-					<td class="text-left pl0 blogcount"><%=k + 1%></td>
+				<tr class="<%=statusstyle%>" style="width: 20%; word-wrap:break-word;  text-align: center; vertical-align: middle;">
+					<td class="text-left pl0 blogcount " style="word-wrap:break-word; text-align: center; vertical-align: middle;"><%=k + 1%></td>
 					<%-- <td class="text-primary text-left nameofblog"><%=blogname%></td> --%>
-					<td class="text-primary text-left nameofblog"><a href="<%=blogname%>" target="_blank"><%=blogname%></a></td>
-					<td class="text-primary text-left blogstatus"><%=status%></td>
-					<td class="text-primary text-left"><%=total_post%></td>
-					<td class="text-primary text-left"><%=last_crawled%></td>
+					<td class="text-primary text-left nameofblog" style="width: 10%; word-wrap:break-word;  text-align: center; vertical-align: middle;"><a href="<%=blogname%>" target="_blank"><%=blogname%></a></td>
+					<td class="text-primary text-left blogstatus" style="width: 20%; word-wrap:break-word;  text-align: center; vertical-align: middle;"><%=status%></td>
+					<td class="text-primary text-left" style="width: 20%; word-wrap:break-word;  text-align: center; vertical-align: middle;"><%=total_post%></td>
+					<td class="text-primary text-left" style="width: 20%; word-wrap:break-word;  text-align: center; vertical-align: middle;"><%=last_crawled%></td>
 					<td><i class="text-primary icontrackersize cursor-pointer deleteblog text-center" data-toggle="tooltip" id="<%=blog.get(0)%>" data-placement="top" title="Delete Blog"></i></td>
 					<%-- <td class="text-primary text-center"><i id="<%=k + 1%>"
 						class="text-primary icontrackersize cursor-pointer deleteblog deletebtn text-center"
@@ -820,20 +823,18 @@ $(document).ready(function() {
 	          	      { "width": "20%", "targets": 0 }
 	          	    ]  
 	       } );  */
+/* 	       
+/* 	    $(document).ready( function () {
+	        $('#bloglist_').DataTable( {
+	       	 "columnDefs": [
+	       		    { "width": "20%", "targets": 0 }
+	       		  ]
+
+	       } );
 	       
-	    $(document).ready( function () {
-	        $('#bloglist').DataTable({
-	        	"autoWidth": true
-	          /*   "scrollY": 430,
-	            "scrollX": true, */
-	          /*   "order": [], */
-	             /* "pagingType": "simple", */
-	          /*  	  "columnDefs": [
-	           	      { "width": "100%", "targets": 0 },
-	           	      { "width": "100%", "targets": 0 }
-	           	    ] */
-	        	});          
-	    } );
+	       $('#bloglist_').css( 'display', 'block' ); */
+	       /* $('#bloglist').width('100%'); */
+	    /* }); */
 	</script>
 </body>
 </html>

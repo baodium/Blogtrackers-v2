@@ -94,6 +94,7 @@ if(action.toString().equals("getsentimenttable")){
      $('#DataTables_Table_1_wrapper').DataTable( {
          "scrollY": 250,
           "pagingType": "simple",
+          "order": [],
          /*  dom: 
         	   'Bfrtip', 
                     "columnDefs": [

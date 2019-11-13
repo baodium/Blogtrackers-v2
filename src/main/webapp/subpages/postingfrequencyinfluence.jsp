@@ -20,6 +20,7 @@ Object date_start = (null == request.getParameter("date_start")) ? "" : request.
 Object date_end = (null == request.getParameter("date_end")) ? "" : request.getParameter("date_end");
 
 Object blogger = (null == request.getParameter("blogger")) ? "" : request.getParameter("blogger");
+System.out.println("bloger oooo--"+blogger);
 
 Object blog_id = (null == request.getParameter("blog_id")) ? "" : request.getParameter("blog_id");
 Object action = (null == request.getParameter("action")) ? "" : request.getParameter("action");
@@ -41,7 +42,7 @@ String year_end="";
 
 //ArrayList allauthors = post._getBloggerByBloggerName("date",dt, dte,blogger.toString().toLowerCase(),sort.toString(),"DESC");
 
- JSONObject allauthors = post._newGetBloggerByBloggerName("date", dt, dte, blogger.toString().toLowerCase(), "DESC");
+ JSONObject allauthors = post._newGetBloggerByBloggerName("date", dt, dte, blogger.toString(), "DESC");
 //System.out.println("sort"+sort);
 %>
 <link rel="stylesheet" href="assets/css/table.css" />
@@ -116,6 +117,8 @@ String year_end="";
                                     <% }} %>
                                 </tbody>
                             </table>
+                            
+                            
 
 <script type="text/javascript"
 		src="assets/vendors/DataTables/datatables.min.js"></script>
@@ -134,6 +137,7 @@ String year_end="";
      $('#DataTables_Table_0_wrapper').DataTable( {
          "scrollY": 430,
           "pagingType": "simple",
+          "order": [],
           "columnDefs": [
     	      { "width": "75%", "targets": 0 },
     	      { "width": "25%", "targets": 0 }

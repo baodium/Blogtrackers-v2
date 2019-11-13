@@ -232,18 +232,15 @@
 		  
 		  // datatable setup
 		    $('#DataTables_Table_0_wrapper').DataTable( {
-		        "scrollY": 430,
-		       /*  "scrollX": "100%", */
-		        /* "scrollX": true, */
+		    	 "columnDefs": [
+		    		    { "width": "80%", "targets": 0 }
+		    		  ]
+		 /*        "scrollY": 430,
+		        "scrollX": false,
 		         "pagingType": "simple",
 		        	 "bLengthChange": false,
-		        	 "order": [[ 1, "desc" ]]
-		        	/*  ,
-		        	    "columnDefs": [
-		      		      { "width": "50%", "targets": 0 },
-		      		    { "width": "50%", "targets": 0 }
-		      		    ] */
-		      /*    ,
+		        	 "order": [[ 1, "desc" ]] */
+		    /*      ,
 		         dom: 'Bfrtip',
 		         "columnDefs": [
 		      { "width": "80%", "targets": 0 }
@@ -258,6 +255,9 @@
 		        ]
 		      } */
 		    } );
+	
+	$('#DataTables_Table_0_wrapper').css( 'display', 'block' );
+	 $('#DataTables_Table_0_wrapper').width('100%');
 	 
  } );
  </script>

@@ -116,7 +116,7 @@ if(action.toString().equals("gettotal")){
 	
 //ArrayList allauthors=post._getBloggerByBloggerName("date",dt, dte,blogger.toString().toLowerCase(),sort.toString(),"DESC");
 
-JSONObject allauthors = post._newGetBloggerByBloggerName("date", dt, dte, blogger.toString().toLowerCase(), "DESC");
+JSONObject allauthors = post._newGetBloggerByBloggerName("date", dt, dte, blogger.toString(), "DESC");
 %>
 
 <%

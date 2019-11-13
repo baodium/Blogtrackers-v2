@@ -1426,11 +1426,16 @@ $(document).ready(function() {
     } );
 // table set up 2
     $('#DataTables_Table_0_wrapper').DataTable( {
-        "scrollY": 430,
+    	 "columnDefs": [
+    		    { "width": "80%", "targets": 0 }
+    		  ]
+    /*     "scrollY": 430,
         "scrollX": false,
          "pagingType": "simple",
         	 "bLengthChange": false,
-        	 "order": [[ 1, "desc" ]]
+        	 "order": [[ 1, "desc" ]] */
+        	 
+        	 
     /*      ,
          dom: 'Bfrtip',
          "columnDefs": [
@@ -1446,6 +1451,11 @@ $(document).ready(function() {
         ]
       } */
     } );
+    
+    $('#DataTables_Table_0_wrapper').css( 'display', 'block' );
+    $('#DataTables_Table_0_wrapper').width('100%');
+   /*  style="width: 100% */
+    /* table.columns.adjust().draw(); */
 } );
 </script>
 	<!--end for table  -->
