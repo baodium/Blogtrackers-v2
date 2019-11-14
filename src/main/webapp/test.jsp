@@ -289,8 +289,9 @@
 				} catch (Exception e) {
 					System.err.println(e);
 				} */
+Float highestinfluence = Float.parseFloat(post._searchMaxInfluence2("max","influence_score", "2000-01-01", "2019-11-13", "813,815,809,811,812,806,808,817,644,652,616,641,732,761,709,128"));
 			%>
-			<p>His trackers</p>
+			<p>His trackers  <%= highestinfluence%></p>
 			   
 			  
 			  

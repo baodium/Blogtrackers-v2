@@ -302,7 +302,9 @@ userinfo = (ArrayList<?>)userinfo.get(0);
 
 
 
-	ArrayList allposts = new ArrayList();
+	//ArrayList allposts = new ArrayList();
+	JSONObject allposts = new JSONObject();
+	
 
 //System.out.println(topterms);
 %>
@@ -563,7 +565,9 @@ userinfo = (ArrayList<?>)userinfo.get(0);
 							    if (influenceBlogger.size() > 0) {
 									int k = 0;
 									for (int y = 0; y < 10; y++) {
+										
 									ArrayList<?> bloggerInfluence = (ArrayList<?>) influenceBlogger.get(y);
+									
 									String bloggerInf = bloggerInfluence.get(0).toString();
 									String bloggerInfFreq = bloggerInfluence.get(1).toString();
 									String blogsiteid = bloggerInfluence.get(2).toString();
@@ -599,7 +603,8 @@ userinfo = (ArrayList<?>)userinfo.get(0);
 												mostactiveblogger = bloggerInf;	
 												mostactivebloggerId = blogsiteid;
 												
-												allposts =  post._getBloggerByBloggerName("date",dt, dte,bloggerInf,"influence_score","DESC");
+												/* allposts =  post._getBloggerByBloggerName("date",dt, dte,bloggerInf,"influence_score","DESC"); */
+												allposts = post._newGetBloggerByBloggerName("influence_score", dt, dte, bloggerInf, "DESC");
 												
 											}
 											%>
@@ -638,14 +643,23 @@ String totalcomment =  comment._getCommentByBlogger(mostactiveblogger);
 
 String formattedtotalcomment = NumberFormat.getNumberInstance(Locale.US).format(Integer.parseInt(totalcomment));
 System.out.println("hi 20");
-totalinfluence  = Float.parseFloat(post._searchRangeMaxTotalByBloggers(mostactiveblogger));
 
-Float highestinfluence = Float.parseFloat(post._searchMaxInfluence());
-Float lowestinfluence = Float.parseFloat(post._searchMinInfluence());
+totalinfluence  = Float.parseFloat(post._searchMinAndMaxRangeMaxByBloggers("date",dt,dte,mostactiveblogger)); 
+
+Float highestinfluence = Float.parseFloat(post._searchInfluence2("max","influence_score", dt, dte, ids));
+Float lowestinfluence = Float.parseFloat(post._searchInfluence2("min","influence_score", dt, dte, ids));
+
+/* Float highestinfluence = Float.parseFloat(post._searchMaxInfluence());  */
+
+/* Float lowestinfluence = Float.parseFloat(post._searchMinInfluence()); */
+
 System.out.println("hi 10");
+Float highestsentiment = null;
+Float lowestsentiment =null;
 
-Float highestsentiment = Float.parseFloat(liwc._getHighestPosSentiment());
-Float lowestsentiment = Float.parseFloat(liwc._getLowestNegSentiment());
+highestsentiment = Float.parseFloat(liwc._getHighestPosSentiment());
+lowestsentiment = Float.parseFloat(liwc._getLowestNegSentiment());
+
 Float totalsentiment = Float.parseFloat(comb+"");
 System.out.println("hi 11");
 System.out.println("highest:"+highestsentiment);
@@ -819,7 +833,7 @@ authoryears.put(mostactiveblogger,postyear);
 
 		<div class="row mb0">
 			<div class="col-md-6 mt20 ">
-				<div class="card card-style mt20">
+				<div class="card card-style mt20 "  style="min-height: 480px;">
 					<div class="card-body  p30 pt5 pb5">
 						<div>
 							<p class="text-primary mt10">
@@ -873,14 +887,12 @@ authoryears.put(mostactiveblogger,postyear);
 							<tr>
 								<th class="bold-text text-primary">Post title</th>
 								<th class="bold-text text-primary">Influence Score</th>
-
-
 							</tr>
 						</thead>
 						  <tbody>
                             
 						<%
-                                if(allposts.size()>0){							
+                                /* if(allposts.size()>0){							
 									String tres = null;
 									JSONObject tresp = null;
 									String tresu = null;
@@ -892,7 +904,35 @@ authoryears.put(mostactiveblogger,postyear);
 										tresp = new JSONObject(tres);
 										tresu = tresp.get("_source").toString();
 										tobj = new JSONObject(tresu);
-										k++;
+										k++; */
+										
+										Object hits_array = allposts.getJSONArray("hit_array");
+										  String resul = null;
+										  
+										  resul = hits_array.toString();
+										  JSONArray all = new JSONArray(resul);
+										if(all.length()>0){	  
+										  	String tres = null;
+											JSONObject tresp = null;
+											String tresu = null;
+											JSONObject tobj = null;
+											String date =null;
+											int j=0;
+											int k=0;
+											
+											
+											for(int i=0; i< all.length(); i++){
+												tres = all.get(i).toString();	
+												tresp = new JSONObject(tres);
+												
+												tresu = tresp.get("_source").toString();
+												tobj = new JSONObject(tresu);
+												
+												Object date_ = tresp.getJSONObject("fields").getJSONArray("date").get(0);
+												String dat = date_.toString().substring(0,10);
+												LocalDate datee = LocalDate.parse(dat);
+												DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");
+												date = dtf.format(datee);
 									%>
                                     <tr>
                                    <td><a class="blogpost_link cursor-pointer" id="<%=tobj.get("blogpost_id")%>" ><%=tobj.get("title") %></a><br/>
@@ -914,7 +954,7 @@ authoryears.put(mostactiveblogger,postyear);
 				<div style="" class="pt20" id="blogpost_detail">
 
 					<%
-                                if(allposts.size()>0){							
+                                /* if(allposts.size()>0){							
 									String tres = null;
 									JSONObject tresp = null;
 									String tresu = null;
@@ -932,7 +972,30 @@ authoryears.put(mostactiveblogger,postyear);
 										String date = dtf.format(datee);
 										
 										
-										k++;
+										k++; */
+										
+										if(all.length()>0){	  
+										  	String tres = null;
+											JSONObject tresp = null;
+											String tresu = null;
+											JSONObject tobj = null;
+											String date =null;
+											int j=0;
+											int k=0;
+											
+											
+											for(int i=0; i< 1; i++){
+												tres = all.get(i).toString();	
+												tresp = new JSONObject(tres);
+												
+												tresu = tresp.get("_source").toString();
+												tobj = new JSONObject(tresu);
+												
+												Object date_ = tresp.getJSONObject("fields").getJSONArray("date").get(0);
+												String dat = date_.toString().substring(0,10);
+												LocalDate datee = LocalDate.parse(dat);
+												DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");
+												date = dtf.format(datee);
 									%>                                    
                                     <h5 class="text-primary p20 pt0 pb0"><%=tobj.get("title")%></h5>
 										<div class="text-center mb20 mt20">
@@ -973,6 +1036,7 @@ authoryears.put(mostactiveblogger,postyear);
 		
 		<input type="hidden" name="date_start" id="date_start" value="<%=dt%>" /> 
 		<input type="hidden" name="date_end" id="date_end" value="<%=dte%>" />	
+		<input type="hidden" name="all_blog_ids" id="all_blog_ids" value="<%=ids%>" />
 	</form>
 	
 	
@@ -2278,20 +2342,22 @@ JSONObject res=post._keywordTermvctors(sql);
 System.out.println("--->"+res); */
 
 
-String sql = post._getMostKeywordDashboard(mostactiveblogger,dt,dte,ids);
+/* String sql = post._getMostKeywordDashboard(mostactiveblogger,dt,dte,ids);
 Map<String, Integer> res = new HashMap<String, Integer>();
 
 res=post._keywordTermvctors(sql);
-/* /* JSONObject res=post._keywordTermvctors(sql); */ 
+/*  JSONObject res=post._keywordTermvctors(sql); 
 JSONObject d = new JSONObject(res);
 String s = res.toString();
-JSONObject o = new JSONObject(res);
+JSONObject o = new JSONObject(res); */
 %>
 
 <%-- wordtagcloud("#tagcloudcontainer",450,<%=res%>); --%>
 
-wordtagcloud("#tagcloudcontainer",450,<%=d%>); 
-	
+<%-- wordtagcloud("#tagcloudcontainer",450,<%=d%>);  --%>
+$(document).ready(function(){
+	loadTerms("<%=mostactiveblogger%>",$("#blogid").val(),"<%=dt%>","<%=dte%>");
+})
  </script>
 <script src="pagedependencies/baseurl.js"></script>
  

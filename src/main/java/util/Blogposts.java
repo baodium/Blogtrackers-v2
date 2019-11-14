@@ -288,15 +288,16 @@ public class Blogposts {
 		return ids;
 	}
 
-	public JSONObject _newGetBloggerByBloggerName(String field, String greater, String less, String bloggers, String order) throws Exception {
+	public JSONObject _newGetBloggerByBloggerName(String field, String greater, String less, String bloggers,
+			String order) throws Exception {
 
 		JSONObject query = new JSONObject("{\r\n" + "    \"size\": 50,\r\n" + "    \"query\": {\r\n"
 				+ "        \"bool\": {\r\n" + "            \"must\": [\r\n" + "                {\r\n"
-				+ "                    \"terms\": {\r\n" + "                        \"blogger.keyword\": ["+bloggers+"],\r\n" + "                        \"boost\": 1.0\r\n"
-				+ "                    }\r\n" + "                },\r\n" + "                {\r\n"
-				+ "                    \"range\": {\r\n" + "                        \"date\": {\r\n"
-				+ "                            \"from\": \""+greater+"\",\r\n"
-				+ "                            \"to\": \""+less+"\",\r\n"
+				+ "                    \"terms\": {\r\n" + "                        \"blogger.keyword\": [" + bloggers
+				+ "],\r\n" + "                        \"boost\": 1.0\r\n" + "                    }\r\n"
+				+ "                },\r\n" + "                {\r\n" + "                    \"range\": {\r\n"
+				+ "                        \"date\": {\r\n" + "                            \"from\": \"" + greater
+				+ "\",\r\n" + "                            \"to\": \"" + less + "\",\r\n"
 				+ "                            \"include_lower\": true,\r\n"
 				+ "                            \"include_upper\": true,\r\n"
 				+ "                            \"boost\": 1.0\r\n" + "                        }\r\n"
@@ -314,8 +315,8 @@ public class Blogposts {
 				+ "        {\r\n" + "            \"field\": \"@timestamp\",\r\n"
 				+ "            \"format\": \"epoch_millis\"\r\n" + "        },\r\n" + "        {\r\n"
 				+ "            \"field\": \"date\",\r\n" + "            \"format\": \"yyyy-MM-dd\"\r\n"
-				+ "        }\r\n" + "    ],\r\n" + "    \"sort\": [\r\n" + "        {\r\n"
-				+ "            \""+field+"\": {\r\n" + "                \"order\": \""+order+"\",\r\n"
+				+ "        }\r\n" + "    ],\r\n" + "    \"sort\": [\r\n" + "        {\r\n" + "            \"" + field
+				+ "\": {\r\n" + "                \"order\": \"" + order + "\",\r\n"
 				+ "                \"missing\": \"_first\",\r\n" + "                \"unmapped_type\": \"date\"\r\n"
 				+ "            }\r\n" + "        }\r\n" + "    ]\r\n" + "}");
 
@@ -323,7 +324,7 @@ public class Blogposts {
 
 		String source = null;
 
-		System.out.println("this is the query-" + query);
+		System.out.println("this is the query _newGetBloggerByBloggerName-" + query);
 		JSONArray jsonArray = null;
 
 		JSONObject all_data = new JSONObject();
@@ -349,7 +350,6 @@ public class Blogposts {
 		return all_data;
 	}
 
-	
 	public ArrayList _getBloggerByBloggerName(String field, String greater, String less, String bloggers, String sort,
 			String order) throws Exception {
 		int size = 50;
@@ -601,8 +601,11 @@ public class Blogposts {
 
 		try {
 			ArrayList response = DbConnection
-					.query("SELECT max(influence_score) as total, blogger,date FROM blogger WHERE blogger = '"
+					.query("SELECT max(influence_score) as total, blogger_name,date FROM blogger WHERE blogger_name = '"
 							+ bloggers + "'  ORDER BY influence_score DESC LIMIT 1");
+			System.out.println("query for _searchRangeMaxTotalByBloggers"
+					+ "SELECT max(influence_score) as total, blogger_name,date FROM blogger WHERE blogger_name = '"
+					+ bloggers + "'  ORDER BY influence_score DESC LIMIT 1");
 			if (response.size() > 0) {
 				ArrayList hd = (ArrayList) response.get(0);
 				count = hd.get(0).toString();
@@ -634,6 +637,72 @@ public class Blogposts {
 		}
 
 		return count;
+	}
+
+//	public String _searchMaxInfluence() throws Exception {
+//
+//		String count = "0";
+//
+//		try {
+//			ArrayList response = DbConnection.query("SELECT max(influence_score) as total, blogger,date FROM blogger ");
+//			if (response.size() > 0) {
+//				ArrayList hd = (ArrayList) response.get(0);
+//				count = hd.get(0).toString();
+//			}
+//		} catch (Exception e) {
+//			return count;
+//		}
+//
+//		return count;
+//	}
+	public String _searchInfluence2(String agg,String field, String date_from, String date_to, String ids_) throws Exception {
+		ArrayList<String> list = new ArrayList<String>();
+		HashMap<String, Integer> hm2 = new HashMap<String, Integer>();
+
+		JSONArray all = new JSONArray();
+
+		JSONObject query = new JSONObject("{\r\n" + "    \"size\": 0,\r\n" + "    \"query\": {\r\n"
+				+ "        \"bool\": {\r\n" + "            \"must\": [\r\n" + "                {\r\n"
+				+ "                    \"terms\": {\r\n" + "                        \"blogsite_id\": ["+ids_+"],\r\n" + "                        \"boost\": 1.0\r\n"
+				+ "                    }\r\n" + "                },\r\n" + "                {\r\n"
+				+ "                    \"range\": {\r\n" + "                        \"date\": {\r\n"
+				+ "                            \"from\": \""+date_from+"\",\r\n"
+				+ "                            \"to\": \""+date_to+"\",\r\n"
+				+ "                            \"include_lower\": true,\r\n"
+				+ "                            \"include_upper\": true,\r\n"
+				+ "                            \"boost\": 1.0\r\n" + "                        }\r\n"
+				+ "                    }\r\n" + "                }\r\n" + "            ],\r\n"
+				+ "            \"adjust_pure_negative\": true,\r\n" + "            \"boost\": 1.0\r\n" + "        }\r\n"
+				+ "    },\r\n" + "    \"_source\": false,\r\n" + "    \"stored_fields\": \"_none_\",\r\n"
+				+ "    \"aggregations\": {\r\n" + "        \"groupby\": {\r\n" + "            \"filters\": {\r\n"
+				+ "                \"filters\": [\r\n" + "                    {\r\n"
+				+ "                        \"match_all\": {\r\n" + "                            \"boost\": 1.0\r\n"
+				+ "                        }\r\n" + "                    }\r\n" + "                ],\r\n"
+				+ "                \"other_bucket\": false,\r\n"
+				+ "                \"other_bucket_key\": \"_other_\"\r\n" + "            },\r\n"
+				+ "            \"aggregations\": {\r\n" + "                \"dat\": {\r\n"
+				+ "                    \""+agg+"\": {\r\n" + "                        \"field\": \""+field+"\"\r\n"
+				+ "                    }\r\n" + "                }\r\n" + "            }\r\n" + "        }\r\n"
+				+ "    }\r\n" + "}");
+		
+		JSONObject myResponse = this._makeElasticRequest(query, "POST", "/blogposts/_search/?");
+		String val = null;
+		String freq = null;
+		String idx = null;
+		String language = null;
+		JSONArray jsonArray = new JSONArray();
+
+		if (null != myResponse.get("aggregations")) {
+			
+			Object buckets = myResponse.getJSONObject("aggregations").getJSONObject("groupby").getJSONArray("buckets")
+					.get(0);
+			val = buckets.toString();
+			JSONObject bucket_ = new JSONObject(val);
+			freq = bucket_.getJSONObject("dat").get("value").toString();
+			System.out.println("DONE GETTING POSTS--" + freq);
+
+		}
+		return freq;
 	}
 
 	public String _searchMaxInfluence() throws Exception {
@@ -1386,8 +1455,9 @@ public class Blogposts {
 		try {
 			ArrayList response = DbConnection.query("SELECT count(*) as total FROM blogposts WHERE blogsite_id IN "
 					+ blog_ids + " AND date>='" + greater + "' AND date<='" + less + "' ");
-			System.out.println("query for _searchRangeTotal" + "SELECT count(*) as total FROM blogposts WHERE blogsite_id IN "
-					+ blog_ids + " AND date>='" + greater + "' AND date<='" + less + "' ");
+			System.out.println(
+					"query for _searchRangeTotal" + "SELECT count(*) as total FROM blogposts WHERE blogsite_id IN "
+							+ blog_ids + " AND date>='" + greater + "' AND date<='" + less + "' ");
 			if (response.size() > 0) {
 				ArrayList hd = (ArrayList) response.get(0);
 				count = hd.get(0).toString();
@@ -1478,8 +1548,9 @@ public class Blogposts {
 		try {
 			ArrayList response = DbConnection.query("SELECT count(*) as total FROM blogposts WHERE blogger = '"
 					+ bloggers + "' AND " + field + ">='" + greater + "' AND " + field + "<='" + less + "' ");
-			System.out.println("query for _searchRangeTotalByBlogger --" + "SELECT count(*) as total FROM blogposts WHERE blogger = '"
-					+ bloggers + "' AND " + field + ">='" + greater + "' AND " + field + "<='" + less + "' ");
+			System.out.println("query for _searchRangeTotalByBlogger --"
+					+ "SELECT count(*) as total FROM blogposts WHERE blogger = '" + bloggers + "' AND " + field + ">='"
+					+ greater + "' AND " + field + "<='" + less + "' ");
 			if (response.size() > 0) {
 				ArrayList hd = (ArrayList) response.get(0);
 				count = hd.get(0).toString();
@@ -2100,61 +2171,6 @@ public class Blogposts {
 
 		JSONArray all = new JSONArray();
 		String res = null;
-
-		/*
-		 * JSONObject query = new JSONObject("{\r\n" + "    \"size\": 0,\r\n" +
-		 * "    \"query\": {\r\n" + "        \"bool\": {\r\n" +
-		 * "            \"must\": [\r\n" + "                {\r\n" +
-		 * "                    \"match\": {\r\n" +
-		 * "                        \"post\": \"" + term + "\"\r\n" +
-		 * "                    }\r\n" + "                },\r\n" +
-		 * "                {\r\n" + "                    \"bool\": {\r\n" +
-		 * "                        \"must\": [\r\n" +
-		 * "                            {\r\n" +
-		 * "                                \"terms\": {\r\n" +
-		 * "                                    \"blogsite_id\": [" + ids_ + "],\r\n" +
-		 * "                                    \"boost\": 1\r\n" +
-		 * "                                }\r\n" +
-		 * "                            },\r\n" + "                            {\r\n" +
-		 * "                                \"exists\": {\r\n" +
-		 * "                                    \"field\": \"location\",\r\n" +
-		 * "                                    \"boost\": 1\r\n" +
-		 * "                                }\r\n" + "                            }\r\n"
-		 * + "                        ],\r\n" +
-		 * "                        \"adjust_pure_negative\": true,\r\n" +
-		 * "                        \"boost\": 1\r\n" + "                    }\r\n" +
-		 * "                },\r\n" + "                {\r\n" +
-		 * "                    \"range\": {\r\n" +
-		 * "                        \"date\": {\r\n" +
-		 * "                            \"from\": \"" + date_from + "\",\r\n" +
-		 * "                            \"to\": \"" + date_to + "\",\r\n" +
-		 * "                            \"include_lower\": true,\r\n" +
-		 * "                            \"include_upper\": true,\r\n" +
-		 * "                            \"boost\": 1\r\n" +
-		 * "                        }\r\n" + "                    }\r\n" +
-		 * "                }\r\n" + "            ],\r\n" +
-		 * "            \"adjust_pure_negative\": true,\r\n" +
-		 * "            \"boost\": 1\r\n" + "        }\r\n" + "    },\r\n" +
-		 * "    \"_source\": false,\r\n" + "    \"stored_fields\": \"_none_\",\r\n" +
-		 * "    \"aggregations\": {\r\n" + "        \"groupby\": {\r\n" +
-		 * "            \"composite\": {\r\n" + "                \"size\": 1000,\r\n" +
-		 * "                \"sources\": [\r\n" + "                    {\r\n" +
-		 * "                        \"dat\": {\r\n" +
-		 * "                            \"terms\": {\r\n" +
-		 * "                                \"field\": \"location.keyword\",\r\n" +
-		 * "                                \"missing_bucket\": true,\r\n" +
-		 * "                                \"order\": \"asc\"\r\n" +
-		 * "                            }\r\n" + "                        }\r\n" +
-		 * "                    }\r\n" + "                ]\r\n" + "            },\r\n"
-		 * + "            \"aggregations\": {\r\n" + "                \"dat\": {\r\n" +
-		 * "                    \"filter\": {\r\n" +
-		 * "                        \"exists\": {\r\n" +
-		 * "                            \"field\": \"location\",\r\n" +
-		 * "                            \"boost\": 1\r\n" +
-		 * "                        }\r\n" + "                    }\r\n" +
-		 * "                }\r\n" + "            }\r\n" + "        }\r\n" + "    }\r\n"
-		 * + "}");
-		 */
 
 		JSONObject query = new JSONObject("{\r\n" + "    \"size\": 0,\r\n" + "    \"stored_fields\": \"_none_\",\r\n"
 				+ "    \"query\": {\r\n" + "        \"bool\": {\r\n" + "            \"adjust_pure_negative\": true,\r\n"

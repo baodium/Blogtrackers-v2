@@ -306,7 +306,8 @@ public class Blogs extends DbConnection{
 		try {
 		result = db.query("select blogger_name, max(influence_score), blogsite_id from blogger where blogsite_id in "+
 				(blogids)+" group by blogger_name order by influence_score desc");		
-			
+		System.out.println("query for _getInfluencialBlogger" + "select blogger_name, max(influence_score), blogsite_id from blogger where blogsite_id in "+
+				(blogids)+" group by blogger_name order by influence_score desc");	
 		}catch(Exception e){
 		}
 		return result;
