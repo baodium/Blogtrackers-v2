@@ -300,7 +300,8 @@ $('.deleteblog').on("click",function()
 // end
 
   
-$('#closetracks').on("click",function(){
+//$('#closetracks').on("click",function(){
+$( "body" ).delegate( "#closetracks", "click", function() {
 $(this).parent().toggle();	
 });
 var blogpostids = [];
@@ -467,6 +468,7 @@ isblogselected = $(".blog_id_"+blog_id).hasClass("text-selected");
 // console.log("blog is selected " + isblogselected);
 if(!isblogselected)
 {
+	
 	if(jQuery.inArray(blog_id,selected_blogs) == -1 && blog_id!=""){
 	trackingblog=false;
 	
@@ -788,6 +790,9 @@ else
 					$('.trackcreationsection2').addClass("hidden");
 					$('.trackcreationsection1').removeClass('hidden');
 					$('.trackinitiated, .modalbackdrop').hide();
+					
+					window.location.href = 'edittracker.jsp?tid='+response;
+					
 					console.log(app_url)
 					$.ajax({
 					url:app_url+"subpages/gettrackerlist.jsp",
@@ -880,7 +885,9 @@ function updateTracker(element,type){
 						toastr.success('Tracker successfully updated!','Success');
 
 						$("#added-info").removeClass("no-display");
-
+						
+						window.location.href = 'edittracker.jsp?tid='+id;
+						
 						// setTimeout(function(){location.href =
 						// "edittracker.jsp?tid="+id ;},2000);
 
