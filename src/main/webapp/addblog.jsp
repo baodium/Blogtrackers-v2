@@ -423,19 +423,21 @@
 </div> -->
 	</div>
 	<div>
-<table  id="bloglist" style="width: 100%">
+	<h2 class="text-primary addblogtitle bold-text">Blogs Added</h2>
 	<div class="col-md-12 mt10 mb50 pl0 pr0">
-		<h2 class="text-primary addblogtitle bold-text">Blogs Added</h2>
+<table class="table table-striped table-bordered"  id="bloglist" style="width:100%">
+	
+		
 		
 			<thead>
-				<tr>
-					<td class="text-primary" style="word-wrap:break-word; text-align: center; vertical-align: middle;">id</td>
-					<td class="text-primary" style="width: 20%; word-wrap:break-word;  text-align: center; vertical-align: middle;">Blog Name</td> 
+				<tr >
+					<th class="text-primay" style="">id</th>
+					<th class="text-primay" style="">Blog Name</th> 
     
-					<td class="text-primary" style="width: 20%; word-wrap:break-word;  text-align: center; vertical-align: middle;">Status</td>
-					<td class="text-primary" style="width: 20%; word-wrap:break-word;  text-align: center; vertical-align: middle;">No. of Posts</td>
-					<td class="text-primary" style="width: 20%; word-wrap:break-word;  text-align: center; vertical-align: middle;">Latest Update</td>
-					<td></td>
+					<th class="text-priary" style="">Status</th>
+					<th class="text-priary" style="">No. of Posts</th>
+					<th class="text-priary" style="">Latest Update</th>
+					<th>Function</th>
 				</tr>
 			</thead>
 			<tbody id="tbody">
@@ -503,7 +505,7 @@
 				%>
 
 				<tr class="<%=statusstyle %>" style="width: 20%; word-wrap:break-word;  text-align: center; vertical-align: middle;">
-					<td class="text-left pl0 blogcount " style="word-wrap:break-word; text-align: center; vertical-align: middle;"><%=k + 1%></td>
+					<td class="text-left pl2 blogcount " style="word-wrap:break-word; text-align: center; vertical-align: middle;"><%=k + 1%></td>
 					<%-- <td class="text-primary text-left nameofblog"><%=blogname%></td> --%>
 					<td class="text-primary  nameofblog " data-toggle="tooltip" data-placement="top" title="<%=blogname1 %>" style="width: 10%; word-wrap:break-word;  text-align: center; vertical-align: middle;"><a href="<%=blogname%>" target="_blank"><%=blogname%></a></td>
 					<td class="text-primary  blogstatus" style="width: 20%; word-wrap:break-word;  text-align: center; vertical-align: middle;"><%=status%></td>
@@ -616,6 +618,15 @@
 			console.log(blogname);
 
 		} --%>
+	</script>
+	<script>
+		$(document).ready(function () {
+			
+
+			$('#bloglist').DataTable();
+
+		
+		});
 	</script>
 	<!-- <script>
 $(document).ready(function() {
