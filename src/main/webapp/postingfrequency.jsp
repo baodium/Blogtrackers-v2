@@ -520,7 +520,12 @@ userinfo = (ArrayList<?>)userinfo.get(0);
       <input type="search" class="form-control stylesearch mb20 searchbloggers" placeholder="Search Bloggers" 
        
       /></div>
-    	<div class="scrolly" style="height:270px; padding-right:10px !important;">
+      	
+      	<div style="height: 250px; padding-right: 10px !important;" id="scroll_list_loader" class="">
+			<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />
+		</div>
+      
+    	<div id="scroll_list" class="hidden scrolly" style="height:270px; padding-right:10px !important;">
     
 					<%
 					String dselected = "";
@@ -1130,6 +1135,9 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
        $('.line_graph').addClass('hidden');
        $('#line_graph_loader').removeClass('hidden');
        
+       $("#scroll_list_loader").removeClass("hidden");
+   	   $("#scroll_list").addClass("hidden");
+       
        $('#chart').html('');
 
        if ( $(this).hasClass("thanks") ) {
@@ -1563,6 +1571,9 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
     	    				  
     	    				 		   $('.line_graph').removeClass('hidden');
     	    				 	       $('#line_graph_loader').addClass('hidden');
+    	    				 	       
+    	    				 	      $("#scroll_list_loader").addClass("hidden");
+    	    				 	   	   $("#scroll_list").removeClass("hidden");
     	    				  
     	    				  
     	    			  }, 3000)

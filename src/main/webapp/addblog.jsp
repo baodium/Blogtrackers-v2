@@ -425,7 +425,7 @@
 	<div>
 	<h2 class="text-primary addblogtitle bold-text">Blogs Added</h2>
 	<div class="col-md-12 mt10 mb50 pl0 pr0">
-<table class="table table-striped table-bordered"  id="bloglist" style="width:100%">
+<table class=" "  id="bloglist" style="width:100%">
 	
 		
 		

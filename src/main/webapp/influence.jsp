@@ -538,7 +538,12 @@ userinfo = (ArrayList<?>)userinfo.get(0);
 							<input type="search" class="form-control stylesearch mb20"
 								placeholder="Search Bloggers" />
 						</div>
-						<div class="scrolly"
+						
+						<div style="height: 250px; padding-right: 10px !important;" id="scroll_list_loader" class="">
+							<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />
+						</div>
+						
+						<div id="scroll_list" class="hidden scrolly"
 							style="height: 270px; padding-right: 10px !important;">
    <!-- 
 							<a class="btn btn-primary form-control stylebuttonactive mb20"><b>Advonum</b></a>
@@ -1181,6 +1186,9 @@ authoryears.put(mostactiveblogger,postyear);
        $('.line_graph').addClass('hidden');
        $('#line_graph_loader').removeClass('hidden');
        
+       $("#scroll_list_loader").removeClass("hidden");
+   	   $("#scroll_list").addClass("hidden");
+       
        $('#chart').html('');
 
        if ( $(this).hasClass("thanks") ) {
@@ -1589,6 +1597,9 @@ authoryears.put(mostactiveblogger,postyear);
     	    				  
     	    				 		   $('.line_graph').removeClass('hidden');
     	    				 	       $('#line_graph_loader').addClass('hidden');
+    	    				 	       
+    	    				 	      $("#scroll_list_loader").addClass("hidden");
+    	    				 	   	   $("#scroll_list").removeClass("hidden");
     	    				  
     	    				  
     	    			  }, 3000)
@@ -2246,7 +2257,7 @@ authoryears.put(mostactiveblogger,postyear);
                          .style("text-anchor", "end")
                          .style("fill", "#999")
                          .style("font-size", 12)
-                         .text("Influence")
+                         .text("Activity")
                          ;
 
                          horizontalAxis.append("text")
@@ -2256,7 +2267,7 @@ authoryears.put(mostactiveblogger,postyear);
                              .style("text-anchor", "end")
                              .style("fill", "#999")
                              .style("font-size", 12)
-                             .text("Activity")
+                             .text("Influence")
                              ;
 
          // Resize chart
