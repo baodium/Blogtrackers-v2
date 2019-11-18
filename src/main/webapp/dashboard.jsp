@@ -3907,7 +3907,6 @@ $(".option-lable").on("click",function(e){
 });
  
  function loadDomain(){
-	 alert('fish');
 	 $("#top-domain-box").html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />");		
 		$.ajax({
 			url: app_url+'subpages/topdomain.jsp',
