@@ -1,5 +1,7 @@
 <%@page import="authentication.*"%>
 <%@page import="java.util.*"%>
+<%@page import="java.time.LocalDate"%>
+<%@page import="java.time.format.DateTimeFormatter"%>
 <%@page import="util.*"%>
 <%@page import="java.io.File"%>
 <%@page import="org.json.JSONObject"%>
@@ -452,7 +454,8 @@
 				
 				}
 			}
-				
+			JSONObject allposts = new JSONObject();
+			
 %>
 <!DOCTYPE html>
 <html>
@@ -680,10 +683,18 @@
 <select id="blogger-changed" class="custom-select">
 
    <%
+   String blogName = null;
+   String mostactiveblogid = null;
+	String blogPostFreq = null;
+	String blogId = null;
+	String blog_url = null;
    if (blogPostFrequency.size() > 0) {
 							int p = 0;
 							
 							String all_blogs = "";
+							
+							ArrayList<?> blogFreq__ = (ArrayList<?>) blogPostFrequency.get(0);
+							mostactiveblogid = blogFreq__.get(2).toString();
 				
 							for (int m = 0; m < blogPostFrequency.size(); m++) {
 								
@@ -693,10 +704,10 @@
 								}
 								
 								ArrayList<?> blogFreq = (ArrayList<?>) blogPostFrequency.get(m);
-								String blogName = blogFreq.get(0).toString();
-								String blogPostFreq = blogFreq.get(1).toString();
-								String blogId = blogFreq.get(2).toString();
-								String blog_url = blogFreq.get(3).toString();
+								blogName = blogFreq.get(0).toString();
+								blogPostFreq = blogFreq.get(1).toString();
+								blogId = blogFreq.get(2).toString();
+								blog_url = blogFreq.get(3).toString();
 									if (p < 10) {
 										
 										all_blogs += blogId;
@@ -887,6 +898,172 @@
   </div>
 </div>
 
+
+
+<div class="row m0 mt20 mb50 d-flex align-items-stretch" >
+  <div class="col-md-6 mt20 card card-style nobordertopright noborderbottomright">
+  <div class="card-body p0 pt20 pb20" style="min-height: 420px;">
+      <p>Blog Posts of <b class="text-blue activeblogger"><%=mostactiveblog%></b></p>
+         <!--  <div class="p15 pb5 pt0" role="group">
+          Export Options
+          </div> -->
+          <div id="influence_table">
+                <table id="DataTables_Table_3_wrapper" class="display" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Post title</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+						<%
+/*                                 if(allposts.size()>0){	
+                                
+									String tres = null;
+									JSONObject tresp = null;
+									String tresu = null;
+									JSONObject tobj = null;
+									String date =null;
+									int j=0;
+									int k=0;
+									for(int i=0; i< allposts.size(); i++){
+ 										tres = allposts.get(i).toString();	
+										tresp = new JSONObject(tres);
+										tresu = tresp.get("_source").toString();
+										tobj = new JSONObject(tresu);
+										String dat = tobj.get("date").toString().substring(0,10);
+										LocalDate datee = LocalDate.parse(dat);
+										DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");
+										date = dtf.format(datee);
+										
+										k++;  */
+										allposts = post._getPostByBlogID(mostactiveblogid, dt, dte);
+										/* allposts = post._newGetBloggerByBloggerName("date", dt, dte, bloggerName, "DESC"); */
+										Object hits_array = allposts.getJSONArray("hit_array");
+										  String resul = null;
+										  
+										  resul = hits_array.toString();
+										  JSONArray all = new JSONArray(resul);
+										if(all.length()>0){	  
+										  	String tres = null;
+											JSONObject tresp = null;
+											String tresu = null;
+											JSONObject tobj = null;
+											String date =null;
+											int j=0;
+											int k=0;
+											
+											
+											for(int i=0; i< all.length(); i++){
+												tres = all.get(i).toString();	
+												tresp = new JSONObject(tres);
+												
+												tresu = tresp.get("_source").toString();
+												tobj = new JSONObject(tresu);
+												
+												Object date_ = tresp.getJSONObject("fields").getJSONArray("date").get(0);
+												String dat = date_.toString().substring(0,10);
+												LocalDate datee = LocalDate.parse(dat);
+												DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");
+												date = dtf.format(datee);
+									%>
+                                    <tr>
+                                   <td><a class="blogpost_link cursor-pointer" id="<%=tobj.get("blogpost_id")%>" ><%=tobj.get("title") %></a><br/>
+								<a class="mt20 viewpost makeinvisible" href="<%=tobj.get("permalink") %>" target="_blank"><buttton class="btn btn-primary btn-sm mt10 visitpost">Visit Post &nbsp;<i class="fas fa-external-link-alt"></i></buttton></a></td>
+								<td align="center"><%=date %></td>
+                                     </tr>
+                                    <% }} %>
+						
+						 </tbody>
+                    </table>
+        </div>
+        </div>
+
+  </div>
+
+  <div class="col-md-6 mt20 card card-style nobordertopleft noborderbottomleft">
+       <div style="" class="pt20" id="blogpost_detail">
+  		
+				<%
+                  /*               if(allposts.size()>0){							
+									String tres = null;
+									JSONObject tresp = null;
+									String tresu = null;
+									JSONObject tobj = null;
+									int j=0;
+									int k=0;
+									for(int i=0; i< 1; i++){
+										tres = allposts.get(i).toString();	
+										tresp = new JSONObject(tres);
+										tresu = tresp.get("_source").toString();
+										tobj = new JSONObject(tresu);
+										String dat = tobj.get("date").toString().substring(0,10);
+										LocalDate datee = LocalDate.parse(dat);
+										DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");
+										String date = dtf.format(datee);
+										
+										k++; */
+										
+										
+										if(all.length()>0){	  
+										  	String tres = null;
+											JSONObject tresp = null;
+											String tresu = null;
+											JSONObject tobj = null;
+											String date =null;
+											int j=0;
+											int k=0;
+											
+											
+											for(int i=0; i< 1; i++){
+												tres = all.get(i).toString();	
+												tresp = new JSONObject(tres);
+												
+												tresu = tresp.get("_source").toString();
+												tobj = new JSONObject(tresu);
+												
+												Object date_ = tresp.getJSONObject("fields").getJSONArray("date").get(0);
+												String dat = date_.toString().substring(0,10);
+												LocalDate datee = LocalDate.parse(dat);
+												DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");
+												date = dtf.format(datee);
+										
+									%>                                    
+                                    <h5 class="text-primary p20 pt0 pb0"><%=tobj.get("title")%></h5>
+										<div class="text-center mb20 mt20">
+											
+											<button onclick="window.location.href = '<%=request.getContextPath()%>/bloggerportfolio.jsp?tid=<%=tid%>&blogger=<%=tobj.get("blogger")%>'"  class="btn stylebuttonblue">
+												<b class="float-left ultra-bold-text"><%=tobj.get("blogger")%></b> <i
+													class="far fa-user float-right blogcontenticon"></i>
+											</button>
+											
+											<button class="btn stylebuttonnocolor nocursor"><%=date %></button>
+									
+											<button class="btn stylebuttonnocolor nocursor">
+												<b class="float-left ultra-bold-text"><%=tobj.get("num_comments")%> comments</b><i
+													class="far fa-comments float-right blogcontenticon"></i>
+											</button>
+										</div>
+										<div style="height: 600px;">
+										<div class="p20 pt0 pb20 text-blog-content text-primary"
+											style="height: 550px; overflow-y: scroll;">
+
+											<%=tobj.get("post").toString()%>
+
+										</div>
+										</div>       
+                     		<% }} %>
+                               
+			</div>
+    </div>
+    
+  </div>
+</div>
+
+
+
+
 <div class="row mb50">
   <div class="col-md-12 mt20 ">
     <div class="card card-style mt20">
@@ -1020,6 +1197,17 @@
              {extend:'print',className: 'btn-primary stylebutton1'},
          ]
        } */
+     } );
+     
+     $('#DataTables_Table_3_wrapper').DataTable( {
+         "scrollY": 430,
+         "scrollX": true,
+         "order": [],
+          "pagingType": "simple",
+        	  "columnDefs": [
+        	      { "width": "65%", "targets": 0 },
+        	      { "width": "25%", "targets": 0 }
+        	    ]
      } );
  } );
  </script>
@@ -1821,6 +2009,7 @@
        data = [
     	   {letter:"Sat", frequency:<%=sat%>},
     	   {letter:"Fri", frequency:<%=fri%>},
+    	   
              {letter:"Wed", frequency:<%=wed%>},
              {letter:"Thu", frequency:<%=thur%>},
              {letter:"Tue", frequency:<%=tue%>},
