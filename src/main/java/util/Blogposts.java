@@ -77,10 +77,29 @@ public class Blogposts {
 
 	}
 
-	public String _getTotal() {
-		JSONObject query = new JSONObject(
-				"{\r\n" + "    \"query\": {\r\n" + "        \"match_all\": {}\r\n" + "    }\r\n" + "}");
-
+	public String _getTotal(String term) {
+		
+		JSONObject query = new JSONObject();
+		if (!term.equals("")) {
+			query = new JSONObject(	"{\r\n" + 
+					"  \r\n" + 
+					"    \"query\": {\r\n" + 
+					"        \"query_string\": {\r\n" + 
+					"            \"query\": \""+term+"\",\r\n" + 
+					"            \"fields\": [\r\n" + 
+					"                \"title\",\r\n" + 
+					"                \"blogger\",\r\n" + 
+					"                \"post\"\r\n" + 
+					"            ]\r\n" + 
+					"        }\r\n" + 
+					"    }\r\n" + 
+					"}");
+		
+		} else {
+			query = new JSONObject("{\r\n" + "    \"query\": {\r\n" + "        \"match_all\": {}\r\n" + "    }\r\n" + "}");
+		}
+		
+		System.out.println("this is the query for _getTotal"+query);
 		String total = null;
 		JSONObject myResponse;
 		try {
@@ -354,11 +373,11 @@ public class Blogposts {
 
 		JSONObject query = new JSONObject("{\r\n" + "    \"size\": 1000,\r\n" + "    \"query\": {\r\n"
 				+ "        \"bool\": {\r\n" + "            \"must\": [\r\n" + "                {\r\n"
-				+ "                    \"terms\": {\r\n" + "                        \"blogsite_id\": ["+ids+"],\r\n" + "                        \"boost\": 1.0\r\n"
-				+ "                    }\r\n" + "                },\r\n" + "                {\r\n"
-				+ "                    \"range\": {\r\n" + "                        \"date\": {\r\n"
-				+ "                            \"from\": \""+greater+"\",\r\n"
-				+ "                            \"to\": \""+less+"\",\r\n"
+				+ "                    \"terms\": {\r\n" + "                        \"blogsite_id\": [" + ids + "],\r\n"
+				+ "                        \"boost\": 1.0\r\n" + "                    }\r\n" + "                },\r\n"
+				+ "                {\r\n" + "                    \"range\": {\r\n"
+				+ "                        \"date\": {\r\n" + "                            \"from\": \"" + greater
+				+ "\",\r\n" + "                            \"to\": \"" + less + "\",\r\n"
 				+ "                            \"include_lower\": true,\r\n"
 				+ "                            \"include_upper\": true,\r\n"
 				+ "                            \"boost\": 1.0\r\n" + "                        }\r\n"
