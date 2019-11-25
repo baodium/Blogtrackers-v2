@@ -77,10 +77,29 @@ public class Blogposts {
 
 	}
 
-	public String _getTotal() {
-		JSONObject query = new JSONObject(
-				"{\r\n" + "    \"query\": {\r\n" + "        \"match_all\": {}\r\n" + "    }\r\n" + "}");
-
+	public String _getTotal(String term) {
+		
+		JSONObject query = new JSONObject();
+		if (!term.equals("")) {
+			query = new JSONObject(	"{\r\n" + 
+					"  \r\n" + 
+					"    \"query\": {\r\n" + 
+					"        \"query_string\": {\r\n" + 
+					"            \"query\": \""+term+"\",\r\n" + 
+					"            \"fields\": [\r\n" + 
+					"                \"title\",\r\n" + 
+					"                \"blogger\",\r\n" + 
+					"                \"post\"\r\n" + 
+					"            ]\r\n" + 
+					"        }\r\n" + 
+					"    }\r\n" + 
+					"}");
+		
+		} else {
+			query = new JSONObject("{\r\n" + "    \"query\": {\r\n" + "        \"match_all\": {}\r\n" + "    }\r\n" + "}");
+		}
+		
+		System.out.println("this is the query for _getTotal"+query);
 		String total = null;
 		JSONObject myResponse;
 		try {
@@ -318,6 +337,67 @@ public class Blogposts {
 				+ "        }\r\n" + "    ],\r\n" + "    \"sort\": [\r\n" + "        {\r\n" + "            \"" + field
 				+ "\": {\r\n" + "                \"order\": \"" + order + "\",\r\n"
 				+ "                \"missing\": \"_first\",\r\n" + "                \"unmapped_type\": \"date\"\r\n"
+				+ "            }\r\n" + "        }\r\n" + "    ]\r\n" + "}");
+
+		ArrayList<String> list = new ArrayList<String>();
+
+		String source = null;
+
+		System.out.println("this is the query _newGetBloggerByBloggerName-" + query);
+		JSONArray jsonArray = null;
+
+		JSONObject all_data = new JSONObject();
+
+		try {
+			JSONObject myResponse = this._makeElasticRequest(query, "POST", "/blogposts/_search/?scroll=1d");
+			System.out.println(hm.get("elasticIndex") + "==" + query);
+
+			if (null != myResponse.get("hits")) {
+
+				Object hits = myResponse.getJSONObject("hits").getJSONArray("hits");
+				Object total = myResponse.getJSONObject("hits").getJSONObject("total").get("value");
+				source = hits.toString();
+				jsonArray = new JSONArray(source);
+				System.out.println("DONE GETTING POSTS FOR BLOGGER");
+
+				all_data.put("total", total.toString());
+				all_data.put("hit_array", jsonArray);
+
+			}
+		} catch (Exception e) {
+		}
+		return all_data;
+	}
+
+	public JSONObject _getPostByBlogID(String ids, String greater, String less) throws Exception {
+
+		JSONObject query = new JSONObject("{\r\n" + "    \"size\": 1000,\r\n" + "    \"query\": {\r\n"
+				+ "        \"bool\": {\r\n" + "            \"must\": [\r\n" + "                {\r\n"
+				+ "                    \"terms\": {\r\n" + "                        \"blogsite_id\": [" + ids + "],\r\n"
+				+ "                        \"boost\": 1.0\r\n" + "                    }\r\n" + "                },\r\n"
+				+ "                {\r\n" + "                    \"range\": {\r\n"
+				+ "                        \"date\": {\r\n" + "                            \"from\": \"" + greater
+				+ "\",\r\n" + "                            \"to\": \"" + less + "\",\r\n"
+				+ "                            \"include_lower\": true,\r\n"
+				+ "                            \"include_upper\": true,\r\n"
+				+ "                            \"boost\": 1.0\r\n" + "                        }\r\n"
+				+ "                    }\r\n" + "                }\r\n" + "            ],\r\n"
+				+ "            \"adjust_pure_negative\": true,\r\n" + "            \"boost\": 1.0\r\n" + "        }\r\n"
+				+ "    },\r\n" + "    \"_source\": {\r\n" + "        \"includes\": [\r\n"
+				+ "            \"@version\",\r\n" + "            \"blogger\",\r\n" + "            \"blogpost_id\",\r\n"
+				+ "            \"blogsite_id\",\r\n" + "            \"categories\",\r\n"
+				+ "            \"influence_score\",\r\n" + "            \"language\",\r\n"
+				+ "            \"location\",\r\n" + "            \"num_comments\",\r\n"
+				+ "            \"num_inlinks\",\r\n" + "            \"num_outlinks\",\r\n"
+				+ "            \"permalink\",\r\n" + "            \"post\",\r\n" + "            \"post_length\",\r\n"
+				+ "            \"sentiment\",\r\n" + "            \"tags\",\r\n" + "            \"title\"\r\n"
+				+ "        ],\r\n" + "        \"excludes\": []\r\n" + "    },\r\n" + "    \"docvalue_fields\": [\r\n"
+				+ "        {\r\n" + "            \"field\": \"@timestamp\",\r\n"
+				+ "            \"format\": \"epoch_millis\"\r\n" + "        },\r\n" + "        {\r\n"
+				+ "            \"field\": \"date\",\r\n" + "            \"format\": \"yyyy-MM-dd\"\r\n"
+				+ "        }\r\n" + "    ],\r\n" + "    \"sort\": [\r\n" + "        {\r\n"
+				+ "            \"influence_score\": {\r\n" + "                \"order\": \"desc\",\r\n"
+				+ "                \"missing\": \"_last\",\r\n" + "                \"unmapped_type\": \"float\"\r\n"
 				+ "            }\r\n" + "        }\r\n" + "    ]\r\n" + "}");
 
 		ArrayList<String> list = new ArrayList<String>();
@@ -655,7 +735,8 @@ public class Blogposts {
 //
 //		return count;
 //	}
-	public String _searchInfluence2(String agg,String field, String date_from, String date_to, String ids_) throws Exception {
+	public String _searchInfluence2(String agg, String field, String date_from, String date_to, String ids_)
+			throws Exception {
 		ArrayList<String> list = new ArrayList<String>();
 		HashMap<String, Integer> hm2 = new HashMap<String, Integer>();
 
@@ -663,11 +744,11 @@ public class Blogposts {
 
 		JSONObject query = new JSONObject("{\r\n" + "    \"size\": 0,\r\n" + "    \"query\": {\r\n"
 				+ "        \"bool\": {\r\n" + "            \"must\": [\r\n" + "                {\r\n"
-				+ "                    \"terms\": {\r\n" + "                        \"blogsite_id\": ["+ids_+"],\r\n" + "                        \"boost\": 1.0\r\n"
-				+ "                    }\r\n" + "                },\r\n" + "                {\r\n"
-				+ "                    \"range\": {\r\n" + "                        \"date\": {\r\n"
-				+ "                            \"from\": \""+date_from+"\",\r\n"
-				+ "                            \"to\": \""+date_to+"\",\r\n"
+				+ "                    \"terms\": {\r\n" + "                        \"blogsite_id\": [" + ids_
+				+ "],\r\n" + "                        \"boost\": 1.0\r\n" + "                    }\r\n"
+				+ "                },\r\n" + "                {\r\n" + "                    \"range\": {\r\n"
+				+ "                        \"date\": {\r\n" + "                            \"from\": \"" + date_from
+				+ "\",\r\n" + "                            \"to\": \"" + date_to + "\",\r\n"
 				+ "                            \"include_lower\": true,\r\n"
 				+ "                            \"include_upper\": true,\r\n"
 				+ "                            \"boost\": 1.0\r\n" + "                        }\r\n"
@@ -680,11 +761,11 @@ public class Blogposts {
 				+ "                        }\r\n" + "                    }\r\n" + "                ],\r\n"
 				+ "                \"other_bucket\": false,\r\n"
 				+ "                \"other_bucket_key\": \"_other_\"\r\n" + "            },\r\n"
-				+ "            \"aggregations\": {\r\n" + "                \"dat\": {\r\n"
-				+ "                    \""+agg+"\": {\r\n" + "                        \"field\": \""+field+"\"\r\n"
+				+ "            \"aggregations\": {\r\n" + "                \"dat\": {\r\n" + "                    \""
+				+ agg + "\": {\r\n" + "                        \"field\": \"" + field + "\"\r\n"
 				+ "                    }\r\n" + "                }\r\n" + "            }\r\n" + "        }\r\n"
 				+ "    }\r\n" + "}");
-		
+
 		JSONObject myResponse = this._makeElasticRequest(query, "POST", "/blogposts/_search/?");
 		String val = null;
 		String freq = null;
@@ -693,7 +774,7 @@ public class Blogposts {
 		JSONArray jsonArray = new JSONArray();
 
 		if (null != myResponse.get("aggregations")) {
-			
+
 			Object buckets = myResponse.getJSONObject("aggregations").getJSONObject("groupby").getJSONArray("buckets")
 					.get(0);
 			val = buckets.toString();

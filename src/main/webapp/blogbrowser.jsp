@@ -121,7 +121,7 @@ if(term.equals("")){
 }
 System.out.println("result--"+results);
 
-String total = NumberFormat.getNumberInstance(Locale.US).format(Integer.parseInt(post._getTotal()));
+String total = NumberFormat.getNumberInstance(Locale.US).format(Integer.parseInt(post._getTotal(term)));
 //NumberFormat.getNumberInstance(Locale.US).format(Integer.parseInt(post._getTotal()));
 
 //pimage = pimage.replace("build/", "");
