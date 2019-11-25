@@ -685,6 +685,7 @@
    <%
    String blogName = null;
    String mostactiveblogid = null;
+   String mostactiveblogname = null;
 	String blogPostFreq = null;
 	String blogId = null;
 	String blog_url = null;
@@ -695,6 +696,7 @@
 							
 							ArrayList<?> blogFreq__ = (ArrayList<?>) blogPostFrequency.get(0);
 							mostactiveblogid = blogFreq__.get(2).toString();
+							mostactiveblogname = blogFreq__.get(0).toString();
 				
 							for (int m = 0; m < blogPostFrequency.size(); m++) {
 								
@@ -903,7 +905,7 @@
 <div class="row m0 mt20 mb50 d-flex align-items-stretch" >
   <div class="col-md-6 mt20 card card-style nobordertopright noborderbottomright">
   <div class="card-body p0 pt20 pb20" style="min-height: 420px;">
-      <p>Blog Posts of <b class="text-blue activeblogger"><%=mostactiveblog%></b></p>
+      <p>Blog Posts of <b class="text-blue activeblog"><%=mostactiveblogname%></b></p>
          <!--  <div class="p15 pb5 pt0" role="group">
           Export Options
           </div> -->
@@ -1059,7 +1061,7 @@
     </div>
     
   </div>
-</div>
+
 
 
 

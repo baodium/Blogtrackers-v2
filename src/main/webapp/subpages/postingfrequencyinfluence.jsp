@@ -42,7 +42,14 @@ String year_end="";
 
 //ArrayList allauthors = post._getBloggerByBloggerName("date",dt, dte,blogger.toString().toLowerCase(),sort.toString(),"DESC");
 
- JSONObject allauthors = post._newGetBloggerByBloggerName("date", dt, dte, blogger.toString(), "DESC");
+JSONObject allauthors = new JSONObject();
+
+if (action.toString().equals("getchart")) {
+
+allauthors = post._newGetBloggerByBloggerName("date", dt, dte, blogger.toString(), "DESC");
+}else if(action.toString().equals("getchart_blogs")){
+	allauthors = post._getPostByBlogID(blog_id.toString(), dt, dte);
+}
 //System.out.println("sort"+sort);
 %>
 <link rel="stylesheet" href="assets/css/table.css" />
@@ -113,6 +120,10 @@ String year_end="";
                                         <% if(sort.toString().equals("date")){ %> <%=date %><% }else{ %><%=tobj.get("influence_score") %><% }  %>
                                         
                                         </td>
+                                        
+                                        <%-- <td><a class="blogpost_link cursor-pointer" id="<%=tobj.get("blogpost_id")%>" ><%=tobj.get("title") %></a><br/>
+								<a class="mt20 viewpost makeinvisible" href="<%=tobj.get("permalink") %>" target="_blank"><buttton class="btn btn-primary btn-sm mt10 visitpost">Visit Post &nbsp;<i class="fas fa-external-link-alt"></i></buttton></a></td>
+								<td align="center"><%=date %></td> --%>
                                     </tr>
                                     <% }} %>
                                 </tbody>

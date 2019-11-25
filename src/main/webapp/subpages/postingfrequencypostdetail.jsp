@@ -116,7 +116,16 @@ if(action.toString().equals("gettotal")){
 	
 //ArrayList allauthors=post._getBloggerByBloggerName("date",dt, dte,blogger.toString().toLowerCase(),sort.toString(),"DESC");
 
-JSONObject allauthors = post._newGetBloggerByBloggerName("date", dt, dte, blogger.toString(), "DESC");
+JSONObject allauthors = new JSONObject();
+
+if (action.toString().equals("getchart")) {
+
+allauthors = post._newGetBloggerByBloggerName("date", dt, dte, blogger.toString(), "DESC");
+
+}else if(action.toString().equals("getchart_blogs")){
+	allauthors = post._getPostByBlogID(blog_id.toString(), dt, dte);
+}
+
 %>
 
 <%
