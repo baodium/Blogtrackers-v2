@@ -500,6 +500,30 @@
 <script src="pagedependencies/googletagmanagerscript.js"></script>
 
 <script src="pagedependencies/baseurl.js"></script>
+<!-- start sample chord css -->
+<style>
+
+ 
+#circle circle {
+fill: none;
+pointer-events: all;
+}
+ 
+.group path {
+fill-opacity: .5;
+}
+ 
+path.chord {
+stroke: #000;
+stroke-width: .25px;
+}
+ 
+#circle:hover path.fade {
+display: none;
+}
+ 
+</style>
+<!-- end sample chord css -->
 </head>
 <body>
 	<%@include file="subpages/loader.jsp"%>
@@ -1072,41 +1096,7 @@
 		</div>
 
 		<div class="row mb0">
-			<div class="col-md-6 mt20 zoom">
-				<div class="card card-style mt20">
-					<div class="card-body   p30 pt5 pb5">
-						<div>
-							<p class="text-primary mt10 float-left">
-								Most Active <select id="swapBlogger"
-									class="text-primary filtersort sortbyblogblogger">
-									<option value="blogs">Blogs</option>
-
-									<option value="bloggers">Bloggers</option>
-								</select>
-								<%-- 		of Past <select
-									class="text-primary filtersort sortbytimerange" id="active-sortdate"><option
-										value="week" <%=(single.equals("week"))?"selected":"" %>>Week</option>
-									<option value="month" <%=(single.equals("month"))?"selected":"" %>>Month</option>
-									<option value="year" <%=(single.equals("year"))?"selected":"" %>>Year</option></select> --%>
-							</p>
-						</div>
-						<div class="min-height-table" style="min-height: 500px;">
-							<div class="chart-container" id="postingfrequencycontainer">
-								<div class="chart" id="postingfrequencybar"></div>
-							</div>
-
-						</div>
-					</div>
-				</div>
-				<div class="float-right">
-					<a href="postingfrequency.jsp?tid=<%=tid%>"><button
-							class="btn buttonportfolio2 mt10">
-							<b class="float-left semi-bold-text">Posting Frequency
-								Analysis</b> <b class="fas fa-comment-alt float-right icondash2"></b>
-						</button></a>
-				</div>
-
-			</div>
+			
 
 			<div class="col-md-6 mt20 zoom">
 				<div class="card card-style mt20">
@@ -1146,7 +1136,47 @@
 				</div>
 
 			</div>
+			
+			
+			<div class="col-md-6 mt20 zoom">
+				<div class="card card-style mt20">
+					<div class="card-body   p30 pt5 pb5">
+						<div>
+							  <p class="text-primary mt10 float-left">
+								Topic Model <!-- <select id="swapBlogger"
+									class="text-primary filtersort sortbyblogblogger">
+									<option value="blogs">Blogs</option>
 
+									<option value="bloggers">Bloggers</option>
+								</select> -->
+								<%-- 		of Past <select
+									class="text-primary filtersort sortbytimerange" id="active-sortdate"><option
+										value="week" <%=(single.equals("week"))?"selected":"" %>>Week</option>
+									<option value="month" <%=(single.equals("month"))?"selected":"" %>>Month</option>
+									<option value="year" <%=(single.equals("year"))?"selected":"" %>>Year</option></select> --%>
+							</p>
+						</div> 
+						 <div class="min-height-table" style="min-height: 500px;">
+							<div class="chart-container" id="postingfrequencycontainer">
+								<!-- <div class="chart" id="postingfrequencybar"></div>-->
+								<div class="chart" id="chord_body" ></div>
+							</div>
+
+						</div>
+						
+					</div>
+				</div>
+				<div class="float-right">
+					<a href="postingfrequency.jsp?tid=<%=tid%>"><button
+							class="btn buttonportfolio2 mt10">
+							<b class="float-left semi-bold-text">Topic Modelling
+								Analysis</b> <b class="fas fa-comment-alt float-right icondash2"></b>
+						</button></a>
+				</div>
+
+			</div>
+			
+			
 		</div>
 
 		<div class="row mb50">
@@ -1404,6 +1434,9 @@
 		src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.html5.min.js"></script>
 	<script
 		src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.print.min.js"></script>
+		
+		
+	
 
 	<script>
 	function flip() {
@@ -2165,12 +2198,111 @@ $(function () {
 </script>
 
 	<!--  End of influence bar -->
+	
+	<!-- start sample graph script -->
+	<script>
+ 
+var width = 450,
+height = 450,
+outerRadius = Math.min(width, height) / 2 - 10,
+innerRadius = outerRadius - 24;
+ 
+var formatPercent = d3.format(".1%");
+ 
+var arc = d3.svg.arc()
+.innerRadius(innerRadius)
+.outerRadius(outerRadius);
+ 
+var layout = d3.layout.chord()
+.padding(.04)
+.sortSubgroups(d3.descending)
+.sortChords(d3.ascending);
+ 
+var path = d3.svg.chord()
+.radius(innerRadius);
+ 
+var svg = d3.select("#chord_body").append("svg")
+.attr("width", width)
+.attr("height", height)
+.append("g")
+.attr("id", "circle")
+.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+ 
+svg.append("circle")
+.attr("r", outerRadius);
+ 
+d3.csv("teams.csv", function(cities) {
+d3.json("matrix.json", function(matrix) {
+ 
+// Compute the chord layout.
+layout.matrix(matrix);
+ 
+// Add a group per neighborhood.
+var group = svg.selectAll(".group")
+.data(layout.groups)
+.enter().append("g")
+.attr("class", "group")
+.on("mouseover", mouseover);
+ 
+// Add a mouseover title.
+// group.append("title").text(function(d, i) {
+// return cities[i].name + ": " + formatPercent(d.value) + " of origins";
+// });
+ 
+// Add the group arc.
+var groupPath = group.append("path")
+.attr("id", function(d, i) { return "group" + i; })
+.attr("d", arc)
+.style("fill", function(d, i) { return cities[i].color; });
+ 
+// Add a text label.
+var groupText = group.append("text")
+.attr("x", 6)
+.attr("dy", 15);
+ 
+groupText.append("textPath")
+.attr("xlink:href", function(d, i) { return "#group" + i; })
+.text(function(d, i) { return cities[i].name; });
+ 
+// Remove the labels that don't fit. :(
+groupText.filter(function(d, i) { return groupPath[0][i].getTotalLength() / 2 - 16 < this.getComputedTextLength(); })
+.remove();
+ 
+// Add the chords.
+var chord = svg.selectAll(".chord")
+.data(layout.chords)
+.enter().append("path")
+.attr("class", "chord")
+.style("fill", function(d) { return cities[d.source.index].color; })
+.attr("d", path);
+ 
+// Add an elaborate mouseover title for each chord.
+ chord.append("title").text(function(d) {
+ return cities[d.source.index].name
+ + " → " + cities[d.target.index].name
+ + ": " + formatPercent(d.source.value)
+ + "\n" + cities[d.target.index].name
+ + " → " + cities[d.source.index].name
+ + ": " + formatPercent(d.target.value);
+ });
+ 
+function mouseover(d, i) {
+chord.classed("fade", function(p) {
+return p.source.index != i
+&& p.target.index != i;
+});
+}
+});
+});
+ 
+</script>
+	<!-- end sample graph script -->
 
 	<!-- start of posting frequency  -->
 	<script>
 $(function () {
     // Initialize chart
-    postingfrequencybar('#postingfrequencybar', 450);
+    //postingfrequencybar('#postingfrequencybar', 450);
     // Chart setup
     function postingfrequencybar(element, height) {
       // Basic setup

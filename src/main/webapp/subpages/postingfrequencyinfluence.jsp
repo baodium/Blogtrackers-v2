@@ -47,7 +47,7 @@ String year_end="";
 %>
 <link rel="stylesheet" href="assets/css/table.css" />
 <link rel="stylesheet" href="assets/css/style.css" />
-    <table id="DataTables_Table_0_wrapper" class="display" style="width:100%">
+    <table id="DataTables_Table_6_wrapper" class="display" style="width:100%">
                         <thead>
                             <tr>
                                 <th>Post title</th>
@@ -134,7 +134,7 @@ String year_end="";
 		    $('[data-toggle="tooltip"]').tooltip()
 		  })
 		  
-     $('#DataTables_Table_0_wrapper').DataTable( {
+     $('#DataTables_Table_6_wrapper').DataTable( {
          "scrollY": 430,
           "pagingType": "simple",
           "order": [],

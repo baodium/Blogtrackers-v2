@@ -1,4 +1,6 @@
 <%@page import="authentication.*"%>
+<%@page import="java.time.format.DateTimeFormatter"%>
+<%@page import="java.time.LocalDate"%>
 <%@page import="java.util.*"%>
 <%@page import="util.*"%>
 <%@page import="java.io.File"%>
@@ -538,6 +540,7 @@ catch(Exception e){
 	totalpost = "0";
 }
 System.out.println("test here3");
+JSONObject allposts = new JSONObject();
 %>
 <!DOCTYPE html>
 <html>
@@ -927,6 +930,133 @@ System.out.println("test here3");
   </div>
 </div>
 
+
+<div class="row m0 mt20 mb50 d-flex align-items-stretch" >
+  <div class="col-md-6 mt20 card card-style nobordertopright noborderbottomright">
+  <div class="card-body p0 pt20 pb20" style="min-height: 420px;">
+      <p>Blog Posts of <b class="text-blue activeblogger"><%=mostactiveblogger%></b></p>
+         <!--  <div class="p15 pb5 pt0" role="group">
+          Export Options
+          </div> -->
+          <div id="influence_table">
+                <table id="DataTables_Table_0_wrapper" class="display" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Post title</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+						<%
+						allposts = post._newGetBloggerByBloggerName("date", dt, dte, mostactiveblogger, "DESC");
+										
+										Object hits_array = allposts.getJSONArray("hit_array");
+										  String resul = null;
+										  
+										  resul = hits_array.toString();
+										  JSONArray all = new JSONArray(resul);
+										if(all.length()>0){	  
+										  	String tres = null;
+											JSONObject tresp = null;
+											String tresu = null;
+											JSONObject tobj = null;
+											String date =null;
+											int j=0;
+											int k=0;
+											
+											
+											for(int i=0; i< all.length(); i++){
+												tres = all.get(i).toString();	
+												tresp = new JSONObject(tres);
+												
+												tresu = tresp.get("_source").toString();
+												tobj = new JSONObject(tresu);
+												
+												Object date_ = tresp.getJSONObject("fields").getJSONArray("date").get(0);
+												String dat = date_.toString().substring(0,10);
+												LocalDate datee = LocalDate.parse(dat);
+												DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");
+												date = dtf.format(datee);
+									%>
+                                    <tr>
+                                   <td><a class="blogpost_link cursor-pointer" id="<%=tobj.get("blogpost_id")%>" ><%=tobj.get("title") %></a><br/>
+								<a class="mt20 viewpost makeinvisible" href="<%=tobj.get("permalink") %>" target="_blank"><buttton class="btn btn-primary btn-sm mt10 visitpost">Visit Post &nbsp;<i class="fas fa-external-link-alt"></i></buttton></a></td>
+								<td align="center"><%=date %></td>
+                                     </tr>
+                                    <% }} %>
+						
+						 </tbody>
+                    </table>
+        </div>
+        </div>
+
+  </div>
+
+  <div class="col-md-6 mt20 card card-style nobordertopleft noborderbottomleft">
+       <div style="" class="pt20" id="blogpost_detail">
+  		
+				<%
+              
+										
+										
+										if(all.length()>0){	  
+										  	String tres = null;
+											JSONObject tresp = null;
+											String tresu = null;
+											JSONObject tobj = null;
+											String date =null;
+											int j=0;
+											int k=0;
+											
+											
+											for(int i=0; i< 1; i++){
+												tres = all.get(i).toString();	
+												tresp = new JSONObject(tres);
+												
+												tresu = tresp.get("_source").toString();
+												tobj = new JSONObject(tresu);
+												
+												Object date_ = tresp.getJSONObject("fields").getJSONArray("date").get(0);
+												String dat = date_.toString().substring(0,10);
+												LocalDate datee = LocalDate.parse(dat);
+												DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");
+												date = dtf.format(datee);
+										
+									%>                                    
+                                    <h5 class="text-primary p20 pt0 pb0"><%=tobj.get("title")%></h5>
+										<div class="text-center mb20 mt20">
+											
+											<button onclick="window.location.href = '<%=request.getContextPath()%>/bloggerportfolio.jsp?tid=<%=tid%>&blogger=<%=tobj.get("blogger")%>'"  class="btn stylebuttonblue">
+												<b class="float-left ultra-bold-text"><%=tobj.get("blogger")%></b> <i
+													class="far fa-user float-right blogcontenticon"></i>
+											</button>
+											
+											<button class="btn stylebuttonnocolor nocursor"><%=date %></button>
+									
+											<button class="btn stylebuttonnocolor nocursor">
+												<b class="float-left ultra-bold-text"><%=tobj.get("num_comments")%> comments</b><i
+													class="far fa-comments float-right blogcontenticon"></i>
+											</button>
+										</div>
+										<div style="height: 600px;">
+										<div class="p20 pt0 pb20 text-blog-content text-primary"
+											style="height: 550px; overflow-y: scroll;">
+
+											<%=tobj.get("post").toString()%>
+
+										</div>
+										</div>       
+                     		<% }} %>
+                               
+			</div>
+    </div>
+    
+  </div>
+
+
+
+
 <div class="row mb50">
   <div class="col-md-12 mt20 ">
     <div class="card card-style mt20">
@@ -940,7 +1070,7 @@ System.out.println("test here3");
           Export
           </div> -->
                <div id="url-table">
-                <table id="DataTables_Table_0_wrapper" class="display" style="width:100%">
+                <table id="DataTables_Table_3_wrapper" class="display" style="width:100%">
                         <thead>
                             <tr>
                                 <th>Domain</th>
@@ -1022,6 +1152,46 @@ System.out.println("test here3");
 		}) ;
    // datatable setup
      $('#DataTables_Table_1_wrapper').DataTable( {
+         "scrollY": 430,
+         "scrollX": false,
+          "pagingType": "simple"
+    /*       ,
+          dom: 'Bfrtip',
+          "columnDefs": [
+       { "width": "80%", "targets": 0 }
+     ],
+       buttons:{
+         buttons: [
+             { extend: 'pdfHtml5',orientation: 'potrait', pageSize: 'LEGAL', className: 'btn-primary stylebutton1'},
+             {extend:'csv',className: 'btn-primary stylebutton1'},
+             {extend:'excel',className: 'btn-primary stylebutton1'},
+            // {extend:'copy',className: 'btn-primary stylebutton1', text: 'Copy to Clipboard'},
+             {extend:'print',className: 'btn-primary stylebutton1'},
+         ]
+       } */
+     } );
+   
+     $('#DataTables_Table_3_wrapper').DataTable( {
+         "scrollY": 430,
+         "scrollX": false,
+          "pagingType": "simple"
+    /*       ,
+          dom: 'Bfrtip',
+          "columnDefs": [
+       { "width": "80%", "targets": 0 }
+     ],
+       buttons:{
+         buttons: [
+             { extend: 'pdfHtml5',orientation: 'potrait', pageSize: 'LEGAL', className: 'btn-primary stylebutton1'},
+             {extend:'csv',className: 'btn-primary stylebutton1'},
+             {extend:'excel',className: 'btn-primary stylebutton1'},
+            // {extend:'copy',className: 'btn-primary stylebutton1', text: 'Copy to Clipboard'},
+             {extend:'print',className: 'btn-primary stylebutton1'},
+         ]
+       } */
+     } );
+     
+     $('#DataTables_Table_5_wrapper').DataTable( {
          "scrollY": 430,
          "scrollX": false,
           "pagingType": "simple"
