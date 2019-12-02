@@ -1749,9 +1749,9 @@ $(function () {
       //   // Create tooltip
         var tip = d3.tip()
                .attr('class', 'd3-tip')
-               .offset([-10, 0])
+               .style("text-transform", "uppercase")
                .html(function(d) {
-                   return d.letter+" ("+formatNumber(d.frequency)+")";
+                   return d.letter.toUpperCase()+" ("+formatNumber(d.frequency)+")";
                });
 function formatNumber(num) {
 	  return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')

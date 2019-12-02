@@ -823,7 +823,7 @@ JSONObject allposts = new JSONObject();
 <div class="card nocoloredcard mt10 mb10">
 					<div class="card-body p0 pt5 pb5">
 <!-- <small class="text-primary">Blogsite of <b class="text-blue"><u>Advonum</u></b></small><br/> -->
-<h5 class="text-primary mb0 active-blog"><%=mostactiveblogger%></h5>
+<!--   <h5 class="text-primary mb0 active-blog"><%=mostactiveblogger%></h5> -->
 <h3><a href="http://<%=mostactiveblogurl%>" target="_blank"><button class="btn buttonportfolio"><b class="float-left">Visit Site</b> <b class="far fa-file-alt float-right iconportfolio"></b></button></a></h3>
 </div>
 </div>
