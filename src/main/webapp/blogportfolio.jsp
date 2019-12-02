@@ -278,10 +278,12 @@
 			String mostactiveblog ="";
 					
 			ArrayList activeblogposts = post._getBloggerByBlogId("date", dt, dte, selectedblogid, "influence_score", "DESC");
+			
 			ArrayList blogPostFrequency = blog._getblogPostFrequency(ids);
 			
 			/* String mostactiveterm =term._getMostActiveByBlog(dt, dte, selectedblogid); */
-			String mostactiveterm =term._getMostActiveByBlog(dt, dte, selectedblogid);
+			String mostactiveterm = null;
+			//mostactiveterm =term._getMostActiveByBlog(dt, dte, selectedblogid);
 			System.out.println("select--"+selectedblogid);
 			/* String sql = post._getBloggerPosts(mostactiveblogger, dt, dte, ids);
 
@@ -299,6 +301,7 @@
 				//ystint=0;
 				//yendint = diff;
 			}
+			
 			int b=0;
 			int jan=0;
 			int feb=0;
@@ -402,8 +405,8 @@
 			} 
 			
 			
-			possentiment=new Liwc()._searchRangeAggregate("date", yst[0]+"-01-01", yend[0]+"-12-31", sentimentpost,"posemo");
-			negsentiment=new Liwc()._searchRangeAggregate("date", yst[0]+"-01-01", yend[0]+"-12-31", sentimentpost,"negemo");
+			/* possentiment=new Liwc()._searchRangeAggregate("date", yst[0]+"-01-01", yend[0]+"-12-31", sentimentpost,"posemo");
+			negsentiment=new Liwc()._searchRangeAggregate("date", yst[0]+"-01-01", yend[0]+"-12-31", sentimentpost,"negemo"); */
 			
 			JSONArray sortedyearsarray = yearsarray;//post._sortJson(yearsarray);
 		
