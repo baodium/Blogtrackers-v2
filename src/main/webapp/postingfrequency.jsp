@@ -1354,6 +1354,7 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
   				 		    var svg = d3.select("#chart").append("svg")
   				 		      .attr("width", (width+margin)+"px")
   				 		      .attr("height", (height+margin)+"px")
+  				 		      .style("overflow", "visible")
   				 		      .append('g')
   				 		      .attr("transform", `translate(${margin}, ${margin})`);
 

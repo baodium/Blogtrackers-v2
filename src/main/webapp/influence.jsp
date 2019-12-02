@@ -1397,6 +1397,7 @@ authoryears.put(mostactiveblogger,postyear);
     	    				 		    var svg = d3.select("#chart").append("svg")
     	    				 		      .attr("width", (width+margin)+"px")
     	    				 		      .attr("height", (height+margin)+"px")
+    	    				 		      .style("overflow", "visible")
     	    				 		      .append('g')
     	    				 		      .attr("transform", `translate(${margin}, ${margin})`);
 
@@ -1542,6 +1543,7 @@ authoryears.put(mostactiveblogger,postyear);
     	    				          // Horizontal
     	    				          var xAxis = d3.svg.axis()
     	    				              .scale(xScale)
+    	    				              
     	    				              .orient("bottom")
     	    				             .ticks(5)
     	    				
@@ -1582,6 +1584,8 @@ authoryears.put(mostactiveblogger,postyear);
     	    			              svg.append("g")
     	    			                  .attr("class", "x axis d3-axis d3-axis-horizontal d3-axis-strong")
     	    			                  .attr("transform", `translate(0, ${height-margin})`)
+    	    			                  
+    	    			                  
     	    			                  .call(xAxis);
     	    			
     	    			              // Vertical
@@ -1591,7 +1595,15 @@ authoryears.put(mostactiveblogger,postyear);
     	    			                  .append('text')
     	    			                  .attr("y", 15)
     	    			                  .attr("fill", "black")
-    	    			              	  .text("Total values");
+    	    			                  
+    	    			                  .attr("transform", "rotate(-90)")
+      .attr("y", -30)
+      .attr("x",0 - (height / 2))
+      .attr("dy", "1em")
+      .style("text-anchor", "middle")
+  
+    	    			                  
+    	    			              	  .text("Score ");
     	    				 		
     	    				 	/////////end graph stuff	
     	    				  
@@ -2251,23 +2263,34 @@ authoryears.put(mostactiveblogger,postyear);
 
                      // Add text label
                      verticalAxis.append("text")
-                         // .attr("transform", "rotate(-90)")
-                         .attr("y", 10)
-                         .attr("dy", ".71em")
-                         .style("text-anchor", "end")
-                         .style("fill", "#999")
+                          .attr("transform", "rotate(-90)")
+                           .attr("y", 0 - margin.left)
+     					 .attr("x",0 - (height / 2))
+                         .attr("dy", "1em")
+                         .style("text-anchor", "middle")
+                         .style("fill", "black")
                          .style("font-size", 12)
+            
+                         .attr("class", "y axis d3-axis d3-axis-vertical d3-axis-strong")
+    	    			 .call(yAxis)
+    	    			                  
+    	    			                  
                          .text("Activity")
+                         
+                     
                          ;
 
                          horizontalAxis.append("text")
                              // .attr("transform", "rotate(-90)")
-                             .attr("y", 10)
-                             .attr("dy", ".71em")
+                             .attr("y", 20)
+                             .attr("x", 670)
+                             .attr("dy", ".1em")
                              .style("text-anchor", "end")
-                             .style("fill", "#999")
+                            
+                             .style("fill", "black")
                              .style("font-size", 12)
                              .text("Influence")
+                         
                              ;
 
          // Resize chart

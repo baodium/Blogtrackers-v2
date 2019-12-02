@@ -1157,9 +1157,9 @@ display: none;
 							</p>
 						</div> 
 						 <div class="min-height-table" style="min-height: 500px;">
-							<div class="chart-container" id="postingfrequencycontainer">
+							<div align="center" class="chart-container" id="postingfrequencycontainer">
 								<!-- <div class="chart" id="postingfrequencybar"></div>-->
-								<div class="chart" id="chord_body" ></div>
+								<div align="center" class="chart" id="chord_body" ></div>
 							</div>
 
 						</div>

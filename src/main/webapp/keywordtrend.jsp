@@ -1934,6 +1934,7 @@ $(document).ready(function() {
   				 		    var svg = d3.select("#chart").append("svg")
   				 		      .attr("width", (width+margin)+"px")
   				 		      .attr("height", (height+margin)+"px")
+  				 		      .style("overflow", "visible")
   				 		      .append('g')
   				 		      .attr("transform", `translate(${margin}, ${margin})`);
 
