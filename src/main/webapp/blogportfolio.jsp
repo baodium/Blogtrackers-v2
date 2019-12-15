@@ -305,7 +305,7 @@ import java.io.OutputStreamWriter; -->
 					
 					Object date_ = tresp.getJSONObject("fields").getJSONArray("date").get(0); */
 					
-			ArrayList activeblogposts = post._getBloggerByBlogId("date", dt, dte, selectedblogid, "influence_score", "DESC");
+			//ArrayList activeblogposts = post._getBloggerByBlogId("date", dt, dte, selectedblogid, "influence_score", "DESC");
 			
 			ArrayList blogPostFrequency = blog._getblogPostFrequency(ids);
 			
@@ -342,11 +342,37 @@ import java.io.OutputStreamWriter; -->
 				
 			/* String mostactiveterm =term._getMostActiveByBlog(dt, dte, selectedblogid); */
 			
-			JSONArray blogPostingFrequency_year = post._getGetDateAggregate("date","yyyy","post","1y","date_histogram", dt, dte, mostactiveblogid);
-			JSONArray blogPostingFrequency_day = post._getGetDateAggregate("date","E","post","day","date_histogram", dt, dte, mostactiveblogid);
-			JSONArray blogPostingFrequency_month = post._getGetDateAggregate("date","MMM","post","month","date_histogram", dt, dte, mostactiveblogid);
+			JSONArray blogPostingFrequency_year = post._getGetDateAggregate("NOBLOGGER","date","yyyy","post","1y","date_histogram", dt, dte, mostactiveblogid);
+			JSONArray blogPostingFrequency_day = post._getGetDateAggregate("NOBLOGGER","date","E","post","day","date_histogram", dt, dte, mostactiveblogid);
+			JSONArray blogPostingFrequency_month = post._getGetDateAggregate("NOBLOGGER","date","MMM","post","month","date_histogram", dt, dte, mostactiveblogid);
+			JSONArray test = post._getGetDateAggregate("George McGinn","date","MMM","post","month","date_histogram", dt, dte, mostactiveblogid);
+			System.out.println("test----"+test.length());
 			
+			ArrayList<String> years = new ArrayList<String>();
+			int year_start_ = Integer.parseInt(dt.substring(0,4));
+			int year_end_ = Integer.parseInt(dte.substring(0,4));
 			
+			for(int i = year_start_; i < year_end_; i++){
+				years.add(Integer.toString(i));
+			}
+			
+			System.out.println("year_s"+years);
+			
+			JSONObject year_object = new JSONObject();
+			for(int q=0; q<blogPostingFrequency_year.length(); q++){ 
+		 		
+		 		String object=blogPostingFrequency_year.get(q).toString(); 
+		 		JSONObject jsonobject = new JSONObject(object);
+		 		
+				Object yer = jsonobject.getJSONObject("key").get("date");
+				Object val = jsonobject.getJSONObject("post").get("doc_count");
+		  		
+		  		int vlue = Integer.parseInt(val.toString()); 
+		  		String yr = yer.toString();
+		  		year_object.put(yr,vlue);
+			}
+
+
 			for(int i = 0; i < blogPostingFrequency_day.length(); i++){
 				hm2 = new HashMap<String, Integer>();
 				
@@ -514,8 +540,8 @@ import java.io.OutputStreamWriter; -->
 			}  */
 			
 			
-			/* possentiment=new Liwc()._searchRangeAggregate("date", yst[0]+"-01-01", yend[0]+"-12-31", sentimentpost,"posemo");
-			negsentiment=new Liwc()._searchRangeAggregate("date", yst[0]+"-01-01", yend[0]+"-12-31", sentimentpost,"negemo"); */
+			possentiment=new Liwc()._searchRangeAggregate("date", yst[0]+"-01-01", yend[0]+"-12-31", sentimentpost,"posemo");
+			negsentiment=new Liwc()._searchRangeAggregate("date", yst[0]+"-01-01", yend[0]+"-12-31", sentimentpost,"negemo"); 
 			
 			JSONArray sortedyearsarray = yearsarray;//post._sortJson(yearsarray);
 		
@@ -1573,21 +1599,14 @@ import java.io.OutputStreamWriter; -->
  //   [{"date":"2016","close":1500},{"date":"2017","close":1800}],
  //   [{"date":"2014","close":500},{"date":"2015","close":900},{"date":"2016","close":1200}]
  // ];
-
- data = [[<% for(int q=0; q<blogPostingFrequency_year.length(); q++){ 
-	 		
-	 		String object=blogPostingFrequency_year.get(q).toString(); 
-	 		JSONObject jsonobject = new JSONObject(object);
-	 		
-			Object yer = jsonobject.getJSONObject("key").get("date");
-			Object val = jsonobject.getJSONObject("post").get("doc_count");
+ data = [[ <% for(String d : years){
+	    %>   
+	    <% int freq = 0;try{freq = (int)year_object.get(d);}catch(Exception e){freq =0;}%>
+	    {"date":"<%=d%>","close":<%=freq%>},
 	  		
-	  		int vlue = Integer.parseInt(val.toString()); 
-	  		String yr = yer.toString();
-	  		
-	  		%>
-	  			{"date":"<%=yr%>","close":<%=vlue%>},
-	<% } %>]];
+	  	<%-- 
+	  			{"date":"<%=yr%>","close":<%=vlue%>}, --%>
+	<% } %> ]];
  
  <%-- <%System.out.println(dayJson);%> --%>
 <%-- console.log(<%=dayJson%>); --%>
@@ -2165,8 +2184,9 @@ import java.io.OutputStreamWriter; -->
         	/* while(keys.hasNext()) { */
         	    /* String key = keys.next(); */
         	    %>   
-        	    
-        	    {"letter":"<%=d%>","frequency":<%=(null == dayJson.get(d)) ? 0 : dayJson.get(d)%>},
+        	    <% int freq = 0;try{freq = (int)dayJson.get(d);}catch(Exception e){freq =0;}%>
+        	    /* (null == dayJson.get(d)) ? 0 : dayJson.get(d) */
+        	    {"letter":"<%=d%>","frequency":<%=freq%>},
         	   <%-- {"letter":"<%=key%>","frequency":<%=dayJson.get(key)%>}   --%>      	            		  		
 	  		  			
 	<% } %>];
@@ -2473,7 +2493,8 @@ import java.io.OutputStreamWriter; -->
  	/* while(keysMonth.hasNext()) {
  	    String key = keysMonth.next(); */
  	    %>    
- 	    {"date":"<%=m%>","close":<%=(null == monthJson.get(m)) ? 0 : monthJson.get(m)%>},
+ 	   <% int freq_ = 0;try{freq_ = (int)monthJson.get(m);}catch(Exception e){freq_ =0;}%>
+ 	    {"date":"<%=m%>","close":<%=freq_%>},
  	   <%-- {"letter":"<%=key%>","frequency":<%=dayJson.get(key)%>}   --%>      	            		  		
 		  			
 <% } %>]];

@@ -2344,41 +2344,80 @@ public class Blogposts {
 		return res;
 	}
 
-	public JSONArray _getGetDateAggregate(String fieldGroupby,String format,String fieldCount,String interval,String groupbyType, String date_from, String date_to, String ids_) throws Exception {
+	public JSONArray _getGetDateAggregate(String bloggers, String fieldGroupby, String format, String fieldCount,
+			String interval, String groupbyType, String date_from, String date_to, String ids_) throws Exception {
 		ArrayList<String> list = new ArrayList<String>();
 		HashMap<String, Integer> hm2 = new HashMap<String, Integer>();
 
 		JSONArray all = new JSONArray();
+		JSONObject query = new JSONObject();
 
-		JSONObject query = new JSONObject("{\r\n" + "    \"size\": 0,\r\n" + "    \"query\": {\r\n"
-				+ "        \"bool\": {\r\n" + "            \"must\": [\r\n" + "                {\r\n"
-				+ "                    \"terms\": {\r\n" + "                        \"blogsite_id\": ["+ids_+"],\r\n"
-				+ "                        \"boost\": 1\r\n" + "                    }\r\n" + "                },\r\n"
-				+ "                {\r\n" + "                    \"range\": {\r\n"
-				+ "                        \"date\": {\r\n"
-				+ "                            \"from\": \""+date_from+"\",\r\n"
-				+ "                            \"to\": \""+date_to+"\",\r\n"
-				+ "                            \"include_lower\": true,\r\n"
-				+ "                            \"include_upper\": true,\r\n"
-				+ "                            \"boost\": 1\r\n" + "                        }\r\n"
-				+ "                    }\r\n" + "                }\r\n" + "            ],\r\n"
-				+ "            \"adjust_pure_negative\": true,\r\n" + "            \"boost\": 1\r\n" + "        }\r\n"
-				+ "    },\r\n" + "    \"_source\": {\r\n" + "        \"excludes\": [],\r\n"
-				+ "        \"includes\": [\r\n" + "            \"@version\",\r\n" + "            \"date\"\r\n"
-				+ "        ]\r\n" + "    },\r\n" + "    \"aggregations\": {\r\n" + "        \"groupby\": {\r\n"
-				+ "            \"composite\": {\r\n" + "                \"size\": 10000,\r\n"
-				+ "                \"sources\": [\r\n" + "                    {\r\n"
-				+ "                        \""+fieldGroupby+"\": {\r\n" + "                            \""+groupbyType+"\": {\r\n"
-				+ "                                \"field\": \""+fieldGroupby+"\",\r\n"
-				+ "                                \"format\": \""+format+"\",\r\n"
-				+ "                                \"calendar_interval\": \""+interval+"\"\r\n"
-				+ "                            }\r\n" + "                        }\r\n" + "                    }\r\n"
-				+ "                ]\r\n" + "            },\r\n" + "            \"aggregations\": {\r\n"
-				+ "                \""+fieldCount+"\": {\r\n" + "                    \"filter\": {\r\n"
-				+ "                        \"exists\": {\r\n" + "                            \"field\": \""+fieldCount+"\",\r\n"
-				+ "                            \"boost\": 1\r\n" + "                        }\r\n"
-				+ "                    }\r\n" + "                }\r\n" + "            }\r\n" + "        }\r\n"
-				+ "    }\r\n" + "}");
+		if (bloggers == "NOBLOGGER") {
+			query = new JSONObject("{\r\n" + "    \"size\": 0,\r\n" + "    \"query\": {\r\n" + "        \"bool\": {\r\n"
+					+ "            \"must\": [\r\n" + "                {\r\n" + "                    \"terms\": {\r\n"
+					+ "                        \"blogsite_id\": [" + ids_ + "],\r\n"
+					+ "                        \"boost\": 1\r\n" + "                    }\r\n"
+					+ "                },\r\n" + "                {\r\n" + "                    \"range\": {\r\n"
+					+ "                        \"date\": {\r\n" + "                            \"from\": \"" + date_from
+					+ "\",\r\n" + "                            \"to\": \"" + date_to + "\",\r\n"
+					+ "                            \"include_lower\": true,\r\n"
+					+ "                            \"include_upper\": true,\r\n"
+					+ "                            \"boost\": 1\r\n" + "                        }\r\n"
+					+ "                    }\r\n" + "                }\r\n" + "            ],\r\n"
+					+ "            \"adjust_pure_negative\": true,\r\n" + "            \"boost\": 1\r\n"
+					+ "        }\r\n" + "    },\r\n" + "    \"_source\": {\r\n" + "        \"excludes\": [],\r\n"
+					+ "        \"includes\": [\r\n" + "            \"@version\",\r\n" + "            \"date\"\r\n"
+					+ "        ]\r\n" + "    },\r\n" + "    \"aggregations\": {\r\n" + "        \"groupby\": {\r\n"
+					+ "            \"composite\": {\r\n" + "                \"size\": 10000,\r\n"
+					+ "                \"sources\": [\r\n" + "                    {\r\n" + "                        \""
+					+ fieldGroupby + "\": {\r\n" + "                            \"" + groupbyType + "\": {\r\n"
+					+ "                                \"field\": \"" + fieldGroupby + "\",\r\n"
+					+ "                                \"format\": \"" + format + "\",\r\n"
+					+ "                                \"calendar_interval\": \"" + interval + "\"\r\n"
+					+ "                            }\r\n" + "                        }\r\n"
+					+ "                    }\r\n" + "                ]\r\n" + "            },\r\n"
+					+ "            \"aggregations\": {\r\n" + "                \"" + fieldCount + "\": {\r\n"
+					+ "                    \"filter\": {\r\n" + "                        \"exists\": {\r\n"
+					+ "                            \"field\": \"" + fieldCount + "\",\r\n"
+					+ "                            \"boost\": 1\r\n" + "                        }\r\n"
+					+ "                    }\r\n" + "                }\r\n" + "            }\r\n" + "        }\r\n"
+					+ "    }\r\n" + "}");
+		} else {
+			query = new JSONObject("{\r\n" + "    \"size\": 0,\r\n" + "    \"query\": {\r\n" + "        \"bool\": {\r\n"
+					+ "            \"adjust_pure_negative\": true,\r\n" + "            \"must\": [\r\n"
+					+ "                {\r\n" + "                    \"terms\": {\r\n"
+					+ "                        \"blogger.keyword\":[\""+bloggers+"\"]\r\n"
+					+ "                        \r\n" + "                    }\r\n" + "                },\r\n"
+					+ "                {\r\n" + "                    \"terms\": {\r\n"
+					+ "                        \"blogsite_id\": ["+ids_+"],\r\n"
+					+ "                        \"boost\": 1\r\n" + "                    }\r\n"
+					+ "                },\r\n" + "                {\r\n" + "                    \"range\": {\r\n"
+					+ "                        \"date\": {\r\n"
+					+ "                            \"include_lower\": true,\r\n"
+					+ "                            \"include_upper\": true,\r\n"
+					+ "                            \"from\": \""+date_from+"\",\r\n"
+					+ "                            \"boost\": 1,\r\n"
+					+ "                            \"to\": \""+date_to+"\"\r\n" + "                        }\r\n"
+					+ "                    }\r\n" + "                }\r\n" + "            ],\r\n"
+					+ "            \"boost\": 1\r\n" + "        }\r\n" + "    },\r\n" + "    \"_source\": {\r\n"
+					+ "        \"excludes\": [],\r\n" + "        \"includes\": [\r\n" + "            \"@version\",\r\n"
+					+ "            \"date\"\r\n" + "        ]\r\n" + "    },\r\n" + "    \"aggregations\": {\r\n"
+					+ "        \"groupby\": {\r\n" + "            \"composite\": {\r\n"
+					+ "                \"size\": 10000,\r\n" + "                \"sources\": [\r\n"
+					+ "                    {\r\n" + "                        \""+fieldGroupby+"\": {\r\n"
+					+ "                            \""+groupbyType+"\": {\r\n"
+					+ "                                \"field\": \""+fieldGroupby+"\",\r\n"
+					+ "                                \"format\": \""+format+"\",\r\n"
+					+ "                                \"calendar_interval\": \""+interval+"\"\r\n"
+					+ "                            }\r\n" + "                        }\r\n"
+					+ "                    }\r\n" + "                ]\r\n" + "            },\r\n"
+					+ "            \"aggregations\": {\r\n" + "                \""+fieldCount+"\": {\r\n"
+					+ "                    \"filter\": {\r\n" + "                        \"exists\": {\r\n"
+					+ "                            \"field\": \""+fieldCount+"\",\r\n"
+					+ "                            \"boost\": 1\r\n" + "                        }\r\n"
+					+ "                    }\r\n" + "                }\r\n" + "            }\r\n" + "        }\r\n"
+					+ "    }\r\n" + "}");
+		}
 
 		JSONObject myResponse = this._makeElasticRequest(query, "POST", "/blogposts/_search/?");
 		String val = null;
@@ -2386,9 +2425,9 @@ public class Blogposts {
 		String idx = null;
 		String language = null;
 		JSONArray jsonArray = new JSONArray();
-		
+
 		System.out.println("query for elastic _getGetDateAggregate --> " + query);
-		
+
 		if (null != myResponse.get("aggregations")) {
 			jsonArray = myResponse.getJSONObject("aggregations").getJSONObject("groupby").getJSONArray("buckets");
 //			val = buckets.toString();
