@@ -1,9 +1,10 @@
+<%@page import="org.apache.lucene.analysis.CharArrayMap.EntrySet"%>
 <%@page import="authentication.*"%>
 <%@page import="java.util.*"%>
 <%@page import="java.time.LocalDate"%>
 <%@page import="java.time.format.DateTimeFormatter"%>
 <%@page import="util.*"%>
-<%@page import="java.io.File"%>
+<%@page import="java.io.*"%>
 <%@page import="org.json.JSONObject"%>
 <%@page import="org.json.JSONArray"%>
 <%@page import="java.net.URI"%>
@@ -12,6 +13,12 @@
 <%@page import="java.util.Date"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@page import="java.time.LocalDateTime"%>
+
+
+<%@page import="static java.util.stream.Collectors.toMap"%>
+<%@page import="java.io.OutputStreamWriter"%>
+<!-- import static java.util.stream.Collectors.toMap;
+import java.io.OutputStreamWriter; -->
 	
 <%
 	Object email = (null == session.getAttribute("email")) ? "" : session.getAttribute("email");
@@ -276,12 +283,105 @@
 			String totalinfluence = post._searchRangeMaxByBlogId("date", dt, dte, selectedblogid);
 			Long infl = Math.round(Double.parseDouble(totalinfluence));
 			String mostactiveblog ="";
+			
+			
+
+			/* if(all.length()>0){	  
+			  	String tres = null;
+				JSONObject tresp = null;
+				String tresu = null;
+				JSONObject tobj = null;
+				String date =null;
+				int j=0;
+				int k=0;
+				
+				
+				for(int i=0; i< all.length(); i++){
+					tres = all.get(i).toString();	
+					tresp = new JSONObject(tres);
+					
+					tresu = tresp.get("_source").toString();
+					tobj = new JSONObject(tresu);
+					
+					Object date_ = tresp.getJSONObject("fields").getJSONArray("date").get(0); */
 					
 			ArrayList activeblogposts = post._getBloggerByBlogId("date", dt, dte, selectedblogid, "influence_score", "DESC");
 			
 			ArrayList blogPostFrequency = blog._getblogPostFrequency(ids);
 			
+			   String blogName = null;
+			   String mostactiveblogid = null;
+			   String mostactiveblogname = null;
+				String blogPostFreq = null;
+				String blogId = null;
+				String blog_url = null;
+			
+			
+			   if (blogPostFrequency.size() > 0) {
+					int p = 0;
+					
+					String all_blogs = "";
+					
+					ArrayList<?> blogFreq__ = (ArrayList<?>) blogPostFrequency.get(0);
+					mostactiveblogid = blogFreq__.get(2).toString();
+					mostactiveblogname = blogFreq__.get(0).toString();
+					
+			   }
+			
+				JSONObject allposts = new JSONObject();
+				HashMap<String, Integer> hm2 = new HashMap<String, Integer>();
+				HashMap<String, Integer> hm3 = new HashMap<String, Integer>();
+				List<Map<String, Integer>> items = new ArrayList<>();
+				List<Map<String, Integer>> items1 = new ArrayList<>();
+				
+				allposts = post._getPostByBlogID(mostactiveblogid, dt, dte);
+				Object hits_array = allposts.getJSONArray("hit_array");
+				String resul = null;
+				resul = hits_array.toString();
+				JSONArray all = new JSONArray(resul);
+				
 			/* String mostactiveterm =term._getMostActiveByBlog(dt, dte, selectedblogid); */
+			
+			JSONArray blogPostingFrequency_year = post._getGetDateAggregate("date","yyyy","post","1y","date_histogram", dt, dte, mostactiveblogid);
+			JSONArray blogPostingFrequency_day = post._getGetDateAggregate("date","E","post","day","date_histogram", dt, dte, mostactiveblogid);
+			JSONArray blogPostingFrequency_month = post._getGetDateAggregate("date","MMM","post","month","date_histogram", dt, dte, mostactiveblogid);
+			
+			
+			for(int i = 0; i < blogPostingFrequency_day.length(); i++){
+				hm2 = new HashMap<String, Integer>();
+				
+				String object=blogPostingFrequency_day.get(i).toString(); 
+		 		JSONObject jsonobject = new JSONObject(object);
+		 		
+				Object yer = jsonobject.getJSONObject("key").get("date");
+				Object val = jsonobject.getJSONObject("post").get("doc_count"); 
+				
+				hm2.put(yer.toString(), (Integer) val);
+				items.add(i, hm2);
+
+			}
+			
+			JSONObject dayJson = post.lineGraphAggregate(items);
+			System.out.println("dayJson --"+dayJson);
+			
+			for(int i = 0; i < blogPostingFrequency_month.length(); i++){
+				hm3 = new HashMap<String, Integer>();
+				
+				String object=blogPostingFrequency_month.get(i).toString(); 
+		 		JSONObject jsonobject = new JSONObject(object);
+		 		
+				Object yer = jsonobject.getJSONObject("key").get("date");
+				Object val = jsonobject.getJSONObject("post").get("doc_count"); 
+				
+				hm3.put(yer.toString(), (Integer) val);
+				items1.add(i, hm3);
+
+			}
+			
+			JSONObject monthJson = post.lineGraphAggregate(items1);
+			System.out.println("monthJson --"+monthJson);
+			
+			
 			String mostactiveterm = null;
 			//mostactiveterm =term._getMostActiveByBlog(dt, dte, selectedblogid);
 			System.out.println("select--"+selectedblogid);
@@ -318,7 +418,8 @@
 			
 			int min = 0;
 			int max = 0;
-			for(int y=ystint; y<=yendint; y++){
+			
+			 /* for(int y=ystint; y<=yendint; y++){
 					   String dtu = y + "-01-01";
 					   String dtue = y + "-12-31";				   
 					   if(b==0){
@@ -347,7 +448,14 @@
 					   graphyears.put(y+"",totu);
 			    	   yearsarray.put(b,y);	
 			    	   b++;
-			}
+			    	   
+			}  */
+			
+			/* try (FileWriter file = new FileWriter("C:\\Users\\oljohnson\\Desktop\\SQL\\file1.txt")) {
+				file.write(yearsarray.toString());
+				System.out.println("Successfully Copied JSON Object to File...");
+				System.out.println("\nJSON Object: " + obj);
+			} */
 			
 		    JSONArray sentimentpost = new JSONArray();
 		    
@@ -359,7 +467,7 @@
 		    int fri=0;
 		    int sat =0;
 		    
-			if(activeblogposts.size()>0){
+			 /* if(activeblogposts.size()>0){
 				String tres = null;
 				JSONObject tresp = null;
 				String tresu = null;
@@ -367,6 +475,7 @@
 				int j=0;
 				int k=0;
 				int n = 0;
+				
 			for(int i=0; i< activeblogposts.size(); i++){
 						tres = activeblogposts.get(i).toString();			
 						tresp = new JSONObject(tres);
@@ -402,7 +511,7 @@
 						    }
 					    }
 				}
-			} 
+			}  */
 			
 			
 			/* possentiment=new Liwc()._searchRangeAggregate("date", yst[0]+"-01-01", yend[0]+"-12-31", sentimentpost,"posemo");
@@ -413,6 +522,7 @@
 			String mostactiveblogurl ="";
 			JSONObject outerlinks = new JSONObject();
 			ArrayList outlinklooper = new ArrayList();
+			
 			if (outlinks.size() > 0) {
 				int mm=0;
 				for (int p = 0; p < outlinks.size(); p++) {
@@ -457,7 +567,8 @@
 				
 				}
 			}
-			JSONObject allposts = new JSONObject();
+			
+			
 			
 %>
 <!DOCTYPE html>
@@ -686,12 +797,7 @@
 <select id="blogger-changed" class="custom-select">
 
    <%
-   String blogName = null;
-   String mostactiveblogid = null;
-   String mostactiveblogname = null;
-	String blogPostFreq = null;
-	String blogId = null;
-	String blog_url = null;
+
    if (blogPostFrequency.size() > 0) {
 							int p = 0;
 							
@@ -943,13 +1049,14 @@
 										date = dtf.format(datee);
 										
 										k++;  */
-										allposts = post._getPostByBlogID(mostactiveblogid, dt, dte);
+									/* 	allposts = post._getPostByBlogID(mostactiveblogid, dt, dte);
 										/* allposts = post._newGetBloggerByBloggerName("date", dt, dte, bloggerName, "DESC"); */
-										Object hits_array = allposts.getJSONArray("hit_array");
+									/* 	Object hits_array = allposts.getJSONArray("hit_array");
 										  String resul = null;
 										  
 										  resul = hits_array.toString();
-										  JSONArray all = new JSONArray(resul);
+										  JSONArray all = new JSONArray(resul);  */
+										  
 										if(all.length()>0){	  
 										  	String tres = null;
 											JSONObject tresp = null;
@@ -972,13 +1079,20 @@
 												LocalDate datee = LocalDate.parse(dat);
 												DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");
 												date = dtf.format(datee);
+												
+												
 									%>
                                     <tr>
                                    <td><a class="blogpost_link cursor-pointer" id="<%=tobj.get("blogpost_id")%>" ><%=tobj.get("title") %></a><br/>
 								<a class="mt20 viewpost makeinvisible" href="<%=tobj.get("permalink") %>" target="_blank"><buttton class="btn btn-primary btn-sm mt10 visitpost">Visit Post &nbsp;<i class="fas fa-external-link-alt"></i></buttton></a></td>
 								<td align="center"><%=date %></td>
                                      </tr>
-                                    <% }} %>
+                                    <% }
+										
+									
+										
+										
+										} %>
 						
 						 </tbody>
                     </table>
@@ -1124,7 +1238,11 @@
 
 </div>
 
+<%
 
+
+
+%>
 <!-- <footer class="footer">
   <div class="container-fluid bg-primary mt60">
 <p class="text-center text-medium pt10 pb10 mb0">Copyright &copy; 2017 All Rights Reserved.</p>
@@ -1456,13 +1574,25 @@
  //   [{"date":"2014","close":500},{"date":"2015","close":900},{"date":"2016","close":1200}]
  // ];
 
- data = [[<% for(int q=0; q<sortedyearsarray.length(); q++){ 
-	  		String yer=sortedyearsarray.get(q).toString(); 
-	  		int vlue = Integer.parseInt(graphyears.get(yer).toString()); %>
-	  			{"date":"<%=yer%>","close":<%=vlue%>},
+ data = [[<% for(int q=0; q<blogPostingFrequency_year.length(); q++){ 
+	 		
+	 		String object=blogPostingFrequency_year.get(q).toString(); 
+	 		JSONObject jsonobject = new JSONObject(object);
+	 		
+			Object yer = jsonobject.getJSONObject("key").get("date");
+			Object val = jsonobject.getJSONObject("post").get("doc_count");
+	  		
+	  		int vlue = Integer.parseInt(val.toString()); 
+	  		String yr = yer.toString();
+	  		
+	  		%>
+	  			{"date":"<%=yr%>","close":<%=vlue%>},
 	<% } %>]];
-
- //console.log(data);
+ 
+ <%-- <%System.out.println(dayJson);%> --%>
+<%-- console.log(<%=dayJson%>); --%>
+ console.log("DATA FOR LINE PUBLISHED");
+ console.log(data);
  // data = [];
 
  // data = [
@@ -2011,7 +2141,36 @@
        //
        //
        //
-       data = [
+       
+        <%-- data = [[<% for(int q=0; q<blogPostingFrequency_year.length(); q++){ 
+	 		
+	 		String object=blogPostingFrequency_year.get(q).toString(); 
+	 		JSONObject jsonobject = new JSONObject(object);
+	 		
+			Object yer = jsonobject.getJSONObject("key").get("date");
+			Object val = jsonobject.getJSONObject("post").get("doc_count");
+	  		
+	  		int vlue = Integer.parseInt(val.toString()); 
+	  		String yr = yer.toString();
+	  		
+	  		%>
+	  			{"date":"<%=yr%>","close":<%=vlue%>},
+	<% } %>]]; --%>
+       
+       
+      <%--  <%Iterator<String> keys = dayJson.keys();%> --%>
+       <%String [] days = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};%>
+        data = [<%
+            for(String d : days){
+        	/* while(keys.hasNext()) { */
+        	    /* String key = keys.next(); */
+        	    %>   
+        	    
+        	    {"letter":"<%=d%>","frequency":<%=(null == dayJson.get(d)) ? 0 : dayJson.get(d)%>},
+        	   <%-- {"letter":"<%=key%>","frequency":<%=dayJson.get(key)%>}   --%>      	            		  		
+	  		  			
+	<% } %>];
+       <%-- data = [
     	   {letter:"Sat", frequency:<%=sat%>},
     	   {letter:"Fri", frequency:<%=fri%>},
     	   
@@ -2020,7 +2179,10 @@
              {letter:"Tue", frequency:<%=tue%>},
              {letter:"Mon", frequency:<%=mon%>},
              {letter:"Sun", frequency:<%=sun%>}
-         ];
+         ]; --%>
+       
+       console.log("data for bar horizontal");
+       console.log(data);
        //
        //
        //   // Create tooltip
@@ -2300,11 +2462,24 @@
  //console.log(data);
  // data = [];
 
- data = [
+<%--  data = [
  [{"date": "Jan","close": <%=jan%>},{"date": "Feb","close": <%=feb%>},{"date": "Mar","close":<%=march%>},{"date": "Apr","close": <%=jan%>},{"date": "May","close": <%=may%>},{"date": "Jun","close": <%=june%>},{"date": "Jul","close": <%=july%>},{"date": "Aug","close": <%=aug%>},{"date": "Sep","close": <%=sep%>},{"date": "Oct","close": <%=oct%>},{"date": "Nov","close": <%=nov%>},{"date": "Dec","close": <%=dec%>}],
  ];
-
- // console.log(data);
+ --%>
+ <%-- <%Iterator<String> keysMonth = monthJson.keys();%> --%>
+ <%String [] months = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};%> 
+ data = [[<%   	
+    for(String m: months){
+ 	/* while(keysMonth.hasNext()) {
+ 	    String key = keysMonth.next(); */
+ 	    %>    
+ 	    {"date":"<%=m%>","close":<%=(null == monthJson.get(m)) ? 0 : monthJson.get(m)%>},
+ 	   <%-- {"letter":"<%=key%>","frequency":<%=dayJson.get(key)%>}   --%>      	            		  		
+		  			
+<% } %>]];
+ 
+ console.log("data for yearly pattern")
+  console.log(data);
  var line = d3.svg.line()
  .interpolate("monotone")
       //.attr("width", x.rangeBand())

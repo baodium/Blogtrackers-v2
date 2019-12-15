@@ -86,7 +86,7 @@ public class KeywordTrend1 extends HttpServlet {
 		JSONObject sql = new JSONObject();
 
 		String sql__ = null;
-		List<Map<String, Integer>> items = new ArrayList<>();
+		List<HashMap<String, Integer>> items = new ArrayList<>();
 
 		if (action.toString().equals("getblogmentioned")) {
 			try {
@@ -314,6 +314,7 @@ public class KeywordTrend1 extends HttpServlet {
 				}
 				
 				System.out.println("items--" + items);
+				
 				Map<String, Integer> json = (HashMap<String, Integer>) items.stream()
 						.flatMap(m -> m.entrySet().stream())
 						.collect(toMap(Map.Entry::getKey, Map.Entry::getValue, Integer::sum));

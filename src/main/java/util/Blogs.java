@@ -233,9 +233,10 @@ public class Blogs extends DbConnection{
 
 		String url = base_url+"_search?size=10000";
 
-		System.out.println("testque--"+this._getResult(url, jsonObj).size());
-		System.out.println("url--"+url);
-		System.out.println("elasticquery--"+jsonObj);
+//		System.out.println("testque--"+this._getResult(url, jsonObj).size());
+//		System.out.println("url--"+url);
+//		System.out.println("elasticquery--"+jsonObj);
+		System.out.println("query for fetch in blogs.java "+ jsonObj);
 //		System.out.println("elasticresult--"+this._getResult(url, jsonObj));
 		return this._getResult(url, jsonObj);
 
@@ -345,7 +346,7 @@ public class Blogs extends DbConnection{
 			
 		}catch(Exception e){
 		}
-		System.out.println(result);
+		System.out.println("query for _getblogPostFrequency"+"select blogsite_name, totalposts, blogsite_id, blogsite_url from blogsites where blogsite_id in "+blogids+" order by totalposts DESC");
 		return result;
 		
 
