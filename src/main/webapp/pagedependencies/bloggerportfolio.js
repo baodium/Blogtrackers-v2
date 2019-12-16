@@ -38,12 +38,13 @@ $('#blogger-changed').on("change", function(){
 //	var all_blgs = all_bloggers.split("|-|");
 	
 	
+	
 
 	loadStat(blg[1], all_bloggers,all_ids);
-	loadChart(blg[1]);
-	loadYearlyChart(blg[1]);
-	loadDailyChart(blg[1]);
-	loadUrls(date_start,date_end);
+	loadChart(blg[1],all_ids);
+	loadYearlyChart(blg[1],all_ids);
+	loadDailyChart(blg[1],all_ids);
+	loadUrls(date_start,date_end,all_ids);
 	
 	loadInfluence(blg[1],date_start,date_end);
 });
@@ -219,7 +220,7 @@ $('.blogpost_link').on("click", function(){
 	
 });
 
-function loadChart(blogger){
+function loadChart(blogger,ids){
 	$("#overall-chart").html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />");
 	$.ajax({
 		url: app_url+"subpages/bloggerportfoliochart.jsp",
@@ -227,6 +228,7 @@ function loadChart(blogger){
 		data: {
 			action:"getchart",
 			blogger:blogger,
+			ids:ids,
 			date_start:$("#date_start").val(),
 			date_end:$("#date_end").val(),
 		},
@@ -245,7 +247,7 @@ function loadChart(blogger){
 	});
 }
 
-function loadYearlyChart(blogger){
+function loadYearlyChart(blogger,ids){
 	$("#year-chart").html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />");
 	$.ajax({
 		url: app_url+"subpages/bloggerportfoliochart.jsp",
@@ -253,6 +255,7 @@ function loadYearlyChart(blogger){
 		data: {
 			action:"getdailychart",
 			blogger:blogger,
+			ids:ids,
 			date_start:$("#date_start").val(),
 			date_end:$("#date_end").val(),
 		},
@@ -271,7 +274,7 @@ function loadYearlyChart(blogger){
 	});
 }
 
-function loadDailyChart(blogger){
+function loadDailyChart(blogger,ids){
 	$("#day-chart").html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />");
 	$.ajax({
 		url: app_url+"subpages/bloggerportfoliochart.jsp",
@@ -279,6 +282,7 @@ function loadDailyChart(blogger){
 		data: {
 			action:"getdayonlychart",
 			blogger:blogger,
+			ids:ids,
 			date_start:$("#date_start").val(),
 			date_end:$("#date_end").val(),
 		},
@@ -299,7 +303,7 @@ function loadDailyChart(blogger){
 
 
 
-function loadUrls(date_start,date_end){
+function loadUrls(date_start,date_end,ids){
 	$("#url-table").html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />");
 		
 		$.ajax({
@@ -308,6 +312,7 @@ function loadUrls(date_start,date_end){
 			data: {
 				blogger:$("#blogger").val(),
 				date_start:date_start,
+				ids:ids,
 				date_end:date_end,
 				listtype:$("#top-listtype").val(),
 			},

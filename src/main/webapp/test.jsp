@@ -78,13 +78,19 @@
 	/* String sql = post._getMostKeywordDashboard(null,dt,dte,ids);
 	JSONObject res=post._keywordTermvctors(sql);	
 	System.out.println("--->"+res); */
-	
-/* JSONObject sql = post._getBloggerPosts("","tine","2017-04-22","2017-04-22","697"); */
 
-	/* 		
-	String sql_ = sql.get("data").toString();
+	   /* System.out.println(dtf.format(now));  */
+	/* Date d1 = format.parse(dateStart); */
 	
-	
+
+	//in milliseconds
+	Instant start = Instant.now();
+JSONObject sql = post._getBloggerPosts("","CNN","2000-01-01","2019-12-15","142,153,229,148,127,46,3,170,154,72,38,224,157,128,61,112,140,116,125,193,173,74,249,250,243,263,98,69,62,78,117,73,135,133,100,143,77,233,221,163,132,147,150,43,242,111,101,86,199,251,118,106,121,129,49,48,66,91,176,124,167,215,141,166,17,220,119,236,230,225,252,20,130,22,76,235,85,245,79,26,109,80,131,253,105,226,137,115,52,53,65,213,96,238,210,136,239,27,206,107,63,57,204,205,216,208,36,102,134,108,113,59,54,88"); 
+
+		
+	String sql_ = sql.get("posts").toString();
+	 
+	/* 	
 	Object jsonArray = sql.getJSONArray("data").get(0);
 	System.out.println("dd--"+sql.getJSONArray("data").length());
 	String j = jsonArray.toString();
@@ -92,9 +98,14 @@
 	String result = j_.get("permalink").toString(); */
 	
 	
-	/* String result = post._termVectors(sql_);   */
+	  String result = post._termVectors(sql_);  
 	
 	
+	
+	//your code
+	Instant end = Instant.now();
+	Duration timeElapsed = Duration.between(start, end);
+	System.out.println("Time taken: "+ timeElapsed.getSeconds() +" seconds");
 	/* String ids_ =  "148";
 	String date_from = "2015-11-03";
 	String date_to = "2019-10-16";
@@ -202,7 +213,7 @@
 	
     //ArrayList allposts=post._getBloggerByBloggerName("date","2008-10-18", "2019-10-30","NASHA","date","DESC");
     
-    JSONObject allposts = post._newGetBloggerByBloggerName("date", "2008-10-18", "2019-10-30", "NASHA", "DESC");
+    //JSONObject allposts = post._newGetBloggerByBloggerName("date", "2008-10-18", "2019-10-30", "NASHA", "DESC");
 
 	
 	PrintWriter pww = response.getWriter();
@@ -289,14 +300,14 @@
 				} catch (Exception e) {
 					System.err.println(e);
 				} */
-Float highestinfluence = Float.parseFloat(post._searchMaxInfluence2("max","influence_score", "2000-01-01", "2019-11-13", "813,815,809,811,812,806,808,817,644,652,616,641,732,761,709,128"));
+/* Float highestinfluence = Float.parseFloat(post._searchMaxInfluence2("max","influence_score", "2000-01-01", "2019-11-13", "813,815,809,811,812,806,808,817,644,652,616,641,732,761,709,128")); */
 			%>
-			<p>His trackers  <%= highestinfluence%></p>
+			<p>His trackers  <%-- <%=  highestinfluence %> --%></p>
 			   
 			  
 			  
 			  <%
-			  Object hits_array = allposts.getJSONArray("hit_array");
+			  /* Object hits_array = allposts.getJSONArray("hit_array");
 			  String resul = null;
 			  
 			  resul = hits_array.toString();
@@ -321,7 +332,7 @@ Float highestinfluence = Float.parseFloat(post._searchMaxInfluence2("max","influ
 					String dat = date_.toString().substring(0,10);
 					LocalDate datee = LocalDate.parse(dat);
 					DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");
-					date = dtf.format(datee);
+					date = dtf.format(datee); */
 					
 			/* 		
 					LocalDate datee = LocalDate.parse(dat);
@@ -329,9 +340,9 @@ Float highestinfluence = Float.parseFloat(post._searchMaxInfluence2("max","influ
 					date = dtf.format(datee); */
 			  
 			  %>
-			  <h1>HIGHEST TERM --><%=tobj.get("title")%></h1>   
+			  <h1>HIGHEST TERM --><%=/* tobj.get("title") */ result%></h1>   
 			  
-			  <%} %>
+			  <%/* } */%>
 			 <%--  <%
 			    if(allposts.size()>0){	
 			        

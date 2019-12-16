@@ -79,7 +79,7 @@ Terms term  = new Terms();
 		int dec=0;
 		
 	if(!action.toString().equals("getstats")){
-		for(int y=ystint; y<=yendint; y++){
+		/* for(int y=ystint; y<=yendint; y++){
 				   String dtu = y + "-01-01";
 
 				   String dtue = y + "-12-31";
@@ -139,7 +139,7 @@ Terms term  = new Terms();
 				   graphyears.put(y+"",totu);
 		    	   yearsarray.put(b,y);	
 		    	   b++;
-		}
+		} */
 		
 	    }
 
@@ -243,7 +243,7 @@ if(action.toString().equals("getstats")){
 
 	int highestfrequency = 0; 
 	 
-	ArrayList termss =  term._searchByRange("blogsiteid", dt, dte, blogids);
+	/* ArrayList termss =  term._searchByRange("blogsiteid", dt, dte, blogids);
 	JSONArray topterms = new JSONArray();
 	if (termss.size() > 0) {
 		for (int p = 0; p < termss.size(); p++) {
@@ -262,14 +262,14 @@ if(action.toString().equals("getstats")){
 			if(freq>highestfrequency){
 				highestfrequency = freq;
 				/* mostactiveterm = tm; */
-			}		
+			/* }		
 			
 			cont.put("key", tm);
 			cont.put("frequency", frequency);
 			topterms.put(cont);
 		}
-	}
-	
+	} */
+	 
 	try{
 	JSONObject sql = post._getBloggerPosts(null,selectedblogid,date_start.toString(),date_end.toString(),ids.toString());
 	String sql_ = sql.get("posts").toString();
@@ -298,7 +298,7 @@ if(action.toString().equals("getstats")){
 
 
 <% } else if(action.toString().equals("getdayonlychart")){ 
-	SimpleDateFormat DAY_NAME_ONLY = new SimpleDateFormat("EEEE");
+	/* SimpleDateFormat DAY_NAME_ONLY = new SimpleDateFormat("EEEE");
 	
 	ArrayList allauthors = post._getBloggerByBloggerName("date", dt, dte, selectedblogid, "influence_score", "DESC");
 	String blogids = "";
@@ -319,7 +319,7 @@ if(action.toString().equals("getstats")){
 		int k=0;
 		int n = 0;
 		
-		for(int i=0; i< allauthors.size(); i++){
+		/* for(int i=0; i< allauthors.size(); i++){
 					tres = allauthors.get(i).toString();			
 					tresp = new JSONObject(tres);
 				    tresu = tresp.get("_source").toString();
@@ -343,8 +343,29 @@ if(action.toString().equals("getstats")){
 				    }else if(rawday.equals("Saturday")){
 				    	sat++;
 				    }
+		} */
+	/* }   */
+	
+		JSONArray blogPostingFrequency_day = post._getGetDateAggregate(blogger.toString(),"date","E","post","day","date_histogram", dt, dte, ids.toString());
+		HashMap<String, Integer> hm2 = new HashMap<String, Integer>();
+		List<Map<String, Integer>> items = new ArrayList<>();
+		
+		for(int i = 0; i < blogPostingFrequency_day.length(); i++){
+			hm2 = new HashMap<String, Integer>();
+			
+			String object=blogPostingFrequency_day.get(i).toString(); 
+	 		JSONObject jsonobject = new JSONObject(object);
+	 		
+			Object yer = jsonobject.getJSONObject("key").get("date");
+			Object val = jsonobject.getJSONObject("post").get("doc_count"); 
+			
+			hm2.put(yer.toString(), (Integer) val);
+			items.add(i, hm2);
+
 		}
-	} 
+		
+		JSONObject dayJson = post.lineGraphAggregate(items);
+		System.out.println("dayJson --"+dayJson);
 	
 %>
   <div class="chart" id="d3-bar-horizontal"></div>
@@ -428,7 +449,7 @@ if(action.toString().equals("getstats")){
        //
        //
        //
-       data = [
+      <%--  data = [
     	   {letter:"Sat", frequency:<%=sat%>},
     	   {letter:"Fri", frequency:<%=fri%>},
              {letter:"Wed", frequency:<%=wed%>},
@@ -437,7 +458,19 @@ if(action.toString().equals("getstats")){
              {letter:"Mon", frequency:<%=mon%>},
              {letter:"Sun", frequency:<%=sun%>}
                      
-         ];
+         ]; --%>
+         <%String [] days = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};%>
+         data = [<%
+             for(String d : days){
+         	/* while(keys.hasNext()) { */
+         	    /* String key = keys.next(); */
+         	    %>   
+         	    <% int freq = 0;try{freq = (int)dayJson.get(d);}catch(Exception e){freq =0;}%>
+         	    /* (null == dayJson.get(d)) ? 0 : dayJson.get(d) */
+         	    {"letter":"<%=d%>","frequency":<%=freq%>},
+         	   <%-- {"letter":"<%=key%>","frequency":<%=dayJson.get(key)%>}   --%>      	            		  		
+ 	  		  			
+ 	<% } %>];
        //
        //
        //   // Create tooltip
@@ -598,7 +631,28 @@ if(action.toString().equals("getstats")){
  </script>
 
 	
-<% }else if(action.toString().equals("getdailychart")){ %>
+<% }else if(action.toString().equals("getdailychart")){ 
+	HashMap<String, Integer> hm3 = new HashMap<String, Integer>();
+	List<Map<String, Integer>> items1 = new ArrayList<>();
+
+	JSONArray blogPostingFrequency_month = post._getGetDateAggregate(blogger.toString(),"date","MMM","post","month","date_histogram", dt, dte, ids.toString());
+	for(int i = 0; i < blogPostingFrequency_month.length(); i++){
+		hm3 = new HashMap<String, Integer>();
+		
+		String object=blogPostingFrequency_month.get(i).toString(); 
+ 		JSONObject jsonobject = new JSONObject(object);
+ 		
+		Object yer = jsonobject.getJSONObject("key").get("date");
+		Object val = jsonobject.getJSONObject("post").get("doc_count"); 
+		
+		hm3.put(yer.toString(), (Integer) val);
+		items1.add(i, hm3);
+
+	}
+	
+	JSONObject monthJson = post.lineGraphAggregate(items1);
+	System.out.println("monthJson --"+monthJson);
+%>
  <div class="chart" id="yearlypattern"></div>
  
  <!-- <script type="text/javascript" src="assets/vendors/d3/d3.min.js"></script>
@@ -724,10 +778,22 @@ if(action.toString().equals("getstats")){
  //console.log(data);
  // data = [];
 
- data = [
+ <%-- data = [
  [{"date": "Jan","close": <%=jan%>},{"date": "Feb","close": <%=feb%>},{"date": "Mar","close":<%=march%>},{"date": "Apr","close": <%=jan%>},{"date": "May","close": <%=may%>},{"date": "Jun","close": <%=june%>},{"date": "Jul","close": <%=july%>},{"date": "Aug","close": <%=aug%>},{"date": "Sep","close": <%=sep%>},{"date": "Oct","close": <%=oct%>},{"date": "Nov","close": <%=nov%>},{"date": "Dec","close": <%=dec%>}],
  ];
-
+ --%>
+ <%String [] months = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};%> 
+ data = [[<%   	
+    for(String m: months){
+ 	/* while(keysMonth.hasNext()) {
+ 	    String key = keysMonth.next(); */
+ 	    %>    
+ 	   <% int freq_ = 0;try{freq_ = (int)monthJson.get(m);}catch(Exception e){freq_ =0;}%>
+ 	    {"date":"<%=m%>","close":<%=freq_%>},
+ 	   <%-- {"letter":"<%=key%>","frequency":<%=dayJson.get(key)%>}   --%>      	            		  		
+		  			
+<% } %>]];
+ 
  // console.log(data);
  var line = d3.svg.line()
  .interpolate("monotone")
@@ -1137,7 +1203,35 @@ if(action.toString().equals("getstats")){
 
 
 
-<% }else{ %>
+<% }else{ 
+
+	JSONArray blogPostingFrequency_year = post._getGetDateAggregate(blogger.toString(),"date","yyyy","post","1y","date_histogram", dt, dte, ids.toString());
+	ArrayList<String> years = new ArrayList<String>();
+	
+	int year_start_ = Integer.parseInt(dt.substring(0,4));
+	int year_end_ = Integer.parseInt(dte.substring(0,4));
+	
+	for(int i = year_start_; i < year_end_; i++){
+		years.add(Integer.toString(i));
+	}
+	
+	System.out.println("year_s"+years);
+	
+	JSONObject year_object = new JSONObject();
+	for(int q=0; q<blogPostingFrequency_year.length(); q++){ 
+ 		
+ 		String object=blogPostingFrequency_year.get(q).toString(); 
+ 		JSONObject jsonobject = new JSONObject(object);
+ 		
+		Object yer = jsonobject.getJSONObject("key").get("date");
+		Object val = jsonobject.getJSONObject("post").get("doc_count");
+  		
+  		int vlue = Integer.parseInt(val.toString()); 
+  		String yr = yer.toString();
+  		year_object.put(yr,vlue);
+	}
+
+%>
 
 		 <div class="chart" id="d3-line-basic"></div>
 
@@ -1239,12 +1333,19 @@ if(action.toString().equals("getstats")){
  //   [{"date":"2014","close":500},{"date":"2015","close":900},{"date":"2016","close":1200}]
  // ];
 
- data = [[<% for(int q=0; q<sortedyearsarray.length(); q++){ 
+<%--  data = [[<% for(int q=0; q<sortedyearsarray.length(); q++){ 
 	  		String yer=sortedyearsarray.get(q).toString(); 
 	  		int vlue = Integer.parseInt(graphyears.get(yer).toString()); %>
 	  			{"date":"<%=yer%>","close":<%=vlue%>},
-	<% } %>]];
-
+	<% } %>]]; --%>
+	data = [[ <% for(String d : years){
+	    %>   
+	    <% int freq = 0;try{freq = (int)year_object.get(d);}catch(Exception e){freq =0;}%>
+	    {"date":"<%=d%>","close":<%=freq%>},
+	  		
+	  	<%-- 
+	  			{"date":"<%=yr%>","close":<%=vlue%>}, --%>
+	<% } %> ]];
  //console.log(data);
  // data = [];
 
