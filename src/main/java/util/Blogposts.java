@@ -2190,8 +2190,11 @@ public class Blogposts {
 		System.out.println(hm.get("elasticIndex") + "=="  + "==" + query);
 		
 		
+		
 		JSONArray allhits = new JSONArray();
 		JSONObject scrollResult = new JSONObject();
+		
+		
 		String scroll_id = null;
 		
 		if (null != myResponse.get("hits")) {
@@ -2211,6 +2214,9 @@ public class Blogposts {
 			jsonArray.put(new JSONArray(source));
 			
 			for(int i = 0; i < 10; i++) {
+				if (allhits.length() < 0) {
+					break;
+				}
 //			while (allhits.length() > 0) {
 				System.out.println("WHILE ---" + allhits.length());
 				scroll_id = (String) scrollResult.get("_scroll_id");
@@ -2724,7 +2730,7 @@ public class Blogposts {
 		JSONObject query = new JSONObject();
 		String result = null;
 		if (BloggerName == null || BloggerName == "") {
-			query = new JSONObject("{\r\n" + "    \"size\": 1000,\r\n" + "    \"query\": {\r\n"
+			query = new JSONObject("{\r\n" + "    \"size\": 5000,\r\n" + "    \"query\": {\r\n"
 					+ "        \"bool\": {\r\n" + "            \"must\": [\r\n" + "                {\r\n"
 					+ "                    \"terms\": {\r\n" + "                        \"blogsite_id\": [" + ids_
 					+ "],\r\n" + "                        \"boost\": 1.0\r\n" + "                    }\r\n"
@@ -2743,7 +2749,7 @@ public class Blogposts {
 					+ "                \"unmapped_type\": \"float\"\r\n" + "            }\r\n" + "        }\r\n"
 					+ "    ]\r\n" + "}");
 		} else {
-			query = new JSONObject("{\r\n" + "    \"size\": 1000,\r\n" + "    \"query\": {\r\n"
+			query = new JSONObject("{\r\n" + "    \"size\": 5000,\r\n" + "    \"query\": {\r\n"
 					+ "        \"bool\": {\r\n" + "            \"adjust_pure_negative\": true,\r\n"
 					+ "            \"must\": [\r\n" + "                {\r\n" + "                    \"bool\": {\r\n"
 					+ "                        \"adjust_pure_negative\": true,\r\n"
@@ -3011,7 +3017,7 @@ public class Blogposts {
 
 		if (bloggerName != "NOBLOGGER") {
 
-			query = new JSONObject("{\r\n" + "    \"size\": 1000,\r\n" + "    \"query\": {\r\n"
+			query = new JSONObject("{\r\n" + "    \"size\": 5000,\r\n" + "    \"query\": {\r\n"
 					+ "        \"bool\": {\r\n" + "            \"must\": [\r\n" + "                {\r\n"
 					+ "                    \"bool\": {\r\n" + "                        \"must\": [\r\n"
 					+ "                            {\r\n" + "                                \"term\": {\r\n"
@@ -3066,7 +3072,7 @@ public class Blogposts {
 //					+ "                \"missing\": \"_last\",\r\n" + "                \"unmapped_type\": \"float\"\r\n"
 //					+ "            }\r\n" + "        }\r\n" + "    ]\r\n" + "}");
 
-			query = new JSONObject("{\r\n" + "    \"size\": 1000,\r\n" + "    \"query\": {\r\n"
+			query = new JSONObject("{\r\n" + "    \"size\": 5000,\r\n" + "    \"query\": {\r\n"
 					+ "        \"bool\": {\r\n" + "            \"adjust_pure_negative\": true,\r\n"
 					+ "            \"must\": [\r\n" + "                {\r\n" + "                    \"terms\": {\r\n"
 					+ "                        \"post\": [" + term + "]\r\n" + "                    }\r\n"
