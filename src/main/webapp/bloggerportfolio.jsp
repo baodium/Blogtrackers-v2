@@ -540,7 +540,9 @@
 			 String blogids = "";
 			 
 outlinks = outl._searchByRange("date", dt, dte, selectedblogid);
-System.out.println("test here");
+System.out.println("test hereeeeeeeeeeeeeeeeee"+selectedblogid);
+System.out.println("test hereeeeeeeeeeeeeeeeee"+dt);
+System.out.println("test hereeeeeeeeeeeeeeeeee"+dte);
 JSONObject outerlinks = new JSONObject();
 ArrayList outlinklooper = new ArrayList();
 if (outlinks.size() > 0) {

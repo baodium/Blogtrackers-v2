@@ -44,7 +44,7 @@ $('#blogger-changed').on("change", function(){
 	loadChart(blg[1],all_ids);
 	loadYearlyChart(blg[1],all_ids);
 	loadDailyChart(blg[1],all_ids);
-	loadUrls(date_start,date_end,all_ids);
+	loadUrls(date_start,date_end,all_ids, blog_id);
 	
 	loadInfluence(blg[1],date_start,date_end);
 });
@@ -303,14 +303,15 @@ function loadDailyChart(blogger,ids){
 
 
 
-function loadUrls(date_start,date_end,ids){
+function loadUrls(date_start,date_end,ids, selected_blogger_id){
 	$("#url-table").html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />");
-		
+	alert(selected_blogger_id);
 		$.ajax({
 			url: app_url+'subpages/bloggerportfoliodomain.jsp',
 			method: 'POST',
 			data: {
 				blogger:$("#blogger").val(),
+				blogger_id:selected_blogger_id,
 				date_start:date_start,
 				ids:ids,
 				date_end:date_end,
