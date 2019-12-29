@@ -2230,17 +2230,17 @@ public class Blogposts {
 			all_data.put("hit_array", jsonArray);
 			
 
-			try (FileWriter file = new FileWriter("C:\\Users\\oljohnson\\Desktop\\SQL\\file2.json")) {
-
-				
-
-					
-					file.write(jsonArray.toString());
-					System.out.println("Successfully Copied JSON Object to File...");
-
-				
-
-			}
+//			try (FileWriter file = new FileWriter("C:\\Users\\oljohnson\\Desktop\\SQL\\file2.json")) {
+//
+//				
+//
+//					
+//					file.write(jsonArray.toString());
+//					System.out.println("Successfully Copied JSON Object to File...");
+//
+//				
+//
+//			}
 
 		}
 		System.out.println("DONE");
