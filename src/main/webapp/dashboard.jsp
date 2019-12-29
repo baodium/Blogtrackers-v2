@@ -1166,7 +1166,7 @@ display: none;
 					</div>
 				</div>
 				<div class="float-right">
-					<a href="postingfrequency.jsp?tid=<%=tid%>"><button
+					<a href="topic_distribution.jsp?tid=<%=tid%>"><button
 							class="btn buttonportfolio2 mt10">
 							<b class="float-left semi-bold-text">Topic Modelling
 								Analysis</b> <b class="fas fa-comment-alt float-right icondash2"></b>

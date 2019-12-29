@@ -13,10 +13,54 @@
 <%@page import="org.json.JSONObject"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
+
+<%@page import="org.apache.lucene.analysis.CharArrayMap.EntrySet"%>
+
+<%@page import="util.*"%>
+<%@page import="java.io.*"%>
+
+<%@page import="org.json.JSONArray"%>
+
+
+
 <!-- Blog Posts Collection -->
 <%
+Object tid = (null == request.getParameter("tid")) ? "" : request.getParameter("tid");
+Object user = (null == session.getAttribute("username")) ? "" : session.getAttribute("username");
+Object date_start = (null == request.getParameter("date_start")) ? "" : request.getParameter("date_start");
+Object date_end = (null == request.getParameter("date_end")) ? "" : request.getParameter("date_end");
+
+ArrayList detail = new ArrayList();
+Trackers tracker = new Trackers();
+
+if (tid != "") {
+	detail = tracker._fetch(tid.toString());	
+} else {
+	detail = tracker._list("DESC", "", user.toString(), "1");
+}
+
+boolean isowner = false;
+JSONObject obj = null;
+String ids = "";
+String trackername="";
+if (detail.size() > 0) {
+	//String res = detail.get(0).toString();
+	ArrayList resp = (ArrayList<?>)detail.get(0);
+	String tracker_userid = resp.get(1).toString();
+	trackername = resp.get(2).toString();
+	if (tracker_userid.equals(user.toString())) {
+		isowner = true;
+		String query = resp.get(5).toString();//obj.get("query").toString();
+		query = query.replaceAll("blogsite_id in ", "");
+		query = query.replaceAll("\\(", "");
+		query = query.replaceAll("\\)", "");
+		ids = query;
+	}
+}
 	//TODO - These are arbitrary blogs, send selected tracker's blogs in this format
-	String blogIds = "1,2,3,4,5,6,7,8,9,10";
+	/* String blogIds = "1,2,3,4,5,6,7,8,9,10"; */
+	String blogIds = ids;
+	System.out.println(blogIds);
 	String DUMMYSTR = "";
 	Blogposts blogpostsContainer = new Blogposts();
 	ArrayList<String> JSONposts = blogpostsContainer._getPostByBlogId(blogIds, DUMMYSTR);
@@ -379,15 +423,22 @@
 		<!--  Bread crumbs and Date -->
 		<div class="row bottom-border pb20">
 			<div class="col-md-6 paddi">
-				<nav class="breadcrumb">
+							<nav class="breadcrumb">
+					<a class="breadcrumb-item text-primary"
+						href="<%=request.getContextPath()%>/trackerlist.jsp">Trackers</a> 
+						<a class="breadcrumb-item text-primary"	href="<%=request.getContextPath()%>/edittracker.jsp?tid=<%=tid%>"><%=trackername%></a>
+					<a class="breadcrumb-item active text-primary" href="<%=request.getContextPath()%>/dashboard.jsp?tid=<%=tid%>">Dashboard</a>
+					<a class="breadcrumb-item active text-primary" href="<%=request.getContextPath()%>/topic_distribution.jsp?tid=<%=tid%>">Topic Distribution</a>
+				</nav>
+				<!-- <nav class="breadcrumb">
 					<a class="breadcrumb-item text-primary" href="trackerlist.html">MY TRACKER</a>
 					<a class="breadcrumb-item text-primary" href="#">Second Tracker</a>
 					<a class="breadcrumb-item active text-primary" href="postingfrequency.html">Topic Distribution</a>
-				</nav>
-				<div>
-					Tracking:
-					<button class="btn btn-primary stylebutton1">All Blogs</button>
-				</div>
+				</nav> -->
+		<div>
+					<button class="btn btn-primary stylebutton1 " id="printdoc">SAVE
+						AS PDF</button>
+				</div> 
 			</div>
 		</div>
 
