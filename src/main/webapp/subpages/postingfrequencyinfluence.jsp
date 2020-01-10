@@ -26,6 +26,9 @@ Object blog_id = (null == request.getParameter("blog_id")) ? "" : request.getPar
 Object action = (null == request.getParameter("action")) ? "" : request.getParameter("action");
 Object sort = (null == request.getParameter("sort")) ? "" : request.getParameter("sort");
 
+Object tid = (null == request.getParameter("tid")) ? "" : request.getParameter("tid");
+
+
 
 String bloggerstr = blogger.toString().replaceAll("_"," ");
 
@@ -48,6 +51,7 @@ if (action.toString().equals("getchart")) {
 
 allauthors = post._newGetBloggerByBloggerName("date", dt, dte, blogger.toString(), "DESC");
 }else if(action.toString().equals("getchart_blogs")){
+	System.out.println("I AM HERE POSTING");
 	allauthors = post._getPostByBlogID(blog_id.toString(), dt, dte);
 }
 //System.out.println("sort"+sort);
@@ -129,7 +133,7 @@ allauthors = post._newGetBloggerByBloggerName("date", dt, dte, blogger.toString(
                                 </tbody>
                             </table>
                             
-                            
+                           
 
 <script type="text/javascript"
 		src="assets/vendors/DataTables/datatables.min.js"></script>
@@ -145,31 +149,31 @@ allauthors = post._newGetBloggerByBloggerName("date", dt, dte, blogger.toString(
 		    $('[data-toggle="tooltip"]').tooltip()
 		  })
 		  
-     $('#DataTables_Table_6_wrapper').DataTable( {
-         "scrollY": 430,
-          "pagingType": "simple",
-          "order": [],
-          "columnDefs": [
-    	      { "width": "75%", "targets": 0 },
-    	      { "width": "25%", "targets": 0 }
-    	    ]
-         /*  dom: 
-        	   'Bfrtip', 
-                    "columnDefs": [
-                 { "width": "80%", "targets": 0 }
-               ]  */
-  /*    ,
-       buttons:{
-         buttons: [
-             { extend: 'pdfHtml5',orientation: 'potrait', pageSize: 'LEGAL', className: 'btn-primary stylebutton1'},
-             {extend:'csv',className: 'btn-primary stylebutton1'},
-             {extend:'excel',className: 'btn-primary stylebutton1'},
-            // {extend:'copy',className: 'btn-primary stylebutton1', text: 'Copy to Clipboard'},
-             {extend:'print',className: 'btn-primary stylebutton1'},
-         ]
-       } */
-     } );
+		     $('#DataTables_Table_6_wrapper').DataTable( {
+		         "scrollY": 430,
+		         "scrollX": true,
+		         "order": [],
+		          "pagingType": "simple",
+		        	  "columnDefs": [
+		        	      { "width": "65%", "targets": 0 },
+		        	      { "width": "25%", "targets": 0 }
+		        	    ]
+		       /*    ,
+		          dom: 'Bfrtip',
+		       buttons:{
+		         buttons: [
+		             { extend: 'pdfHtml5',orientation: 'potrait', pageSize: 'LEGAL', className: 'btn-primary stylebutton1'},
+		             {extend:'csv',className: 'btn-primary stylebutton1'},
+		             {extend:'excel',className: 'btn-primary stylebutton1'},
+		            // {extend:'copy',className: 'btn-primary stylebutton1', text: 'Copy to Clipboard'},
+		             {extend:'print',className: 'btn-primary stylebutton1'},
+		         ]
+		       } */
+		     } );
 	 
  } );
+ 
+ 
+ 
  </script>
 	<!--end for table  -->

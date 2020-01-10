@@ -13,6 +13,10 @@
 <%@page import="org.json.JSONObject"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
+<%@page import="java.time.LocalDate"%>
+<%@page import="java.time.format.DateTimeFormatter"%>
+<%@page import="java.time.LocalDateTime"%>
+<%@page import="java.text.SimpleDateFormat"%>
 
 <%@page import="org.apache.lucene.analysis.CharArrayMap.EntrySet"%>
 
@@ -25,11 +29,17 @@
 
 <!-- Blog Posts Collection -->
 <%
+Object email = (null == session.getAttribute("email")) ? "" : session.getAttribute("email");
 Object tid = (null == request.getParameter("tid")) ? "" : request.getParameter("tid");
 Object user = (null == session.getAttribute("username")) ? "" : session.getAttribute("username");
 Object date_start = (null == request.getParameter("date_start")) ? "" : request.getParameter("date_start");
 Object date_end = (null == request.getParameter("date_end")) ? "" : request.getParameter("date_end");
+Object single = (null == request.getParameter("single_date")) ? "" : request.getParameter("single_date");
+String sort =  (null == request.getParameter("sortby")) ? "blog" : request.getParameter("sortby").toString().replaceAll("[^a-zA-Z]", " ");
 
+if (user == null || user == "") {
+	response.sendRedirect("index.jsp");
+} else {
 ArrayList detail = new ArrayList();
 Trackers tracker = new Trackers();
 
@@ -63,23 +73,56 @@ if (detail.size() > 0) {
 	System.out.println(blogIds);
 	String DUMMYSTR = "";
 	Blogposts blogpostsContainer = new Blogposts();
-	ArrayList<String> JSONposts = blogpostsContainer._getPostByBlogId(blogIds, DUMMYSTR);
+	
+	String stdate = blogpostsContainer._getDate(ids,"first");
+	LocalDate localDate = LocalDate.now();
+    String today = DateTimeFormatter.ofPattern("yyy-MM-dd").format(localDate);
+	
+	//String endate = blogpostsContainer._getDate(ids,"last");
+		
+	//Date dstart = new SimpleDateFormat("yyyy-MM-dd").parse(stdate.split("T")[0]);
+	//Date today = new SimpleDateFormat("yyyy-MM-dd").parse(endate);
+	
+	System.out.println(stdate.split("T")[0]);
+	System.out.println(today.toString());
+	
+	ArrayList<String> JSONposts = blogpostsContainer._getPosts(blogIds, stdate, today);
+	//System.out.println("SIZE --" + JSONposts.size());
+
+	//ArrayList<String> JSONposts = blogpostsContainer._getPostByBlogId(blogIds, DUMMYSTR); 
 	ArrayList<TopicModelling.BlogPost> blogpostsArray = new ArrayList<TopicModelling.BlogPost>(); 
 	
 	JSONObject rawJSONpost = null;
 	JSONObject post = null;
+	
+	JSONObject post_date = null;
+	// = null;
+	
 	for (int i = 0; i < JSONposts.size(); ++i) {
 		rawJSONpost = new JSONObject(JSONposts.get(i).toString());
 		post = new JSONObject(rawJSONpost.get("_source").toString());
+		
+		Object post_date_ = rawJSONpost.getJSONObject("fields").getJSONArray("date").get(0).toString();
+		//System.out.println(post_date_.toString());
+		
+		//JSONObject post_date = null;
+		
 		blogpostsArray.add(new TopicModelling.BlogPost(
 				post.get("blogpost_id").toString(),
-				post.get("title").toString(),
+				//blogpostsContainer.escape(post.get("title").toString()),
+				blogpostsContainer.escape2(post.get("title").toString()),
 				post.get("post").toString(),
-				post.get("date").toString().split("T")[0],
+				post_date_.toString(),
+				//post.get("date").toString().split("T")[0], 
 				post.get("blogger").toString(),
 				post.get("location").toString(),
 				post.get("num_comments").toString()));
 	}
+	
+	for(TopicModelling.BlogPost x : blogpostsArray){
+		//System.out.println(x);
+	}
+	//System.out.println(Arrays.toString(blogpostsArray));
 %>
 
 <!-- Topic Modelling  -->
@@ -93,7 +136,9 @@ if (detail.size() > 0) {
 	Map<Integer, ArrayList<Pair<String, Double>>> topics = model.getTopics(TOPICMODEL_MAXWORDS);
 	//Blogposts used in the local JS
 	ArrayList<TopicModelling.Documents.Document> blogposts = model.getDocuments();
-
+	for(TopicModelling.Documents.Document x : blogposts){
+		//System.out.println(x.blog_date);
+	}
 	//Statistics Bar
 	double blogDistribution[] = new double[topics.size()];
 	int bloggerMention[] = new int[topics.size()];
@@ -173,7 +218,7 @@ if (detail.size() > 0) {
 %>
 
 <%
-	Object email = (null == session.getAttribute("email")) ? "" : session.getAttribute("email");
+	//Object email = (null == session.getAttribute("email")) ? "" : session.getAttribute("email");
 
 	//if (email == null || email == "") {
 	//response.sendRedirect("login.jsp");
@@ -220,6 +265,7 @@ if (detail.size() > 0) {
 		} catch (Exception e) {
 		}
 
+	}
 	}
 %>
 <!DOCTYPE html>
@@ -730,10 +776,11 @@ class BlogPost {
 				}
 			}
 		}
-		
+		//console.log("This is data");
+		//console.log(this.data); 
 	    // Chart setup
 	    draw(element, height, data) {
-
+	    	console.log(data);
 
 	        // Basic setup
 	        // ------------------------------
