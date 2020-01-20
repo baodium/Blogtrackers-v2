@@ -24,9 +24,12 @@
 	Object single = (null == request.getParameter("single_date")) ? "" : request.getParameter("single_date");
 	String sort =  (null == request.getParameter("sortby")) ? "blog" : request.getParameter("sortby").toString().replaceAll("[^a-zA-Z]", " ");
 	String attachedblogger =  (null == request.getParameter("blogger")) ? "" : request.getParameter("blogger");
+	
+	
 
 	
-	System.out.println("date---"+date_start);
+	System.out.println("dateyy---"+date_start);
+	System.out.println("dateyyy---"+date_end);
 	if (user == null || user == "") {
 		response.sendRedirect("index.jsp");
 	} else {

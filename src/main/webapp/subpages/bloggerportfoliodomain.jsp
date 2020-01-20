@@ -65,10 +65,10 @@
 
 			outlinks = outl._searchByRange("date",date_start, date_end, selected_blogger_id);
 			
-			System.out.println("test wellllll"+selectedblog_id);
-			System.out.println("test hereeeeeeeeeeeeeeeeee"+selected_blogger_id);
-			System.out.println("test hereeeeeeeeeeeeeeeeee"+date_start);
-			System.out.println("test hereeeeeeeeeeeeeeeeee"+date_end);
+			//System.out.println("test wellllll"+selectedblog_id);
+			//System.out.println("test hereeeeeeeeeeeeeeeeee"+selected_blogger_id);
+			//System.out.println("test hereeeeeeeeeeeeeeeeee"+date_start);
+			//System.out.println("test hereeeeeeeeeeeeeeeeee"+date_end);
 
 			//outlinks = outl._searchByRange("date", date_start, date_end,blogger);
 		
