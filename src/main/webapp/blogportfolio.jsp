@@ -1300,6 +1300,10 @@ import java.io.OutputStreamWriter; -->
  <script src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.print.min.js"></script>
 
  <script>
+ $(document).ready(function(){
+	 loadtermss(<%=mostactiveblogid%> , $("#all_blogs").val());
+	})
+	
  $(document).ready(function() {
 	 
 	 $('#printdoc').on('click',function(){

@@ -136,7 +136,15 @@ Terms term  = new Terms();
 	JSONArray sortedyearsarray = yearsarray;
 %>
 
-<%  
+<%
+
+if(action.toString().equals("getterms")){
+	JSONObject sql = post._getBloggerPosts("___NO__TERM___","NOBLOGGER",dt,dte,selectedblogid); 
+	String sql_ = sql.get("posts").toString();
+	
+	String result = post.getHighestTerm(sql_);
+	//JSONObject
+}
 if(action.toString().equals("getstats")){	
 	JSONArray sentimentpost = new JSONArray();
 	ArrayList allauthors = post._getBloggerByBlogId("date", dt, dte, selectedblogid, "influence_score", "DESC");

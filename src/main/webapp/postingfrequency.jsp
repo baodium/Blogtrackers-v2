@@ -1804,6 +1804,8 @@ $(document).ready(function(){
 	
 	//console.log(word_count2);
 	<%
+	
+	
 
 /* /* 	String sql = post._getMostKeywordDashboard(mostactiveblogger,dt,dte,ids);
 	JSONObject res=post._keywordTermvctors(sql);	

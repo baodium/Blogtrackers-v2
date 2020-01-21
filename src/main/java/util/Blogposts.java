@@ -25,9 +25,13 @@ import org.apache.http.util.EntityUtils;
 //import org.apache.http.entity.ContentType;
 //import org.apache.http.nio.entity.NStringEntity;
 import org.elasticsearch.client.*;
+import org.elasticsearch.client.core.TermVectorsRequest;
+import org.elasticsearch.client.core.TermVectorsResponse;
+import org.elasticsearch.common.xcontent.XContentBuilder;
 //import org.elasticsearch.client.RestHighLevelClient;
 //import org.elasticsearch.transport.InboundMessage.Response;
 import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.io.OutputStreamWriter;
 import static java.util.stream.Collectors.toMap;
@@ -2180,6 +2184,20 @@ public class Blogposts {
 		return result;
 	}
 
+	public JSONArray merge(JSONArray jsonArray, JSONArray jsonArray1) {
+
+		try {
+			for (int i = 0; i < jsonArray1.length(); i++) {
+				JSONObject jsonObject = jsonArray1.getJSONObject(i);
+				jsonArray.put(jsonObject);
+			}
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return jsonArray;
+	}
+
 	public JSONObject _elastic(JSONObject query) throws Exception {
 		ArrayList<String> list = new ArrayList<String>();
 
@@ -2205,7 +2223,8 @@ public class Blogposts {
 			Object total = myResponse.getJSONObject("hits").getJSONObject("total").get("value");
 			source = hits.toString();
 //			JSONArray J = new JSONArray(source);
-			jsonArray.put(new JSONArray(source));
+			jsonArray = merge(jsonArray, new JSONArray(source));
+			// jsonArray.put(new JSONArray(source));
 			System.out.println("DONE GETTING POSTS FOR BLOGGER");
 
 			scroll_id = (String) myResponse.get("_scroll_id");
@@ -2213,10 +2232,11 @@ public class Blogposts {
 			scrollResult = this._scrollRequest(scroll_id);
 			allhits = scrollResult.getJSONObject("hits").getJSONArray("hits");
 			source = allhits.toString();
-			jsonArray.put(new JSONArray(source));
+			jsonArray = merge(jsonArray, new JSONArray(source));
+			// jsonArray.put(new JSONArray(source));
 
 			for (int i = 0; i < 10; i++) {
-				if (allhits.length() < 0) {
+				if (allhits.length() <= 0) {
 					break;
 				}
 //			while (allhits.length() > 0) {
@@ -2225,7 +2245,9 @@ public class Blogposts {
 				scrollResult = this._scrollRequest(scroll_id);
 				allhits = scrollResult.getJSONObject("hits").getJSONArray("hits");
 				source = allhits.toString();
-				jsonArray.put(new JSONArray(source));
+
+				jsonArray = merge(jsonArray, new JSONArray(source));
+				// jsonArray.put(new JSONArray(source));
 			}
 
 			all_data.put("total", total.toString());
@@ -2249,11 +2271,11 @@ public class Blogposts {
 	}
 
 	public ArrayList _getPosts(String blog_ids, String from, String to) throws Exception {
-		JSONObject que = new JSONObject("{\r\n" + "    \"size\": 1000,\r\n" + "    \"query\": {\r\n" + "        \"bool\": {\r\n"
-				+ "            \"must\": [\r\n" + "                {\r\n" + "                    \"terms\": {\r\n"
-				+ "                        \"blogsite_id\": [" + blog_ids + "],\r\n"
-				+ "                        \"boost\": 1.0\r\n" + "                    }\r\n" + "                },\r\n"
-				+ "                {\r\n" + "                    \"range\": {\r\n"
+		JSONObject que = new JSONObject("{\r\n" + "    \"size\": 1000,\r\n" + "    \"query\": {\r\n"
+				+ "        \"bool\": {\r\n" + "            \"must\": [\r\n" + "                {\r\n"
+				+ "                    \"terms\": {\r\n" + "                        \"blogsite_id\": [" + blog_ids
+				+ "],\r\n" + "                        \"boost\": 1.0\r\n" + "                    }\r\n"
+				+ "                },\r\n" + "                {\r\n" + "                    \"range\": {\r\n"
 				+ "                        \"date\": {\r\n" + "                            \"from\": \"" + from
 				+ "\",\r\n" + "                            \"to\": \"" + to + "\",\r\n"
 				+ "                            \"include_lower\": true,\r\n"
@@ -2276,14 +2298,14 @@ public class Blogposts {
 				+ "        }\r\n" + "    ],\r\n" + "    \"sort\": [\r\n" + "        {\r\n"
 				+ "            \"_doc\": {\r\n" + "                \"order\": \"asc\"\r\n" + "            }\r\n"
 				+ "        }\r\n" + "    ]\r\n" + "}");
-		
+
 //		this._elastic(que);
 		String url = base_url + "_search";
 		System.out.println(que);
 //		JSONObject jsonObj = new JSONObject(que);
 		ArrayList result = this._getResult(url, que);
 		return this._getResult(url, que);
-		
+
 //		String url = base_url + "_search?size=1";
 //		return this._getResult(url, jsonObj);
 //	}
@@ -2821,51 +2843,10 @@ public class Blogposts {
 					+ "                \"unmapped_type\": \"float\",\r\n"
 					+ "                \"missing\": \"_first\",\r\n" + "                \"order\": \"desc\"\r\n"
 					+ "            }\r\n" + "        }\r\n" + "    ]\r\n" + "}");
-			/*
-			 * query = new JSONObject("{\r\n" + "    \"size\": 10000,\r\n" +
-			 * "    \"query\": {\r\n" + "        \"bool\": {\r\n" +
-			 * "            \"must\": [\r\n" + "                {\r\n" +
-			 * "                    \"bool\": {\r\n" +
-			 * "                        \"must\": [\r\n" +
-			 * "                            {\r\n" +
-			 * "                                \"term\": {\r\n" +
-			 * "                                    \"blogger.keyword\": {\r\n" +
-			 * "                                        \"value\": \"" + BloggerName +
-			 * "\",\r\n" + "                                        \"boost\": 1.0\r\n" +
-			 * "                                    }\r\n" +
-			 * "                                }\r\n" +
-			 * "                            },\r\n" + "                            {\r\n" +
-			 * "                                \"terms\": {\r\n" +
-			 * "                                    \"blogsite_id\": [" + ids_ + "],\r\n" +
-			 * "                                    \"boost\": 1.0\r\n" +
-			 * "                                }\r\n" + "                            }\r\n"
-			 * + "                        ],\r\n" +
-			 * "                        \"adjust_pure_negative\": true,\r\n" +
-			 * "                        \"boost\": 1.0\r\n" + "                    }\r\n" +
-			 * "                },\r\n" + "                {\r\n" +
-			 * "                    \"range\": {\r\n" +
-			 * "                        \"date\": {\r\n" +
-			 * "                            \"from\": \"" + date_from + "\",\r\n" +
-			 * "                            \"to\": \"" + date_to + "\",\r\n" +
-			 * "                            \"include_lower\": true,\r\n" +
-			 * "                            \"include_upper\": true,\r\n" +
-			 * "                            \"boost\": 1.0\r\n" +
-			 * "                        }\r\n" + "                    }\r\n" +
-			 * "                }\r\n" + "            ],\r\n" +
-			 * "            \"adjust_pure_negative\": true,\r\n" +
-			 * "            \"boost\": 1.0\r\n" + "        }\r\n" + "    },\r\n" +
-			 * "    \"_source\": {\r\n" + "        \"includes\": [\r\n" +
-			 * "            \"post\"\r\n" + "        ],\r\n" +
-			 * "        \"excludes\": []\r\n" + "    },\r\n" + "    \"sort\": [\r\n" +
-			 * "        {\r\n" + "            \"influence_score\": {\r\n" +
-			 * "                \"order\": \"desc\",\r\n" +
-			 * "                \"missing\": \"_first\",\r\n" +
-			 * "                \"unmapped_type\": \"float\"\r\n" + "            }\r\n" +
-			 * "        }\r\n" + "    ]\r\n" + "}");
-			 */
+			
 		}
 		System.out.println("query for elastic _getMostKeywordDashboard --> " + query);
-		JSONArray jsonArray = (JSONArray) this._elastic(query).getJSONArray("hit_array").get(0);
+		JSONArray jsonArray = (JSONArray) this._elastic(query).getJSONArray("hit_array");
 
 		System.out.println("DONE GETTING POSTS FOR BLOGGER");
 		if (jsonArray != null) {
@@ -2912,7 +2893,7 @@ public class Blogposts {
 	public static String escape2(String s) {
 		return StringEscapeUtils.escapeJava(s);
 	}
-	
+
 	public LinkedHashMap<String, Integer> sortHashMapByValues(HashMap<String, Integer> passedMap) {
 		List<String> mapKeys = new ArrayList<>(passedMap.keySet());
 		List<Integer> mapValues = new ArrayList<>(passedMap.values());
@@ -2946,21 +2927,39 @@ public class Blogposts {
 		String source = null;
 		String source_ = null;
 		System.out.println(data.length());
+//		data = escape2(data);
 		if (data.length() > 0) {
 //		JSONObject jsonObj = new JSONObject("{\r\n" + "  \"query\": {\r\n" + "    \"constant_score\":{\r\n"
 //				+ "			\"filter\":{\r\n" + "					\"terms\":{\r\n"
 //				+ "							\"blogpost_id\":[\"" + ids + "\"]\r\n" + "							}\r\n"
 //				+ "					}\r\n" + "				}\r\n" + "    }\r\n" + "}");
 			JSONObject query = new JSONObject("{\r\n" + "    \"doc\": {\r\n" + "      \"post\": \"" + data + "\"\r\n"
-					+ "    },\r\n" + "    \"term_statistics\" : true,\r\n" + "    \"field_statistics\" : true,\r\n"
+					+ "    },\r\n" + "    \"term_statistics\" : false,\r\n" + "    \"field_statistics\" : false,\r\n"
 					+ "    \"positions\": false,\r\n" + "    \"offsets\": false,\r\n" + "    \"filter\" : {\r\n"
-					+ "      \"max_num_terms\" : 100,\r\n" + "      \"min_term_freq\" : 1,\r\n"
-					+ "      \"min_doc_freq\" : 1,\r\n" + "      \"min_word_length\":3\r\n" + "	\r\n" + "    }\r\n"
+					+ "      \"max_num_terms\" : 1,\r\n" + "      \"min_term_freq\" : 1,\r\n"
+					+ "      \"min_doc_freq\" : 1,\r\n" + "      \"min_word_length\":1\r\n" + "	\r\n" + "    }\r\n"
 					+ "}");
 			System.out.println("INPROCESS");
+//			System.out.println(" _termVectors --- "+ query);
+
+//			try (FileWriter file = new FileWriter("C:\\Users\\oljohnson\\Desktop\\SQL\\file2.json")) {
+//
+//				
+//
+//					
+//					file.write(query.toString());
+//					System.out.println("Successfully Copied JSON Object to File...");
+//
+//				
+//			}
+//			
+//			
+
 			JSONObject myResponse = this._makeElasticRequest(query, "POST", "/blogposts/_termvectors");
 			System.out.println("PROCESSED");
 			try {
+				// Object r_ =
+				// this._multipleTermVectors(id).getJSONArray("docs").getJSONObject(0).getJSONObject("term_vectors").getJSONObject("post").getJSONObject("terms").keys().next().toString();
 				Object hits = myResponse.getJSONObject("term_vectors").getJSONObject("post").getJSONObject("terms");
 				source = hits.toString();
 			} catch (Exception e) {
@@ -2970,7 +2969,7 @@ public class Blogposts {
 			JSONObject jsonObject = new JSONObject(source);
 			Iterator<String> keys = jsonObject.keys();
 
-			source_ = keys.next();
+			// source_ = keys.next();
 
 			System.out.println("DONE GETTING TERM VECTORS");
 			HashMap<String, Integer> hm2 = new HashMap<String, Integer>();
@@ -3049,6 +3048,223 @@ public class Blogposts {
 
 	}
 
+	public JSONObject _multipleTermVectors(String id) throws Exception {
+		JSONObject result = new JSONObject();
+		JSONObject query = new JSONObject("{\r\n" + "    \"ids\": [" + id + "],\r\n" + "    \"parameters\": {\r\n"
+				+ "        \"fields\": [\r\n" + "            \"post\"\r\n" + "        ],\r\n"
+				+ "        \"term_statistics\": false,\r\n" + "        \"field_statistics\": false,\r\n"
+				+ "        \"positions\": false,\r\n" + "        \"offsets\": false,\r\n" + "        \"filter\": {\r\n"
+				+ "            \"max_num_terms\": 1,\r\n" + "            \"min_term_freq\": 1,\r\n"
+				+ "            \"min_doc_freq\": 1\r\n" + "        }\r\n" + "    }\r\n" + "}");
+
+		result = this._makeElasticRequest(query, "POST", "/blogposts/_mtermvectors");
+		return result;
+	}
+
+//	public ArrayList<String> _getPostIds(JSONArray jsonArray) throws Exception{
+//		ArrayList<String> result = new ArrayList<String>();
+//		
+//		for(int i = 0; i < jsonArray.length(); i++) {
+//			String r = jsonArray.get(i).toString();
+//			JSONObject res = new JSONObject(r);
+//			String id = (String) res.get("_id");
+//			Object r_ = this._multipleTermVectors(id).getJSONArray("docs").getJSONObject(0).getJSONObject("term_vectors").getJSONObject("post").getJSONObject("terms").keys().next().toString();
+////			JSONObject terms = new JSONObject(r_);
+////			terms
+//			
+//			result.add( (String) r_);
+//		}
+//		
+//		return result;
+//	}
+
+//	public ArrayList<String> _getHighestTerm(String blogger, String ids, String date_from, String date_to) throws Exception{
+//		ArrayList<String>  result = new ArrayList<String>();
+//		JSONObject query = new JSONObject();
+//		JSONObject r = new JSONObject();
+//		if (blogger != "NOBLOGGER") {
+//			query = new JSONObject("{\r\n" + "    \"size\": 100,\r\n" + "    \"query\": {\r\n"
+//					+ "        \"bool\": {\r\n" + "            \"must\": [\r\n" + "                {\r\n"
+//					+ "                    \"bool\": {\r\n" + "                        \"must\": [\r\n"
+//					+ "                            {\r\n" + "                                \"term\": {\r\n"
+//					+ "                                    \"blogger.keyword\": {\r\n"
+//					+ "                                        \"value\": \"" + blogger + "\",\r\n"
+//					+ "                                        \"boost\": 1.0\r\n"
+//					+ "                                    }\r\n" + "                                }\r\n"
+//					+ "                            },\r\n" + "                            {\r\n"
+//					+ "                                \"terms\": {\r\n"
+//					+ "                                    \"blogsite_id\": [" + ids + "],\r\n"
+//					+ "                                    \"boost\": 1.0\r\n" + "                                }\r\n"
+//					+ "                            }\r\n" + "                        ],\r\n"
+//					+ "                        \"adjust_pure_negative\": true,\r\n"
+//					+ "                        \"boost\": 1.0\r\n" + "                    }\r\n"
+//					+ "                },\r\n" + "                {\r\n" + "                    \"range\": {\r\n"
+//					+ "                        \"date\": {\r\n" + "                            \"from\": \"" + date_from
+//					+ "\",\r\n" + "                            \"to\": \"" + date_to + "\",\r\n"
+//					+ "                            \"include_lower\": true,\r\n"
+//					+ "                            \"include_upper\": true,\r\n"
+//					+ "                            \"boost\": 1.0\r\n" + "                        }\r\n"
+//					+ "                    }\r\n" + "                }\r\n" + "            ],\r\n"
+//					+ "            \"adjust_pure_negative\": true,\r\n" + "            \"boost\": 1.0\r\n"
+//					+ "        }\r\n" + "    },\r\n" + "    \"_source\": {\r\n" + "        \"includes\": [\r\n"
+//					+ "            \"post\"\r\n" + "        ],\r\n" + "        \"excludes\": []\r\n" + "    },\r\n"
+//					+ "    \"sort\": [\r\n" + "        {\r\n" + "            \"influence_score\": {\r\n"
+//					+ "                \"order\": \"desc\",\r\n" + "                \"missing\": \"_first\",\r\n"
+//					+ "                \"unmapped_type\": \"float\"\r\n" + "            }\r\n" + "        }\r\n"
+//					+ "    ]\r\n" + "}");
+//
+//		}else {
+//
+//			query = new JSONObject("{\r\n" + "    \"size\": 100,\r\n" + "    \"query\": {\r\n" + "        \"bool\": {\r\n"
+//					+ "            \"must\": [\r\n" + "                {\r\n" + "                    \"terms\": {\r\n"
+//					+ "                        \"blogsite_id\": [" + ids + "],\r\n"
+//					+ "                        \"boost\": 1.0\r\n" + "                    }\r\n" + "                },\r\n"
+//					+ "                {\r\n" + "                    \"range\": {\r\n"
+//					+ "                        \"date\": {\r\n" + "                            \"from\": \"" + date_from
+//					+ "\",\r\n" + "                            \"to\": \"" + date_to + "\",\r\n"
+//					+ "                            \"include_lower\": true,\r\n"
+//					+ "                            \"include_upper\": true,\r\n"
+//					+ "                            \"boost\": 1.0\r\n" + "                        }\r\n"
+//					+ "                    }\r\n" + "                }\r\n" + "            ],\r\n"
+//					+ "            \"adjust_pure_negative\": true,\r\n" + "            \"boost\": 1.0\r\n" + "        }\r\n"
+//					+ "    },\r\n" + "    \"_source\": {\r\n" + "        \"includes\": [\r\n"
+//					+ "            \"@version\",\r\n" + "            \"blogger\",\r\n" + "            \"blogpost_id\",\r\n"
+//					+ "            \"blogsite_id\",\r\n" + "            \"categories\",\r\n"
+//					+ "            \"influence_score\",\r\n" + "            \"language\",\r\n"
+//					+ "            \"location\",\r\n" + "            \"num_comments\",\r\n"
+//					+ "            \"num_inlinks\",\r\n" + "            \"num_outlinks\",\r\n"
+//					+ "            \"permalink\",\r\n" + "            \"post\",\r\n" + "            \"post_length\",\r\n"
+//					+ "            \"sentiment\",\r\n" + "            \"tags\",\r\n" + "            \"title\"\r\n"
+//					+ "        ],\r\n" + "        \"excludes\": []\r\n" + "    },\r\n" + "    \"docvalue_fields\": [\r\n"
+//					+ "        {\r\n" + "            \"field\": \"@timestamp\",\r\n"
+//					+ "            \"format\": \"epoch_millis\"\r\n" + "        },\r\n" + "        {\r\n"
+//					+ "            \"field\": \"date\",\r\n" + "            \"format\": \"yyyy-MM-dd\"\r\n"
+//					+ "        }\r\n" + "    ],\r\n" + "    \"sort\": [\r\n" + "        {\r\n"
+//					+ "            \"_doc\": {\r\n" + "                \"order\": \"asc\"\r\n" + "            }\r\n"
+//					+ "        }\r\n" + "    ]\r\n" + "}");
+//		}
+//		
+//		JSONObject myResponse = this._makeElasticRequest(query, "POST", "/blogposts/_search/?scroll=1m");
+//		JSONArray allhits = new JSONArray();
+//		JSONObject scrollResult = new JSONObject();
+//		String source = null;
+//		JSONArray jsonArray = new JSONArray();
+//		String scroll_id = null;
+//		JSONObject all_data = new JSONObject();
+//
+//		System.out.println("_getHighestTerm query ---- "+query);
+//		
+//		if (null != myResponse.get("hits")) {
+//
+//			Object hits = myResponse.getJSONObject("hits").getJSONArray("hits");
+//			Object total = myResponse.getJSONObject("hits").getJSONObject("total").get("value");
+//			scroll_id = myResponse.getString("_scroll_id");			
+//			source = hits.toString();
+//
+//			jsonArray = new JSONArray(source);
+//			result = this._getPostIds(jsonArray);
+////			Object a = this._multipleTermVectors(result).getJSONArray("docs").get(0);
+//			
+//			scrollResult = this._scrollRequest(scroll_id);
+//			allhits = scrollResult.getJSONObject("hits").getJSONArray("hits");
+//			result.addAll(this._getPostIds(allhits));
+////			result.put
+////			result =  merge(result, this._getPostIds(allhits));
+////			result = this._getPostIds(allhits); 
+//			
+////			for (int i = 0; i < 10; i++) {
+////				if (allhits.length() <= 0) {
+////					break;
+////				}
+//			while (allhits.length() > 0) {
+//				System.out.println("WHILE ---" + allhits.length());
+//				scroll_id = (String) scrollResult.get("_scroll_id");
+//				scrollResult = this._scrollRequest(scroll_id);
+//				allhits = scrollResult.getJSONObject("hits").getJSONArray("hits");
+//				source = allhits.toString();
+//				
+//				result.addAll(this._getPostIds(allhits));
+//				//jsonArray.put(new JSONArray(source));
+//			}
+//						
+//
+////			
+////			source = allhits.toString();
+////			jsonArray =  merge(jsonArray, new JSONArray(source));
+//		
+//		}
+//		return result;
+	
+//	}
+	
+	public String getHighestTerm(String data) throws Exception {
+		String result = null;
+		String source = null;
+		String source_ = null;
+		System.out.println(data.length());
+		data = this.escape2(data);
+		//data = this.escape(data);
+		if (data.length() > 0) {
+//data ="seun seun seun seun";
+			JSONObject query = new JSONObject("{\r\n" + 
+					"    \"doc\": {\r\n" + 
+					"        \"post\": \""+data+"\"\r\n" + 
+					"    },\r\n" + 
+					"\r\n" + 
+					"    \"term_statistics\": false,\r\n" + 
+					"        \"field_statistics\": false,\r\n" + 
+					"        \"positions\": false,\r\n" + 
+					"        \"offsets\": false,\r\n" + 
+					"        \"filter\": {\r\n" + 
+					"            \"max_num_terms\": 1,\r\n" + 
+					"            \"min_term_freq\": 1,\r\n" + 
+					"            \"min_doc_freq\": 1\r\n" + 
+					"        }\r\n" + 
+					"}");
+			System.out.println("INPROCESS--");
+
+
+			JSONObject myResponse = this._makeElasticRequest(query, "POST", "/termv/_termvectors?");
+			System.out.println("PROCESSED");
+			try (FileWriter file = new FileWriter("C:\\Users\\oljohnson\\Desktop\\SQL\\file2.json")) {
+
+				file.write(data.toString());
+				System.out.println("Successfully Copied JSON Object to File...");
+
+			}
+			
+			try {
+				// Object r_ =
+				// this._multipleTermVectors(id).getJSONArray("docs").getJSONObject(0).getJSONObject("term_vectors").getJSONObject("post").getJSONObject("terms").keys().next().toString();
+				Object hits = myResponse.getJSONObject("term_vectors").getJSONObject("post").getJSONObject("terms");
+				// hits = myResponse.getJSONObject("term_vectors").getJSONObject("post").getJSONObject("terms");
+				source = hits.toString();
+			} catch (Exception e) {
+				System.out.println(e);
+			}
+
+			JSONObject jsonObject = new JSONObject(source);
+			Iterator<String> keys = jsonObject.keys();
+			int value = 0;
+
+			System.out.println("DONE GETTING TERM VECTORS");
+			HashMap<String, Integer> hm2 = new HashMap<String, Integer>();
+			while (keys.hasNext()) {
+				source = keys.next();
+				// do something with jsonObject here
+				Object freq = jsonObject.getJSONObject(source).get("term_freq");
+				value = (Integer) freq;
+
+			}
+
+			System.out.println("HIGHEST TERM IS -- " + source + " OCCURING " + value + " TIMES");
+
+		} else {
+			source = "Null";
+		}
+		return source.toUpperCase();
+	}
+
 	public JSONObject _getBloggerPosts(String term, String bloggerName, String date_from, String date_to, String ids_)
 			throws Exception {
 //	
@@ -3063,7 +3279,7 @@ public class Blogposts {
 
 		if (bloggerName != "NOBLOGGER") {
 
-			query = new JSONObject("{\r\n" + "    \"size\": 1000,\r\n" + "    \"query\": {\r\n"
+			query = new JSONObject("{\r\n" + "    \"size\": 10000,\r\n" + "    \"query\": {\r\n"
 					+ "        \"bool\": {\r\n" + "            \"must\": [\r\n" + "                {\r\n"
 					+ "                    \"bool\": {\r\n" + "                        \"must\": [\r\n"
 					+ "                            {\r\n" + "                                \"term\": {\r\n"
@@ -3093,32 +3309,37 @@ public class Blogposts {
 					+ "                \"unmapped_type\": \"float\"\r\n" + "            }\r\n" + "        }\r\n"
 					+ "    ]\r\n" + "}");
 
-		} else {
-//			query = new JSONObject("{\r\n" + "    \"size\": 1000,\r\n" + "    \"query\": {\r\n"
-//					+ "        \"bool\": {\r\n" + "            \"must\": [\r\n" + "                {\r\n"
-//					+ "                    \"term\": {\r\n" + "                        \"post\": \"" + term + "\"\r\n"
-//					+ "                    }\r\n" + "                },\r\n" + "                {\r\n"
-//					+ "                    \"terms\": {\r\n" + "                        \"blogsite_id\": [" + ids_
-//					+ "],\r\n" + "                        \"boost\": 1\r\n" + "                    }\r\n"
-//					+ "                },\r\n" + "                {\r\n" + "                    \"range\": {\r\n"
-//					+ "                        \"date\": {\r\n" + "                            \"from\": \"" + date_from
-//					+ "\",\r\n" + "                            \"to\": \"" + date_to + "\",\r\n"
-//					+ "                            \"include_lower\": true,\r\n"
-//					+ "                            \"include_upper\": true,\r\n"
-//					+ "                            \"boost\": 1\r\n" + "                        }\r\n"
-//					+ "                    }\r\n" + "                }\r\n" + "            ],\r\n"
-//					+ "            \"adjust_pure_negative\": true,\r\n" + "            \"boost\": 1\r\n"
-//					+ "        }\r\n" + "    },\r\n" + "    \"_source\": {\r\n" + "        \"includes\": [\r\n"
-//					+ "            \r\n" + "            \"title\",\r\n" + "            \"post\",\r\n"
-//					+ "            \"blogpost_id\",\r\n" + "            \"permalink\",\r\n"
-//					+ "            \"num_comments\",\r\n" + "            \"date\",\r\n"
-//					+ "            \"num_comments\",\r\n" + "            \"blogger\"\r\n" + "        ],\r\n"
-//					+ "        \"excludes\": []\r\n" + "    },\r\n" + "    \"sort\": [\r\n" + "        {\r\n"
-//					+ "            \"influence_score\": {\r\n" + "                \"order\": \"desc\",\r\n"
-//					+ "                \"missing\": \"_last\",\r\n" + "                \"unmapped_type\": \"float\"\r\n"
-//					+ "            }\r\n" + "        }\r\n" + "    ]\r\n" + "}");
-
+		} else if (term == "___NO__TERM___" && bloggerName == "NOBLOGGER") {
 			query = new JSONObject("{\r\n" + "    \"size\": 1000,\r\n" + "    \"query\": {\r\n"
+					+ "        \"bool\": {\r\n" + "            \"must\": [\r\n" + "                {\r\n"
+					+ "                    \"terms\": {\r\n" + "                        \"blogsite_id\": [" + ids_
+					+ "],\r\n" + "                        \"boost\": 1.0\r\n" + "                    }\r\n"
+					+ "                },\r\n" + "                {\r\n" + "                    \"range\": {\r\n"
+					+ "                        \"date\": {\r\n" + "                            \"from\": \"" + date_from
+					+ "\",\r\n" + "                            \"to\": \"" + date_to + "\",\r\n"
+					+ "                            \"include_lower\": true,\r\n"
+					+ "                            \"include_upper\": true,\r\n"
+					+ "                            \"boost\": 1.0\r\n" + "                        }\r\n"
+					+ "                    }\r\n" + "                }\r\n" + "            ],\r\n"
+					+ "            \"adjust_pure_negative\": true,\r\n" + "            \"boost\": 1.0\r\n"
+					+ "        }\r\n" + "    },\r\n" + "    \"_source\": {\r\n" + "        \"includes\": [\r\n"
+					+ "            \"@version\",\r\n" + "            \"blogger\",\r\n"
+					+ "            \"blogpost_id\",\r\n" + "            \"blogsite_id\",\r\n"
+					+ "            \"categories\",\r\n" + "            \"influence_score\",\r\n"
+					+ "            \"language\",\r\n" + "            \"location\",\r\n"
+					+ "            \"num_comments\",\r\n" + "            \"num_inlinks\",\r\n"
+					+ "            \"num_outlinks\",\r\n" + "            \"permalink\",\r\n"
+					+ "            \"post\",\r\n" + "            \"post_length\",\r\n"
+					+ "            \"sentiment\",\r\n" + "            \"tags\",\r\n" + "            \"title\"\r\n"
+					+ "        ],\r\n" + "        \"excludes\": []\r\n" + "    },\r\n"
+					+ "    \"docvalue_fields\": [\r\n" + "        {\r\n" + "            \"field\": \"@timestamp\",\r\n"
+					+ "            \"format\": \"epoch_millis\"\r\n" + "        },\r\n" + "        {\r\n"
+					+ "            \"field\": \"date\",\r\n" + "            \"format\": \"yyyy-MM-dd\"\r\n"
+					+ "        }\r\n" + "    ],\r\n" + "    \"sort\": [\r\n" + "        {\r\n"
+					+ "            \"_doc\": {\r\n" + "                \"order\": \"asc\"\r\n" + "            }\r\n"
+					+ "        }\r\n" + "    ]\r\n" + "}");
+		} else {
+			query = new JSONObject("{\r\n" + "    \"size\": 10000,\r\n" + "    \"query\": {\r\n"
 					+ "        \"bool\": {\r\n" + "            \"adjust_pure_negative\": true,\r\n"
 					+ "            \"must\": [\r\n" + "                {\r\n" + "                    \"terms\": {\r\n"
 					+ "                        \"post\": [" + term + "]\r\n" + "                    }\r\n"
@@ -3147,7 +3368,7 @@ public class Blogposts {
 		System.out.println("query for elastic _getBloggerPosts --> " + query);
 
 		JSONObject elas = this._elastic(query);
-		JSONArray jsonArray = (JSONArray) elas.getJSONArray("hit_array").get(0);
+		JSONArray jsonArray = (JSONArray) elas.getJSONArray("hit_array");
 		System.out.println("JSON ARR LENGTH" + jsonArray.length());
 		String total = elas.get("total").toString();
 		System.out.println("TOTAL LENGTH" + total);
@@ -3164,7 +3385,7 @@ public class Blogposts {
 		System.out.println("DONE GETTING POSTS FOR BLOGGER");
 		if (jsonArray != null) {
 
-			for (int i = 0; i < jsonArray.length(); i++) {
+			for (int i = 0; i < 5000; i++) {
 
 				String indx = jsonArray.get(i).toString();
 				JSONObject j = new JSONObject(indx);
@@ -3174,15 +3395,15 @@ public class Blogposts {
 				j = new JSONObject(ids);
 
 				String src = j.get("post").toString();
-				src = src.replaceAll("\\<.*?>", "");
+				//src = src.replaceAll("\\<.*?>", "");
 
-				src = src.replaceAll("\\<.*?>", "");
-				src = this.escape(src);
-				src = src.replace("o.style.setproperty", "");
-				src = src.replace("o.style.setProperty", "");
-				src = src.replace("(adsbygoogle = window.adsbygoogle || []).push({}); ", "");
+				//src = src.replaceAll("\\<.*?>", "");
+				//src = escape(src);
+				// = src.replace("o.style.setproperty", "");
+				//src = src.replace("o.style.setProperty", "");
+				//src = src.replace("(adsbygoogle = window.adsbygoogle || []).push({}); ", "");
 
-				if (bloggerName == "NOBLOGGER") {
+				if (bloggerName == "NOBLOGGER" && term != "___NO__TERM___") {
 					if (j.get("title").toString() != null || j.get("title").toString() != "") {
 						occurence = this.countOccurences(src, term);
 						System.out.println(term + "----------------------" + occurence);
@@ -3221,7 +3442,11 @@ public class Blogposts {
 		System.out.println("Done remmoving stop words");
 
 		all_data.put("total", total);
-
+//result = this.escape2(result);
+//		result = result.replace("//", "");
+//		result = result.replace("\\", "");
+		//result = this.escape2(result);
+//		result = this.escape2(result);
 		all_data.put("posts", result);
 		all_data.put("data", all);
 

@@ -85,20 +85,23 @@
 
 	//in milliseconds
 	Instant start = Instant.now();
-JSONObject sql = post._getBloggerPosts("","CNN","2000-01-01","2019-12-15","142,153,229,148,127,46,3,170,154,72,38,224,157,128,61,112,140,116,125,193,173,74,249,250,243,263,98,69,62,78,117,73,135,133,100,143,77,233,221,163,132,147,150,43,242,111,101,86,199,251,118,106,121,129,49,48,66,91,176,124,167,215,141,166,17,220,119,236,230,225,252,20,130,22,76,235,85,245,79,26,109,80,131,253,105,226,137,115,52,53,65,213,96,238,210,136,239,27,206,107,63,57,204,205,216,208,36,102,134,108,113,59,54,88"); 
+JSONObject sql = post._getBloggerPosts("___NO__TERM___","NOBLOGGER","2000-01-01","2019-12-15","616"); 
 
-		
+//ArrayList<String> sql	 = post._getHighestTerm("CNN", "142,153,229,148,127,46,3,170,154,72,38,224,157,128,61,112,140,116,125,193,173,74,249,250,243,263,98,69,62,78,117,73,135,133,100,143,77,233,221,163,132,147,150,43,242,111,101,86,199,251,118,106,121,129,49,48,66,91,176,124,167,215,141,166,17,220,119,236,230,225,252,20,130,22,76,235,85,245,79,26,109,80,131,253,105,226,137,115,52,53,65,213,96,238,210,136,239,27,206,107,63,57,204,205,216,208,36,102,134,108,113,59,54,88", "2000-01-01","2019-12-15");
 	String sql_ = sql.get("posts").toString();
-	 
+	/*  JSONObject result =  post._multipleTermVectors (sql); */
 	/* 	
 	Object jsonArray = sql.getJSONArray("data").get(0);
 	System.out.println("dd--"+sql.getJSONArray("data").length());
 	String j = jsonArray.toString();
 	JSONObject j_ = new JSONObject(j);
 	String result = j_.get("permalink").toString(); */
-	
-	
-	  String result = post._termVectors(sql_);  
+	String result = null;
+	 try{
+	  result = post.getHighestTerm(sql_);  
+	}catch(Exception e){
+		System.out.println(e);
+	} 
 	
 	
 	
@@ -217,7 +220,6 @@ JSONObject sql = post._getBloggerPosts("","CNN","2000-01-01","2019-12-15","142,1
 
 	
 	PrintWriter pww = response.getWriter();
-	
 %>
 
 <html>

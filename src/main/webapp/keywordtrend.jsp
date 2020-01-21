@@ -860,7 +860,7 @@
 							<a	
 								name="<%=entry.getKey()%>"
 								class="topics topics1 btn btn-primary form-control select-term bloggerinactive mb20  size-1 <%=activew%>"
-								value="<%=entry.getValue()%>"><b><%=entry.getKey()%></b></a>
+								value="<%=entry.getValue()%>"><b><%-- <%=entry.getKey()%> --%> SEUN</b></a>
 							<%
 							k++;
 								}

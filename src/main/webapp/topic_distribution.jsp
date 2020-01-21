@@ -266,7 +266,7 @@ if (detail.size() > 0) {
 		}
 
 	}
-	}
+	
 %>
 <!DOCTYPE html>
 <html>
@@ -274,7 +274,7 @@ if (detail.size() > 0) {
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Blogtrackers-Posting Frequecy</title>
+<title>Blogtrackers-Topic Distribution</title>
 <link rel="shortcut icon" href="images/favicons/favicon-48x48.png">
 <link rel="apple-touch-icon" href="images/favicons/favicon-48x48.png">
 <link rel="apple-touch-icon" sizes="96x96"
@@ -1070,6 +1070,7 @@ class BlogPost {
 	                            datearray[k] = selected[k].date
 	                            datearray[k] = datearray[k].getDate();
 	                        }
+	                        
 	                        let mousedate = datearray.indexOf(invertedx);
 	                        let pro = d.values[mousedate].value;
 
@@ -1124,7 +1125,7 @@ class BlogPost {
 
 	            // Append events to the chart container
 	            // ------------------------------
-	            d3Container
+	/*             d3Container
 	                .on("mousemove", function (d, i) {
 	                    this.mouse = d3.mouse(this);
 	                    this.mousex = this.mouse[0];
@@ -1148,7 +1149,7 @@ class BlogPost {
 	                            .style("left", (this.mousex + tooltipOffset) + "px" )
 	                            .attr("class", "d3-tip e");
 	                    }
-	                });
+	                }); */
 
 	        //});
 
@@ -2056,4 +2057,5 @@ document.addEventListener("DOMContentLoaded", function() {
 
 </script>
 </body>
+<%} %>
 </html>

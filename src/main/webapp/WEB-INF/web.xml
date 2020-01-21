@@ -61,6 +61,12 @@
 			<description></description>
 			<servlet-class>util.KeywordTrend1</servlet-class>
 		</servlet>
+		<servlet>
+			<servlet-name>TopKeywords</servlet-name>
+			<display-name>TopKeywords</display-name>
+			<description></description>
+			<servlet-class>util.TopKeywords</servlet-class>
+		</servlet>
 	<servlet-mapping>
 		<servlet-name>AddBlog</servlet-name>
 		<url-pattern>/AddBlog</url-pattern>
@@ -80,6 +86,10 @@
 	<servlet-mapping>
 		<servlet-name>KeywordTrend1</servlet-name>
 		<url-pattern>/KeywordTrend1</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>TopKeywords</servlet-name>
+		<url-pattern>/TopKeywords</url-pattern>
 	</servlet-mapping>
 	<error-page>
 		<error-code>404</error-code>
