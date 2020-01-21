@@ -308,15 +308,7 @@ if (detail.size() > 0) {
 <script src="assets/js/generic.js"> </script>
 <script src="assets/vendors/bootstrap-daterangepicker/moment.js"></script>
 <script src="assets/vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
-<!-- Start for tables  -->
-<script type="text/javascript" src="assets/vendors/DataTables/datatables.min.js"></script>
-<script type="text/javascript" src="assets/vendors/DataTables/dataTables.bootstrap4.min.js"></script>
-<script src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.flash.min.js"></script>
-<script src="assets/vendors/DataTables/Buttons-1.5.1/js/dataTables.buttons.min.js"></script>
-<script src="assets/vendors/DataTables/pdfmake-0.1.32/pdfmake.min.js"></script>
-<script src="assets/vendors/DataTables/pdfmake-0.1.32/vfs_fonts.js"></script>
-<script src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.html5.min.js"></script>
-<script src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.print.min.js"></script>
+
 <!-- Charts -->
 <script type="text/javascript" src="assets/vendors/d3/d3.min.js"></script>
 <script src="assets/vendors/wordcloud/d3.layout.cloud.js"></script>
@@ -553,17 +545,24 @@ if (detail.size() > 0) {
 		<div class="row mb0">
 		
 			<div class="col-md-6 mt20 ">
-				<div class="card card-style mt20">
-					<div class="card-body  p20 pt5 pb5">
+				<div class="card card-style mt20" >
+					<div class="card-body  p20 pt5 pb5" style="min-height: 300px;">
 						<div>
 							<p class="text-primary mt10">
 								Keywords of <b class="topic text-blue"></b>
 							</p>
 						</div>
-						<div id="tagcloudcontainer" class="tagcloudcontainer" style="min-height: 300px;"></div>
+						<div class="chart-container">
+							<div class="chart tagcloudcontainer" id="tagcloudcontainer" style="min-height: 300px;"></div>
+							<div class="jvectormap-zoomin zoombutton" id="zoom_in">+</div>
+							<div class="jvectormap-zoomout zoombutton" id="zoom_out">−</div>
+						</div>
+
 					</div>
 				</div>
 			</div>
+			
+			
 
 			<div class="col-md-6 mt20">
 				<div class="card card-style mt20">
@@ -587,20 +586,31 @@ if (detail.size() > 0) {
 					<p>
 						Posts from <b class="topic text-blue"></b>
 					</p>
-					<table id="DataTables_Table_0_wrapper" class="display"
-						style="width: 100%">
-						<thead>
-							<tr>
-								<th>Post title</th>
-								<th>Topic weight</th>
-							</tr>
-						</thead>
-						<tbody id="blogPostsContainer">							
-						</tbody>
-					</table>
+					<div id="table_view">
+						 <!-- <table id="DataTables_Table_0_wrapper" class="display" style="width: 100%;">
+							<thead>
+								<tr>
+									<th>Post title</th>
+									<th>Topic weight</th>
+								</tr>
+							</thead>
+							<tbody id="blogPostsContainer1" class="akpa">	
+									
+							</tbody>
+						</table>
+						-->
+						
+					</div>
+						
+					
+					
+					
 				</div>
-
+				<div style="height: 250px; padding-right: 10px !important;" id="table_display_loader" class="hidden">
+						<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />
+					</div>
 			</div>
+			
 
 			<div id="blogPostContainer" class="col-md-6 mt20 card card-style nobordertopleft noborderbottomleft">
 				<div style="" class="pt20">
@@ -630,8 +640,7 @@ if (detail.size() > 0) {
 					<div class="card-body p10 pt20 pb5">
 						<div style="min-height: 420px;">
 							<div class="p15 pb5 pt0" role="group"></div>
-							<table id="DataTables_Table_1_wrapper" class="display"
-								style="width: 100%">
+							<table id="DataTables_Table_1_wrapper" class="display" style="width: 100%">
 								<thead>
 									<tr>
 										<% for(Map.Entry<Integer, ArrayList<Pair<String, Double>>> entry : topics.entrySet()) { %>
@@ -656,52 +665,14 @@ if (detail.size() > 0) {
 				</div>
 			</div>
 		</div>
+		
+		<div id="blogPostsContainer1"></div>
 	</div>
-
-	<!-- Topic Table -->
-	<script>
 	
- 	class TopicDataTable {
- 		
- 		constructor() {}
- 		
- 		initialize() {
-     $('#DataTables_Table_1_wrapper').DataTable( {
-         "scrollY": 450,
-         "scrollX": true,
-          "pagingType": "simple",
-           // dom: 'Bfrtip'
-       //    ,
-       // buttons:{
-       //   buttons: [
-       //       { extend: 'pdfHtml5',orientation: 'potrait', pageSize: 'LEGAL', className: 'btn-primary stylebutton1'},
-       //       {extend:'csv',className: 'btn-primary stylebutton1'},
-       //       {extend:'excel',className: 'btn-primary stylebutton1'},
-       //      // {extend:'copy',className: 'btn-primary stylebutton1', text: 'Copy to Clipboard'},
-       //       {extend:'print',className: 'btn-primary stylebutton1'},
-       //   ]
-       // }
-     } );
 
-     $('#DataTables_Table_0_wrapper').DataTable( {
-         "scrollY": 460,
-         "scrollX": true,
-          "pagingType": "simple",
-          // dom: 'Bfrtip'
-       //    ,
-       // buttons:{
-       //   buttons: [
-       //       { extend: 'pdfHtml5',orientation: 'potrait', pageSize: 'LEGAL', className: 'btn-primary stylebutton1'},
-       //       {extend:'csv',className: 'btn-primary stylebutton1'},
-       //       {extend:'excel',className: 'btn-primary stylebutton1'},
-       //      // {extend:'copy',className: 'btn-primary stylebutton1', text: 'Copy to Clipboard'},
-       //       {extend:'print',className: 'btn-primary stylebutton1'},
-       //   ]
-       // }
-     } );
- 		}
- 	}
- </script>
+
+
+	
 	
 	<!--  Blogpost -->
 <script>
@@ -1208,26 +1179,91 @@ class BlogPost {
 	    }
 	}
  </script>
+ 
+  <script type="text/javascript" src="assets/vendors/d3/d3.min.js"></script>
+ <script type="text/javascript" src="assets/vendors/d3/d3.min.js"></script>
+<script src="assets/vendors/wordcloud/d3.layout.cloud.js"></script>
+<script type="text/javascript" src="assets/vendors/d3/d3_tooltip.js"></script>
+<script type="text/javascript" src="assets/js/jquery.inview.js"></script>
+
+ 
+<script type="text/javascript" src="chartdependencies/keywordtrendd3.js"></script>
+
+<!-- Start for tables  -->
+<script type="text/javascript" src="assets/vendors/DataTables/datatables.min.js"></script>
+<script type="text/javascript" src="assets/vendors/DataTables/dataTables.bootstrap4.min.js"></script>
+<script src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.flash.min.js"></script>
+<script src="assets/vendors/DataTables/Buttons-1.5.1/js/dataTables.buttons.min.js"></script>
+<script src="assets/vendors/DataTables/pdfmake-0.1.32/pdfmake.min.js"></script>
+<script src="assets/vendors/DataTables/pdfmake-0.1.32/vfs_fonts.js"></script>
+<script src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.html5.min.js"></script>
+<script src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.print.min.js"></script>
+
+<script>
+ $(document).ready(function() {
+	 
+	
+   // datatable setup
+     $('#DataTables_Table_1_wrapper').DataTable( {
+         "scrollY": 430,
+         "scrollX": false,
+          "pagingType": "simple"
+    /*       ,
+          dom: 'Bfrtip',
+          "columnDefs": [
+       { "width": "80%", "targets": 0 }
+     ],
+       buttons:{
+         buttons: [
+             { extend: 'pdfHtml5',orientation: 'potrait', pageSize: 'LEGAL', className: 'btn-primary stylebutton1'},
+             {extend:'csv',className: 'btn-primary stylebutton1'},
+             {extend:'excel',className: 'btn-primary stylebutton1'},
+            // {extend:'copy',className: 'btn-primary stylebutton1', text: 'Copy to Clipboard'},
+             {extend:'print',className: 'btn-primary stylebutton1'},
+         ]
+       } */
+     } );
+   
+
+
+ } );
+ </script>
+ <!--end for table  -->
 
 	<!--Word Cloud  -->
 	<script>
 	class WordCloud {
 
 	    constructor(_wordCloudData) { 
+	    	
 	    	this.data = _wordCloudData;
 	    	this.container = document.getElementById("tagcloudcontainer");
 	    	this.width = this.container.offsetWidth;
 	    	this.height = this.container.offsetHeight;
+	    	
+	    	
+	    	
 	    }
-
+		
 	    update() {	    	
 	    	// Reset container first
 			while (this.container.firstChild) {
 				this.container.removeChild(this.container.firstChild);
 			}
-	    	this.initialize(this.data[selectedTopic]);
+	    	//this.initialize(this.data[selectedTopic]);
+	    	
+	  
+	    	const obj1 = this.data[selectedTopic].reduce((o, key) => Object.assign(o, {[key.text]: Math.round(key.size)}), {});
+	    	var t = obj1;
+	    	
+	    	
+	    	wordtagcloud(this.container,this.container.offsetHeight,  t); 
+	    	
+	    	
+	    	
 	    }
 	    
+	   
 	    initialize(frequency_list) {
 
 	        var color = d3.scale.linear()
@@ -1262,6 +1298,8 @@ class BlogPost {
 	                .text(function (d) { return d.text; });
 	        }
 	    }
+	    
+	 
 	}
  </script>
 
@@ -1851,7 +1889,7 @@ class ChordDiagram {
 <script>
 class BlogPosts {
 	constructor(_blogPostsData) {
-		this.container = document.getElementById("blogPostsContainer");
+		this.container = document.getElementById("blogPostsContainer1");
 		this.postContainer = document.getElementById("blogPostContainer");
 		this.titleContainer = document.getElementById("titleContainer");
 		this.authorContainer = document.getElementById("authorContainer");
@@ -1865,13 +1903,32 @@ class BlogPosts {
 	update() {	
 		
 		// Reset container
+		$("#table_view").html("");
+		$('#table_view').empty();
+		
+		//$("#table_display").addClass("hidden");
+		$("#table_display_loader").removeClass("hidden");
+		
 		while (this.container.firstChild) {
 			this.container.removeChild(this.container.firstChild);
 		}
 		
 		this.blogRows = [];
+		
+		var details = "<table id='DataTables_Table_0_wrapper' class='display' style='width: 100%;'>";
+			details += '<thead>';
+				details += '<tr>';
+					details += '<th>Post title</th>';
+						details += '	<th>Topic weight</th>';
+							details += '</tr>';
+								details += '	</thead>';
+									details += '	<tbody id="blogPostsContainer1">';
+			
+		var i = 1;
+		
 		for (var id in this.blogPosts) {
 			let distrib = this.blogPosts[id].topicDistrib[selectedTopic];
+			
 			
 			if (distrib > topicDistribThreshold) {
 				let row = document.createElement("tr");
@@ -1884,31 +1941,103 @@ class BlogPosts {
 				row.appendChild(percentCell);
 				row.addEventListener("click", this.blogPostClickListener.bind(this));
 				this.blogRows.push(row);
-				this.container.appendChild(row);
+				//this.container.appendChild(row);
+				details += '<tr>';
+				details += '<td ><a blogid='+id+' id="blog_'+id+'" class="blogPostClickListener blogpost_link cursor-pointer">'+this.blogPosts[id].title+'</a>  <br/>';
+				details += '<a id="viewpost_'+id+'" class="mt20 viewpost makeinvisible" href="'+this.blogPosts[id].permalink+'" target="_blank"><buttton class="btn btn-primary btn-sm mt10 visitpost">Visit Post &nbsp;<i class="fas fa-external-link-alt"></i></buttton></a></td>';
+				details += '<td>'+parseFloat(distrib*100).toFixed(0)+'%</td>';
+				details += '</tr>';
+				
+				
 			}
+			
 		}
 		
+		details += '</tbody>';
+		details += '</table>';
+		
+		$('#table_view').html(details);
+	
+		if ( $.fn.DataTable.isDataTable('#DataTables_Table_0_wrapper') ) {
+			// alert("already");
+			// $('#DataTables_Table_0_wrapper').DataTable().destroy();
+			}    
+				
+				
+				// $('#DataTables_Table_0_wrapper').DataTable().destroy();
+				// table set up for topic
+			     $('#DataTables_Table_0_wrapper').DataTable( {
+			         "scrollY": 430,
+			         "scrollX": false,
+			          "pagingType": "simple"
+			     /*      ,
+			          dom: 'Bfrtip',
+
+			          "columnDefs": [
+			       { "width": "80%", "targets": 0 }
+			     ],
+			       buttons:{
+			         buttons: [
+			             { extend: 'pdfHtml5',orientation: 'potrait', pageSize: 'LEGAL', className: 'btn-primary stylebutton1'},
+			             {extend:'csv',className: 'btn-primary stylebutton1'},
+			             {extend:'excel',className: 'btn-primary stylebutton1'},
+			            // {extend:'copy',className: 'btn-primary stylebutton1', text: 'Copy to Clipboard'},
+			             {extend:'print',className: 'btn-primary stylebutton1'},
+			         ]
+			       } */
+			     } );
+			
+			
+			
+			
+		
+		
+		
+	     $("#table_display_loader").addClass("hidden");
+	   
 		// Initialize details blog view with first blog
 		if (this.blogRows.length > 0) {
 			this.blogRows[0].click();
 		}
 	}
 	
-	blogPostClickListener() {
+	blogPostClickListener(blog_data) {
 		let selection = event.target;
         if (event.target.tagName == "TD") {
         	selection = event.target.parentElement;
         }
         let id = selection.getAttribute("blogId");
         
-        this.titleContainer.innerHTML = this.blogPosts[id].title;
-		this.authorContainer.innerHTML = this.blogPosts[id].author;
-		this.dateContainer.innerHTML = this.blogPosts[id].date;
-		this.postContainer.innerHTML = this.blogPosts[id].post;
-		this.numCommentsContainer.innerHTML = this.blogPosts[id].numComments + " comments";
+        //this.titleContainer.innerHTML = this.blogPosts[id].title;
+		//this.authorContainer.innerHTML = this.blogPosts[id].author;
+		//this.dateContainer.innerHTML = this.blogPosts[id].date;
+		//this.postContainer.innerHTML = this.blogPosts[id].post;
+		//this.numCommentsContainer.innerHTML = this.blogPosts[id].numComments + " comments";
+		
+		blog_data = _blogPostsData;
+		
+		$(".viewpost").addClass("makeinvisible");
+    	$('.blogpost_link').removeClass("activeselectedblog");
+    	$('#blog_'+id).addClass("activeselectedblog");
+    	$("#viewpost_"+id).removeClass("makeinvisible");
+		
+		
+		$('#titleContainer').html(blog_data[id].title);
+    	$('#authorContainer').html(blog_data[id].author);
+    	$('#dateContainer').html(blog_data[id].date);
+    	$('#postContainer').html(blog_data[id].post);
+    	$('#numCommentsContainer').html(blog_data[id].numComments + " comments");
 			
 	}
+	
+	
 }
+
+$(document).delegate('.blogPostClickListener', 'click', function(){
+	var a_view_model = new BlogPosts();
+	a_view_model.blogPostClickListener(_blogPostsData);
+	
+});
 </script>
 
 <!--  Topics -->
@@ -2047,7 +2176,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	let lineChart = new LineChart(_blogPostsData);
 	let chordDiagram = new ChordDiagram(_chordDiagramMatrix, 400);
 	let wordCloud = new WordCloud(_wordCloudData);
-	let topicDataTable = new TopicDataTable();
+	//let topicDataTable = new TopicDataTable();
 	let topics = new Topics(_topicNumbers, statsBar, blogPosts, wordCloud, chordDiagram);
 	
 	topics.initialize();

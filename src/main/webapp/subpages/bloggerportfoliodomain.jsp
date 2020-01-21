@@ -17,6 +17,7 @@
 	String date_start = (null == request.getParameter("date_start")) ? "" : request.getParameter("date_start");
 	String date_end = (null == request.getParameter("date_end")) ? "" : request.getParameter("date_end");
 	String blogger = (null == request.getParameter("blogger")) ? "" : request.getParameter("blogger");
+	String selected_blogger_id = (null == request.getParameter("blogger_id")) ? "" : request.getParameter("blogger_id");
 	String sort =  (null == request.getParameter("sortby")) ? "blog" : request.getParameter("sortby").toString().replaceAll("[^a-zA-Z]", " ");
 	String listtype =  (null == request.getParameter("listtype")) ? "ulr" : request.getParameter("listtype").toString().replaceAll("[^a-zA-Z]", " ");
 	
@@ -62,7 +63,12 @@
 			
 		
 
-			outlinks = outl._searchByRange("date",date_start, date_end, selectedblog_id);
+			outlinks = outl._searchByRange("date",date_start, date_end, selected_blogger_id);
+			
+			//System.out.println("test wellllll"+selectedblog_id);
+			//System.out.println("test hereeeeeeeeeeeeeeeeee"+selected_blogger_id);
+			//System.out.println("test hereeeeeeeeeeeeeeeeee"+date_start);
+			//System.out.println("test hereeeeeeeeeeeeeeeeee"+date_end);
 
 			//outlinks = outl._searchByRange("date", date_start, date_end,blogger);
 		
@@ -116,7 +122,7 @@
 
 <link rel="stylesheet" href="assets/css/table.css" />
 <link rel="stylesheet" href="assets/css/style.css" />
-  <table id="DataTables_Table_0_wrapper" class="display" style="width:100%">
+  <table id="DataTables_Table_9_wrapper" class="display" style="width:100%">
 
 
                         <thead>
@@ -164,7 +170,7 @@
 		    $('[data-toggle="tooltip"]').tooltip()
 		  })
 		  
-     $('#DataTables_Table_0_wrapper').DataTable( {
+     $('#DataTables_Table_9_wrapper').DataTable( {
          "scrollY": 430,
          "scrollX": 250,
           "pagingType": "simple",

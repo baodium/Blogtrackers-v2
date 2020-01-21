@@ -24,9 +24,12 @@
 	Object single = (null == request.getParameter("single_date")) ? "" : request.getParameter("single_date");
 	String sort =  (null == request.getParameter("sortby")) ? "blog" : request.getParameter("sortby").toString().replaceAll("[^a-zA-Z]", " ");
 	String attachedblogger =  (null == request.getParameter("blogger")) ? "" : request.getParameter("blogger");
+	
+	
 
 	
-	System.out.println("date---"+date_start);
+	System.out.println("dateyy---"+date_start);
+	System.out.println("dateyyy---"+date_end);
 	if (user == null || user == "") {
 		response.sendRedirect("index.jsp");
 	} else {
@@ -540,7 +543,9 @@
 			 String blogids = "";
 			 
 outlinks = outl._searchByRange("date", dt, dte, selectedblogid);
-System.out.println("test here");
+System.out.println("test hereeeeeeeeeeeeeeeeee"+selectedblogid);
+System.out.println("test hereeeeeeeeeeeeeeeeee"+dt);
+System.out.println("test hereeeeeeeeeeeeeeeeee"+dte);
 JSONObject outerlinks = new JSONObject();
 ArrayList outlinklooper = new ArrayList();
 if (outlinks.size() > 0) {
