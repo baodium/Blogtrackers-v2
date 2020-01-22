@@ -3279,7 +3279,7 @@ public class Blogposts {
 
 		if (bloggerName != "NOBLOGGER") {
 
-			query = new JSONObject("{\r\n" + "    \"size\": 10000,\r\n" + "    \"query\": {\r\n"
+			query = new JSONObject("{\r\n" + "    \"size\": 1000,\r\n" + "    \"query\": {\r\n"
 					+ "        \"bool\": {\r\n" + "            \"must\": [\r\n" + "                {\r\n"
 					+ "                    \"bool\": {\r\n" + "                        \"must\": [\r\n"
 					+ "                            {\r\n" + "                                \"term\": {\r\n"
@@ -3339,7 +3339,7 @@ public class Blogposts {
 					+ "            \"_doc\": {\r\n" + "                \"order\": \"asc\"\r\n" + "            }\r\n"
 					+ "        }\r\n" + "    ]\r\n" + "}");
 		} else {
-			query = new JSONObject("{\r\n" + "    \"size\": 10000,\r\n" + "    \"query\": {\r\n"
+			query = new JSONObject("{\r\n" + "    \"size\": 1000,\r\n" + "    \"query\": {\r\n"
 					+ "        \"bool\": {\r\n" + "            \"adjust_pure_negative\": true,\r\n"
 					+ "            \"must\": [\r\n" + "                {\r\n" + "                    \"terms\": {\r\n"
 					+ "                        \"post\": [" + term + "]\r\n" + "                    }\r\n"
@@ -3385,7 +3385,7 @@ public class Blogposts {
 		System.out.println("DONE GETTING POSTS FOR BLOGGER");
 		if (jsonArray != null) {
 
-			for (int i = 0; i < 5000; i++) {
+			for (int i = 0; i < jsonArray.length(); i++) {
 
 				String indx = jsonArray.get(i).toString();
 				JSONObject j = new JSONObject(indx);

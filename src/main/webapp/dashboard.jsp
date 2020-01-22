@@ -2286,10 +2286,9 @@ var chord = svg.selectAll(".chord")
  });
  
 function mouseover(d, i) {
-chord.classed("fade", function(p) {
-return p.source.index != i
-&& p.target.index != i;
-});
+	chord.classed("fade", function(p) {
+		return p.source.index != i && p.target.index != i;
+	});
 }
 });
 });

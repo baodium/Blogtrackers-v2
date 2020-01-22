@@ -32,8 +32,9 @@ public class TopicModelling {
 	private Documents docSet;
 	private LdaModel model;
 	
-	public TopicModelling(ArrayList<BlogPost> blogs) {
+	public TopicModelling(ArrayList<BlogPost> blogs, int n) {
 		modelparameters ldaparameters = new modelparameters();
+		ldaparameters.topicNum = n;
 		docSet = new Documents();
 		docSet.readDocs(blogs);
 		model = new LdaModel(ldaparameters);

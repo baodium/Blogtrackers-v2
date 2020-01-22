@@ -545,7 +545,7 @@
 <link rel="stylesheet" href="assets/css/daterangepicker.css" />
 <link rel="stylesheet" href="assets/css/style.css" />
 
-  <link rel="stylesheet" type="text/css" href="multiline.css">
+<link rel="stylesheet" type="text/css" href="multiline.css">
 
 <!--end of bootsrap -->
 <script src="assets/js/jquery-3.2.1.slim.min.js"></script>
@@ -786,8 +786,11 @@
 
 						<!-- <small class="text-success pb10 ">+5% from <b>Last Week</b>
 
-    </small> -->		<div style="height: 250px; padding-right: 10px !important;" id="scroll_list_loader" class="">
-							<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />
+    </small> -->
+						<div style="height: 250px; padding-right: 10px !important;"
+							id="scroll_list_loader" class="">
+							<img style='position: absolute; top: 50%; left: 50%;'
+								src='images/loading.gif' />
 						</div>
 						<div id="scroll_list" class="hidden scrolly"
 							style="height: 250px; padding-right: 10px !important;">
@@ -818,8 +821,8 @@
 
 										if (null == session.getAttribute(tid.toString())) {
 							%>
-
-							<%-- loadKeywordDashboard(null, "<%=ids%>"); --%>
+<script> loadKeywordDashboard(null, "<%=ids%>"); </script>
+							
 							<%
 								} else {
 											json_type_2 = (null == session.getAttribute(tid.toString()))
@@ -849,7 +852,7 @@
 												dselected = "";
 												activew = "";
 											}
-							%>	
+							%>
 
 
 
@@ -857,10 +860,10 @@
 							<%-- <a
 								class="btn btn-primary form-control select-term bloggerinactive mb20 <%=dselected%> size-<%=size%>"
 							id="<%=tm.replaceAll(" ","_")%>***<%=terms_id%>"><b><%=tm%></b></a> --%>
-							<a	
-								name="<%=entry.getKey()%>"
+							<a name="<%=entry.getKey()%>"
 								class="topics topics1 btn btn-primary form-control select-term bloggerinactive mb20  size-1 <%=activew%>"
-								value="<%=entry.getValue()%>"><b><%-- <%=entry.getKey()%> --%> SEUN</b></a>
+								value="<%=entry.getValue()%>"><b> <%-- <%=entry.getKey()%> --%> SEUN
+							</b></a>
 							<%
 							k++;
 								}
@@ -904,18 +907,19 @@
 								</p>
 							</div>
 							<div id="main-chart">
-							  <div id="chart-container">
+								<div id="chart-container">
 									<div class="chart-container">
 										<!-- <div class="chart" id="d3-line-basic"></div>  -->
-										
+
 										<div id="line_graph_loader" class="hidden">
-											<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />
+											<img style='position: absolute; top: 50%; left: 50%;'
+												src='images/loading.gif' />
 										</div>
-			  
-			  
-			  							 <div class="chart line_graph" id="chart"></div>
+
+
+										<div class="chart line_graph" id="chart"></div>
 									</div>
-							  </div>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -933,7 +937,9 @@
 
 							<div class="col-md-3 mt5 mb5">
 								<h6 class="card-title mb0">Keyword Count</h6>
-								<h2 class="mb0 bold-text keyword-count"><%=NumberFormat.getNumberInstance(Locale.US).format(new Integer(keyword_count))%></h2>
+								
+								<%System.out.println(keyword_count); %>
+								<h2 class="mb0 bold-text keyword-count"><%=(null == keyword_count) ? "0" : NumberFormat.getNumberInstance(Locale.US).format(new Integer(keyword_count)) %></h2>
 								<!-- <small class="text-success">+5% from <b>Last Week</b></small> -->
 							</div>
 
@@ -1331,14 +1337,14 @@
 
 	<script>
 $(document).ready(function() {
-	loadMostPost("<%=mostactiveterm%>");
+	<%-- loadMostPost("<%=mostactiveterm%>"); --%>
 });
 
 
 $(document).ready(function() {
 	<%if (null == session.getAttribute(tid.toString() + "_termtable")) {%>
 		  // keywords have not been computed.
-		loadtermTableBulk();
+		/* loadtermTableBulk(); */
 		<%} else {
 			
 									Object data_table = (null == session.getAttribute(tid.toString() + "_termtable"))
@@ -1347,7 +1353,7 @@ $(document).ready(function() {
 
 						System.out.println("session obj" + data_table);%>
 		  // Keywords have been computed
-		  updateTable(<%=data_table%>);
+		  <%-- updateTable(<%=data_table%>); --%>
 		  
 		<%}%>
 		
@@ -1536,14 +1542,14 @@ $(document).ready(function() {
 	</script>
 	<script type="text/javascript" src="assets/vendors/d3/d3.min.js"></script>
 	<script type="text/javascript" src="assets/vendors/d3/d3_tooltip.js"></script>
-	
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
+
 	<script>
     
  /////////////////////////////////////////////////////
@@ -2186,16 +2192,16 @@ $(document).ready(function() {
     }
     
     </script>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
+
+
+
 	<!--word cloud  -->
 	<script>
 		var color = d3.scale.linear()
