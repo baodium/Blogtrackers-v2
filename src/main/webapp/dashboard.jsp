@@ -1137,6 +1137,16 @@ display: none;
 			</div>
 			
 			
+								<!-- <div style="min-height: 420px;">
+							<div class="chart-container word-cld">
+								<div class="chart" id="tagcloudcontainer">
+									<div class="jvectormap-zoomin zoombutton" id="zoom_in">+</div>
+									<div class="jvectormap-zoomout zoombutton" id="zoom_out">−</div>
+								</div>
+							</div>
+						</div> -->
+			
+			
 			<div class="col-md-6 mt20 zoom">
 				<div class="card card-style mt20">
 					<div class="card-body   p30 pt5 pb5">
@@ -1156,7 +1166,7 @@ display: none;
 							</p>
 						</div> 
 						 <div class="min-height-table" style="min-height: 500px;">
-							<div align="center" class="chart-container" id="postingfrequencycontainer">
+							<div align="center" class="chart-container chord_body" id="postingfrequencycontainer">
 								<!-- <div class="chart" id="postingfrequencybar"></div>-->
 								<div align="center" class="chart" id="chord_body" ></div>
 							</div>
@@ -1166,8 +1176,8 @@ display: none;
 					</div>
 				</div>
 				<div class="float-right">
-					<a href="topic_distribution.jsp?tid=<%=tid%>"><button
-							class="btn buttonportfolio2 mt10">
+					<a id = "hreftopicmodels" href="topic_distribution.jsp?tid=<%=tid%>"><button
+							class="btn buttonTopicModelling mt10">
 							<b class="float-left semi-bold-text">Topic Modelling
 								Analysis</b> <b class="fas fa-comment-alt float-right icondash2"></b>
 						</button></a>
@@ -2201,7 +2211,7 @@ $(function () {
 	<!-- start sample graph script -->
 	<script>
  
-var width = 450,
+/* var width = 450,
 height = 450,
 outerRadius = Math.min(width, height) / 2 - 10,
 innerRadius = outerRadius - 24;
@@ -2291,7 +2301,7 @@ function mouseover(d, i) {
 	});
 }
 });
-});
+}); */
  
 </script>
 	<!-- end sample graph script -->
@@ -2916,6 +2926,7 @@ var mymarker = [
 		src="assets/vendors/maps/vector_maps_demo.js"></script>
 	<script type="text/javascript"
 		src="chartdependencies/keywordtrendd3.js"></script>
+		<script type="text/javascript" src="chartdependencies/chord.js"></script>
 	<!--word cloud  -->
 	<script>
 	
@@ -2928,6 +2939,24 @@ var mymarker = [
 		
 		
 		$(document).ready(function(){
+			
+			<%if(null == session.getAttribute(tid.toString()+ "_chorddatadashboard")) {
+			//chord data has not been set
+			Object chordData = (null == session.getAttribute(tid.toString()+ "_chorddatadashboard"))
+						? ""
+						: session.getAttribute(tid.toString()+ "_chorddatadashboard");
+	System.out.println("testing chord not set" + chordData);
+			
+			%>
+			loadChordDashboard();
+			<%} else {
+				Object chordData = (null == session.getAttribute(tid.toString()+ "_chorddatadashboard"))
+						? ""
+						: session.getAttribute(tid.toString()+ "_chorddatadashboard");
+	System.out.println("testing chord set" + chordData);
+			%>
+			
+			<%}%>
 
 	<%if (null == session.getAttribute(tid.toString())) {%>
 		  // keywords have not been computed.
@@ -2942,7 +2971,7 @@ var mymarker = [
 						String s = json_type_2.toString();
 					
 						JSONObject o = new JSONObject(json_type_2);
-						System.out.println("testing w" + d);%>
+						//System.out.println("testing w" + d);%>
 		  		wordtagcloud("#tagcloudcontainer",450,<%=d%>); 
 		<%}%>
 	
@@ -2990,7 +3019,54 @@ var mymarker = [
 	
 	<%-- wordtagcloud("#tagcloudcontainer",450,<%=res%>); --%>
 
+	function loadChordDashboard(){
+		 $(".chord_body").html("<img src='images/loading.gif' /> LOADING CHORD GRAPH FOR <b style='color : blue;  font-size: 20px;'><%=NumberFormat.getNumberInstance(Locale.US).format(new Double(totalpost).intValue())%></b> POSTS PLEASE WAIT...."); 
+		 $('.buttonTopicModelling').prop("disabled", true);
+		 $("#hreftopicmodels").attr("href", "");
+		$.ajax({
+			url: app_url + "TD",
+			method: 'POST',
+           dataType: 'json', 
+			data: {
+				action:"loadChord",
+				blogIds: "<%=ids%>"
+			},
+			error: function(response)
+			{		
+				$(".chord_body").html("FAILED TO LOAD CHORD GRAPH.. RETRYING.. PLEASE WAIT.... <img src='images/loading.gif' />g");
+				//$(".chord_body").html("<div style='min-height: 420px;'><div class='chart-container chord_body'><div class='chart' id='postingfrequencycontainer'><div class='jvectormap-zoomin zoombutton' id='zoom_in'>+</div><div class='jvectormap-zoomout zoombutton' id='zoom_out'>−</div></div></div></div>");
+				/* wordtagcloud("#tagcloudcontainer",450,{"NO KEYWORD":1});*/
+				console.log("This is failure"+response); 
 
+			},
+			success: function(response)
+			{   				  
+			 console.log(response)
+			 
+			 $(".chord_body").html("<div style='min-height: 420px;' id='chord_body'><div class='chart-container chord_body'><div class='chart' ></div></div></div>");
+			 var container = document.getElementById("chord_body");
+			 var rotation = 0;
+			 var names = [];
+			 var colors = ["#C4C4C4", "#69B40F", "#EC1D25", "#C8125C", "#008FC8", "#10218B", "#134B24", "#737373", "#ffff00", "#ff79c5"];
+			 
+			 for (let i = 0; i < response.length; i++) {
+		    		names.push("Topic " + (i + 1));
+		    	}
+			 
+			 var options = {
+		    		    "gnames": names,
+		    		    "rotation": rotation,
+		    		    "colors": colors
+		    		};
+			 
+			 //let chordDiagram = new ChordDiagram(response, 400, "postingfrequencycontainer");
+			 drawChord(container, options, response, names)
+			 $('.buttonTopicModelling').prop("disabled", false);
+			$("#hreftopicmodels").attr("href", "<%=request.getContextPath()%>/topic_distribution.jsp?tid=<%=tid%>");
+			
+			}
+		});
+	}
 	
  </script>
 
