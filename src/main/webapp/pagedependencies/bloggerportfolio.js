@@ -7,10 +7,12 @@ $(document).ready(function(){
 	var blg = blogger.split("_");
 	var blog_id = blg[0];
 	
+	var all_ids = $("#id__").val();
+	
 	$(".active-blog").html(blg[1]);
 	$("#blogger").val(blg[1]);
 	
-//	loadStat(blg[1], all_bloggers);
+	loadStat(blg[1], all_bloggers,all_ids);
 })
 
 
@@ -305,7 +307,7 @@ function loadDailyChart(blogger,ids){
 
 function loadUrls(date_start,date_end,ids, selected_blogger_id){
 	$("#url-table").html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />");
-	alert(selected_blogger_id);
+	//alert(selected_blogger_id);
 		$.ajax({
 			url: app_url+'subpages/bloggerportfoliodomain.jsp',
 			method: 'POST',

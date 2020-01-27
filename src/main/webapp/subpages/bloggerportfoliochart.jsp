@@ -459,7 +459,8 @@ if(action.toString().equals("getstats")){
              {letter:"Sun", frequency:<%=sun%>}
                      
          ]; --%>
-         <%String [] days = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};%>
+        
+         <%String [] days = {"Sun", "Sat", "Fri", "Thu", "Wed", "Tue", "Mon"};%>
          data = [<%
              for(String d : days){
          	/* while(keys.hasNext()) { */
