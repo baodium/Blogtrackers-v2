@@ -775,7 +775,7 @@ class BlogPost {
 	        var formatDate = d3.time.format("%H:%M");
 
 	        // Colors
-	        var colorrange = ['#03A9F4', '#29B6F6', '#4FC3F7', "#17394C", "#F5CC0E", "#CE0202"];
+	        var colorrange = ["#C4C4C4", "#69B40F", "#EC1D25", "#C8125C", "#008FC8", "#10218B", "#134B24", "#737373", "#ffff00", "#ff79c5"];
 
 
 
