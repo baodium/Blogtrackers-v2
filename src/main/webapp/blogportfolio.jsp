@@ -1301,7 +1301,7 @@ import java.io.OutputStreamWriter; -->
 
  <script>
  $(document).ready(function(){
-	 <%-- loadtermss(<%=mostactiveblogid%> , $("#all_blogs").val()); --%>
+	 loadtermss(<%=mostactiveblogid%> , $("#all_blogs").val());
 	})
 	
  $(document).ready(function() {

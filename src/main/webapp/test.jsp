@@ -16,6 +16,9 @@
 <%@page import="java.time.LocalDateTime"%>
 <%@page import="java.time.format.DateTimeFormatter"%>
 <%@page import="java.time.*"%>
+<%@page import="scala.Tuple2"%>
+<%@page import="java.*"%>
+ 
 
 
 
@@ -84,11 +87,11 @@
 	
 
 	//in milliseconds
-	Instant start = Instant.now();
-JSONObject sql = post._getBloggerPosts("___NO__TERM___","NOBLOGGER","2000-01-01","2019-12-15","616"); 
+	
+//JSONObject sql = post._getBloggerPosts("___NO__TERM___","NOBLOGGER","2000-01-01","2019-12-15","616"); 
 
 //ArrayList<String> sql	 = post._getHighestTerm("CNN", "142,153,229,148,127,46,3,170,154,72,38,224,157,128,61,112,140,116,125,193,173,74,249,250,243,263,98,69,62,78,117,73,135,133,100,143,77,233,221,163,132,147,150,43,242,111,101,86,199,251,118,106,121,129,49,48,66,91,176,124,167,215,141,166,17,220,119,236,230,225,252,20,130,22,76,235,85,245,79,26,109,80,131,253,105,226,137,115,52,53,65,213,96,238,210,136,239,27,206,107,63,57,204,205,216,208,36,102,134,108,113,59,54,88", "2000-01-01","2019-12-15");
-	String sql_ = sql.get("posts").toString();
+	//String sql_ = sql.get("posts").toString();
 	/*  JSONObject result =  post._multipleTermVectors (sql); */
 	/* 	
 	Object jsonArray = sql.getJSONArray("data").get(0);
@@ -96,19 +99,17 @@ JSONObject sql = post._getBloggerPosts("___NO__TERM___","NOBLOGGER","2000-01-01"
 	String j = jsonArray.toString();
 	JSONObject j_ = new JSONObject(j);
 	String result = j_.get("permalink").toString(); */
-	String result = null;
+	/* String result = null;
 	 try{
 	  result = post.getHighestTerm(sql_);  
 	}catch(Exception e){
 		System.out.println(e);
 	} 
-	
+	 */
 	
 	
 	//your code
-	Instant end = Instant.now();
-	Duration timeElapsed = Duration.between(start, end);
-	System.out.println("Time taken: "+ timeElapsed.getSeconds() +" seconds");
+	
 	/* String ids_ =  "148";
 	String date_from = "2015-11-03";
 	String date_to = "2019-10-16";
@@ -218,8 +219,48 @@ JSONObject sql = post._getBloggerPosts("___NO__TERM___","NOBLOGGER","2000-01-01"
     
     //JSONObject allposts = post._newGetBloggerByBloggerName("date", "2008-10-18", "2019-10-30", "NASHA", "DESC");
 
+	//post.countTerms("C:\\Users\\oljohnson\\Desktop\\SQL\\file2.json");
+	/* Clustering cluster = new Clustering();
+	String pathin = "C:\\Users\\oljohnson\\Desktop\\spark_test\\LIVERAMP - Copy.txt";
+	String pathout = "C:\\Users\\oljohnson\\Desktop\\spark_test";
+	cluster._clusteringTest(pathin, pathout);
+	PrintWriter pww = response.getWriter(); */
 	
-	PrintWriter pww = response.getWriter();
+	Instant start = Instant.now();
+	
+	/* String s1 = "[('ukraine', 10), ('russia', 9), ('neutralism', 7), ('yugoslavia', 6), ('likely', 5), ('states', 5), ('two', 4), ('economy', 4), ('west', 4), ('new', 3), ('policy', 3), ('stalin', 3), ('poroshenko', 3), ('imf', 3), ('war', 3), ('tito', 3), ('blocs', 3), ('power', 2), ('though', 2), ('grey', 2), ('cold', 2), ('members', 2), ('none', 2), ('stop', 2), ('send', 2), ('soviet', 2), ('nato', 2), ('threat', 2), ('interest', 2), ('looked', 2), ('petro', 2), ('already', 2), ('putin', 2), ('offers', 2), ('means', 2), ('would', 2), ('never', 2), ('crisis', 2), ('relations', 2), ('obama', 2), ('split', 2), ('side', 2), ('rapprochement', 2), ('one', 2), ('exchange', 2), ('sending', 2), ('people', 2), ('without', 2), ('regime', 2), ('union', 2), ('economic', 2), ('eu', 2), ('might', 2), ('present', 2), ('government', 2), ('heralds', 1), ('world', 1), ('balances', 1), ('shifting', 1), ('united', 1), ('close', 1), ('rising', 1), ('allegedly', 1), ('emboldened', 1), ('vacillations', 1), ('areas', 1), ('alarmed', 1), ('hands-off', 1), ('approach', 1), ('appears', 1), ('increasingly', 1), ('revival', 1), ('defined', 1), ('foreign', 1), ('following', 1), ('1948', 1), ('geographically', 1), ('sandwiched', 1), ('relationships', 1), ('rewards', 1), ('paid-up', 1), ('modicum', 1), ('security', 1), ('considered', 1), ('mutual', 1), ('defection', 1), ('foresaw', 1), ('featured', 1), ('kill', 1), ('moscow', 1), ('ensuing', 1), ('isolation', 1), ('nevertheless', 1), ('seeing', 1), ('thorn', 1), ('communist', 1), ('trade', 1), ('deficits', 1), ('quickly', 1), ('kept', 1)]";
+	String s2 = "[('china', 34), ('chinese', 11), ('crimea', 11), ('�', 9), ('even', 7), ('xinjiang', 6), ('russia', 6), ('south', 6), ('tatars', 6), ('ethnic', 6), ('putin', 5), ('independence', 5), ('tibet', 5), ('many', 5), ('beijing', 5), ('situation', 4), ('rather', 4), ('would', 4), ('political', 4), ('kind', 4), ('trade', 4), ('policy', 4), ('resources', 4), ('west', 4), ('russian', 4), ('precedent', 4), ('crimean', 4), ('strategic', 3), ('set', 3), ('taiwan', 3), ('perhaps', 3), ('last', 3), ('week', 3), ('language', 3), ('considered', 3), ('ccp', 3), ('particularly', 3), ('ossetia', 3), ('ethnicity', 3), ('territory', 3), ('countries', 3), ('sanctions', 3), ('ukraine', 3), ('territorial', 3), ('tensions', 3), ('reason', 3), ('also', 3), ('2008', 3), ('abkhazia', 3), ('history', 3), ('among', 3), ('important', 3), ('doors', 3), ('minorities', 3), ('oil', 3), ('regions', 3), ('looking', 2), ('long-term', 2), ('open', 2), ('anything', 2), ('subtle', 2), ('incursion', 2), ('integrity', 2), ('statement', 2), ('however', 2), ('territories', 2), ('issues', 2), ('claims', 2), ('several', 2), ('sea', 2), ('nuclear', 2), ('yanukovich', 2), ('though', 2), ('kremlin', 2), ('large', 2), ('mineral', 2), ('huge', 2), ('diplomatic', 2), ('analysts', 2), ('expansion', 2), ('issued', 2), ('statements', 2), ('parties', 2), ('conflict', 2), ('crisis', 2), ('knife', 2), ('attack', 2), ('asia', 2), ('less', 2), ('exacerbating', 2), ('still', 2), ('recent', 2), ('military', 2), ('stance', 2), ('could', 2), ('much', 2), ('voicing', 2), ('relations', 2), ('x', 2), ('marks', 2)]";
+	
+	String [] values = {s1 , s2}; */
+	
+	
+	String result = null;
+	//String ids_ = "182,142,128,193,173,74,135,133,100,143,77,233,221,163,132,147,150,43,242,111,101,86,199,251,118,106,121,129,49,48,66,91,176,124,167,215,141,166,17,220,119,236,230,225,252,20,130,22,76,235,85,245,79,26,109,80,131,253,105,226,137,115,52,53,65,213,96,238,210,136,239,27,206,107,63,57,204,205,216,208,36,102,134,108,113,59,54,88";
+	String ids_ = "182,142,128,193,173,74,135,133,100,143,77,233,221,163,132,147,150,43,242,\r\n" + 
+					"			111,101,86,199,251,118,106,121,129,49,48,66,91,176,124,167,215,141,166,17,220,\r\n" + 
+					"			119,236,230,225,252,20,130,22,76,235,85,245,\r\n" + 
+					"			79,26,109,80,131,253,105,226,137,115,52";
+	Terms terms = new Terms();
+	JSONObject termsData = terms._getTerms("___NO__TERM___" ,"__NOBLOGGER__",  "2007-08-23","2018-12-07", ids_);
+	
+	Instant middle = Instant.now();
+	Duration timeElapsedmid = Duration.between(start, middle);
+	System.out.println("Time taken: "+ timeElapsedmid.getSeconds() +" seconds");
+	
+	List<Tuple2<String, Integer>> data = terms.getTupleData();
+	System.out.println("--->size"+data.size());
+	//String tuple = termsData.toString();
+	//List<Tuple2<String, Integer>> data  = new ArrayList<Tuple2<String, Integer>>();
+	
+	// = (List<Tuple2<String, Integer>>)termsData;
+	//data = (ArrayList<Tuple2<String, Integer>>) ;
+
+	System.out.println("------>>reduced"+terms.mapReduce(data,"topterm"));
+	
+	Instant end = Instant.now();
+	Duration timeElapsed = Duration.between(start, end);
+	System.out.println("Time taken: "+ timeElapsed.getSeconds() +" seconds");
+	
 %>
 
 <html>
@@ -342,7 +383,7 @@ JSONObject sql = post._getBloggerPosts("___NO__TERM___","NOBLOGGER","2000-01-01"
 					date = dtf.format(datee); */
 			  
 			  %>
-			  <h1>HIGHEST TERM --><%=/* tobj.get("title") */ result%></h1>   
+			  <h1>HIGHEST TERM --><%-- <%=/* tobj.get("title") */ result%> --%></h1>   
 			  
 			  <%/* } */%>
 			 <%--  <%

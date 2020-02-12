@@ -2939,47 +2939,36 @@ var mymarker = [
 		
 		
 		$(document).ready(function(){
-			
-			<%if(null == session.getAttribute(tid.toString()+ "_chorddatadashboard")) {
-			//chord data has not been set
-			Object chordData = (null == session.getAttribute(tid.toString()+ "_chorddatadashboard"))
-						? ""
-						: session.getAttribute(tid.toString()+ "_chorddatadashboard");
-	System.out.println("testing chord not set" + chordData);
-			
-			%>
-			loadChordDashboard();
+			 <%if (null == session.getAttribute(tid.toString())) {%>
+			  // keywords have not been computed.
+			loadKeywordDashboard(null, "<%=ids%>")
+
 			<%} else {
-				Object chordData = (null == session.getAttribute(tid.toString()+ "_chorddatadashboard"))
-						? ""
-						: session.getAttribute(tid.toString()+ "_chorddatadashboard");
-	System.out.println("testing chord set" + chordData);
-			%>
+							 /* Object json_type_2 = (null == session.getAttribute(tid.toString()))
+									? ""
+									: session.getAttribute(tid.toString());
+							Map<String, Integer> json = (HashMap<String, Integer>)json_type_2;
+							JSONObject d = new JSONObject(json);
+							String s = json_type_2.toString();
+						
+							JSONObject o = new JSONObject(json_type_2); */
+							//System.out.println("testing w" + d);%>
+			  		<%-- <wordtagcloud("#tagcloudcontainer",450,<%=d%>);   --%>
+			<%}%> 
 			
-			<%}%>
+			
+			
+			loadChordDashboard();
+			
 
-	<%if (null == session.getAttribute(tid.toString())) {%>
-		  // keywords have not been computed.
-		loadKeywordDashboard(null, "<%=ids%>")
-
-		<%} else {
-						Object json_type_2 = (null == session.getAttribute(tid.toString()))
-								? ""
-								: session.getAttribute(tid.toString());
-						Map<String, Integer> json = (HashMap<String, Integer>)json_type_2;
-						JSONObject d = new JSONObject(json);
-						String s = json_type_2.toString();
-					
-						JSONObject o = new JSONObject(json_type_2);
-						//System.out.println("testing w" + d);%>
-		  		wordtagcloud("#tagcloudcontainer",450,<%=d%>); 
-		<%}%>
+			
+	
 	
 			
 })
 		
 		
-		function loadKeywordDashboard(blogger,ids){
+		<%-- function loadKeywordDashboard(blogger,ids){
 			 $(".word-cld").html("<img src='images/loading.gif' /> COMPUTING TERMS FOR <b style='color : blue;  font-size: 20px;'><%=NumberFormat.getNumberInstance(Locale.US).format(new Double(totalpost).intValue())%></b> POSTS PLEASE WAIT...."); 
 			 $('#keywordbtn').prop("disabled", true);
 			 $("#hrefkeyword").attr("href", "");
@@ -2993,7 +2982,7 @@ var mymarker = [
 					action:"<%=tid%>",
 					ids:"<%=ids%>",
 					date_start:"<%=dt%>",
-					date_end:"<%=dte%>",
+					date_end:"<%=dte%>"
 				},
 				error: function(response)
 				{		
@@ -3014,8 +3003,49 @@ var mymarker = [
 				$("#hrefkeyword").attr("href", "<%=request.getContextPath()%>/keywordtrend.jsp?tid=<%=tid%>");
 				}
 			});
-		}
+		} --%>
+		
+		function loadKeywordDashboard(blogger,ids){
+			
+			 $(".word-cld").html("<img src='images/loading.gif' /> COMPUTING TERMS FOR <b style='color : blue;  font-size: 20px;'><%=NumberFormat.getNumberInstance(Locale.US).format(new Double(totalpost).intValue())%></b> POSTS PLEASE WAIT...."); 
+			 $('#keywordbtn').prop("disabled", true);
+			 $("#hrefkeyword").attr("href", "");
+			 
+			$.ajax({
+				url: "Terms",
+				method: 'POST',
+	            dataType: 'json',
+				data: {
+					action:"getkeyworddashboard",
+					blogger:null,
+					ids:"<%=ids%>",
+					date_start:"<%=dt%>",
+					date_end:"<%=dte%>"
+				},
+				error: function(response)
+				{		
+					$(".word-cld").html("FAILED TO COMPUTE TERMS.. RETRYING.. PLEASE WAIT.... <img src='images/loading.gif' />g");
+					$(".word-cld").html("<div style='min-height: 420px;'><div class='chart-container word-cld'><div class='chart' id='tagcloudcontainer'><div class='jvectormap-zoomin zoombutton' id='zoom_in'>+</div><div class='jvectormap-zoomout zoombutton' id='zoom_out'>−</div></div></div></div>");
+					wordtagcloud("#tagcloudcontainer",450,{"NO KEYWORD":1});
+					console.log("This is failure dashboard"+response);
 
+				},
+				success: function(response)
+				{   		
+				
+					<%-- <%JSONObject d = new JSONObject(response);%> --%>
+				 console.log(response)
+				console.log("this is the response dashboard"+response)
+				
+				    $(".word-cld").html("<div style='min-height: 420px;'><div class='chart-container word-cld'><div class='chart' id='tagcloudcontainer'><div class='jvectormap-zoomin zoombutton' id='zoom_in'>+</div><div class='jvectormap-zoomout zoombutton' id='zoom_out'>−</div></div></div></div>");
+				
+				wordtagcloud("#tagcloudcontainer",450,response); 
+				$('#keywordbtn').prop("disabled", false);
+				$("#hrefkeyword").attr("href", "<%=request.getContextPath()%>/keywordtrend.jsp?tid=<%=tid%>");
+				}
+			});
+		}
+		
 	
 	<%-- wordtagcloud("#tagcloudcontainer",450,<%=res%>); --%>
 
@@ -3024,6 +3054,7 @@ var mymarker = [
 		 $('.buttonTopicModelling').prop("disabled", true);
 		 $("#hreftopicmodels").attr("href", "");
 		$.ajax({
+			
 			url: app_url + "TD",
 			method: 'POST',
            dataType: 'json', 
