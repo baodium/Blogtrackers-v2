@@ -28,6 +28,7 @@
 			? "blog"
 			: request.getParameter("sortby").toString().replaceAll("[^a-zA-Z]", " ");
 	System.out.println("email--" + email);
+	
 	if (user == null || user == "") {
 		response.sendRedirect("index.jsp");
 	} else {

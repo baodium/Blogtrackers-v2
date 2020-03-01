@@ -1028,6 +1028,8 @@
 												JSONObject tobj = null;
 
 												int k = 0;
+												String activeDef = "";
+												String activeDefLink = "";
 
 												/* for(int i=0; i< allposts.size(); i++){
 													tres = allposts.get(i).toString();	
@@ -1073,6 +1075,14 @@
 													title = title.replace(mostactiveterm, replace);
 													title = title.replace(active2, replace);
 													title = title.replace(active3, replace);
+													
+													if(i == 0){
+														activeDef = "activeselectedblog";
+														activeDefLink = "";
+													}else{
+														activeDefLink = "makeinvisible";
+														activeDef = "";
+													}
 
 													/* 	LocalDate datee = LocalDate.parse(date);
 														DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");
@@ -1081,10 +1091,10 @@
 													/* BY SEUN ENDING */
 								%>
 								<tr>
-									<td><a class="blogpost_link cursor-pointer blogpost_link"
+									<td><a class="blogpost_link cursor-pointer blogpost_link <%=activeDef %>"
 										id="<%-- <%=tobj.get("blogpost_id")%> --%><%=blogpost_id%>">
 											<%-- <%=tobj.get("title") %> --%><%=title%></a><br /> <a
-										class="mt20 viewpost makeinvisible"
+										class="mt20 viewpost <%=activeDefLink %>"
 										href="<%-- <%=tobj.get("permalink") %> --%><%=perma_link%>"
 										target="_blank"> <buttton
 												class="btn btn-primary btn-sm mt10 visitpost">Visit
@@ -2172,7 +2182,7 @@ $(document).ready(function() {
     		 
     		 
     	 }else{
-    		 alert("no active selection");
+    		 console.log("no active selection");
     	 }
     	
     	

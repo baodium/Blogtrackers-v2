@@ -538,6 +538,9 @@
 			possentiment=new Liwc()._searchRangeAggregate("date", yst[0]+"-01-01", yend[0]+"-12-31", sentimentpost,"posemo");
 			negsentiment=new Liwc()._searchRangeAggregate("date", yst[0]+"-01-01", yend[0]+"-12-31", sentimentpost,"negemo");
 			
+			System.out.println("dddddddddddddddddddde"+possentiment);
+			System.out.println("------------------------"+negsentiment);
+			
 			JSONArray sortedyearsarray = yearsarray;//post._sortJson(yearsarray);
 			int highestfrequency = 0;
 			 String blogids = "";
@@ -858,7 +861,7 @@ JSONObject allposts = new JSONObject();
 						<h5 class="text-primary mb0">
 							<i class="fas fa-exchange-alt icondash"></i>Influence
 						</h5>
-						<h3 id="normalized_influence" class="text-blue mb0 countdash dash-label total-influence"><%=NumberFormat.getNumberInstance(Locale.US).format(Float.parseFloat(totalinfluence))%></h3>				
+						<h3 id="normalized_influence" class="text-blue mb0 countdash dash-label total-influence"></h3>				
 					</div>
 				</div>
 			</div>
@@ -2074,7 +2077,8 @@ JSONObject allposts = new JSONObject();
                      
          ]; --%>
          
-         <%String [] days = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};%>
+         
+         <%String [] days = {"Sun", "Sat", "Fri", "Thu", "Wed", "Tue", "Mon"};%>
          data = [<%
              for(String d : days){
          	/* while(keys.hasNext()) { */

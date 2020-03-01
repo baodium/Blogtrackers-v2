@@ -558,7 +558,7 @@ if (detail.size() > 0) {
 							</p>
 						</div>
 						<div class="chart-container">
-							<div class="chart tagcloudcontainer" id="tagcloudcontainer" style="min-height: 300px;"></div>
+							<div class="chart tagcloudcontainer" id="tagcloudcontainer" style="min-height: 600px;"></div>
 							<div class="jvectormap-zoomin zoombutton" id="zoom_in">+</div>
 							<div class="jvectormap-zoomout zoombutton" id="zoom_out">−</div>
 						</div>
@@ -1767,7 +1767,8 @@ class BlogPosts {
 			     $('#DataTables_Table_0_wrapper').DataTable( {
 			         "scrollY": 430,
 			         "scrollX": false,
-			          "pagingType": "simple"
+			          "pagingType": "simple",
+			        	  "ordering": false
 			     /*      ,
 			          dom: 'Bfrtip',
 

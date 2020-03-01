@@ -875,6 +875,8 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
 											String date =null;
 											int j=0;
 											int k=0;
+											String activeDef = "";
+											String activeDefLink = "";
 											
 											
 											for(int i=0; i< all.length(); i++){
@@ -889,10 +891,18 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
 												LocalDate datee = LocalDate.parse(dat);
 												DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");
 												date = dtf.format(datee);
+												
+												if(i == 0){
+													activeDef = "activeselectedblog";
+													activeDefLink = "";
+												}else{
+													activeDefLink = "makeinvisible";
+													activeDef = "";
+												}
 									%>
                                     <tr>
-                                   <td><a class="blogpost_link cursor-pointer" id="<%=tobj.get("blogpost_id")%>" ><%=tobj.get("title") %></a><br/>
-								<a class="mt20 viewpost makeinvisible" href="<%=tobj.get("permalink") %>" target="_blank"><buttton class="btn btn-primary btn-sm mt10 visitpost">Visit Post &nbsp;<i class="fas fa-external-link-alt"></i></buttton></a></td>
+                                   <td><a class="blogpost_link cursor-pointer <%=activeDef %>" id="<%=tobj.get("blogpost_id")%>" ><%=tobj.get("title") %></a><br/>
+								<a class="mt20 viewpost <%=activeDefLink %>" href="<%=tobj.get("permalink") %>" target="_blank"><buttton class="btn btn-primary btn-sm mt10 visitpost">Visit Post &nbsp;<i class="fas fa-external-link-alt"></i></buttton></a></td>
 								<td align="center"><%=date %></td>
                                      </tr>
                                     <% }} %>
@@ -1634,7 +1644,7 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
      $('#DataTables_Table_0_wrapper').DataTable( {
          "scrollY": 430,
          "scrollX": true,
-         "order": [],
+         "ordering": false,
           "pagingType": "simple",
         	  "columnDefs": [
         	      { "width": "65%", "targets": 0 },
