@@ -1,257 +1,419 @@
+<%-- <%@page import="breeze.linalg.cholesky$"%> --%>
+<%@page import="com.fasterxml.jackson.databind.ObjectMapper"%>
 <%@page import="authentication.*"%>
 <%@page import="java.util.*"%>
 <%@page import="java.util.*"%>
-<%@page import="java.io.File"%>
-<%@page import="util.Blogposts"%>
-<%@page import="java.text.NumberFormat" %>
-<%@page import="java.util.Locale" %>
+<%@page import="java.io.*"%>
+<%@page import="util.*"%>
+<%@page import="java.text.NumberFormat"%>
+<%@page import="java.util.Locale"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="org.json.JSONObject"%>
+<%@page import="org.json.*"%>
+<%@page import="javafx.util.Pair"%>
+
+<%-- <%@page import="org.json.simple.parser.JSONParser"%>
+<%@page import="org.json.simple.parser.ParseException"%> --%>
+
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%
-Object email = (null == session.getAttribute("email")) ? "" : session.getAttribute("email");
-
-//if (email == null || email == "") {
+	Object email = (null == session.getAttribute("email")) ? "" : session.getAttribute("email");
+	Object tid = (null == request.getParameter("tid")) ? "" : request.getParameter("tid");
+	//if (email == null || email == "") {
 	//response.sendRedirect("login.jsp");
-//}else{
+	//}else{
 
-ArrayList<?> userinfo = new ArrayList();//null;
-String profileimage= "";
-String username ="";
-String name="";
-String phone="";
-String date_modified = "";
+	ArrayList<?> userinfo = new ArrayList();//null;
+	String profileimage = "";
+	String username = "";
+	String name = "";
+	String phone = "";
+	String date_modified = "";
 
-userinfo = new DbConnection().query("SELECT * FROM usercredentials where Email = '"+email+"'");
- //System.out.println(userinfo);
-if (userinfo.size()<1) {
-	//response.sendRedirect("login.jsp");
-}else{
-userinfo = (ArrayList<?>)userinfo.get(0);
-try{
-username = (null==userinfo.get(0))?"":userinfo.get(0).toString();
+	userinfo = new DbConnection().query("SELECT * FROM usercredentials where Email = '" + email + "'");
+	//System.out.println(userinfo);
+	if (userinfo.size() < 1) {
+		//response.sendRedirect("login.jsp");
+	} else {
+		userinfo = (ArrayList<?>) userinfo.get(0);
+		try {
+			username = (null == userinfo.get(0)) ? "" : userinfo.get(0).toString();
 
-name = (null==userinfo.get(4))?"":(userinfo.get(4).toString());
+			name = (null == userinfo.get(4)) ? "" : (userinfo.get(4).toString());
 
+			email = (null == userinfo.get(2)) ? "" : userinfo.get(2).toString();
+			phone = (null == userinfo.get(6)) ? "" : userinfo.get(6).toString();
+			//date_modified = userinfo.get(11).toString();
 
-email = (null==userinfo.get(2))?"":userinfo.get(2).toString();
-phone = (null==userinfo.get(6))?"":userinfo.get(6).toString();
-//date_modified = userinfo.get(11).toString();
+			String userpic = userinfo.get(9).toString();
+			String[] user_name = name.split(" ");
+			username = user_name[0];
 
-String userpic = userinfo.get(9).toString();
-String[] user_name = name.split(" ");
-username = user_name[0];
+			String path = application.getRealPath("/").replace('\\', '/') + "images/profile_images/";
+			String filename = userinfo.get(9).toString();
 
-String path=application.getRealPath("/").replace('\\', '/')+"images/profile_images/";
-String filename = userinfo.get(9).toString();
+			profileimage = "images/default-avatar.png";
+			if (userpic.indexOf("http") > -1) {
+				profileimage = userpic;
+			}
 
-profileimage = "images/default-avatar.png";
-if (userpic.indexOf("http") > -1) {
-	profileimage = userpic;
-}
+			File f = new File(filename);
 
-File f = new File(filename);
+			//System.out.println("new_pat--"+path_new);
 
+			File path_new = new File(application.getRealPath("/").replace('/', '/') + "images/profile_images");
+			if (f.exists() && !f.isDirectory()) {
+				profileimage = "images/profile_images/" + userinfo.get(2).toString() + ".jpg";
+			} else {
+				/* new File("/path/directory").mkdirs(); */
+				path_new.mkdirs();
+				System.out.println("pathhhhh1--" + path_new);
+			}
 
-//System.out.println("new_pat--"+path_new);
+			if (path_new.exists()) {
 
-File path_new = new File(application.getRealPath("/").replace('/', '/') + "images/profile_images"); 
-if (f.exists() && !f.isDirectory()) {
-	profileimage = "images/profile_images/" + userinfo.get(2).toString() + ".jpg";
-}else{
-	/* new File("/path/directory").mkdirs(); */
-	path_new.mkdirs();
-	System.out.println("pathhhhh1--"+path_new);
-}
+				String t = "/images/profile_images";
+				int p = userpic.indexOf(t);
+				System.out.println(p);
+				if (p != -1) {
 
+					System.out.println("pic path---" + userpic);
+					System.out.println("path exists---" + userpic.substring(0, p));
+					String path_update = userpic.substring(0, p);
+					if (!path_update.equals(path_new.toString())) {
+						profileimage = "images/profile_images/" + userinfo.get(2).toString() + ".jpg";
+						/* profileimage=userpic.replace(userpic.substring(0, p), path_new.toString()); */
+						String new_file_path = path_new.toString().replace("\\images\\profile_images", "") + "/"
+								+ profileimage;
+						System.out.println("ready to be updated--" + new_file_path);
+						/*new DbConnection().updateTable("UPDATE usercredentials SET profile_picture  = '" + pass + "' WHERE Email = '" + email + "'"); */
+					}
+				} else {
+					path_new.mkdirs();
+					profileimage = "images/profile_images/" + userinfo.get(2).toString() + ".jpg";
+					/* profileimage=userpic.replace(userpic.substring(0, p), path_new.toString()); */
+					String new_file_path = path_new.toString().replace("\\images\\profile_images", "") + "/"
+							+ profileimage;
+					System.out.println("ready to be updated--" + new_file_path);
 
-if (path_new.exists()) {
-	
-	String t = "/images/profile_images";
-	int p=userpic.indexOf(t);
-	System.out.println(p);
-	if (p != -1) {
-		
-		System.out.println("pic path---"+userpic);
-		System.out.println("path exists---"+userpic.substring(0, p));
-		String path_update=userpic.substring(0, p);
-		if (!path_update.equals(path_new.toString())) {
-			profileimage = "images/profile_images/" + userinfo.get(2).toString() + ".jpg";
-			/* profileimage=userpic.replace(userpic.substring(0, p), path_new.toString()); */
-			String new_file_path = path_new.toString().replace("\\images\\profile_images", "")+"/"+profileimage;
-			System.out.println("ready to be updated--"+ new_file_path);
-			/*new DbConnection().updateTable("UPDATE usercredentials SET profile_picture  = '" + pass + "' WHERE Email = '" + email + "'"); */											
+					new DbConnection().updateTable(
+							"UPDATE usercredentials SET profile_picture  = '" + "images/profile_images/"
+									+ userinfo.get(2).toString() + ".jpg" + "' WHERE Email = '" + email + "'");
+					System.out.println("updated");
+				}
+			} else {
+				System.out.println("path doesnt exist");
+			}
+		} catch (Exception e) {
 		}
-	}else{
-		path_new.mkdirs();
-		profileimage = "images/profile_images/" + userinfo.get(2).toString() + ".jpg";
-		/* profileimage=userpic.replace(userpic.substring(0, p), path_new.toString()); */
-		String new_file_path = path_new.toString().replace("\\images\\profile_images", "")+"/"+profileimage;
-		System.out.println("ready to be updated--"+ new_file_path);
+
+	}
+
+	Clustering cluster = new Clustering();
+
+	//String url = "http://114.167.35.50:5000/";
+	/* String url = "http://127.0.0.1:5000/"; */
+	/* JSONParser jsonParser = new JSONParser();
+	FileReader reader = new FileReader(request.getContextPath()+"\\clustering.json");
+	Object obj = jsonParser.parse(reader);
+	
+	JSONObject query = new JSONObject(obj.toString()); */
+	//System.out.println(query);
+
+	/* JSONObject query = cluster.getPostsbyIdForApi("806","2012-11-03","2019-10-16");
+	JSONObject result = cluster.getResult2(url, query.toString());  */
+
+	//JSONObject result = cluster._getResult(url, query);
+	//JSONObject result = cluster._getResult3(url, query);
+
+	/* System.out.println(result);
+	String postMentioned = null; */
+
+	/* for(int i = 0; i < result.length(); i++){
+	Object posts_ids = result.getJSONArray(String.valueOf(i)).getJSONObject(0).getJSONObject("cluster_" + (i + 1)).getJSONArray("post_ids");
+	System.out.println(posts_ids.toString());
+	}   */
+	//System.out.println(result.length());
+	//JSONObject result = new JSONObject();
+	String tracker_id = tid.toString();
+	//get postids from each cluster in tracker and save in JSONObject
+	ArrayList result = cluster._getClusters(tracker_id);
+
+	JSONObject res = new JSONObject(result.get(0).toString());
+	JSONObject source = new JSONObject(res.get("_source").toString());
+
+	//			ArrayList R2 = (ArrayList)result.get(0);
+	//for()
+	//			System.out.println(source.get("cluster_3"));
+	HashMap<Pair<String, String>, JSONArray> clusterResult = new HashMap<Pair<String, String>, JSONArray>();
+	//JSONObject key_val = new JSONObject();
+	Pair<String, String> key_val = new Pair<String, String>(null, null);
+
+	HashMap<String, String> key_val_posts = new HashMap<String, String>();
+	ArrayList<JSONObject> scatterplotfinaldata = new ArrayList<JSONObject>();
+	
+
+	for (int i = 1; i < 11; i++) {
+		String cluster_ = "cluster_" + String.valueOf(i);
+		String post_ids = source.get(cluster_).toString();
 		
-		new DbConnection().updateTable("UPDATE usercredentials SET profile_picture  = '" + "images/profile_images/" + userinfo.get(2).toString() + ".jpg" + "' WHERE Email = '" + email + "'");
-		System.out.println("updated");
-	}				
-}else{
-	System.out.println("path doesnt exist");
-}
-}catch(Exception e){}
+		ArrayList svd = cluster._getSvd(post_ids);
+		for(int j = 0; j < svd.size(); j++){
+			JSONObject scatter_plot = new JSONObject();
+			
+			JSONObject source_ = new JSONObject(svd.get(0).toString());
+			Object x_y = source_.getJSONObject("_source").get("svd");
+			Object p_id = source_.getJSONObject("_source").get("post_id");
+			
+			String x = x_y.toString().split(" ")[0];
+			String y = x_y.toString().split(" ")[1];
+			String postid = p_id.toString();
+			
+			scatter_plot.put("cluster",String.valueOf(i));
+			scatter_plot.put("new_x",x);
+			scatter_plot.put("new_y",y);
+			
+			scatterplotfinaldata.add(scatter_plot);
+		}
+		
+		
+		//System.out.println(svd);
 
+		JSONArray postDataAll = cluster.getPosts(post_ids, "", "", "__ONLY__POST__ID__");
 
-}
+		key_val = new Pair<String, String>(cluster_, post_ids);
+		//key_val.put(cluster_,post_ids);
+		System.out.println("clusters --" + cluster_);
 
+		/* for(int j = 0; j < postDataAll.length(); j++){
+			
+		} */
+		key_val_posts.put(cluster_, post_ids);
+		clusterResult.put(key_val, postDataAll);
+
+	}
+
+	session.setAttribute(tid.toString() + "cluster_result", clusterResult);
+	session.setAttribute(tid.toString() + "cluster_result_key_val", key_val_posts);
+	//
 %>
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Blogtrackers - Clustering</title>
- <link rel="shortcut icon" href="images/favicons/favicon-48x48.png">
-  <link rel="apple-touch-icon" href="images/favicons/favicon-48x48.png">
-  <link rel="apple-touch-icon" sizes="96x96" href="images/favicons/favicon-96x96.png">
-  <link rel="apple-touch-icon" sizes="144x144" href="images/favicons/favicon-144x144.png">
-  <!-- start of bootsrap -->
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans:600,700" rel="stylesheet">
-  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap-grid.css"/>
-  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.css"/>
-  <link rel="stylesheet" href="assets/fonts/fontawesome/css/fontawesome-all.css" />
-  <link rel="stylesheet" href="assets/fonts/iconic/css/open-iconic.css" />
- <link rel="stylesheet" href="assets/vendors/bootstrap-daterangepicker/daterangepicker.css" />
- <link rel="stylesheet" href="assets/css/table.css" />
- <link rel="stylesheet" href="assets/vendors/DataTables/dataTables.bootstrap4.min.css" />
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blogtrackers - Clustering</title>
+<link rel="shortcut icon" href="images/favicons/favicon-48x48.png">
+<link rel="apple-touch-icon" href="images/favicons/favicon-48x48.png">
+<link rel="apple-touch-icon" sizes="96x96"
+	href="images/favicons/favicon-96x96.png">
+<link rel="apple-touch-icon" sizes="144x144"
+	href="images/favicons/favicon-144x144.png">
+<!-- start of bootsrap -->
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:600,700"
+	rel="stylesheet">
+<link rel="stylesheet" href="assets/bootstrap/css/bootstrap-grid.css" />
+<link rel="stylesheet" href="assets/bootstrap/css/bootstrap.css" />
+<link rel="stylesheet"
+	href="assets/fonts/fontawesome/css/fontawesome-all.css" />
+<link rel="stylesheet" href="assets/fonts/iconic/css/open-iconic.css" />
+<link rel="stylesheet"
+	href="assets/vendors/bootstrap-daterangepicker/daterangepicker.css" />
+<link rel="stylesheet" href="assets/css/table.css" />
+<link rel="stylesheet"
+	href="assets/vendors/DataTables/dataTables.bootstrap4.min.css" />
 
 <link rel="stylesheet" href="assets/css/daterangepicker.css" />
-  <link rel="stylesheet" href="assets/css/style.css" />
+<link rel="stylesheet" href="assets/css/style.css" />
 
-  <!--end of bootsrap -->
-  <script src="assets/js/jquery-3.2.1.slim.min.js"  ></script>
-<script src="assets/js/popper.min.js" ></script>
+<!--end of bootsrap -->
+<script src="assets/js/jquery-3.2.1.slim.min.js"></script>
+<script src="assets/js/popper.min.js"></script>
 <script src="pagedependencies/googletagmanagerscript.js"></script>
+<script async src="pagedependencies/clustering.js">
+</script>
+
+<script>
+//console.log('scatter data');
+
+</script>
+
 </head>
 <body>
+	<input type="hidden" id="tid" value="<%=tid.toString()%>" />
+	<%@include file="subpages/googletagmanagernoscript.jsp"%>
+	<div class="modal-notifications">
+		<div class="row">
+			<div class="col-lg-10 closesection"></div>
+			<div class="col-lg-2 col-md-12 notificationpanel">
+				<div id="closeicon" class="cursor-pointer">
+					<i class="fas fa-times-circle"></i>
+				</div>
+				<div class="profilesection col-md-12 mt50">
+					<%
+						if (userinfo.size() > 0) {
+					%>
+					<div class="text-center mb10">
+						<img src="<%=profileimage%>" width="60" height="60"
+							onerror="this.src='images/default-avatar.png'" alt="" />
+					</div>
+					<div class="text-center" style="margin-left: 0px;">
+						<h6 class="text-primary m0 bolder profiletext"><%=name%></h6>
+						<p class="text-primary profiletext"><%=email%></p>
+					</div>
+					<%
+						}
+					%>
+				</div>
+				<div id="othersection" class="col-md-12 mt10" style="clear: both">
+					<%
+						if (userinfo.size() > 0) {
+					%>
+					<a class="cursor-pointer profilemenulink"
+						href="<%=request.getContextPath()%>/notifications.jsp"><h6
+							class="text-primary">
+							Notifications <b id="notificationcount" class="cursor-pointer">12</b>
+						</h6> </a> <a class="cursor-pointer profilemenulink"
+						href="<%=request.getContextPath()%>/addblog.jsp"><h6
+							class="text-primary">Add Blog</h6></a> <a
+						class="cursor-pointer profilemenulink"
+						href="<%=request.getContextPath()%>/profile.jsp"><h6
+							class="text-primary">Profile</h6></a> <a
+						class="cursor-pointer profilemenulink"
+						href="<%=request.getContextPath()%>/logout"><h6
+							class="text-primary">Log Out</h6></a>
+					<%
+						} else {
+					%>
+					<a class="cursor-pointer profilemenulink"
+						href="<%=request.getContextPath()%>/login"><h6
+							class="text-primary">Login</h6></a>
 
-<%@include file="subpages/googletagmanagernoscript.jsp" %>
-    <div class="modal-notifications">
-<div class="row">
-<div class="col-lg-10 closesection">
-	
+					<%
+						}
+					%>
+				</div>
+			</div>
+		</div>
 	</div>
-  <div class="col-lg-2 col-md-12 notificationpanel">
-    <div id="closeicon" class="cursor-pointer"><i class="fas fa-times-circle"></i></div>
-  <div class="profilesection col-md-12 mt50">
-  <% if(userinfo.size()>0){ %>
-    <div class="text-center mb10" ><img src="<%=profileimage%>" width="60" height="60" onerror="this.src='images/default-avatar.png'" alt="" /></div>
-    <div class="text-center" style="margin-left:0px;">
-      <h6 class="text-primary m0 bolder profiletext"><%=name%></h6>
-      <p class="text-primary profiletext"><%=email%></p>
-    </div>
-  <%} %>
-  </div>
-  <div id="othersection" class="col-md-12 mt10" style="clear:both">
-  <% if(userinfo.size()>0){ %>
-  <a class="cursor-pointer profilemenulink" href="<%=request.getContextPath()%>/notifications.jsp"><h6 class="text-primary">Notifications <b id="notificationcount" class="cursor-pointer">12</b></h6> </a>
-   <a class="cursor-pointer profilemenulink" href="<%=request.getContextPath()%>/addblog.jsp"><h6 class="text-primary">Add Blog</h6></a>
-  <a class="cursor-pointer profilemenulink" href="<%=request.getContextPath()%>/profile.jsp"><h6 class="text-primary">Profile</h6></a>
-  <a class="cursor-pointer profilemenulink" href="<%=request.getContextPath()%>/logout"><h6 class="text-primary">Log Out</h6></a>
-  <%}else{ %>
-  <a class="cursor-pointer profilemenulink" href="<%=request.getContextPath()%>/login"><h6 class="text-primary">Login</h6></a>
-  
-  <%} %>
-  </div>
-  </div>
-</div>
-</div>
 
-      <nav class="navbar navbar-inverse bg-primary">
-        <div class="container-fluid mt10 mb10">
+	<nav class="navbar navbar-inverse bg-primary">
+		<div class="container-fluid mt10 mb10">
 
-          <div class="navbar-header d-none d-lg-inline-flex d-xl-inline-flex  col-lg-3">
-         <a class="navbar-brand text-center logohomeothers" href="./">
-  </a>
-          </div>
-          <!-- Mobile Menu -->
-          <nav class="navbar navbar-dark bg-primary float-left d-md-block d-sm-block d-xs-block d-lg-none d-xl-none" id="menutoggle">
-          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-          </button>
-          </nav>
-          <!-- <div class="navbar-header ">
+			<div
+				class="navbar-header d-none d-lg-inline-flex d-xl-inline-flex  col-lg-3">
+				<a class="navbar-brand text-center logohomeothers" href="./"> </a>
+			</div>
+			<!-- Mobile Menu -->
+			<nav
+				class="navbar navbar-dark bg-primary float-left d-md-block d-sm-block d-xs-block d-lg-none d-xl-none"
+				id="menutoggle">
+				<button class="navbar-toggler" type="button" data-toggle="collapse"
+					data-target="#navbarToggleExternalContent"
+					aria-controls="navbarToggleExternalContent" aria-expanded="false"
+					aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+			</nav>
+			<!-- <div class="navbar-header ">
           <a class="navbar-brand text-center" href="#"><img src="images/blogtrackers.png" /></a>
           </div> -->
-          <!-- Mobile menu  -->
-          <div class="col-lg-6 themainmenu"  align="center">
-            <ul class="nav main-menu2" style="display:inline-flex; display:-webkit-inline-flex; display:-mozkit-inline-flex;">
-             <li><a class="bold-text" href="<%=request.getContextPath()%>/blogbrowser.jsp"><i class="homeicon"></i> <b class="bold-text ml30">Home</b></a></li>
-          <li><a class="bold-text" href="<%=request.getContextPath()%>/trackerlist.jsp"><i class="trackericon"></i><b class="bold-text ml30">Trackers</b></a></li>
-          <li><a class="bold-text" href="<%=request.getContextPath()%>/favorites.jsp"><i class="favoriteicon"></i> <b class="bold-text ml30">Favorites</b></a></li>
-           
-                  </ul>
-          </div>
+			<!-- Mobile menu  -->
+			<div class="col-lg-6 themainmenu" align="center">
+				<ul class="nav main-menu2"
+					style="display: inline-flex; display: -webkit-inline-flex; display: -mozkit-inline-flex;">
+					<li><a class="bold-text"
+						href="<%=request.getContextPath()%>/blogbrowser.jsp"><i
+							class="homeicon"></i> <b class="bold-text ml30">Home</b></a></li>
+					<li><a class="bold-text"
+						href="<%=request.getContextPath()%>/trackerlist.jsp"><i
+							class="trackericon"></i><b class="bold-text ml30">Trackers</b></a></li>
+					<li><a class="bold-text"
+						href="<%=request.getContextPath()%>/favorites.jsp"><i
+							class="favoriteicon"></i> <b class="bold-text ml30">Favorites</b></a></li>
 
-   
-     <div class="col-lg-3">
-  	 <% if(userinfo.size()>0){ %>
-  		
-	  <ul class="nav navbar-nav" style="display:block;">
-		  <li class="dropdown dropdown-user cursor-pointer float-right">
-		  <a class="dropdown-toggle " id="profiletoggle" data-toggle="dropdown">
-		    <i class="fas fa-circle" id="notificationcolor"></i>
-		   
-		  <img src="<%=profileimage%>" width="50" height="50" onerror="this.src='images/default-avatar.png'" alt="" class="" />
-		  <span><%=username%></span></a>
-			
-		   </li>
-	    </ul>
-         <% }else{ %>
-         <ul class="nav main-menu2 float-right" style="display:inline-flex; display:-webkit-inline-flex; display:-mozkit-inline-flex;">
-        
-        	<li class="cursor-pointer"><a href="login.jsp">Login</a></li>
-         </ul>
-        <% } %>
-      </div>
+				</ul>
+			</div>
 
-          </div>
-          <div class="col-md-12 bg-dark d-md-block d-sm-block d-xs-block d-lg-none d-xl-none p0 mt20">
-          <div class="collapse" id="navbarToggleExternalContent">
-            <ul class="navbar-nav mr-auto mobile-menu">
-                        <li class="nav-item active">
-                <a class="" href="<%=request.getContextPath()%>/blogbrowser.jsp">Home <span class="sr-only">(current)</span></a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="<%=request.getContextPath()%>/trackerlist.jsp">Trackers</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="<%=request.getContextPath()%>/favorites.jsp">Favorites</a>
-              </li>
-                </ul>
-        </div>
-          </div>
 
-          <!-- <div class="col-md-12 mt0">
+			<div class="col-lg-3">
+				<%
+					if (userinfo.size() > 0) {
+				%>
+
+				<ul class="nav navbar-nav" style="display: block;">
+					<li class="dropdown dropdown-user cursor-pointer float-right">
+						<a class="dropdown-toggle " id="profiletoggle"
+						data-toggle="dropdown"> <i class="fas fa-circle"
+							id="notificationcolor"></i> <img src="<%=profileimage%>"
+							width="50" height="50"
+							onerror="this.src='images/default-avatar.png'" alt="" class="" />
+							<span><%=username%></span></a>
+
+					</li>
+				</ul>
+				<%
+					} else {
+				%>
+				<ul class="nav main-menu2 float-right"
+					style="display: inline-flex; display: -webkit-inline-flex; display: -mozkit-inline-flex;">
+
+					<li class="cursor-pointer"><a href="login.jsp">Login</a></li>
+				</ul>
+				<%
+					}
+				%>
+			</div>
+
+		</div>
+		<div
+			class="col-md-12 bg-dark d-md-block d-sm-block d-xs-block d-lg-none d-xl-none p0 mt20">
+			<div class="collapse" id="navbarToggleExternalContent">
+				<ul class="navbar-nav mr-auto mobile-menu">
+					<li class="nav-item active"><a class=""
+						href="<%=request.getContextPath()%>/blogbrowser.jsp">Home <span
+							class="sr-only">(current)</span></a></li>
+					<li class="nav-item"><a class="nav-link"
+						href="<%=request.getContextPath()%>/trackerlist.jsp">Trackers</a>
+					</li>
+					<li class="nav-item"><a class="nav-link"
+						href="<%=request.getContextPath()%>/favorites.jsp">Favorites</a></li>
+				</ul>
+			</div>
+		</div>
+
+		<!-- <div class="col-md-12 mt0">
           <input type="search" class="form-control p30 pt5 pb5 icon-big border-none bottom-border text-center blogbrowsersearch nobackground" placeholder="Search Trackers" />
           </div> -->
 
-        </nav>
-<div class="container analyticscontainer">
-<div class="row bottom-border pb20">
-<div class="col-md-6 paddi">
-<nav class="breadcrumb">
-  <a class="breadcrumb-item text-primary" href="trackerlist.html">MY TRACKER</a>
-  <a class="breadcrumb-item text-primary" href="#">Second Tracker</a>
-  <a class="breadcrumb-item active text-primary" href="postingfrequency.html">Clustering</a>
-  
-  </nav>
-<div>Tracking: <button class="btn btn-primary stylebutton1">All Blogs</button></div>
-</div>
+	</nav>
+	<div class="container analyticscontainer">
+		<div class="row bottom-border pb20">
+			<div class="col-md-6 paddi">
+				<nav class="breadcrumb">
+					<a class="breadcrumb-item text-primary" href="trackerlist.html">MY
+						TRACKER</a> <a class="breadcrumb-item text-primary" href="#">Second
+						Tracker</a> <a class="breadcrumb-item active text-primary"
+						href="postingfrequency.html">Clustering</a>
 
-<div class="col-md-6 text-right mt10">
-<div class="text-primary demo"><h6 id="reportrange">Date: <span>02/21/18 - 02/28/18</span></h6></div>
-<div>
-  <div class="btn-group mt5" data-toggle="buttons">
- <!--  <label class="btn btn-primary btn-sm daterangebutton legitRipple nobgnoborder"> <input type="radio" name="options" value="day" autocomplete="off" > Day
+				</nav>
+				<div>
+					Tracking:
+					<button class="btn btn-primary stylebutton1">All Blogs</button>
+				</div>
+			</div>
+
+			<div class="col-md-6 text-right mt10">
+				<div class="text-primary demo">
+					<h6 id="reportrange">
+						Date: <span>02/21/18 - 02/28/18</span>
+					</h6>
+				</div>
+				<div>
+					<div class="btn-group mt5" data-toggle="buttons">
+						<!--  <label class="btn btn-primary btn-sm daterangebutton legitRipple nobgnoborder"> <input type="radio" name="options" value="day" autocomplete="off" > Day
   	</label>
     <label class="btn btn-primary btn-sm nobgnoborder"> <input type="radio" name="options" value="week" autocomplete="off" >Week
   	</label>
@@ -260,15 +422,15 @@ if (path_new.exists()) {
     <label class="btn btn-primary btn-sm text-center nobgnoborder">Year <input type="radio" name="options" value="year" autocomplete="off" >
   	</label>
     <label class="btn btn-primary btn-sm nobgnoborder " id="custom">Custom</label> -->
-  </div>
+					</div>
 
-  <!-- Day Week Month Year <b id="custom" class="text-primary">Custom</b> -->
+					<!-- Day Week Month Year <b id="custom" class="text-primary">Custom</b> -->
 
-</div>
-</div>
-</div>
+				</div>
+			</div>
+		</div>
 
-<!-- <div class="row p40 border-top-bottom mt20 mb20">
+		<!-- <div class="row p40 border-top-bottom mt20 mb20">
   <div class="col-md-2">
 <small class="text-primary">Selected Blogger</small>
 <h2 class="text-primary styleheading">AdNovum <div class="circle"></div></h2>
@@ -279,366 +441,477 @@ if (path_new.exists()) {
   </div>
 </div> -->
 
-<div class="row mt20">
-<div class="col-md-3">
+		<div class="row mt20">
+			<div class="col-md-3">
 
-<div class="card card-style mt20">
-  <div class="card-body  p30 pt5 pb5 mb20">
-    <h5 class="mt20 mb20">Topics</h5>
-    <div style="padding-right:10px !important;">
-      <input type="search" class="form-control stylesearch mb20" placeholder="Search " /></div>
-    <div class="scrolly" style="height:270px; padding-right:10px !important;">
-    <a class="btn btn-primary form-control stylebuttonactive mb20 activebar"> <b>Cluster 1</b></a>
-    <a class="btn form-control stylebuttoninactive opacity53 text-primary mb20"><b>Cluster 2</b></a>
-     <a class="btn form-control stylebuttoninactive opacity53 text-primary mb20"><b>Cluster 3</b></a>
-     <a class="btn form-control stylebuttoninactive opacity53 text-primary mb20"><b>Cluster 4</b></a>
-     <a class="btn form-control stylebuttoninactive opacity53 text-primary mb20"><b>Cluster 5</b></a>
-     <a class="btn form-control stylebuttoninactive opacity53 text-primary mb20"><b>Cluster 6</b></a>
-     <a class="btn form-control stylebuttoninactive opacity53 text-primary mb20"><b>Cluster 7</b></a>
-     <a class="btn form-control stylebuttoninactive opacity53 text-primary mb20"><b>Cluster 8</b></a>
+				<div class="card card-style mt50" style="height: 450px;">
+					<div class="card-body  p30 pt5 pb5 mb40">
+						<h5 class="mt20 mb20">Clusters</h5>
+						<!-- <div style="padding-right: 10px !important;">
+							<input type="search" class="form-control stylesearch mb20"
+								placeholder="Search " />
+						</div> -->
+						<div class="scrolly"
+							style="height: 350px; padding-right: 10px !important;">
+							<%
+								String bloggersMentioned = null;
+								String currentPostIdsCount = null;
+								String topPostingLocation = null;
+								String currentPostIds = null;
+								String blogDistribution = null;
+								String total = source.get("total").toString();
+								session.setAttribute(tid.toString() + "clusters_total", total);
+								String blogdistribution = null;
+								JSONArray postData = new JSONArray();
 
-   </div>
+								String[] colors = {"green", "red", "blue", "orange", "purple", "pink", "black", "grey", "brown", "yellow"};
+								int i = 0;
+								Pair<String, String> currentKey = new Pair<String, String>(null, null);
 
+								for (Map.Entry<Pair<String, String>, JSONArray> entry : clusterResult.entrySet()) {
+									Pair<String, String> key = entry.getKey();
 
-  </div>
-</div>
-</div>
+									if (key.getKey().equals("cluster_1")) {
 
-<div class="col-md-9">
-  <div class="card card-style mt20">
-    <div class="card-body  p30 pt5 pb5">
-      <div style="min-height: 250px;">
-<div><p class="text-primary mt10"> Topic Trends </p></div>
+										currentKey = key;
 
-<div class="chart-container">
-  <div class="chart" id="clusterdiagram"></div>
-</div>
-      </div>
-        </div>
-  </div>
-  <div class="card card-style mt20">
-    <div class="card-body  p30 pt20 pb20">
-      <div class="row">
-     <div class="col-md-3 mt5 mb5">
-       <h6 class="card-title mb0">Blog Distribution</h6>
-       <h3 class="mb0 text-primary text-statistics">95%</h3>
-       <!-- <small class="text-success">+5% from <b>Last Week</b></small> -->
-     </div>
+										/* System.out.println(postData.length()); */
 
-     <div class="col-md-3 mt5 mb5">
-      <h6 class="card-title mb0">Bloggers Mentioned</h6>
-       <h3 class="mb0 text-primary text-statistics">20</h3>
-       <!-- <small class="text-success">+5% from <b>Last Week</b></small> -->
-     </div>
+										String value = key.getValue();
+										//System.out.println("This is key--" + key.getKey());
+										/* currentPostIds = clusterResult.get("cluster_" + String.valueOf((i + 1)));  */
+										currentPostIds = value.toString();
+										String[] arr = currentPostIds.split(",");
+										currentPostIdsCount = String.valueOf(arr.length);
+										//String str = currentPostIds.toString().replaceAll("\\[", "").replaceAll("\\]", "").replace("\"", "");
+										bloggersMentioned = cluster.getBloggersMentioned(currentPostIds);
+										topPostingLocation = cluster.getTopPostingLocation(currentPostIds);
+										//System.out.println(currentPostIds);
+										System.out.println(total);
+										blogdistribution = cluster.getBlogDistribution(currentPostIds, (double) Integer.parseInt(total));
 
-     <div class="col-md-3 mt5 mb5">
-       <h6 class="card-title mb0">Post Mentioned</h6>
-       <h3 class="mb0 text-primary text-statistics">400</h3>
-       <!-- <small class="text-success">+5% from <b>Last Week</b></small> -->
-     </div>
+										/* postData = cluster.getPosts(currentPostIds, "", "", "__ONLY__POST__ID__");
+										System.out.println(postData.length()); */
+							%>
+							<a class="clusters_ btn  form-control stylebuttonactive mb20 "
+								id="cluster_<%=i + 1%>"
+								style="background-color: <%=colors[i]%>;"> <b>Cluster <%=i + 1%></b>
+							</a>
+							<%
+								} else {
+							%>
+							<a
+								class="clusters_ btn form-control stylebuttoninactive text-primary mb20 "
+								id="cluster_<%=i + 1%>"
+								style="background-color: <%=colors[i]%>;"> <b>Cluster <%=i + 1%></b>
+							</a>
+							<%
+								}
+									i++;
+								}
+							%>
+							<!-- <a
+								class="btn form-control stylebuttoninactive opacity53 text-primary mb20"><b>Cluster
+									2</b></a> <a
+								class="btn form-control stylebuttoninactive opacity53 text-primary mb20"><b>Cluster
+									3</b></a> <a
+								class="btn form-control stylebuttoninactive opacity53 text-primary mb20"><b>Cluster
+									4</b></a> <a
+								class="btn form-control stylebuttoninactive opacity53 text-primary mb20"><b>Cluster
+									5</b></a> <a
+								class="btn form-control stylebuttoninactive opacity53 text-primary mb20"><b>Cluster
+									6</b></a> <a
+								class="btn form-control stylebuttoninactive opacity53 text-primary mb20"><b>Cluster
+									7</b></a> <a
+								class="btn form-control stylebuttoninactive opacity53 text-primary mb20"><b>Cluster
+									8</b></a> -->
 
-     <div class="col-md-3  mt5 mb5">
-       <h6 class="card-title mb0">Top Posting Location</h6>
-       <h3 class="mb0 text-primary text-statistics">United States</h3>
-     </div>
-
-      </div>
-        </div>
-  </div>
-</div>
-</div>
-
-<div class="row mb0">
-  <div class="col-md-6 mt20 ">
-    <div class="card card-style mt20">
-      <div class="card-body  p20 pt5 pb5">
-        <div><p class="text-primary mt10">Keywords of <b class="text-blue">Cluster 1</b> of Past <b class="text-success">Week</b></p></div>
-        <div class="chart-container">
-        <div id="tagcloudcontainer" style="min-height: 300px;">
-
-        </div>
-      </div>
-          </div>
-    </div>
-  </div>
-
-  <div class="col-md-6 mt20">
-    <div class="card card-style mt20">
-
-
-          <div class="card-body p20 pt0 pb20" style="min-height: 300px;">
-            <div><p class="text-primary mt10"><b class="text-blue">Topic 1</b> of Past <b class="text-success">Week</b></p></div>
-            <div class="chart-container">
-            <div class="chart svg-center" id="chorddiagram">
-
-            </div>
+						</div>
 
 
-          </div>
-                </div>
+					</div>
+				</div>
+			</div>
 
-    </div>
-  </div>
+			<div class="col-md-9">
+				<div class="card card-style mt20">
+					<div class="card-body  p30 pt5 pb5">
+						<div style="min-height: 250px;">
+							<div>
+								<p class="text-primary mt10">Cluster Map</p>
+							</div>
 
-</div>
+							<div class="chart-container">
+								<div class="chart" id="clusterdiagram"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="card card-style mt20">
+					<div class="card-body  p30 pt20 pb20">
+						<div class="row">
+							<div class="col-md-3 mt5 mb5">
+								<h6 class="card-title mb0">Blog Distribution</h6>
+								<h3 class="mb0 text-primary text-statistics "
+									id="blogdistribution"><%=(null == blogdistribution) ? "" : blogdistribution%></h3>
+								<!-- <small class="text-success">+5% from <b>Last Week</b></small> -->
+							</div>
 
-<div class="row m0 mt20 mb20 d-flex align-items-stretch" >
-  <div class="col-md-6 mt20 card card-style nobordertopright noborderbottomright">
-  <div class="card-body p0 pt20 pb20" style="min-height: 420px;">
-      <p> Posts from <b class="text-success">Cluster 1</b></p>
-          <!-- <div class="p15 pb5 pt0" role="group">
+							<div class="col-md-3 mt5 mb5">
+								<h6 class="card-title mb0">Bloggers Mentioned</h6>
+								<h3 class="mb0 text-primary text-statistics"
+									id="bloggersmentioned"><%=(null == bloggersMentioned) ? "" : bloggersMentioned%></h3>
+								<!-- <small class="text-success">+5% from <b>Last Week</b></small> -->
+							</div>
+
+							<div class="col-md-3 mt5 mb5">
+								<h6 class="card-title mb0">Post Mentioned</h6>
+								<h3 class="mb0 text-primary text-statistics" id="postmentioned"><%=(null == currentPostIdsCount) ? "" : currentPostIdsCount%></h3>
+								<!-- <small class="text-success">+5% from <b>Last Week</b></small> -->
+							</div>
+
+							<div class="col-md-3  mt5 mb5">
+								<h6 class="card-title mb0">Top Posting Location</h6>
+								<h3 class="mb0 text-primary text-statistics"
+									id="postinglocation"><%=(null == topPostingLocation) ? "" : topPostingLocation%></h3>
+							</div>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row mb0">
+			<div class="col-md-6 mt20 ">
+				<div class="card card-style mt20">
+					<div class="card-body  p20 pt5 pb5">
+						<div>
+							<p class="text-primary mt10">
+								Keywords of <b class="text-blue activeblog">Cluster 1</b> of
+								Past <b class="text-success">Week</b>
+							</p>
+						</div>
+						<div class="chart-container">
+							<div id="tagcloudcontainer" style="min-height: 300px;"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-md-6 mt20">
+				<div class="card card-style mt20">
+
+
+					<div class="card-body p20 pt0 pb20" style="min-height: 300px;">
+						<div>
+							<p class="text-primary mt10">
+								<b class="text-blue activeblog">Cluster 1</b> of Past <b
+									class="text-success">Week</b>
+							</p>
+						</div>
+						<div class="chart-container">
+							<div class="chart svg-center" id="chorddiagram"></div>
+
+
+						</div>
+					</div>
+
+				</div>
+			</div>
+
+		</div>
+
+		<div class="row m0 mt20 mb20 d-flex align-items-stretch">
+			<div
+				class="col-md-6 mt20 card card-style nobordertopright noborderbottomright">
+				<div class="card-body p0 pt20 pb20" style="min-height: 420px;">
+					<p>
+						Posts from <b class="text-success activeblog">Cluster 1</b>
+					</p>
+					<!-- <div class="p15 pb5 pt0" role="group">
           Export Options
           </div> -->
-                <table id="DataTables_Table_0_wrapper" class="display" style="width:100%">
-                        <thead>
-                            <tr>
-                                <th>Post title</th>
-                                <th>Topic weight</th>
+					<table id="DataTables_Table_0_wrapper" class="display"
+						style="width: 100%">
+						<thead>
+							<tr>
+								<th>Post title</th>
+								<th>Cluster distance</th>
 
 
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>URL</td>
-                                <td>Frequency</td>
+							</tr>
+						</thead>
+						<tbody>
+							<%
+								String currentTitle = null;
+								String currentBlogger = null;
+								String currentPost = null;
+								String currentDate = null;
+								String currentNumComment = null;
+
+								postData = clusterResult.get(currentKey);
+								/* System.out.println("This is key--" + key); */
+
+								for (int j = 0; j < postData.length(); j++) {
+									if (j == 0) {
+										Object title = postData.getJSONObject(0).getJSONObject("_source").get("title");
+										currentTitle = title.toString();
+
+										Object blogger = postData.getJSONObject(0).getJSONObject("_source").get("blogger");
+										currentBlogger = blogger.toString();
+
+										Object comments = postData.getJSONObject(0).getJSONObject("_source").get("num_comments");
+										currentNumComment = comments.toString();
+
+										Object post = postData.getJSONObject(0).getJSONObject("_source").get("post");
+										currentPost = post.toString();
+									}
+
+									Object title = postData.getJSONObject(j).getJSONObject("_source").get("title");
+									Object blog_post_id = postData.getJSONObject(j).getJSONObject("_source").get("blogpost_id");
+
+									//String distances = source.get("distances").toString();
+									//ObjectMapper mapper = new ObjectMapper();
+
+									//Map<String,String> map = mapper.readValue(distances, Map.class);
+
+									/* JSONObject post_distances = new JSONObject(distances);  */
+									/**/
+									//System.out.println(post_distances.get(blog_post_id.toString()));
+							%>
+							<tr>
+
+								<td><%=title.toString()%></td>
+								<td>1<%-- <%=post_distances.get(blog_post_id.toString()) %> --%></td>
 
 
-                            </tr>
-                            <tr>
-                                <td>URL</td>
-                                <td>Frequency</td>
+							</tr>
+							<%
+								}
+							%>
+
+							<!-- <tr>
+								<td>URL</td>
+								<td>Frequency</td>
 
 
-                            </tr>
-                            <tr>
-                                <td>URL</td>
-                                <td>Frequency</td>
+							</tr>
+							<tr>
+								<td>URL</td>
+								<td>Frequency</td>
 
 
-                            </tr>
-                            <tr>
-                                <td>URL</td>
-                                <td>Frequency</td>
+							</tr>
+							-->
+
+						</tbody>
+					</table>
+				</div>
+
+			</div>
+
+			<div
+				class="col-md-6 mt20 card card-style nobordertopleft noborderbottomleft">
+				<div style="" class="pt20">
+					<h5 class="text-primary p20 pt0 pb0"><%=currentTitle%></h5>
+					<div class="text-center mb20 mt20">
+						<button class="btn stylebuttonblue">
+							<b class="float-left ultra-bold-text"><%=currentBlogger%></b> <i
+								class="far fa-user float-right blogcontenticon"></i>
+						</button>
+						<button class="btn stylebuttonnocolor">02-01-2018, 5:30pm</button>
+						<button class="btn stylebuttonorange">
+							<b class="float-left ultra-bold-text"><%=currentNumComment%>
+								comments</b><i class="far fa-comments float-right blogcontenticon"></i>
+						</button>
+					</div>
+					<div style="height: 600px;">
+						<div class="p20 pt0 pb20 text-blog-content text-primary"
+							style="height: 550px; overflow-y: scroll;"><%=currentPost%></div>
+					</div>
+				</div>
+			</div>
+		</div>
 
 
-                            </tr>
-                            <tr>
-                                <td>URL</td>
-                                <td>Frequency</td>
+		<div class="row mb50 d-flex align-items-stretch">
+			<div class="col-md-12 mt20 ">
+				<div class="card card-style mt20">
+					<div class="card-body p10 pt20 pb5">
 
+						<div style="min-height: 420px;">
+							<!-- <p class="text-primary">Top keywords of <b>Past Week</b></p> -->
+							<div class="p15 pb5 pt0" role="group"></div>
+							<table id="DataTables_Table_3_wrapper" class="display"
+								style="width: 100%">
+								<thead>
+									<tr>
+										<%
+											JSONObject toptermsjson = new JSONObject();
+											for (int k = 0; k < clusterResult.size(); k++) {
+												//Object terms = result.getJSONArray(String.valueOf(i)).getJSONObject(0).getJSONObject("cluster_" + String.valueOf((i+1))).get("topterms");
+												//toptermsjson.put(String.valueOf((i+1)),terms);
+										%>
+										<th>Cluster <%=k + 1%></th>
 
-                            </tr>
-                            <tr>
-                                <td>URL</td>
-                                <td>Frequency</td>
+										<%
+											}
 
+											//System.out.println(toptermsjson);
+										%>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
 
-                            </tr>
-                            <tr>
-                                <td>URL</td>
-                                <td>Frequency</td>
+										<%
+											//JSONArray test = (JSONArray)toptermsjson.get("1");
+											//for(int i = 0; i < test.length(); i++) {
+										%>
+										<td>
+											<%-- <%=test.get(i) %> --%>
+										</td>
 
-
-                            </tr>
-                            <tr>
-                                <td>URL</td>
-                                <td>Frequency</td>
-
-
-                            </tr>
-                            <tr>
-                                <td>URL</td>
-                                <td>Frequency</td>
-
-
-                            </tr>
-                            <tr>
-                                <td>URL</td>
-                                <td>Frequency</td>
-
-
-                            </tr>
-
-                        </tbody>
-                    </table>
-        </div>
-
-  </div>
-
-  <div class="col-md-6 mt20 card card-style nobordertopleft noborderbottomleft">
-        <div style="" class="pt20">
-          <h5 class="text-primary p20 pt0 pb0">#1809: Marine Links Clinton Yellen SBA women to MI-3 War Rooms, Serco Base One Pentagon bomb</h5>
-          <div class="text-center mb20 mt20"><button class="btn stylebuttonblue"><b class="float-left ultra-bold-text">Michael J Fox</b> <i class="far fa-user float-right blogcontenticon"></i></button> <button class="btn stylebuttonnocolor">02-01-2018, 5:30pm</button> <button class="btn stylebuttonorange"><b class="float-left ultra-bold-text">32 comments</b><i class="far fa-comments float-right blogcontenticon"></i></button></div>
-		<div style="height: 600px;">
-          <div class="p20 pt0 pb20 text-blog-content text-primary" style="height:550px; overflow-y:scroll; ">
-          You can create Slideshows and Stacked galleries with Post Format: Gallery. Also you can manage - add/edit/delete
-          images any time you want. Hyper-X comes with huge amount of gallery options, which could be previewed from Theme Customizer.
-           Praesent nibh
-           You can create Slideshows and Stacked galleries with Post Format: Gallery. Also you can manage - add/edit/delete images any time you want. Hyper-X comes with huge amount of gallery options, which could be previewed from Theme Customizer. Praesent nibh...
-           You can create Slideshows and Stacked galleries with Post Format: Gallery. Also you can manage - add/edit/delete images any time you want. Hyper-X comes with huge amount of gallery options, which could be previewed from Theme Customizer. Praesent nibh...
-           You can create Slideshows and Stacked galleries with Post Format: Gallery. Also you can manage - add/edit/delete images any time you want. Hyper-X comes with huge amount of gallery options, which could be previewed from Theme Customizer. Praesent nibh...
-           You can create Slideshows and Stacked galleries with Post Format: Gallery. Also you can manage - add/edit/delete images any time you want. Hyper-X comes with huge amount of gallery options, which could be previewed from Theme Customizer. Praesent nibh...
-           You can create Slideshows and Stacked galleries with Post Format: Gallery. Also you can manage - add/edit/delete images any time you want. Hyper-X comes with huge amount of gallery options, which could be previewed from Theme Customizer. Praesent nibh...
-           You can create Slideshows and Stacked galleries with Post Format: Gallery. Also you can manage - add/edit/delete images any time you want. Hyper-X comes with huge amount of gallery options, which could be previewed from Theme Customizer. Praesent nibh...
-           You can create Slideshows and Stacked galleries with Post Format: Gallery. Also you can manage - add/edit/delete images any time you want. Hyper-X comes with huge amount of gallery options, which could be previewed from Theme Customizer. Praesent nibh...
-         </div>
-         </div>
-    </div>
-  </div>
-</div>
-
-
-<div class="row mb50 d-flex align-items-stretch">
-  <div class="col-md-12 mt20 ">
-    <div class="card card-style mt20">
-      <div class="card-body p10 pt20 pb5">
-
-        <div style="min-height: 420px;">
-      <!-- <p class="text-primary">Top keywords of <b>Past Week</b></p> -->
-          <div class="p15 pb5 pt0" role="group">
-          </div>
-                <table id="DataTables_Table_1_wrapper" class="display" style="width:100%">
-                        <thead>
-                            <tr>
-                                <th>Cluster 1</th>
-                                <th>Cluster 2</th>
-                                <th>Cluster 3</th>
-<th>Cluster 4</th>
-<th>Cluster 5</th>
-<th>Cluster 6</th>
-<th>Cluster 7 </th>
-<th>Cluster 8</th>
-
-                            </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                          <td>Word 1</td>
-                          <td>Word 1</td>
-                          <td>Word 1</td>
-                          <td>Word 1</td>
-                          <td>Word 1</td>
-                          <td>Word 1</td>
-                          <td>Word 1</td>
-                          <td>Word 1</td>
-                        </tr>
-                        <tr>
-                        <td>Word 2</td>
-                        <td>Word 2</td>
-                        <td>Word 2</td>
-                        <td>Word 2</td>
-                        <td>Word 2</td>
-                        <td>Word 2</td>
-                        <td>Word 2</td>
-                        <td>Word 2</td>
-                        </tr>
-                        <tr>
-                        <td>Word 3</td>
-                        <td>Word 3</td>
-                        <td>Word 3</td>
-                        <td>Word 3</td>
-                        <td>Word 3</td>
-                        <td>Word 3</td>
-                        <td>Word 3</td>
-                        <td>Word 3</td>
-                        </tr>
-                        <tr>
-<td>Word 4</td>
-<td>Word 4</td>
-<td>Word 4</td>
-<td>Word 4</td>
-<td>Word 4</td>
-<td>Word 4</td>
-<td>Word 4</td>
-<td>Word 4</td>
-</tr>
-<tr>
-<td>Word 5</td>
-<td>Word 5</td>
-<td>Word 5</td>
-<td>Word 5</td>
-<td>Word 5</td>
-<td>Word 5</td>
-<td>Word 5</td>
-<td>Word 5</td>
-</tr>
-<tr>
-<td>Word 6</td>
-<td>Word 6</td>
-<td>Word 6</td>
-<td>Word 6</td>
-<td>Word 6</td>
-<td>Word 6</td>
-<td>Word 6</td>
-<td>Word 6</td>
-</tr>
-<tr>
-<td>Word 7</td>
-<td>Word 7</td>
-<td>Word 7</td>
-<td>Word 7</td>
-<td>Word 7</td>
-<td>Word 7</td>
-<td>Word 7</td>
-<td>Word 7</td>
-</tr>
-<tr>
-<td>Word 8</td>
-<td>Word 8</td>
-<td>Word 8</td>
-<td>Word 8</td>
-<td>Word 8</td>
-<td>Word 8</td>
-<td>Word 8</td>
-<td>Word 8</td>
-</tr>
-
-
-                        </tbody>
-                    </table>
-        </div>
-          </div>
-    </div>
-  </div>
-
-</div>
-
-
-
-
+										<%-- <%} %> --%>
+									</tr>
+									<%-- <tr>
+										<% 
+									 test = (JSONArray)toptermsjson.get("2");
+									for(int i = 0; i < test.length(); i++) {%>
+										<td><%=test.get(i) %></td>
+										
+										<%} %>
+									</tr>
+									<tr>
+										<% 
+									 test = (JSONArray)toptermsjson.get("3");
+									for(int i = 0; i < test.length(); i++) {%>
+										<td><%=test.get(i) %></td>
+										
+										<%} %>
+									</tr>
+									<tr>
+										<% 
+									 test = (JSONArray)toptermsjson.get("4");
+									for(int i = 0; i < test.length(); i++) {%>
+										<td><%=test.get(i) %></td>
+										
+										<%} %>
+									</tr>
+									<tr>
+										<% 
+									 test = (JSONArray)toptermsjson.get("5");
+									for(int i = 0; i < test.length(); i++) {%>
+										<td><%=test.get(i) %></td>
+										
+										<%} %>
+									</tr>
+									<tr>
+										<% 
+									 test = (JSONArray)toptermsjson.get("6");
+									for(int i = 0; i < test.length(); i++) {%>
+										<td><%=test.get(i) %></td>
+										
+										<%} %>
+									</tr>
+									<tr>
+										<% 
+									 test = (JSONArray)toptermsjson.get("7");
+									for(int i = 0; i < test.length(); i++) {%>
+										<td><%=test.get(i) %></td>
+										
+										<%} %>
+									</tr>
+									<tr>
+										<% 
+									 test = (JSONArray)toptermsjson.get("8");
+									for(int i = 0; i < test.length(); i++) {%>
+										<td><%=test.get(i) %></td>
+										
+										<%} %>
+									</tr>
+									<tr>
+										<% 
+									 test = (JSONArray)toptermsjson.get("9");
+									for(int i = 0; i < test.length(); i++) {%>
+										<td><%=test.get(i) %></td>
+										
+										<%} %>
+									</tr>
+									<tr>
+										<% 
+									test = (JSONArray)toptermsjson.get("10");
+									for(int i = 0; i < test.length(); i++) {%>
+										<td><%=test.get(i) %></td>
+										
+										<%} %>
+									</tr> --%>
 
 
 
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
 
-</div>
+		</div>
 
 
-<!-- <footer class="footer">
+
+
+
+
+
+
+	</div>
+
+
+	<!-- <footer class="footer">
   <div class="container-fluid bg-primary mt60">
 <p class="text-center text-medium pt10 pb10 mb0">Copyright &copy; Blogtrackers 2017 All Rights Reserved.</p>
 </div>
   </footer> -->
+	<script type="text/javascript" src="assets/vendors/d3/d3.v4.min.js"></script>
+	<script type="text/javascript"
+		src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+
+	<script src="assets/js/jquery.min.js"></script>
 
 
-  <script type="text/javascript" src="assets/js/jquery-1.11.3.min.js"></script>
- <script src="assets/bootstrap/js/bootstrap.js">
+
+	<script type="text/javascript" src="assets/js/jquery-1.11.3.min.js"></script>
+	<script src="assets/bootstrap/js/bootstrap.js">
  </script>
- <script src="assets/js/generic.js">
+	<script src="assets/js/generic.js">
  </script>
- <script src="assets/vendors/bootstrap-daterangepicker/moment.js"></script>
- <script src="assets/vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
- <!-- Start for tables  -->
- <script type="text/javascript" src="assets/vendors/DataTables/datatables.min.js"></script>
- <script type="text/javascript" src="assets/vendors/DataTables/dataTables.bootstrap4.min.js"></script>
- <script src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.flash.min.js"></script>
- <script src="assets/vendors/DataTables/Buttons-1.5.1/js/dataTables.buttons.min.js"></script>
- <script src="assets/vendors/DataTables/pdfmake-0.1.32/pdfmake.min.js"></script>
- <script src="assets/vendors/DataTables/pdfmake-0.1.32/vfs_fonts.js"></script>
- <script src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.html5.min.js"></script>
- <script src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.print.min.js"></script>
+	<script src="assets/vendors/bootstrap-daterangepicker/moment.js"></script>
+	<script
+		src="assets/vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
+	<!-- Start for tables  -->
+	<script type="text/javascript"
+		src="assets/vendors/DataTables/datatables.min.js"></script>
+	<script type="text/javascript"
+		src="assets/vendors/DataTables/dataTables.bootstrap4.min.js"></script>
+	<script
+		src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.flash.min.js"></script>
+	<script
+		src="assets/vendors/DataTables/Buttons-1.5.1/js/dataTables.buttons.min.js"></script>
+	<script src="assets/vendors/DataTables/pdfmake-0.1.32/pdfmake.min.js"></script>
+	<script src="assets/vendors/DataTables/pdfmake-0.1.32/vfs_fonts.js"></script>
+	<script
+		src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.html5.min.js"></script>
+	<script
+		src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.print.min.js"></script>
 
- <script>
+
+
+
+	<script>
+	
+	
  $(document).ready(function() {
      $('#DataTables_Table_1_wrapper').DataTable( {
          "scrollY": 450,
@@ -657,7 +930,7 @@ if (path_new.exists()) {
        // }
      } );
 
-     $('#DataTables_Table_0_wrapper').DataTable( {
+     /* $('#DataTables_Table_0_wrapper').DataTable( {
          "scrollY": 460,
          "scrollX": true,
           "pagingType": "simple",
@@ -672,11 +945,22 @@ if (path_new.exists()) {
        //       {extend:'print',className: 'btn-primary stylebutton1'},
        //   ]
        // }
+     } ); */
+     
+     $('#DataTables_Table_0_wrapper').DataTable( {
+         "scrollY": 430,
+         "scrollX": true,
+         "order": [],
+          "pagingType": "simple",
+        	  "columnDefs": [
+        	      { "width": "65%", "targets": 0 },
+        	      { "width": "25%", "targets": 0 }
+        	    ]
      } );
  } );
  </script>
- <!--end for table  -->
- <script>
+	<!--end for table  -->
+	<script>
  $(document).ready(function() {
    $(document)
    						.ready(
@@ -807,13 +1091,15 @@ if (path_new.exists()) {
    //$('#config-demo').daterangepicker(options, function(start, end, label) { console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')'); });
  });
  </script>
- <script type="text/javascript" src="assets/vendors/d3/d3.min.js"></script>
- <script src="assets/vendors/wordcloud/d3.layout.cloud.js"></script>
- <script type="text/javascript" src="assets/vendors/d3/d3_tooltip.js"></script>
 
 
-<!--word cloud  -->
- <script>
+
+	<!--word cloud  -->
+	<script>
+	 d3version3 = d3
+	   // window.d3 = null
+	    // test it worked
+	    console.log('v3', d3version3.version)
  var color = d3.scale.linear()
          .domain([0,3,5,7,8,9,6,10,15,20,50])
          .range(["#17394C", "#F5CC0E", "#CE0202", "#1F90D0", "#999", "#888", "#777", "#666", "#555", "#444", "#333", "#222"]);
@@ -899,10 +1185,14 @@ if (path_new.exists()) {
 });
 
  </script>
- <script>
+	<script>
  /*//////////////////////////////////////////////////////////
  ////////////////// Set up the Data /////////////////////////
  //////////////////////////////////////////////////////////*/
+  d3version3 = d3
+    //window.d3 = null
+    // test it worked
+    console.log('v3', d3version3.version)
 
  $(function () {
 
@@ -1413,126 +1703,155 @@ if (path_new.exists()) {
 
 });
  </script>
- <script type="text/javascript" src="assets/vendors/d3/d3.v4.min.js"></script>
-  <script>
-  $(function () {
-
- clusterdiagram('#clusterdiagram', 230);
-
- // Chart setup
- function clusterdiagram(element, height) {
-
-   var nodes = [
-     { id: "mammal", group: 0, label: "Mammals", level: 1 },
-     { id: "dog"   , group: 0, label: "Dogs"   , level: 2 },
-     { id: "cat"   , group: 0, label: "Cats"   , level: 2 },
-     { id: "fox"   , group: 0, label: "Foxes"  , level: 2 },
-     { id: "elk"   , group: 0, label: "Elk"    , level: 2 },
-     { id: "insect", group: 1, label: "Insects", level: 1 },
-     { id: "ant"   , group: 1, label: "Ants"   , level: 2 },
-     { id: "bee"   , group: 1, label: "Bees"   , level: 2 },
-     { id: "fish"  , group: 2, label: "Fish"   , level: 1 },
-     { id: "carp"  , group: 2, label: "Carp"   , level: 2 },
-     { id: "pike"  , group: 2, label: "Pikes"  , level: 2 }
-   ]
-
-   var links = [
-   	{ target: "mammal", source: "dog" , strength: 3.0 },
-   	{ target: "mammal", source: "dog" , strength: 3.0 },
-     { target: "mammal", source: "fox" , strength: 3.0 },
-     { target: "mammal", source: "dog" , strength: 3.0 },
-     { target: "insect", source: "ant" , strength: 0.7 },
-     { target: "insect", source: "bee" , strength: 0.7 },
-     { target: "fish"  , source: "carp", strength: 0.7 },
-     { target: "fish"  , source: "pike", strength: 0.7 },
-     { target: "cat"   , source: "elk" , strength: 0.1 },
-     { target: "carp"  , source: "ant" , strength: 0.1 },
-     { target: "elk"   , source: "bee" , strength: 0.1 },
-     { target: "dog"   , source: "cat" , strength: 0.1 },
-     { target: "fox"   , source: "ant" , strength: 0.1 },
-   	{ target: "pike"  , source: "cat" , strength: 0.1 }
-   ]
-
-      // Define main variables
-      var d3Container = d3v4.select(element),
-          margin = {top: 10, right: 10, bottom: 20, left: 20},
-          width = d3Container.node().getBoundingClientRect().width - margin.left - margin.right,
-          height = height - margin.top - margin.bottom;
-
-     var colors = d3v4.scaleOrdinal(d3v4.schemeCategory10);
-
-      // Add SVG element
-      var container = d3Container.append("svg");
-
-      // Add SVG group
-      var svg = container
-          .attr("width", width + margin.left + margin.right)
-          .attr("height", height + margin.top + margin.bottom);
-         //.append("g")
-       //   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-       // simulation setup with all forces
-    var linkForce = d3v4
-   .forceLink()
-   .id(function (link) { return link.id })
-   .strength(function (link) { return link.strength })
-
-       // simulation setup with all forces
-       var simulation = d3v4
-         .forceSimulation()
-         .force('link', linkForce)
-         .force('charge', d3v4.forceManyBody().strength(-50))
-         .force('center', d3v4.forceCenter(width / 2, height / 2))
-
-         var linkElements = svg.append("g")
-           .attr("class", "links")
-           .selectAll("line")
-           .data(links)
-           .enter().append("line")
-             .attr("stroke-width", 0)
-         	  .attr("stroke", "rgba(50, 50, 50, 0.2)")
-
-       function getNodeColor(node) {
-         return node.level === 1 ? 'red' : 'gray'
-       }
-
-       var nodeElements = svg.append("g")
-         .attr("class", "nodes")
-         .selectAll("circle")
-         .data(nodes)
-         .enter().append("circle")
-           .attr("r", 5)
-           .attr("fill", function (d, i) {return colors(d.group);})
-
-       var textElements = svg.append("g")
-         .attr("class", "texts")
-         .selectAll("text")
-         .data(nodes)
-         .enter().append("text")
-           .text(function (node) { return  node.label })
-       	  .attr("font-size", 15)
-       	  .attr("dx", 15)
-           .attr("dy", 4)
-
-         simulation.nodes(nodes).on('tick', () => {
-           nodeElements
-             .attr('cx', function (node) { return node.x })
-             .attr('cy', function (node) { return node.y })
-           textElements
-             .attr('x', function (node) { return node.x })
-             .attr('y', function (node) { return node.y })
-             linkElements
-     .attr('x1', function (link) { return link.source.x })
-     .attr('y1', function (link) { return link.source.y })
-     .attr('x2', function (link) { return link.target.x })
-     .attr('y2', function (link) { return link.target.y })
-         })
 
 
- simulation.force("link").links(links)
- }
-
- });
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+	<script>
+    d3version3 = d3
+    window.d3 = null
+    // test it worked
+    console.log('v3', d3version3.version)
+    
   </script>
+	<!-- <script src="https://d3js.org/d3.v4.js"></script> -->
+	<script type="text/javascript"></script>
+	<script type="text/javascript" src="assets/vendors/d3/d3.min.js"></script>
+	<script src="assets/vendors/wordcloud/d3.layout.cloud.js"></script>
+	<script type="text/javascript" src="assets/vendors/d3/d3_tooltip.js"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.10.0/d3.min.js"></script>
+	<script>
+    d3version4 = d3
+   // window.d3 = null
+    
+    console.log('v4', d3version4.version)
+  </script>
+	<!-- <script async src="pagedependencies/clustering.js"></script> -->
+	<script>
+	loadscatter(0);
+	function loadscatter(clusterid){
+		data = []
+	var margin = {top: 10, right: 30, bottom: 30, left: 60},
+	width = 1000 - margin.left - margin.right,
+	height = 300 - margin.top - margin.bottom;
+
+	//append the SVG object to the body of the page
+	var SVG = d3.select("#clusterdiagram")
+	.append("svg")
+	.attr("width", width + margin.left + margin.right)
+	.attr("height", height + margin.top + margin.bottom)
+	.append("g")
+	.attr("transform","translate(" + margin.left + "," + margin.top + ")");
+
+	//Read the data
+	d3.csv("test_data.csv", function(data) {
+		
+		console.log('csv data');
+		console.log(data);
+		
+	});
+	
+	var data = <%=scatterplotfinaldata%>
+	console.log('data from jsp');
+	console.log(data);
+	
+	 var new_array = data.filter(function (el){
+		
+		return Math.max(el.new_y  && el.cluster==clusterid);
+	}
+	
+	); 
+	
+	var max_x = Math.max.apply(Math, new_array.map(function(o) { return o.new_x; }));
+	var max_y = Math.max.apply(Math, new_array.map(function(o) { return o.new_y; }));
+	var min_x = Math.min.apply(Math, new_array.map(function(o) { return o.new_x; }));
+	var min_y = Math.min.apply(Math, new_array.map(function(o) { return o.new_y; }));
+	
+	/* console.log(newa2) */
+	console.log(data);
+	// Add X axis
+	var x = d3.scaleLinear()
+	.domain([min_x, max_x])
+	.range([ 0, width ]);
+	var xAxis = SVG.append("g")
+	.attr("transform", "translate(0," + height + ")")
+	.call(d3.axisBottom(x));
+
+	// Add Y axis
+	var y = d3.scaleLinear()
+	.domain([min_y, max_y])
+	.range([ height, 0]);
+	var yAxis = SVG.append("g")
+	.call(d3.axisLeft(y));
+
+	// Add a clipPath: everything out of this area won't be drawn.
+	var clip = SVG.append("defs").append("SVG:clipPath")
+	  .attr("id", "clip")
+	  .append("SVG:rect")
+	  .attr("width", width)
+	  .attr("height", height)
+	  .attr("x", 0)
+	  .attr("y", 0);
+	  
+	var color = d3.scaleOrdinal()
+	.domain(["0", "1", "2","3","4","5","6","7","8","9" ])
+	.range([ 'green', 'red', 'blue', 'orange', 'purple','pink', 'black', 'grey', 'brown','yellow'])
+
+	// Create the scatter variable: where both the circles and the brush take place
+	var scatter = SVG.append('g')
+	.attr("clip-path", "url(#clip)")
+
+	// Add circles
+	scatter
+	.selectAll("circle")
+	.data(data)
+	.enter()
+	.append("circle")
+	  .attr("cx", function (d) { return x(d.new_x); } )
+	  .attr("cy", function (d) { return y(d.new_y); } )
+	  .attr("r", 8)
+	  .style("fill", function (d) { return color(d.cluster) } )
+	  .style("opacity", 0.5)
+
+	// Set the zoom and Pan features: how much you can zoom, on which part, and what to do when there is a zoom
+	var zoom = d3.zoom()
+	  .scaleExtent([-0.0005, 170])  // This control how much you can unzoom (x0.5) and zoom (x20)
+	  .extent([[0, 0], [width, height]])
+	  .on("zoom", updateChart);
+
+	// This add an invisible rect on top of the chart area. This rect can recover pointer events: necessary to understand when the user zoom
+	SVG.append("rect")
+	  .attr("width", width)
+	  .attr("height", height)
+	  .style("fill", "none")
+	  .style("pointer-events", "all")
+	  .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
+	  .call(zoom);
+	// now the user can zoom and it will trigger the function called updateChart
+
+	// A function that updates the chart when the user zoom and thus new boundaries are available
+	function updateChart() {
+
+	// recover the new scale
+	var newX = d3.event.transform.rescaleX(x);
+	var newY = d3.event.transform.rescaleY(y);
+
+	// update axes with these new boundaries
+	xAxis.call(d3.axisBottom(newX))
+	yAxis.call(d3.axisLeft(newY))
+
+	// update circle position
+	scatter
+	  .selectAll("circle")
+	  .attr('cx', function(d) {return newX(d.new_x)})
+	  .attr('cy', function(d) {return newY(d.new_y)});
+	}
+
+	
+	}
+</script>
+
+
 </body>
 </html>

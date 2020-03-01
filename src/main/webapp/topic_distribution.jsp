@@ -7,6 +7,7 @@
 <%@page import="java.util.Locale"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.HashMap"%>
+<%@page import="java.util.HashSet"%>
 <%@page import="java.util.Map.Entry"%>
 <%@page import="javafx.util.Pair"%>
 <%@page import="util.TopicModelling"%>
@@ -149,10 +150,13 @@ if (detail.size() > 0) {
 	final String DEFAULT_LOCATION = "Not Provided";
 	final String DEFAULT_AUTHOR = "Not Provided";
 	// Chord Diagram Matrix
-	double blogDistributionMatrix[][] = new double[topics.size()][topics.size()];
-	for (double[] row : blogDistributionMatrix){
-		Arrays.fill(row, 0.0);
+	HashSet<String> blogDistributionMatrix[][] = new HashSet[topics.size()][topics.size()];
+	for (int i = 0; i < topics.size(); i++) {
+		for (int j = 0; j < topics.size(); j++) {
+			blogDistributionMatrix[i][j] = new HashSet<String>();
+		}
 	}
+	
 	
 	// Compute Stats (Blog/Blogger Distribution, Post Mentions, Locations)
 	for (int i = 0; i < topics.size(); i++) {
@@ -185,7 +189,7 @@ if (detail.size() > 0) {
 		        }
 	    	 	// Track Topic Overlap
 	    	 	for (int j = 0; j < topics.size(); j++) {
-	    	 		if (doc.theta[j] > TOPIC_THRESHOLD) {blogDistributionMatrix[i][j]++;}
+	    	 		if (doc.theta[j] > TOPIC_THRESHOLD) {blogDistributionMatrix[i][j].add(doc.blog_id);}
 	    	 	}
 			}
 		}
@@ -1338,19 +1342,48 @@ class ChordDiagram {
     
     selectTopic(topic) {
     	//alert(topic);
-    	let topicMatrix = [];
+     	let topicMatrix = [];
+    	let matrixTmp = []
+    	
+    	Set.prototype.difference = function(otherSet) 
+    	{ 
+    	    // creating new set to store difference 
+    	     var differenceSet = new Set(); 
+    	  
+    	    // iterate over the values 
+    	    for(var elem of this) 
+    	    { 
+    	        // if the value[i] is not present  
+    	        // in otherSet add to the differenceSet 
+    	        if(!otherSet.has(elem)) 
+    	            differenceSet.add(elem); 
+    	    } 
+    	  
+    	    // returns values of differenceSet 
+    	    return differenceSet; 
+    	} 
     	
     	for(let i = 0; i < this.matrix.length; i++) {
-    		topicMatrix[i] = this.matrix[i].slice();
+    		matrixTmp[i] = this.matrix[i].slice();
     	}
     	
-    	for(let i = 0; i < topicMatrix.length; i++) {
-    		for(let j = 0; j < topicMatrix.length; j++) {
-	    		// Save incoming chords (j == topic) and arc sizes (i ==j)
+    	for(let i = 0; i < this.matrix.length; i++) {
+    		for(let j = 0; j < this.matrix.length; j++) {
+	    		// Sets all to empty sets except incoming chords (j == topic) and arc sizes (i ==j)
 	    		if (j != topic && i != j) {
-	    			topicMatrix[i][j] = 0.0;
+	    			matrixTmp[i][j] = new Set();
 	    		}
     		}
+    		//Correct size of incoming chords (this avoids counting blog posts twice)
+    		if (i != topic) {
+    			matrixTmp[i][i] = matrixTmp[i][i].difference(matrixTmp[i][topic]);
+    		}
+    	}
+    	for(let i = 0; i < matrixTmp.length; i++) {
+    		topicMatrix.push([]);
+    		for(let j = 0; j < matrixTmp.length; j++) {
+    			topicMatrix[i].push(matrixTmp[i][j].size);
+   			}
     	}
     	
     	var rotation = 0;
@@ -1635,7 +1668,11 @@ ticks.append("svg:text")
 		_bloggerData.push("<%=topBloggers[i]%>");
 		_chordDiagramMatrix.push([]);
 		<% for(int j : topics.keySet()) { %>
-			_chordDiagramMatrix[_chordDiagramMatrix.length - 1].push(<%=blogDistributionMatrix[i][j]%>);
+			var blogIds = new Set();
+			<% for(String blogId : blogDistributionMatrix[i][j]) { %>
+				blogIds.add("<%=blogId%>");
+			<% } %>		
+			_chordDiagramMatrix[_chordDiagramMatrix.length - 1].push(blogIds);
 		<% } %>
 	<% } %>
 	console.log("matrix data")

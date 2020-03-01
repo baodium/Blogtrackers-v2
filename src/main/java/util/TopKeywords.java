@@ -2,6 +2,9 @@ package util;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -10,6 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
+
+import scala.Tuple2;
 
 /**
  * Servlet implementation class TopKeywords
@@ -35,6 +40,14 @@ public class TopKeywords extends HttpServlet {
 		Object action = (null == request.getParameter("action")) ? "" : request.getParameter("action");
 		Object post_ids = (null == request.getParameter("post_ids")) ? "" : request.getParameter("post_ids");
 		
+		
+		
+		
+		Object blogger = (null == request.getParameter("blogger")) ? "" : request.getParameter("blogger");
+		Object all_bloggers = (null == request.getParameter("all_bloggers")) ? ""
+				: request.getParameter("all_bloggers");
+		Object ids = (null == request.getParameter("ids")) ? "" : request.getParameter("ids");
+		
 		Blogposts post = new Blogposts();
 		String dt = date_start.toString();
 		String dte = date_end.toString();
@@ -44,6 +57,8 @@ public class TopKeywords extends HttpServlet {
 		JSONObject sql = new JSONObject();
 		String sql_= null;
 		String result = null;
+		
+		Map<String, Integer> result_dashboard = new HashMap<String, Integer>();
 		
 		if(action.toString().equals("gethighestterms")){
 			try {
@@ -67,6 +82,26 @@ public class TopKeywords extends HttpServlet {
 			out.write(result);
 			
 			//JSONObject
+		}
+		
+		
+		
+
+		else if (action.toString().equals("getkeyworddashboard")) {
+			Terms terms = new Terms();
+			System.out.println("action is getkeyworddashboard and ids are " +ids.toString());
+			try {
+				terms._getTerms("___NO__TERM___", "__NOBLOGGER__", date_start.toString(), date_end.toString(),
+						ids.toString());
+				List<Tuple2<String, Integer>> data = terms.getTupleData();
+				String output = terms.mapReduce(data, "dashboard");
+				for (Tuple2<String, Integer> x : data) {
+					result_dashboard.put(x._1, x._2);
+				}
+			} catch (Exception e) {
+
+			}
+			out.write(result_dashboard.toString());
 		}
 	}
 

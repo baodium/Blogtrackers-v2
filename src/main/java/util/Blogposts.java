@@ -16,10 +16,16 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import authentication.DbConnection;
+import scala.Tuple2;
 
 import org.apache.commons.text.StringEscapeUtils;
 import org.apache.http.HttpHost;
 import org.apache.http.util.EntityUtils;
+import org.apache.spark.SparkConf;
+import org.apache.spark.api.java.JavaPairRDD;
+import org.apache.spark.api.java.JavaRDD;
+import org.apache.spark.api.java.JavaSparkContext;
+import org.apache.spark.sql.SparkSession;
 //import org.apache.http.HttpEntity;
 //import org.apache.http.HttpHost;
 //import org.apache.http.entity.ContentType;
@@ -36,7 +42,10 @@ import org.json.JSONException;
 import java.io.OutputStreamWriter;
 import static java.util.stream.Collectors.toMap;
 
+
+
 public class Blogposts {
+	
 
 	HashMap<String, String> hm = DbConnection.loadConstant();
 
@@ -2318,6 +2327,7 @@ public class Blogposts {
 		JSONObject myResponse;
 		try {
 			myResponse = this._makeElasticRequest(query, "POST", "/blogposts/_count?");
+			System.out.println(myResponse);
 			if (null != myResponse.get("count")) {
 				Object hits = myResponse.get("count");
 				total = hits.toString();
@@ -2843,7 +2853,7 @@ public class Blogposts {
 					+ "                \"unmapped_type\": \"float\",\r\n"
 					+ "                \"missing\": \"_first\",\r\n" + "                \"order\": \"desc\"\r\n"
 					+ "            }\r\n" + "        }\r\n" + "    ]\r\n" + "}");
-			
+
 		}
 		System.out.println("query for elastic _getMostKeywordDashboard --> " + query);
 		JSONArray jsonArray = (JSONArray) this._elastic(query).getJSONArray("hit_array");
@@ -3061,209 +3071,191 @@ public class Blogposts {
 		return result;
 	}
 
-//	public ArrayList<String> _getPostIds(JSONArray jsonArray) throws Exception{
-//		ArrayList<String> result = new ArrayList<String>();
-//		
-//		for(int i = 0; i < jsonArray.length(); i++) {
-//			String r = jsonArray.get(i).toString();
-//			JSONObject res = new JSONObject(r);
-//			String id = (String) res.get("_id");
-//			Object r_ = this._multipleTermVectors(id).getJSONArray("docs").getJSONObject(0).getJSONObject("term_vectors").getJSONObject("post").getJSONObject("terms").keys().next().toString();
-////			JSONObject terms = new JSONObject(r_);
-////			terms
-//			
-//			result.add( (String) r_);
-//		}
-//		
-//		return result;
-//	}
+	
+	//SparkConf conf2 = new SparkConf();
+	public ArrayList _selectTest(String id, int index) throws Exception {
 
-//	public ArrayList<String> _getHighestTerm(String blogger, String ids, String date_from, String date_to) throws Exception{
-//		ArrayList<String>  result = new ArrayList<String>();
-//		JSONObject query = new JSONObject();
-//		JSONObject r = new JSONObject();
-//		if (blogger != "NOBLOGGER") {
-//			query = new JSONObject("{\r\n" + "    \"size\": 100,\r\n" + "    \"query\": {\r\n"
-//					+ "        \"bool\": {\r\n" + "            \"must\": [\r\n" + "                {\r\n"
-//					+ "                    \"bool\": {\r\n" + "                        \"must\": [\r\n"
-//					+ "                            {\r\n" + "                                \"term\": {\r\n"
-//					+ "                                    \"blogger.keyword\": {\r\n"
-//					+ "                                        \"value\": \"" + blogger + "\",\r\n"
-//					+ "                                        \"boost\": 1.0\r\n"
-//					+ "                                    }\r\n" + "                                }\r\n"
-//					+ "                            },\r\n" + "                            {\r\n"
-//					+ "                                \"terms\": {\r\n"
-//					+ "                                    \"blogsite_id\": [" + ids + "],\r\n"
-//					+ "                                    \"boost\": 1.0\r\n" + "                                }\r\n"
-//					+ "                            }\r\n" + "                        ],\r\n"
-//					+ "                        \"adjust_pure_negative\": true,\r\n"
-//					+ "                        \"boost\": 1.0\r\n" + "                    }\r\n"
-//					+ "                },\r\n" + "                {\r\n" + "                    \"range\": {\r\n"
-//					+ "                        \"date\": {\r\n" + "                            \"from\": \"" + date_from
-//					+ "\",\r\n" + "                            \"to\": \"" + date_to + "\",\r\n"
-//					+ "                            \"include_lower\": true,\r\n"
-//					+ "                            \"include_upper\": true,\r\n"
-//					+ "                            \"boost\": 1.0\r\n" + "                        }\r\n"
-//					+ "                    }\r\n" + "                }\r\n" + "            ],\r\n"
-//					+ "            \"adjust_pure_negative\": true,\r\n" + "            \"boost\": 1.0\r\n"
-//					+ "        }\r\n" + "    },\r\n" + "    \"_source\": {\r\n" + "        \"includes\": [\r\n"
-//					+ "            \"post\"\r\n" + "        ],\r\n" + "        \"excludes\": []\r\n" + "    },\r\n"
-//					+ "    \"sort\": [\r\n" + "        {\r\n" + "            \"influence_score\": {\r\n"
-//					+ "                \"order\": \"desc\",\r\n" + "                \"missing\": \"_first\",\r\n"
-//					+ "                \"unmapped_type\": \"float\"\r\n" + "            }\r\n" + "        }\r\n"
-//					+ "    ]\r\n" + "}");
-//
-//		}else {
-//
-//			query = new JSONObject("{\r\n" + "    \"size\": 100,\r\n" + "    \"query\": {\r\n" + "        \"bool\": {\r\n"
-//					+ "            \"must\": [\r\n" + "                {\r\n" + "                    \"terms\": {\r\n"
-//					+ "                        \"blogsite_id\": [" + ids + "],\r\n"
-//					+ "                        \"boost\": 1.0\r\n" + "                    }\r\n" + "                },\r\n"
-//					+ "                {\r\n" + "                    \"range\": {\r\n"
-//					+ "                        \"date\": {\r\n" + "                            \"from\": \"" + date_from
-//					+ "\",\r\n" + "                            \"to\": \"" + date_to + "\",\r\n"
-//					+ "                            \"include_lower\": true,\r\n"
-//					+ "                            \"include_upper\": true,\r\n"
-//					+ "                            \"boost\": 1.0\r\n" + "                        }\r\n"
-//					+ "                    }\r\n" + "                }\r\n" + "            ],\r\n"
-//					+ "            \"adjust_pure_negative\": true,\r\n" + "            \"boost\": 1.0\r\n" + "        }\r\n"
-//					+ "    },\r\n" + "    \"_source\": {\r\n" + "        \"includes\": [\r\n"
-//					+ "            \"@version\",\r\n" + "            \"blogger\",\r\n" + "            \"blogpost_id\",\r\n"
-//					+ "            \"blogsite_id\",\r\n" + "            \"categories\",\r\n"
-//					+ "            \"influence_score\",\r\n" + "            \"language\",\r\n"
-//					+ "            \"location\",\r\n" + "            \"num_comments\",\r\n"
-//					+ "            \"num_inlinks\",\r\n" + "            \"num_outlinks\",\r\n"
-//					+ "            \"permalink\",\r\n" + "            \"post\",\r\n" + "            \"post_length\",\r\n"
-//					+ "            \"sentiment\",\r\n" + "            \"tags\",\r\n" + "            \"title\"\r\n"
-//					+ "        ],\r\n" + "        \"excludes\": []\r\n" + "    },\r\n" + "    \"docvalue_fields\": [\r\n"
-//					+ "        {\r\n" + "            \"field\": \"@timestamp\",\r\n"
-//					+ "            \"format\": \"epoch_millis\"\r\n" + "        },\r\n" + "        {\r\n"
-//					+ "            \"field\": \"date\",\r\n" + "            \"format\": \"yyyy-MM-dd\"\r\n"
-//					+ "        }\r\n" + "    ],\r\n" + "    \"sort\": [\r\n" + "        {\r\n"
-//					+ "            \"_doc\": {\r\n" + "                \"order\": \"asc\"\r\n" + "            }\r\n"
-//					+ "        }\r\n" + "    ]\r\n" + "}");
-//		}
-//		
-//		JSONObject myResponse = this._makeElasticRequest(query, "POST", "/blogposts/_search/?scroll=1m");
-//		JSONArray allhits = new JSONArray();
-//		JSONObject scrollResult = new JSONObject();
-//		String source = null;
-//		JSONArray jsonArray = new JSONArray();
-//		String scroll_id = null;
-//		JSONObject all_data = new JSONObject();
-//
-//		System.out.println("_getHighestTerm query ---- "+query);
-//		
-//		if (null != myResponse.get("hits")) {
-//
-//			Object hits = myResponse.getJSONObject("hits").getJSONArray("hits");
-//			Object total = myResponse.getJSONObject("hits").getJSONObject("total").get("value");
-//			scroll_id = myResponse.getString("_scroll_id");			
-//			source = hits.toString();
-//
-//			jsonArray = new JSONArray(source);
-//			result = this._getPostIds(jsonArray);
-////			Object a = this._multipleTermVectors(result).getJSONArray("docs").get(0);
-//			
-//			scrollResult = this._scrollRequest(scroll_id);
-//			allhits = scrollResult.getJSONObject("hits").getJSONArray("hits");
-//			result.addAll(this._getPostIds(allhits));
-////			result.put
-////			result =  merge(result, this._getPostIds(allhits));
-////			result = this._getPostIds(allhits); 
-//			
-////			for (int i = 0; i < 10; i++) {
-////				if (allhits.length() <= 0) {
-////					break;
-////				}
-//			while (allhits.length() > 0) {
-//				System.out.println("WHILE ---" + allhits.length());
-//				scroll_id = (String) scrollResult.get("_scroll_id");
-//				scrollResult = this._scrollRequest(scroll_id);
-//				allhits = scrollResult.getJSONObject("hits").getJSONArray("hits");
-//				source = allhits.toString();
-//				
-//				result.addAll(this._getPostIds(allhits));
-//				//jsonArray.put(new JSONArray(source));
-//			}
-//						
-//
-////			
-////			source = allhits.toString();
-////			jsonArray =  merge(jsonArray, new JSONArray(source));
-//		
-//		}
-//		return result;
+		ArrayList result = null;
+
+		try {
+			System.out.println("select * from blogpost_terms where blogsite_id in "
+					+ id +  " ");
+			
+			ArrayList response = DbConnection.query("select * from blogpost_terms where blogsiteid in ("
+					+ id +  ") ");
+			
+			if (response.size() > 0) {
+				
+				ArrayList hd = response;
+				//result = hd.get(index).toString();
+				result = hd;
+				//count = hd.get(0).toString();
+			}
+		} catch (Exception e) {
+			return result;
+		}
+
+		return result;
+	}
 	
-//	}
-	
+	public String mapReduce(List<Tuple2<String,Integer>> data) throws Exception {
+		String result = null;
+		try {
+			SparkConf conf = new SparkConf().setMaster("local[*]").setAppName("Example");
+			
+			JavaSparkContext sc = new JavaSparkContext(conf);
+			JavaRDD rdd = sc.parallelize(data);
+			JavaPairRDD <String, Integer> pairRdd = JavaPairRDD.fromJavaRDD(rdd);
+			ArrayList<Tuple2<String, Integer>> test = new ArrayList<Tuple2<String, Integer>>();
+			/*
+			 * for(Tuple2<String, Integer> x: pairRdd.reduceByKey((a,b) -> (a+
+			 * b)).collect()) { //System.out.println(x); test.add(x); }
+			 */
+			System.out.println(pairRdd.reduceByKey((a,b) -> (a+ b)).max(new DummyComparator()));
+			sc.stop();
+			
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		return result;
+	}	
+
+	public String countTerms(String path) throws Exception {
+		String result = null;
+		
+		try {
+			SparkConf conf = new SparkConf().setMaster("local[10]").setAppName("Example");
+			
+//			SparkSession spark = SparkSession
+//				      .builder()
+//				      .appName("Example")
+//				      .config(conf)
+//				      .getOrCreate();
+//			SparkSession spark = SparkSession.builder()
+//		    .appName("HDP Test Job")
+//		    .master("yarn")
+//		    .config("spark.submit.deployMode","cluster")
+//		    //.config("spark.hadoop.fs.defaultFS", "hdfs://169.254.169.254:8020")
+//		    //.config("spark.yarn.jars", "hdfs://169.254.169.254:8020/user/talentorigin/jars/*.jar")
+//		    //.config("spark.hadoop.yarn.resourcemanager.address", "169.254.169.254:8032")
+//		    //.config("spark.hadoop.yarn.application.classpath", "$HADOOP_CONF_DIR,$HADOOP_COMMON_HOME/*,$HADOOP_COMMON_HOME/lib/*,$HADOOP_HDFS_HOME/*,$HADOOP_HDFS_HOME/lib/*,$HADOOP_MAPRED_HOME/*,$HADOOP_MAPRED_HOME/lib/*,$HADOOP_YARN_HOME/*,$HADOOP_YARN_HOME/lib/*")
+////		    .enableHiveSupport()
+//		    .getOrCreate();
+			JavaSparkContext sc = new JavaSparkContext(conf);
+			//
+			//JavaSparkContext sc = new JavaSparkContext(conf);
+			JavaRDD<String> textFile = sc.textFile(path);
+			Tuple2<String, Integer> counts = textFile.flatMap(s -> Arrays.asList(s.split(" ")).iterator())
+					.mapToPair(word -> new Tuple2<>(word, 1)).reduceByKey((a, b) -> a + b).max(new DummyComparator());
+//			new JavaSparkContext(new SparkConf().setMaster("local").setAppName("demo"))
+//					.textFile("C:\\Users\\oljohnson\\Desktop\\SQL\\file2.json")
+//					.flatMap(s -> Arrays.asList(s.split(" ")).iterator()).mapToPair(word -> new Tuple2<>(word, 1))
+//
+//					.reduceByKey((a, b) -> a + b)
+//					.max( new DummyComparator());
+
+			// .foreach(pair -> System.out.println(pair));
+
+			// counts.saveAsTextFile("C:\\spark\\TEST\\new_output");
+			result = counts._1().toString();
+			sc.stop();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		return result;
+	}
+
 	public String getHighestTerm(String data) throws Exception {
 		String result = null;
 		String source = null;
 		String source_ = null;
+		data = data.replaceAll("/[^A-Za-z0-9 ]/", "");
 		System.out.println(data.length());
-		data = this.escape2(data);
-		//data = this.escape(data);
+		//data = this.escape2(data);
+		// data = this.escape(data);
 		if (data.length() > 0) {
 //data ="seun seun seun seun";
-			JSONObject query = new JSONObject("{\r\n" + 
-					"    \"doc\": {\r\n" + 
-					"        \"post\": \""+data+"\"\r\n" + 
-					"    },\r\n" + 
-					"\r\n" + 
-					"    \"term_statistics\": false,\r\n" + 
-					"        \"field_statistics\": false,\r\n" + 
-					"        \"positions\": false,\r\n" + 
-					"        \"offsets\": false,\r\n" + 
-					"        \"filter\": {\r\n" + 
-					"            \"max_num_terms\": 1,\r\n" + 
-					"            \"min_term_freq\": 1,\r\n" + 
-					"            \"min_doc_freq\": 1\r\n" + 
-					"        }\r\n" + 
-					"}");
+
 			System.out.println("INPROCESS--");
 
-
-			JSONObject myResponse = this._makeElasticRequest(query, "POST", "/termv/_termvectors?");
-			System.out.println("PROCESSED");
-			try (FileWriter file = new FileWriter("C:\\Users\\oljohnson\\Desktop\\SQL\\file2.json")) {
-
-				file.write(data.toString());
-				System.out.println("Successfully Copied JSON Object to File...");
-
-			}
-			
+//			try (FileWriter file = new FileWriter("C:\\Users\\oljohnson\\Desktop\\SQL\\file2.json")) {
+//
+//				file.write(data.toString());
+//				System.out.println("Successfully Copied JSON Object to File...");
+//
+//			}
+			System.out.println("INPROCESS2--");
 			try {
-				// Object r_ =
-				// this._multipleTermVectors(id).getJSONArray("docs").getJSONObject(0).getJSONObject("term_vectors").getJSONObject("post").getJSONObject("terms").keys().next().toString();
-				Object hits = myResponse.getJSONObject("term_vectors").getJSONObject("post").getJSONObject("terms");
-				// hits = myResponse.getJSONObject("term_vectors").getJSONObject("post").getJSONObject("terms");
-				source = hits.toString();
+				result = this.countTerms("C:\\Users\\oljohnson\\Desktop\\SQL\\file2.json");
+
 			} catch (Exception e) {
 				System.out.println(e);
 			}
 
-			JSONObject jsonObject = new JSONObject(source);
-			Iterator<String> keys = jsonObject.keys();
-			int value = 0;
-
-			System.out.println("DONE GETTING TERM VECTORS");
-			HashMap<String, Integer> hm2 = new HashMap<String, Integer>();
-			while (keys.hasNext()) {
-				source = keys.next();
-				// do something with jsonObject here
-				Object freq = jsonObject.getJSONObject(source).get("term_freq");
-				value = (Integer) freq;
-
-			}
-
-			System.out.println("HIGHEST TERM IS -- " + source + " OCCURING " + value + " TIMES");
-
 		} else {
 			source = "Null";
 		}
-		return source.toUpperCase();
+		return result.toUpperCase();
 	}
+
+//	public String getHighestTerm(String data) throws Exception {
+//		String result = null;
+//		String source = null;
+//		String source_ = null;
+//		System.out.println(data.length());
+//		data = this.escape2(data);
+//		// data = this.escape(data);
+//		if (data.length() > 0) {
+////data ="seun seun seun seun";
+//			JSONObject query = new JSONObject("{\r\n" + "    \"doc\": {\r\n" + "        \"post\": \"" + data + "\"\r\n"
+//					+ "    },\r\n" + "\r\n" + "    \"term_statistics\": false,\r\n"
+//					+ "        \"field_statistics\": false,\r\n" + "        \"positions\": false,\r\n"
+//					+ "        \"offsets\": false,\r\n" + "        \"filter\": {\r\n"
+//					+ "            \"max_num_terms\": 1,\r\n" + "            \"min_term_freq\": 1,\r\n"
+//					+ "            \"min_doc_freq\": 1\r\n" + "        }\r\n" + "}");
+//			System.out.println("INPROCESS--");
+//
+//			JSONObject myResponse = this._makeElasticRequest(query, "POST", "/termv/_termvectors?");
+//			System.out.println("PROCESSED");
+//			try (FileWriter file = new FileWriter("C:\\Users\\oljohnson\\Desktop\\SQL\\file2.json")) {
+//
+//				file.write(data.toString());
+//				System.out.println("Successfully Copied JSON Object to File...");
+//
+//			}
+//
+//			try {
+//				// Object r_ =
+//				// this._multipleTermVectors(id).getJSONArray("docs").getJSONObject(0).getJSONObject("term_vectors").getJSONObject("post").getJSONObject("terms").keys().next().toString();
+//				Object hits = myResponse.getJSONObject("term_vectors").getJSONObject("post").getJSONObject("terms");
+//				// hits =
+//				// myResponse.getJSONObject("term_vectors").getJSONObject("post").getJSONObject("terms");
+//				source = hits.toString();
+//			} catch (Exception e) {
+//				System.out.println(e);
+//			}
+//
+//			JSONObject jsonObject = new JSONObject(source);
+//			Iterator<String> keys = jsonObject.keys();
+//			int value = 0;
+//
+//			System.out.println("DONE GETTING TERM VECTORS");
+//			HashMap<String, Integer> hm2 = new HashMap<String, Integer>();
+//			while (keys.hasNext()) {
+//				source = keys.next();
+//				// do something with jsonObject here
+//				Object freq = jsonObject.getJSONObject(source).get("term_freq");
+//				value = (Integer) freq;
+//
+//			}
+//
+//			System.out.println("HIGHEST TERM IS -- " + source + " OCCURING " + value + " TIMES");
+//
+//		} else {
+//			source = "Null";
+//		}
+//		return source.toUpperCase();
+//	}
 
 	public JSONObject _getBloggerPosts(String term, String bloggerName, String date_from, String date_to, String ids_)
 			throws Exception {
@@ -3310,7 +3302,7 @@ public class Blogposts {
 					+ "    ]\r\n" + "}");
 
 		} else if (term == "___NO__TERM___" && bloggerName == "NOBLOGGER") {
-			query = new JSONObject("{\r\n" + "    \"size\": 1000,\r\n" + "    \"query\": {\r\n"
+			query = new JSONObject("{\r\n" + "    \"size\": 5000,\r\n" + "    \"query\": {\r\n"
 					+ "        \"bool\": {\r\n" + "            \"must\": [\r\n" + "                {\r\n"
 					+ "                    \"terms\": {\r\n" + "                        \"blogsite_id\": [" + ids_
 					+ "],\r\n" + "                        \"boost\": 1.0\r\n" + "                    }\r\n"
@@ -3395,17 +3387,17 @@ public class Blogposts {
 				j = new JSONObject(ids);
 
 				String src = j.get("post").toString();
-				//src = src.replaceAll("\\<.*?>", "");
+				// src = src.replaceAll("\\<.*?>", "");
 
-				//src = src.replaceAll("\\<.*?>", "");
-				//src = escape(src);
+				// src = src.replaceAll("\\<.*?>", "");
+				// src = escape(src);
 				// = src.replace("o.style.setproperty", "");
-				//src = src.replace("o.style.setProperty", "");
-				//src = src.replace("(adsbygoogle = window.adsbygoogle || []).push({}); ", "");
+				// src = src.replace("o.style.setProperty", "");
+				// src = src.replace("(adsbygoogle = window.adsbygoogle || []).push({}); ", "");
 
 				if (bloggerName == "NOBLOGGER" && term != "___NO__TERM___") {
 					if (j.get("title").toString() != null || j.get("title").toString() != "") {
-						occurence = this.countOccurences(src, term);
+						//occurence = this.countOccurences(src, term);
 						System.out.println(term + "----------------------" + occurence);
 						title = j.get("title").toString();
 						blogpost_id = j.get("blogpost_id").toString();
@@ -3445,7 +3437,7 @@ public class Blogposts {
 //result = this.escape2(result);
 //		result = result.replace("//", "");
 //		result = result.replace("\\", "");
-		//result = this.escape2(result);
+		// result = this.escape2(result);
 //		result = this.escape2(result);
 		all_data.put("posts", result);
 		all_data.put("data", all);
