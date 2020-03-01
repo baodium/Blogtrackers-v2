@@ -153,35 +153,64 @@
 	HashMap<String, String> key_val_posts = new HashMap<String, String>();
 	ArrayList<JSONObject> scatterplotfinaldata = new ArrayList<JSONObject>();
 	
+	HashMap<String, String> distances = new HashMap<String, String>();
+	HashMap<String, String> topterms = new HashMap<String, String>();
+	
+	String find = "";
 
 	for (int i = 1; i < 11; i++) {
 		String cluster_ = "cluster_" + String.valueOf(i);
+		String centroids = "C" + String.valueOf(i) + "xy";
 		String post_ids = source.get(cluster_).toString();
+		String centroid = source.get(centroids).toString().replace("[", "").replace("]", "");
+		String centroid_x = centroid.split(",")[0].trim();
+		String centroid_y = centroid.split(",")[1].trim();
+		//System.out.println(centroid);
 		
 		ArrayList svd = cluster._getSvd(post_ids);
 		for(int j = 0; j < svd.size(); j++){
-			JSONObject scatter_plot = new JSONObject();
 			
-			JSONObject source_ = new JSONObject(svd.get(0).toString());
+			JSONObject scatter_plot = new JSONObject();
+			JSONObject source_ = new JSONObject(svd.get(j).toString());
 			Object x_y = source_.getJSONObject("_source").get("svd");
 			Object p_id = source_.getJSONObject("_source").get("post_id");
+			x_y = x_y.toString().replaceAll("\\s+", " ");
 			
 			String x = x_y.toString().split(" ")[0];
 			String y = x_y.toString().split(" ")[1];
-			String postid = p_id.toString();
 			
+			//System.out.println(x_y.toString());
+			//System.out.println(x +"--"+ y);
+			
+			//System.out.println(svd);
+			String postid = p_id.toString();
+			/* if(p_id.toString().equals("62675")){
+				find = x_y.toString() + "--" + x + "--" + y;
+			
+				
+			} */
 			scatter_plot.put("cluster",String.valueOf(i));
 			scatter_plot.put("new_x",x);
 			scatter_plot.put("new_y",y);
+			scatter_plot.put("post_id",postid);
 			
+			//Double.parseDouble(s)
+			double left = Math.pow((double)Double.parseDouble(x) - (double)Double.parseDouble(centroid_x), 2);
+			double right = Math.pow((double)Double.parseDouble(y) - (double)Double.parseDouble(centroid_y), 2);
+			String distance = String.valueOf(Math.pow((left + right), 0.5));
+			distances.put(postid, distance); 
 			scatterplotfinaldata.add(scatter_plot);
+			
 		}
 		
 		
 		//System.out.println(svd);
-
+		
 		JSONArray postDataAll = cluster.getPosts(post_ids, "", "", "__ONLY__POST__ID__");
-
+		String terms = cluster.getTopTerms(post_ids);
+		System.out.println(terms);
+		topterms.put(cluster_,terms);
+		
 		key_val = new Pair<String, String>(cluster_, post_ids);
 		//key_val.put(cluster_,post_ids);
 		System.out.println("clusters --" + cluster_);
@@ -194,6 +223,9 @@
 
 	}
 
+	System.out.println(topterms.size());
+	//System.out.println("find --" + find);
+	session.setAttribute(tid.toString() + "cluster_distances", distances);
 	session.setAttribute(tid.toString() + "cluster_result", clusterResult);
 	session.setAttribute(tid.toString() + "cluster_result_key_val", key_val_posts);
 	//
@@ -683,7 +715,7 @@
 							<tr>
 
 								<td><%=title.toString()%></td>
-								<td>1<%-- <%=post_distances.get(blog_post_id.toString()) %> --%></td>
+								<td><%=distances.get(blog_post_id.toString())%></td>
 
 
 							</tr>
@@ -874,9 +906,9 @@
 <p class="text-center text-medium pt10 pb10 mb0">Copyright &copy; Blogtrackers 2017 All Rights Reserved.</p>
 </div>
   </footer> -->
-	<script type="text/javascript" src="assets/vendors/d3/d3.v4.min.js"></script>
-	<script type="text/javascript"
-		src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+	<!-- <script type="text/javascript" src="assets/vendors/d3/d3.v4.min.js"></script> -->
+	<!-- <script type="text/javascript"
+		src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script> -->
 
 	<script src="assets/js/jquery.min.js"></script>
 
@@ -1091,15 +1123,159 @@
    //$('#config-demo').daterangepicker(options, function(start, end, label) { console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')'); });
  });
  </script>
+ <script type="text/javascript" src="assets/vendors/d3/d3.v4_new.min.js" ></script> 
+ <script>
+    var d3v4_ = window.d3;
+    //console.log(d3v4_.version)
+    //window.d3 = null;
+</script>
+<script>
+	//var d3 = d3v4_;
+	console.log("cluster",d3.version)
+	loadscatter(0);
+	function loadscatter(clusterid){
+		data = []
+	var margin = {top: 10, right: 30, bottom: 30, left: 60},
+	width = 1000 - margin.left - margin.right,
+	height = 300 - margin.top - margin.bottom;
 
+	//append the SVG object to the body of the page
+	var SVG = d3v4_.select("#clusterdiagram")
+	.append("svg")
+	.attr("width", width + margin.left + margin.right)
+	.attr("height", height + margin.top + margin.bottom)
+	.append("g")
+	.attr("transform","translate(" + margin.left + "," + margin.top + ")");
 
+	//Read the data
+	d3v4_.csv("test_data.csv", function(data) {
+		
+		console.log('csv data');
+		console.log(data);
+		
+	
+	
+	<%-- var data = <%=scatterplotfinaldata%>
+	console.log('data from jsp');
+	console.log(data); --%>
+	
+	 var new_array = data.filter(function (el){
+		
+		return Math.max(el.new_y  && el.cluster==clusterid);
+	}
+	
+	); 
+	
+	var max_x = Math.max.apply(Math, new_array.map(function(o) { return o.new_x; }));
+	var max_y = Math.max.apply(Math, new_array.map(function(o) { return o.new_y; }));
+	var min_x = Math.min.apply(Math, new_array.map(function(o) { return o.new_x; }));
+	var min_y = Math.min.apply(Math, new_array.map(function(o) { return o.new_y; }));
+	
+	/* console.log(newa2) */
+	console.log(data);
+	// Add X axis
+	var x = d3v4_.scaleLinear()
+	.domain([min_x, max_x])
+	.range([ 0, width ]);
+	var xAxis = SVG.append("g")
+	.attr("transform", "translate(0," + height + ")")
+	.call(d3v4_.axisBottom(x));
+
+	// Add Y axis
+	var y = d3v4_.scaleLinear()
+	.domain([min_y, max_y])
+	.range([ height, 0]);
+	var yAxis = SVG.append("g")
+	.call(d3v4_.axisLeft(y));
+
+	// Add a clipPath: everything out of this area won't be drawn.
+	var clip = SVG.append("defs").append("SVG:clipPath")
+	  .attr("id", "clip")
+	  .append("SVG:rect")
+	  .attr("width", width)
+	  .attr("height", height)
+	  .attr("x", 0)
+	  .attr("y", 0);
+	  
+	var color = d3v4_.scaleOrdinal()
+	.domain(["0", "1", "2","3","4","5","6","7","8","9" ])
+	.range([ 'green', 'red', 'blue', 'orange', 'purple','pink', 'black', 'grey', 'brown','yellow'])
+
+	// Create the scatter variable: where both the circles and the brush take place
+	var scatter = SVG.append('g')
+	.attr("clip-path", "url(#clip)")
+
+	// Add circles
+	scatter
+	.selectAll("circle")
+	.data(data)
+	.enter()
+	.append("circle")
+	  .attr("cx", function (d) { return x(d.new_x); } )
+	  .attr("cy", function (d) { return y(d.new_y); } )
+	  .attr("r", 8)
+	  .style("fill", function (d) { return color(d.cluster) } )
+	  .style("opacity", 0.5)
+
+	// Set the zoom and Pan features: how much you can zoom, on which part, and what to do when there is a zoom
+	var zoom = d3v4_.zoom()
+	  .scaleExtent([-0.0005, 170])  // This control how much you can unzoom (x0.5) and zoom (x20)
+	  .extent([[0, 0], [width, height]])
+	  .on("zoom", updateChart);
+
+	// This add an invisible rect on top of the chart area. This rect can recover pointer events: necessary to understand when the user zoom
+	SVG.append("rect")
+	  .attr("width", width)
+	  .attr("height", height)
+	  .style("fill", "none")
+	  .style("pointer-events", "all")
+	  .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
+	  .call(zoom);
+	// now the user can zoom and it will trigger the function called updateChart
+
+	// A function that updates the chart when the user zoom and thus new boundaries are available
+	function updateChart() {
+
+	// recover the new scale
+	var newX = d3v4_.event.transform.rescaleX(x);
+	var newY = d3v4_.event.transform.rescaleY(y);
+
+	// update axes with these new boundaries
+	xAxis.call(d3v4_.axisBottom(newX))
+	yAxis.call(d3v4_.axisLeft(newY))
+
+	// update circle position
+	scatter
+	  .selectAll("circle")
+	  .attr('cx', function(d) {return newX(d.new_x)})
+	  .attr('cy', function(d) {return newY(d.new_y)});
+	}
+
+	});
+	}
+</script>
+
+<script type="text/javascript" src="assets/vendors/d3/d3.min.js" ></script>
+ <script src="assets/vendors/wordcloud/d3.layout.cloud.js" ></script>
+ <script type="text/javascript" src="assets/vendors/d3/d3_tooltip.js" ></script>
+ 
+<script>
+    var d3v3_ = window.d3;
+    //console.log(d3v3_.version)
+    //window.d3 = null;
+</script>
 
 	<!--word cloud  -->
-	<script>
-	 d3version3 = d3
+	<!-- <script type="text/javascript"></script>
+	<script type="text/javascript" src="assets/vendors/d3/d3.min.js"></script>
+	<script src="assets/vendors/wordcloud/d3.layout.cloud.js"></script>
+	<script type="text/javascript" src="assets/vendors/d3/d3_tooltip.js"></script> -->
+	<script >
+	 /* d3version3 = d3
 	   // window.d3 = null
 	    // test it worked
 	    console.log('v3', d3version3.version)
+	    d3 = d3version3 */
  var color = d3.scale.linear()
          .domain([0,3,5,7,8,9,6,10,15,20,50])
          .range(["#17394C", "#F5CC0E", "#CE0202", "#1F90D0", "#999", "#888", "#777", "#666", "#555", "#444", "#333", "#222"]);
@@ -1108,7 +1284,9 @@
 
    wordtagcloud("#tagcloudcontainer",410);
     function wordtagcloud(element, height) {
-
+    	var d3 = d3v3_;
+    	
+//console.log(d3.version)
       // Define main variables of the container
       var d3Container = d3.select(element),
           margin = {top: 30, right: 10, bottom: 20, left: 25},
@@ -1123,7 +1301,9 @@
 
      var frequency_list = [{"text":"study","size":40},{"text":"motion","size":15},{"text":"forces","size":10},{"text":"electricity","size":15},{"text":"movement","size":10},{"text":"relation","size":5},{"text":"things","size":10},{"text":"force","size":5},{"text":"ad","size":5},{"text":"energy","size":85},{"text":"living","size":5},{"text":"nonliving","size":5},{"text":"laws","size":15},{"text":"speed","size":45},{"text":"velocity","size":30},{"text":"define","size":5},{"text":"constraints","size":5},{"text":"universe","size":10},{"text":"distinguished","size":5},{"text":"chemistry","size":5},{"text":"biology","size":5},{"text":"includes","size":5},{"text":"radiation","size":5},{"text":"sound","size":5},{"text":"structure","size":5},{"text":"atoms","size":5},{"text":"including","size":10},{"text":"atomic","size":10},{"text":"nuclear","size":10},{"text":"cryogenics","size":10},{"text":"solid-state","size":10},{"text":"particle","size":10},{"text":"plasma","size":10},{"text":"deals","size":5},{"text":"merriam-webster","size":5},{"text":"dictionary","size":10},{"text":"analysis","size":5},{"text":"conducted","size":5},{"text":"order","size":5},{"text":"understand","size":5},{"text":"behaves","size":5},{"text":"en","size":5},{"text":"wikipedia","size":5},{"text":"wiki","size":5},{"text":"physics-","size":5},{"text":"physical","size":5},{"text":"behaviour","size":5},{"text":"collinsdictionary","size":5},{"text":"english","size":5},{"text":"time","size":35},{"text":"distance","size":35},{"text":"wheels","size":5},{"text":"revelations","size":5},{"text":"minute","size":5},{"text":"acceleration","size":20},{"text":"torque","size":5},{"text":"wheel","size":5},{"text":"rotations","size":5},{"text":"resistance","size":5},{"text":"momentum","size":5},{"text":"measure","size":10},{"text":"direction","size":10},{"text":"car","size":5},{"text":"add","size":5},{"text":"traveled","size":5},{"text":"weight","size":5},{"text":"electrical","size":5},{"text":"power","size":5}];
      var svg =  container;
-     d3.layout.cloud().size([width, height])
+     console.log("wordcloud",d3.version)
+     
+     d3v3_.layout.cloud().size([width, height])
              .words(frequency_list)
              .rotate(0)
              .fontSize(function(d) { return d.size; })
@@ -1185,14 +1365,16 @@
 });
 
  </script>
-	<script>
- /*//////////////////////////////////////////////////////////
- ////////////////// Set up the Data /////////////////////////
- //////////////////////////////////////////////////////////*/
-  d3version3 = d3
-    //window.d3 = null
-    // test it worked
-    console.log('v3', d3version3.version)
+ <!-- <script type="text/javascript"></script>
+	<script type="text/javascript" src="assets/vendors/d3/d3.min.js"></script>
+	<script src="assets/vendors/wordcloud/d3.layout.cloud.js"></script>
+	<script type="text/javascript" src="assets/vendors/d3/d3_tooltip.js"></script> -->
+	<script >
+	 /* d3version3 = d3
+	   // window.d3 = null
+	    // test it worked
+	    console.log('v3', d3version3.version)
+	    d3 = d3version3 */
 
  $(function () {
 
@@ -1215,7 +1397,8 @@
  /*Sums up to exactly 100*/
 
  var colors = ["#C4C4C4","#69B40F","#EC1D25","#C8125C","#008FC8","#10218B","#134B24","#737373"];
-
+var d3 = d3v3_;
+console.log("chord",d3.version)
  // Define main variables of the container
  var d3Container = d3.select(element),
      margin = {top: 30, right: 10, bottom: 20, left: 25},
@@ -1705,152 +1888,28 @@
  </script>
 
 
-	<script
-		src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+	<!-- <script
+		src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script> -->
 	<script>
-    d3version3 = d3
+    /* d3version3 = d3
     window.d3 = null
     // test it worked
-    console.log('v3', d3version3.version)
+    console.log('v3', d3version3.version) */
     
   </script>
 	<!-- <script src="https://d3js.org/d3.v4.js"></script> -->
-	<script type="text/javascript"></script>
-	<script type="text/javascript" src="assets/vendors/d3/d3.min.js"></script>
-	<script src="assets/vendors/wordcloud/d3.layout.cloud.js"></script>
-	<script type="text/javascript" src="assets/vendors/d3/d3_tooltip.js"></script>
-	<script
-		src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.10.0/d3.min.js"></script>
+	
+	<!-- <script
+		src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.10.0/d3.min.js"></script> -->
+		
 	<script>
-    d3version4 = d3
+    /* d3version4 = d3
    // window.d3 = null
     
-    console.log('v4', d3version4.version)
+    console.log('v4', d3version4.version) */
   </script>
 	<!-- <script async src="pagedependencies/clustering.js"></script> -->
-	<script>
-	loadscatter(0);
-	function loadscatter(clusterid){
-		data = []
-	var margin = {top: 10, right: 30, bottom: 30, left: 60},
-	width = 1000 - margin.left - margin.right,
-	height = 300 - margin.top - margin.bottom;
-
-	//append the SVG object to the body of the page
-	var SVG = d3.select("#clusterdiagram")
-	.append("svg")
-	.attr("width", width + margin.left + margin.right)
-	.attr("height", height + margin.top + margin.bottom)
-	.append("g")
-	.attr("transform","translate(" + margin.left + "," + margin.top + ")");
-
-	//Read the data
-	d3.csv("test_data.csv", function(data) {
-		
-		console.log('csv data');
-		console.log(data);
-		
-	});
 	
-	var data = <%=scatterplotfinaldata%>
-	console.log('data from jsp');
-	console.log(data);
-	
-	 var new_array = data.filter(function (el){
-		
-		return Math.max(el.new_y  && el.cluster==clusterid);
-	}
-	
-	); 
-	
-	var max_x = Math.max.apply(Math, new_array.map(function(o) { return o.new_x; }));
-	var max_y = Math.max.apply(Math, new_array.map(function(o) { return o.new_y; }));
-	var min_x = Math.min.apply(Math, new_array.map(function(o) { return o.new_x; }));
-	var min_y = Math.min.apply(Math, new_array.map(function(o) { return o.new_y; }));
-	
-	/* console.log(newa2) */
-	console.log(data);
-	// Add X axis
-	var x = d3.scaleLinear()
-	.domain([min_x, max_x])
-	.range([ 0, width ]);
-	var xAxis = SVG.append("g")
-	.attr("transform", "translate(0," + height + ")")
-	.call(d3.axisBottom(x));
-
-	// Add Y axis
-	var y = d3.scaleLinear()
-	.domain([min_y, max_y])
-	.range([ height, 0]);
-	var yAxis = SVG.append("g")
-	.call(d3.axisLeft(y));
-
-	// Add a clipPath: everything out of this area won't be drawn.
-	var clip = SVG.append("defs").append("SVG:clipPath")
-	  .attr("id", "clip")
-	  .append("SVG:rect")
-	  .attr("width", width)
-	  .attr("height", height)
-	  .attr("x", 0)
-	  .attr("y", 0);
-	  
-	var color = d3.scaleOrdinal()
-	.domain(["0", "1", "2","3","4","5","6","7","8","9" ])
-	.range([ 'green', 'red', 'blue', 'orange', 'purple','pink', 'black', 'grey', 'brown','yellow'])
-
-	// Create the scatter variable: where both the circles and the brush take place
-	var scatter = SVG.append('g')
-	.attr("clip-path", "url(#clip)")
-
-	// Add circles
-	scatter
-	.selectAll("circle")
-	.data(data)
-	.enter()
-	.append("circle")
-	  .attr("cx", function (d) { return x(d.new_x); } )
-	  .attr("cy", function (d) { return y(d.new_y); } )
-	  .attr("r", 8)
-	  .style("fill", function (d) { return color(d.cluster) } )
-	  .style("opacity", 0.5)
-
-	// Set the zoom and Pan features: how much you can zoom, on which part, and what to do when there is a zoom
-	var zoom = d3.zoom()
-	  .scaleExtent([-0.0005, 170])  // This control how much you can unzoom (x0.5) and zoom (x20)
-	  .extent([[0, 0], [width, height]])
-	  .on("zoom", updateChart);
-
-	// This add an invisible rect on top of the chart area. This rect can recover pointer events: necessary to understand when the user zoom
-	SVG.append("rect")
-	  .attr("width", width)
-	  .attr("height", height)
-	  .style("fill", "none")
-	  .style("pointer-events", "all")
-	  .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
-	  .call(zoom);
-	// now the user can zoom and it will trigger the function called updateChart
-
-	// A function that updates the chart when the user zoom and thus new boundaries are available
-	function updateChart() {
-
-	// recover the new scale
-	var newX = d3.event.transform.rescaleX(x);
-	var newY = d3.event.transform.rescaleY(y);
-
-	// update axes with these new boundaries
-	xAxis.call(d3.axisBottom(newX))
-	yAxis.call(d3.axisLeft(newY))
-
-	// update circle position
-	scatter
-	  .selectAll("circle")
-	  .attr('cx', function(d) {return newX(d.new_x)})
-	  .attr('cy', function(d) {return newY(d.new_y)});
-	}
-
-	
-	}
-</script>
 
 
 </body>

@@ -539,7 +539,7 @@ public class Clustering extends HttpServlet {
 		int size = 50;
 		DbConnection db = new DbConnection();
 		String count = "0";
-		System.out.println("SELECT *  FROM clusters WHERE tid = '" + tid + "");
+		//System.out.println("SELECT *  FROM clusters WHERE tid = '" + tid + "");
 
 		ArrayList result = new ArrayList();
 		try {
@@ -557,7 +557,7 @@ public class Clustering extends HttpServlet {
 		int size = 50;
 		DbConnection db = new DbConnection();
 		String count = "0";
-		System.out.println("SELECT *  FROM cluster_svd WHERE post_id in ( " + postids + ")");
+		//System.out.println("SELECT *  FROM cluster_svd WHERE post_id in ( " + postids + ")");
 
 		ArrayList result = new ArrayList();
 		try {
@@ -569,6 +569,69 @@ public class Clustering extends HttpServlet {
 
 		return result;
 
+	}
+	
+	public static String getTopTerms(String PostIds) throws Exception{
+		String result = null;
+		
+		JSONArray postDataAll = getPosts(PostIds, "", "", "__ONLY__TERMS__");
+
+		System.out.println("postall" + postDataAll.length());
+
+		int a = postDataAll.length();
+		int b = 1000;
+		int poolsize = ((a / b)) > 0 ? (a / b) + 1 : 1;
+		System.out.println(poolsize);
+////	System.out.println(jsonArray.length());
+		ExecutorService executorServiceSplitLoop = Executors.newFixedThreadPool(poolsize);
+		System.out.println("1" + executorServiceSplitLoop.isShutdown());
+//ArrayList<int[]> result = new ArrayList<int[]>();
+//		List<Tuple2<String, Integer>> returnedData = new ArrayList<Tuple2<String, Integer>>();
+		List<Tuple2<String, Integer>> returnedData = Collections
+				.synchronizedList(new ArrayList<Tuple2<String, Integer>>());
+
+		Map<String, Integer> d = new HashMap<String, Integer>();
+
+		for (int i = 0; i < a; i = i + b) {
+
+			int start1 = 0;
+			int end_ = 0;
+
+//	int[] test = new int[2];
+//test[0] = i;
+			start1 = i;
+
+			if ((i + b) > a) {
+//test[1] = i +(a%b);
+				end_ = i + (a % b);
+			} else {
+//test[1] = i + b;
+				end_ = i + b;
+			}
+			System.out.println(start1 + "--" + end_);
+			JSONObject q = new JSONObject();
+			RunnableUtil es = new RunnableUtil(q, postDataAll, start1, end_, returnedData, d, "loop",
+					"blogpost_terms", "terms");
+			executorServiceSplitLoop.execute(es);
+//			returnedData = es.datatuple;
+			// System.out.println("returned"+returnedData.size());
+
+		}
+
+		executorServiceSplitLoop.shutdown();
+		while (!executorServiceSplitLoop.isTerminated()) {
+		}
+
+		System.out.println("2" + executorServiceSplitLoop.isShutdown());
+		System.out.println("json array size" + postDataAll.length());
+//		RunnableUtil es = new RunnableUtil();
+//		(în,114787)
+		System.out.println("returned--" + returnedData.size());
+//		System.out.println(returnedData.get(0));
+
+		result = term.mapReduce(returnedData, "dashboard");
+		
+		return result;
 	}
 
 	public static void main(String[] args) {
@@ -611,62 +674,7 @@ String ssssss = "";
 			System.out.println("count ---" + count_);
 			System.out.println("test length---" + test.split(",").length);
 
-			JSONArray postDataAll = getPosts(test, "", "", "__ONLY__TERMS__");
-
-			System.out.println("postall" + postDataAll.length());
-
-			int a = postDataAll.length();
-			int b = 1000;
-			int poolsize = ((a / b)) > 0 ? (a / b) + 1 : 1;
-			System.out.println(poolsize);
-////		System.out.println(jsonArray.length());
-			ExecutorService executorServiceSplitLoop = Executors.newFixedThreadPool(poolsize);
-			System.out.println("1" + executorServiceSplitLoop.isShutdown());
-//ArrayList<int[]> result = new ArrayList<int[]>();
-//			List<Tuple2<String, Integer>> returnedData = new ArrayList<Tuple2<String, Integer>>();
-			List<Tuple2<String, Integer>> returnedData = Collections
-					.synchronizedList(new ArrayList<Tuple2<String, Integer>>());
-
-			Map<String, Integer> d = new HashMap<String, Integer>();
-
-			for (int i = 0; i < a; i = i + b) {
-
-				int start1 = 0;
-				int end_ = 0;
-
-//		int[] test = new int[2];
-//test[0] = i;
-				start1 = i;
-
-				if ((i + b) > a) {
-//	test[1] = i +(a%b);
-					end_ = i + (a % b);
-				} else {
-//test[1] = i + b;
-					end_ = i + b;
-				}
-				System.out.println(start1 + "--" + end_);
-				JSONObject q = new JSONObject();
-				RunnableUtil es = new RunnableUtil(q, postDataAll, start1, end_, returnedData, d, "loop",
-						"blogpost_terms", "terms");
-				executorServiceSplitLoop.execute(es);
-//				returnedData = es.datatuple;
-				// System.out.println("returned"+returnedData.size());
-
-			}
-
-			executorServiceSplitLoop.shutdown();
-			while (!executorServiceSplitLoop.isTerminated()) {
-			}
-
-			System.out.println("2" + executorServiceSplitLoop.isShutdown());
-			System.out.println("json array size" + postDataAll.length());
-//			RunnableUtil es = new RunnableUtil();
-//			(în,114787)
-			System.out.println("returned--" + returnedData.size());
-//			System.out.println(returnedData.get(0));
-
-			System.out.println(term.mapReduce(returnedData, "topterm"));
+			
 
 			Instant end = Instant.now();
 			Duration timeElapsed = Duration.between(start, end);
