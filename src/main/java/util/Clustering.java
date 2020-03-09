@@ -629,7 +629,7 @@ public class Clustering extends HttpServlet {
 		System.out.println("returned--" + returnedData.size());
 //		System.out.println(returnedData.get(0));
 
-		result = term.mapReduce(returnedData, "dashboard");
+		result = term.mapReduce(returnedData, "100");
 		
 		return result;
 	}
@@ -637,42 +637,50 @@ public class Clustering extends HttpServlet {
 	public static void main(String[] args) {
 
 		try {
-String ssssss = "";
+String ssssss = "[(news,1076), (read,1056), (editor,852), (wnu,849), (navy,742), (air,672), (military,572), (reuters,550), (attack,451), (peace,442), (army,416), (aircraft,405), (president,384), (china,382), (police,378), (killed,363), (times,343), (people,343), (afp,338), (time,325), (sea,320), (soldiers,306), (south,301), (years,300), (2016,296), (forces,295), (update,290), (photo,276), (north,267), (carrier,262), (bbc,261), (city,260), (daily,251), (year,251), (government,250), (defense,247), (ship,246), (chinese,243), (day,219), (10,218), (uss,215), (security,213), (base,211), (fighter,211), (anti,209), (cnn,206), (leader,205), (missile,204), (35,203), (long,201), (washington,196), (000,195), (agency,191), (battle,188), (dead,186), (group,185), (video,183), (taliban,182), (officials,182), (short,179), (2017,178), (russian,177), (mail,175), (told,174), (today,174), (korea,172), (twitter,172), (national,172), (islamic,171), (life,171), (weapons,168), (post,167), (country,166), (guardian,166), (death,164), (report,161), (coast,160), (bomb,159), (live,156), (afghan,154), (stories,154), (ships,153), (class,153), (isis,152), (election,150), (intelligence,148), (combat,147), (training,146), (plane,145), (service,144), (wikileaks,144), (attacks,142), (cia,142), (space,141), (sputnik,139), (poems,139), (france,139), (essays,139), (excerpts,138), (nuclear,138)]";
 			Instant start = Instant.now();
-			String test = "";
-			String tracker_id = "238";
-			// get postids from each cluster in tracker and save in JSONObject
-			ArrayList result = _getClusters(tracker_id);
-
-			JSONObject res = new JSONObject(result.get(0).toString());
-			JSONObject source = new JSONObject(res.get("_source").toString());
-
-			// ArrayList R2 = (ArrayList)result.get(0);
-			// for()
-			// System.out.println(source.get("cluster_3"));
-//			HashMap<Pair<String, String>, JSONArray> clusterResult = new HashMap<Pair<String, String>, JSONArray>();
-			// JSONObject key_val = new JSONObject();
-//			Pair<String, String> key_val = new Pair<String, String>(null, null);
-
-//			HashMap<String, String> key_val_posts = new HashMap<String, String>();
-
-			String post_ids = null;
-//			List<String> list = Arrays.asList("a","b","c");
-
-//	        System.out.println(result);
-			int count_ = 0;
-			for (int i = 1; i < 11; i++) {
-				String cluster_ = "cluster_" + String.valueOf(i);
-				post_ids = source.get(cluster_).toString();
-				count_ = (count_ + (post_ids.split(",").length));
-
-				test = test.concat(post_ids + ",");
-
-			}
-
-//			System.out.println(test.substring(test.length() - 1));
-			System.out.println("count ---" + count_);
-			System.out.println("test length---" + test.split(",").length);
+			ssssss = ssssss.replace("[","").replace("]", "").replace("),", "-").replace("(", "");
+			System.out.println(ssssss);
+			System.out.println(Arrays.asList(ssssss.split("-")).get(0));
+			
+			SparkConf conf = new SparkConf().setMaster("spark://144.167.35.50:4042").setAppName("Example").set("spark.ui.port","4042");;
+//			conf.set("spark.driver.memory", "64g");
+			JavaSparkContext sc = new JavaSparkContext(conf);
+			sc.stop();
+//			String test = "";
+//			String tracker_id = "238";
+//			// get postids from each cluster in tracker and save in JSONObject
+//			ArrayList result = _getClusters(tracker_id);
+//
+//			JSONObject res = new JSONObject(result.get(0).toString());
+//			JSONObject source = new JSONObject(res.get("_source").toString());
+//
+//			// ArrayList R2 = (ArrayList)result.get(0);
+//			// for()
+//			// System.out.println(source.get("cluster_3"));
+////			HashMap<Pair<String, String>, JSONArray> clusterResult = new HashMap<Pair<String, String>, JSONArray>();
+//			// JSONObject key_val = new JSONObject();
+////			Pair<String, String> key_val = new Pair<String, String>(null, null);
+//
+////			HashMap<String, String> key_val_posts = new HashMap<String, String>();
+//
+//			String post_ids = null;
+////			List<String> list = Arrays.asList("a","b","c");
+//
+////	        System.out.println(result);
+//			int count_ = 0;
+//			for (int i = 1; i < 11; i++) {
+//				String cluster_ = "cluster_" + String.valueOf(i);
+//				post_ids = source.get(cluster_).toString();
+//				count_ = (count_ + (post_ids.split(",").length));
+//
+//				test = test.concat(post_ids + ",");
+//
+//			}
+//
+////			System.out.println(test.substring(test.length() - 1));
+//			System.out.println("count ---" + count_);
+//			System.out.println("test length---" + test.split(",").length);
 
 			
 
