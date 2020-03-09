@@ -969,7 +969,8 @@ public class Terms extends HttpServlet implements Runnable {
 	public String mapReduce(List<Tuple2<String, Integer>> data, String type) throws Exception {
 		JavaPairRDD<String, Integer> result = null;
 		String result2 = null;
-		SparkConf conf = new SparkConf().setMaster("local").setAppName("Example");
+		SparkConf conf = new SparkConf().setMaster("local[*]").setAppName("Example");
+//		SparkConf conf = new SparkConf().setMaster("spark://144.167.35.50:4042").setAppName("Example").set("spark.ui.port","4042");
 //		conf.set("spark.driver.memory", "64g");
 		JavaSparkContext sc = new JavaSparkContext(conf);
 		try {
@@ -983,28 +984,34 @@ public class Terms extends HttpServlet implements Runnable {
 
 			ArrayList<Tuple2<String, Integer>> test = new ArrayList<Tuple2<String, Integer>>();
 
-//			if (type.contentEquals("topterm")) {
+			if (type.contentEquals("topterm")) {
 				System.out.println("i am here");
 				System.out.println(data.size());
-				System.out.println(data.parallelStream().max(new DummyComparator()));
+				//System.out.println(data.parallelStream().max(new DummyComparator()));
 //				System.out.println(pairRdd.groupByKey().toString());
-//				result = pairRdd.reduceByKey((a, b) -> (a + b)).max(new DummyComparator())._1().toString();
+//				result2 = pairRdd.reduceByKey((a, b) -> (a + b)).max(new DummyComparator())._1().toString();
+				result2 = pairRdd.reduceByKey((a, b) -> (a + b)).max(new DummyComparator()).toString();
 //				result = pairRdd.reduceByKey((a,b) -> (a + b));
 				
 //				for (JavaPairRDD<String, Integer> tuple2 : pairRdd) {
 //					
 //				}
-				
+				sc.stop();
 //				System.out.println(result.max(new DummyComparator()));
 //				return result;
-//			} else if (type.contentEquals("dashboard")) {
-//				result = pairRdd.reduceByKey((a, b) -> (a + b)).takeOrdered(100, TupleTakeOrder.INSTANCE).toString();
+			} else if (type.contentEquals("dashboard")) {
+//				result2 = pairRdd.reduceByKey((a, b) -> (a + b)).takeOrdered(100, TupleTakeOrder.INSTANCE).toString();
+				result2 = pairRdd.reduceByKey((a, b) -> (a + b)).toString();
 //				return result;
 //				System.out.println(result);
 				sc.stop();
 				return result2;
 
-//			}
+			} else {
+				result2 = pairRdd.reduceByKey((a, b) -> (a + b)).takeOrdered(Integer.parseInt(type), TupleTakeOrder.INSTANCE).toString();
+				sc.stop();
+				return result2;
+			}
 			// System.out.println();
 			
 
