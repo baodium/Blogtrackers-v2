@@ -24,12 +24,14 @@
 	//response.sendRedirect("login.jsp");
 	//}else{
 
-	ArrayList<?> userinfo = new ArrayList();//null;
+	ArrayList<?> userinfo = new ArrayList();
 	String profileimage = "";
 	String username = "";
 	String name = "";
 	String phone = "";
 	String date_modified = "";
+	
+	
 
 	userinfo = new DbConnection().query("SELECT * FROM usercredentials where Email = '" + email + "'");
 	//System.out.println(userinfo);
