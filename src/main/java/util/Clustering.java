@@ -268,11 +268,11 @@ public class Clustering extends HttpServlet {
 		return result;
 	}
 
-	public static int getShardSize(JSONObject query) {
+	public static int getShardSize(JSONObject query,String index) {
 		JSONObject myResponse = new JSONObject();
 		int result = 0;
 		try {
-			myResponse = term._makeElasticRequest(query, "GET", "/blogposts/_search_shards");
+			myResponse = term._makeElasticRequest(query, "GET", "/"+index+"/_search_shards");
 			// System.out.println(myResponse);
 
 			if (!(myResponse.getJSONArray("shards").getJSONArray(0) == null)) {
@@ -342,16 +342,22 @@ public class Clustering extends HttpServlet {
 		ArrayList<JSONObject> result = new ArrayList<JSONObject>();
 		String total = term._count(query, "/" + index + "/_count?");
 		// System.out.println(query);
-		int shardCount = getShardSize(query);
+		int shardCount = getShardSize(query,index);
 //		System.out.println(shardCount);
 //		System.out.println("total -->"+total);
-		int size = Math.round(Integer.parseInt(total) / shardCount) + 500;
+		int size = 0;
+		if(Integer.parseInt(total) > 10000) {
+			size = Math.round(Integer.parseInt(total) / shardCount) + 5;
+		}else {
+			size = 1000;
+		}
+//		int 
 		size = (size == 0) ? 0 : size;
 
 		System.out.println("size -->" + size);
-//		 int id = Math.round(Integer.parseInt(total) / size);
-//		 int max = (id + 2 > shardCount) ? shardCount : (id + 2);
-		int max = shardCount;
+		 int id = Math.round(Integer.parseInt(total) / size);
+		 int max = (id + 2 > shardCount) ? shardCount : (id + 2);
+		//int max = shardCount;
 //		System.out.println(String.valueOf(0));	
 
 		System.out.println("max -->" + String.valueOf(max));
@@ -374,7 +380,7 @@ public class Clustering extends HttpServlet {
 		List<Tuple2<String, Integer>> datatuple = new ArrayList<Tuple2<String, Integer>>();
 		Map<String, Integer> d = new HashMap<String, Integer>();
 
-		int shardCount = getShardSize(new JSONObject());
+		int shardCount = getShardSize(new JSONObject(),"blogposts");
 		System.out.println("shard c 2==>" + shardCount);
 
 		ExecutorService executorServiceBlogSiteIds = Executors.newFixedThreadPool(shardCount + 1);
@@ -503,7 +509,7 @@ public class Clustering extends HttpServlet {
 		List<Tuple2<String, Integer>> datatuple = new ArrayList<Tuple2<String, Integer>>();
 		Map<String, Integer> d = new HashMap<String, Integer>();
 
-		int shardCount = this.getShardSize(new JSONObject());
+		int shardCount = this.getShardSize(new JSONObject(), "blogposts");
 		System.out.println("shard c 2==>" + shardCount);
 
 		ExecutorService executorServiceBlogPostIds = Executors.newFixedThreadPool(shardCount + 1);
