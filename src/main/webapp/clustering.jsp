@@ -217,17 +217,17 @@ Instant start = Instant.now();
 		//System.out.println(svd);
 		
 		JSONArray postDataAll = cluster.getPosts(post_ids, "", "", "__ONLY__POST__ID__");
-<<<<<<< HEAD
-		String terms = cluster.getTopTerms(post_ids);
+
+		//String terms = cluster.getTopTerms(post_ids);
 		//System.out.println(terms);
 		System.out.println("done");
-=======
+
 		
 		
 		String terms = cluster_data.get("topterms").toString();
 		//String terms = cluster.getTopTerms(post_ids);
 		System.out.println(terms);
->>>>>>> 68d8a05a44c5ff025b110b4b4369c98755dba889
+
 		topterms.put(cluster_,terms);
 		
 		key_val = new Pair<String, String>(cluster_, post_ids);
