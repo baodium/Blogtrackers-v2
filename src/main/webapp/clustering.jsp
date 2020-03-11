@@ -164,7 +164,11 @@ Instant start = Instant.now();
 	for (int i = 1; i < 11; i++) {
 		String cluster_ = "cluster_" + String.valueOf(i);
 		String centroids = "C" + String.valueOf(i) + "xy";
-		String post_ids = source.get(cluster_).toString();
+		JSONObject cluster_data = new JSONObject(source.get(cluster_).toString());
+		
+		String post_ids = cluster_data.get("post_ids").toString();
+		///break;
+		
 		String centroid = source.get(centroids).toString().replace("[", "").replace("]", "");
 		String centroid_x = centroid.split(",")[0].trim();
 		String centroid_y = centroid.split(",")[1].trim();
@@ -210,7 +214,10 @@ Instant start = Instant.now();
 		//System.out.println(svd);
 		
 		JSONArray postDataAll = cluster.getPosts(post_ids, "", "", "__ONLY__POST__ID__");
-		String terms = cluster.getTopTerms(post_ids);
+		
+		
+		String terms = cluster_data.get("topterms").toString();
+		//String terms = cluster.getTopTerms(post_ids);
 		System.out.println(terms);
 		topterms.put(cluster_,terms);
 		
