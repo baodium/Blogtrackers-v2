@@ -173,6 +173,7 @@ Instant start = Instant.now();
 		//System.out.println(centroid);
 		
 		ArrayList svd = cluster._getSvd(post_ids);
+		
 		for(int j = 0; j < svd.size(); j++){
 			
 			JSONObject scatter_plot = new JSONObject();
@@ -213,7 +214,8 @@ Instant start = Instant.now();
 		
 		JSONArray postDataAll = cluster.getPosts(post_ids, "", "", "__ONLY__POST__ID__");
 		String terms = cluster.getTopTerms(post_ids);
-		System.out.println(terms);
+		//System.out.println(terms);
+		System.out.println("done");
 		topterms.put(cluster_,terms);
 		
 		key_val = new Pair<String, String>(cluster_, post_ids);
@@ -1077,7 +1079,7 @@ Instant start = Instant.now();
 <script>
 	//var d3 = d3v4_;
 	console.log("cluster",d3.version)
-	loadscatter(0);
+	loadscatter(5);
 	function loadscatter(clusterid){
 		data = []
 	var margin = {top: 10, right: 30, bottom: 30, left: 60},

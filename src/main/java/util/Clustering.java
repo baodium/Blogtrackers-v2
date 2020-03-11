@@ -315,6 +315,7 @@ public class Clustering extends HttpServlet {
 	public synchronized static ArrayList<JSONObject> _buildSlicedScrollQuery(String ids, String from, String to,
 			String type, String index) throws Exception {
 		JSONObject query = new JSONObject();
+		
 		if (type.contentEquals("__ONLY__SITE__ID__")) {
 			query = new JSONObject("{\r\n" + "    \"query\": {\r\n" + "        \"bool\": {\r\n"
 					+ "            \"must\": [\r\n" + "                {\r\n" + "                    \"terms\": {\r\n"
@@ -369,6 +370,7 @@ public class Clustering extends HttpServlet {
 
 	public static synchronized JSONArray getPosts(String ids, String from, String to, String type) throws Exception {
 		JSONArray jsonArray = new JSONArray();
+		
 		HashMap<String, String> result = new HashMap<String, String>();
 //		Instant start = Instant.now();
 		List<Tuple2<String, Integer>> datatuple = new ArrayList<Tuple2<String, Integer>>();
@@ -592,7 +594,7 @@ public class Clustering extends HttpServlet {
 
 		Map<String, Integer> d = new HashMap<String, Integer>();
 
-		for (int i = 0; i < a; i = i + b) {
+		for (int i = 0; i < 10; i = i + b) {
 
 			int start1 = 0;
 			int end_ = 0;
