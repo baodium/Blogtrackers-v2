@@ -818,7 +818,7 @@ Instant start = Instant.now();
 								<%for(int j = 0; j < topterms.size(); j++) {
 									String terms = topterms.get("cluster_" + (j + 1));
 									//System.out.println("terms ---" + terms);
-									terms = terms.replace("[","").replace("]", "").replace("),", "-").replace("(", "");
+									terms = terms.replace("[","").replace("]", "").replace("),", "-").replace("(", "").replace("\'", "");
 									List<String> termlist = Arrays.asList(terms.split("-"));
 									//System.out.println(ssssss);
 									//System.out.println(Arrays.asList(ssssss.split("-")).get(0));
@@ -1233,7 +1233,7 @@ Instant start = Instant.now();
 	<script type="text/javascript" src="assets/vendors/d3/d3_tooltip.js"></script> -->
 	<script >
 	var terms = "<%=topterms.get("cluster_1")%>";
-	var new_dd = terms.replace('[','{').replace(']','}').replace(/\),/g,'-').replace(/\(/g,'').replace(/,/g,':').replace(/-/g,',').replace(/\)/g,'')
+	var new_dd = terms.replace('[','{').replace(']','}').replace(/\),/g,'-').replace(/\(/g,'').replace(/,/g,':').replace(/-/g,',').replace(/\)/g,'').replace(/'/g,"");
 	var newjson = new_dd.replace(/\s+/g,'').replace(/{/g,'{"').replace(/:/g,'":"').replace(/,/g,'","').replace(/}/g,'"}')
 	var jsondata = JSON.parse(newjson)
 	/* data = [];
