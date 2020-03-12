@@ -315,6 +315,7 @@ public class Clustering extends HttpServlet {
 	public synchronized static ArrayList<JSONObject> _buildSlicedScrollQuery(String ids, String from, String to,
 			String type, String index) throws Exception {
 		JSONObject query = new JSONObject();
+		
 		if (type.contentEquals("__ONLY__SITE__ID__")) {
 			query = new JSONObject("{\r\n" + "    \"query\": {\r\n" + "        \"bool\": {\r\n"
 					+ "            \"must\": [\r\n" + "                {\r\n" + "                    \"terms\": {\r\n"
@@ -375,6 +376,7 @@ public class Clustering extends HttpServlet {
 
 	public static synchronized JSONArray getPosts(String ids, String from, String to, String type) throws Exception {
 		JSONArray jsonArray = new JSONArray();
+		
 		HashMap<String, String> result = new HashMap<String, String>();
 //		Instant start = Instant.now();
 		List<Tuple2<String, Integer>> datatuple = new ArrayList<Tuple2<String, Integer>>();
@@ -598,7 +600,7 @@ public class Clustering extends HttpServlet {
 
 		Map<String, Integer> d = new HashMap<String, Integer>();
 
-		for (int i = 0; i < a; i = i + b) {
+		for (int i = 0; i < 10; i = i + b) {
 
 			int start1 = 0;
 			int end_ = 0;
@@ -735,6 +737,9 @@ String ssssss = "[(news,1076), (read,1056), (editor,852), (wnu,849), (navy,742),
 				: session.getAttribute(tid.toString() + "cluster_result");
 		Object result_key_val = (null == session.getAttribute(tid.toString() + "cluster_result_key_val")) ? ""
 				: session.getAttribute(tid.toString() + "cluster_result_key_val");
+		
+		Object distances = (null == session.getAttribute(tid.toString() + "cluster_distances")) ? ""
+				: session.getAttribute(tid.toString() + "cluster_distances");
 
 		HashMap<String, String> key_val_posts = (HashMap<String, String>) result_key_val;
 		HashMap<Pair<String, String>, JSONArray> clusterResult = (HashMap<Pair<String, String>, JSONArray>) result;
@@ -780,7 +785,10 @@ String ssssss = "[(news,1076), (read,1056), (editor,852), (wnu,849), (navy,742),
 		} else if (action.toString().equals("loadtitletable")) {
 			// Object title =
 			// postData.getJSONObject(j).getJSONObject("_source").get("title");
-			out.write(postData.toString());
+			JSONObject post_distances_all = new JSONObject();
+			post_distances_all.put("distances", new JSONObject(distances.toString()));
+			post_distances_all.put("post_data", postData);
+			out.write(post_distances_all.toString());
 		}
 
 //		if(Action)

@@ -166,7 +166,11 @@ function loadtitletable(clusterid){
 		success: function(response)
 		{   
 			console.log('post details')
-			console.log(response[0]['_source'].blogger);
+			/* console.log(response); */
+			
+			var vvv = response['post_data'][0]['_source'].blogpost_id;
+			console.log('post_id',vvv); 
+			console.log('distance',response['distances'][vvv]); 
 			
 			/*$("#postinglocation").html(response);	*/
 			
@@ -196,7 +200,9 @@ function loadkeywords(clusterid){
 		success: function(response)
 		{   
 			console.log('post details')
-			console.log(response[0]['_source'].blogger);
+			/*console.log(response[0]['_source'].post);*/
+			//alert('here')
+			//console.log(response[0]);
 			
 			/*$("#postinglocation").html(response);	*/
 			
@@ -226,6 +232,7 @@ function drawChord(container, options, matrix, array) {
     } */
 	
     // initialize the chord configuration variables
+	var elem = container;
     var config = {
         width: 500,
         height: 450,

@@ -163,7 +163,7 @@ public class RunnableUtil implements Runnable {
 
 					jsonArray = term.merge(jsonArray, mergedArray);
 
-					System.out.println("DONE GETTING POSTS FOR BLOGGER");
+					System.out.println("DONE");
 
 				}
 
