@@ -84,8 +84,9 @@ public class BlogpostsTest {
 //		System.out.println("total -->"+total);
 		int size = Math.round(Integer.parseInt(total) / shardCount) + 500;
 //		System.out.println("size -->" + size);
-		int id = Math.round(Integer.parseInt(total) / size);
-		int max = (id + 2 > shardCount) ? shardCount : (id + 2);
+		//int id = Math.round(Integer.parseInt(total) / size);
+//		int max = (id + 2 > shardCount) ? shardCount : (id + 2);
+		int max = shardCount;
 //		System.out.println(String.valueOf(0));		
 //		System.out.println("max -->"+String.valueOf(max));
 		for (int i = 0; i < max; i++) {
@@ -154,47 +155,47 @@ public class BlogpostsTest {
 
 //			if (executorServiceElastic.isShutdown()) {
 				  System.out.println("json array size" + jsonArray.length());
-				int a = jsonArray.length();
-//				System.out.println(a);
-				int b = 1000;
-				int poolsize = ((a / b)) > 0 ? (a/b): 1;
-				System.out.println(poolsize);
-//					System.out.println(jsonArray.length());
-				ExecutorService executorServiceSplitLoop = Executors.newFixedThreadPool(poolsize);
-				System.out.println("1"+executorServiceSplitLoop.isShutdown());
-//		ArrayList<int[]> result = new ArrayList<int[]>();
-
-				for (int i = 0; i < a; i = i + b) {
-
-					int start1 = 0;
-					int end = 0;
-
-//					int[] test = new int[2];
-//			test[0] = i;
-					start1 = i;
-
-					if ((i + b) > a) {
-//				test[1] = i +(a%b);
-						end = i + (a % b);
-					} else {
-//			test[1] = i + b;
-						end = i + b;
-					}
-					System.out.println(start1 + "--" + end);
-					JSONObject q = new JSONObject();
-					ElasticRunnable es = new ElasticRunnable(q, jsonArray, start1, end, datatuple,d, "loop");
-					executorServiceSplitLoop.execute(es);
-					
-
-				}
-				executorServiceSplitLoop.shutdown();
-				while(!executorServiceSplitLoop.isTerminated()) {}
-				System.out.println("2"+executorServiceSplitLoop.isShutdown());
-				System.out.println("json array size" + jsonArray.length());
-//				System.out.println(datatuple);
-//				System.out.println();
-				String highest = Collections.max(d.entrySet(), Comparator.comparingInt(Map.Entry::getValue)).getKey();
-				System.out.println(d.get(highest));
+//				int a = jsonArray.length();
+////				System.out.println(a);
+//				int b = 1000;
+//				int poolsize = ((a / b)) > 0 ? (a/b): 1;
+//				System.out.println(poolsize);
+////					System.out.println(jsonArray.length());
+//				ExecutorService executorServiceSplitLoop = Executors.newFixedThreadPool(poolsize);
+//				System.out.println("1"+executorServiceSplitLoop.isShutdown());
+////		ArrayList<int[]> result = new ArrayList<int[]>();
+//
+//				for (int i = 0; i < a; i = i + b) {
+//
+//					int start1 = 0;
+//					int end = 0;
+//
+////					int[] test = new int[2];
+////			test[0] = i;
+//					start1 = i;
+//
+//					if ((i + b) > a) {
+////				test[1] = i +(a%b);
+//						end = i + (a % b);
+//					} else {
+////			test[1] = i + b;
+//						end = i + b;
+//					}
+//					System.out.println(start1 + "--" + end);
+//					JSONObject q = new JSONObject();
+//					ElasticRunnable es = new ElasticRunnable(q, jsonArray, start1, end, datatuple,d, "loop");
+//					executorServiceSplitLoop.execute(es);
+//					
+//
+//				}
+//				executorServiceSplitLoop.shutdown();
+//				while(!executorServiceSplitLoop.isTerminated()) {}
+//				System.out.println("2"+executorServiceSplitLoop.isShutdown());
+//				System.out.println("json array size" + jsonArray.length());
+////				System.out.println(datatuple);
+////				System.out.println();
+//				String highest = Collections.max(d.entrySet(), Comparator.comparingInt(Map.Entry::getValue)).getKey();
+//				System.out.println(d.get(highest));
 				
 //				term.mapReduce(datatuple, "topterm");
 		} catch (Exception e) {

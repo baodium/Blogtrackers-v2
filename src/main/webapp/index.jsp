@@ -183,7 +183,7 @@ try{
     <div class="text-center" style="margin-left:0px;">
       <h6 class="text-primary m0 bolder profiletext"><%=name%></h6>
       <p class="text-primary profiletext"><%=email%></p>
-    </div>notificationcolor
+    </div><!-- notificationcolor -->
 
   </div>
   <div id="othersection" class="col-md-12 mt10" style="clear:both">
@@ -688,10 +688,16 @@ Design is not just what it looks like and feels like. Design is how it works.
 <p class="text-center mb0"><i class="navbar-brand text-primary icontrackersize cosmoslogo mt30 mb10"></i></p>
 </div>
 </div>
-
+<%
+Date d=new Date();  
+int year=d.getYear();  
+System.out.println("Year for date object is : "+year);  
+System.out.println("***To get current year add 1900 to the value of year obtained from this date object***");  
+int currentYear=year+1900;  
+%>
 <div class="bg-primary">
 <div class="container-fluid pb10 pt10">
-<p class="mb0 text-center copyrighttext text-white">Copyright &copy; 2019, COSMOS. All Rights Reserved.</p>
+<p class="mb0 text-center copyrighttext text-white">Copyright &copy; <%=currentYear %>, COSMOS. All Rights Reserved.</p>
 </div>
 </div>
 </a>
