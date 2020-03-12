@@ -215,9 +215,10 @@
 					%>
 					<%-- <a class="cursor-pointer profilemenulink" href="<%=request.getContextPath()%>/notifications.jsp"><h6 class="text-primary">Notifications <b id="notificationcount" class="cursor-pointer">12</b></h6> </a>
    --%>
-					<a class="cursor-pointer profilemenulink"
+					<%-- <a class="cursor-pointer profilemenulink"
 						href="<%=request.getContextPath()%>/addblog.jsp"><h6
-							class="text-primary">Add Blog</h6></a> <a
+							class="text-primary">Add Blog</h6></a>  --%>
+							<a
 						class="cursor-pointer profilemenulink"
 						href="<%=request.getContextPath()%>/profile.jsp"><h6
 							class="text-primary">Profile</h6></a> <a
@@ -234,6 +235,10 @@
 					<%
 						}
 					%>
+					<a
+						class="cursor-pointer profilemenulink"
+						href="https://addons.mozilla.org/en-US/firefox/addon/blogtrackers/"><h6
+							class="text-primary">Plugin</h6></a>
 				</div>
 			</div>
 		</div>
