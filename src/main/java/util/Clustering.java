@@ -737,6 +737,9 @@ String ssssss = "[(news,1076), (read,1056), (editor,852), (wnu,849), (navy,742),
 				: session.getAttribute(tid.toString() + "cluster_result");
 		Object result_key_val = (null == session.getAttribute(tid.toString() + "cluster_result_key_val")) ? ""
 				: session.getAttribute(tid.toString() + "cluster_result_key_val");
+		
+		Object distances = (null == session.getAttribute(tid.toString() + "cluster_distances")) ? ""
+				: session.getAttribute(tid.toString() + "cluster_distances");
 
 		HashMap<String, String> key_val_posts = (HashMap<String, String>) result_key_val;
 		HashMap<Pair<String, String>, JSONArray> clusterResult = (HashMap<Pair<String, String>, JSONArray>) result;
@@ -782,7 +785,10 @@ String ssssss = "[(news,1076), (read,1056), (editor,852), (wnu,849), (navy,742),
 		} else if (action.toString().equals("loadtitletable")) {
 			// Object title =
 			// postData.getJSONObject(j).getJSONObject("_source").get("title");
-			out.write(postData.toString());
+			JSONObject post_distances_all = new JSONObject();
+			post_distances_all.put("distances", new JSONObject(distances.toString()));
+			post_distances_all.put("post_data", postData);
+			out.write(post_distances_all.toString());
 		}
 
 //		if(Action)
