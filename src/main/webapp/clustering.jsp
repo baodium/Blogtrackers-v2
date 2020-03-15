@@ -73,14 +73,14 @@ Instant start = Instant.now();
 			} else {
 				/* new File("/path/directory").mkdirs(); */
 				path_new.mkdirs();
-				System.out.println("pathhhhh1--" + path_new);
+				//System.out.println("pathhhhh1--" + path_new);
 			}
 
 			if (path_new.exists()) {
 
 				String t = "/images/profile_images";
 				int p = userpic.indexOf(t);
-				System.out.println(p);
+				//System.out.println(p);
 				if (p != -1) {
 
 					System.out.println("pic path---" + userpic);
@@ -223,7 +223,7 @@ Instant start = Instant.now();
 
 		//String terms = cluster.getTopTerms(post_ids);
 		//System.out.println(terms);
-		System.out.println("done");
+		//System.out.println("done");
 
 		
 		
@@ -247,7 +247,7 @@ Instant start = Instant.now();
 
 	}
 
-	System.out.println(topterms.size());
+	//System.out.println(topterms.size());
 	//System.out.println("find --" + find);
 	session.setAttribute(tid.toString() + "cluster_terms", topterms);
 	session.setAttribute(tid.toString() + "cluster_distances", distances);
@@ -544,7 +544,7 @@ Instant start = Instant.now();
 										bloggersMentioned = cluster.getBloggersMentioned(currentPostIds);
 										topPostingLocation = cluster.getTopPostingLocation(currentPostIds);
 										//System.out.println(currentPostIds);
-										System.out.println(total);
+										//System.out.println(total);
 										blogdistribution = cluster.getBlogDistribution(currentPostIds, (double) Integer.parseInt(total));
 
 										/* postData = cluster.getPosts(currentPostIds, "", "", "__ONLY__POST__ID__");

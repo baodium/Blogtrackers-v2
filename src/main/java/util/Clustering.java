@@ -645,16 +645,43 @@ public class Clustering extends HttpServlet {
 	public static void main(String[] args) {
 
 		try {
-String ssssss = "[(news,1076), (read,1056), (editor,852), (wnu,849), (navy,742), (air,672), (military,572), (reuters,550), (attack,451), (peace,442), (army,416), (aircraft,405), (president,384), (china,382), (police,378), (killed,363), (times,343), (people,343), (afp,338), (time,325), (sea,320), (soldiers,306), (south,301), (years,300), (2016,296), (forces,295), (update,290), (photo,276), (north,267), (carrier,262), (bbc,261), (city,260), (daily,251), (year,251), (government,250), (defense,247), (ship,246), (chinese,243), (day,219), (10,218), (uss,215), (security,213), (base,211), (fighter,211), (anti,209), (cnn,206), (leader,205), (missile,204), (35,203), (long,201), (washington,196), (000,195), (agency,191), (battle,188), (dead,186), (group,185), (video,183), (taliban,182), (officials,182), (short,179), (2017,178), (russian,177), (mail,175), (told,174), (today,174), (korea,172), (twitter,172), (national,172), (islamic,171), (life,171), (weapons,168), (post,167), (country,166), (guardian,166), (death,164), (report,161), (coast,160), (bomb,159), (live,156), (afghan,154), (stories,154), (ships,153), (class,153), (isis,152), (election,150), (intelligence,148), (combat,147), (training,146), (plane,145), (service,144), (wikileaks,144), (attacks,142), (cia,142), (space,141), (sputnik,139), (poems,139), (france,139), (essays,139), (excerpts,138), (nuclear,138)]";
+String str1 = "[('nato', 2485), ('russia', 2257), ('security', 1878), ('military', 1700), ('united', 1675), ('iran', 1588), ('president', 1522), ('ukraine', 1444), ('russian', 1369), ('europe', 1261), ('government', 1179), ('european', 1125), ('policy', 1119), ('obama', 1113), ('nuclear', 1112), ('afghanistan', 1085), ('political', 1071), ('international', 1063), ('defense', 1015), ('foreign', 941), ('atlantic', 863), ('council', 843), ('time', 831), ('american', 811), ('economic', 807), ('years', 737), ('national', 737), ('forces', 736), ('countries', 721), ('power', 716), ('putin', 689), ('country', 670), ('china', 656), ('people', 655), ('strategic', 655), ('alliance', 642), ('support', 627), ('global', 624), ('allies', 607), ('iraq', 575), ('strategy', 569), ('administration', 558), ('year', 552), ('long', 545), ('center', 541), ('east', 541), ('washington', 538), ('leaders', 534), ('crisis', 497), ('syria', 496), ('weapons', 488), ('america', 485), ('future', 474), ('west', 473), ('union', 470), ('minister', 460), ('sanctions', 439), ('moscow', 434), ('region', 425), ('middle', 410), ('relations', 409), ('members', 404), ('turkey', 393), ('iranian', 393), ('germany', 390), ('including', 389), ('percent', 385), ('troops', 382), ('senior', 381), ('nations', 380), ('public', 379), ('western', 375), ('interests', 375), ('economy', 373), ('major', 371), ('deal', 367), ('libya', 364), ('james', 348), ('today', 347), ('energy', 344), ('cooperation', 341), ('conflict', 337), ('regime', 337), ('leadership', 337), ('change', 336), ('eastern', 334), ('term', 332), ('secretary', 329), ('ukrainian', 325), ('israel', 324), ('pakistan', 320), ('soviet', 319), ('financial', 319), ('clear', 316), ('000', 316), ('role', 315), ('north', 314), ('prime', 308), ('threat', 308), ('general', 306)]";
+String str2 = "[('albania', 485), ('albanian', 382), ('greek', 373), ('minister', 351), ('kosovo', 340), ('greece', 260), ('serbia', 219), ('government', 202), ('prime', 151), ('serbian', 151), ('police', 149), ('nato', 146), ('president', 138), ('2015', 135), ('tirana', 133), ('year', 123), ('country', 123), ('international', 119), ('belgrade', 116), ('community', 113), ('people', 112), ('himara', 107), ('years', 105), ('security', 104), ('pristina', 104), ('rama', 104), ('party', 102), ('foreign', 101), ('time', 99), ('told', 99), ('albanians', 97), ('europe', 96), ('council', 96), ('region', 96), ('agreement', 96), ('northern', 94), ('2016', 93), ('european', 89), ('athens', 89), ('church', 88), ('national', 85), ('vucic', 85), ('day', 82), ('political', 80), ('july', 80), ('source', 80), ('2009', 79), ('000', 76), ('decision', 76), ('epirus', 76), ('friday', 75), ('visit', 74), ('center', 73), ('rights', 72), ('countries', 72), ('group', 71), ('atlantic', 70), ('june', 69), ('statement', 68), ('photo', 67), ('turkish', 66), ('tanjug', 66), ('edi', 66), ('2014', 65), ('15', 65), ('court', 65), ('leader', 64), ('relations', 64), ('beta', 64), ('orthodox', 63), ('12', 62), ('serb', 62), ('ministry', 61), ('authorities', 61), ('called', 61), ('media', 60), ('energy', 60), ('today', 58), ('report', 58), ('meeting', 58), ('parliament', 58), ('serbs', 58), ('january', 57), ('30', 57), ('2013', 56), ('18', 56), ('ethnic', 56), ('11', 55), ('asked', 55), ('members', 54), ('general', 54), ('official', 54), ('deputy', 54), ('union', 54), ('area', 54), ('officials', 53), ('based', 53), ('defense', 53), ('corfu', 53), ('law', 52)]";
+String str3 = "[('government', 1513), ('security', 1443), ('european', 1425), ('nato', 1374), ('europe', 1327), ('united', 1257), ('president', 1253), ('political', 1139), ('atlantic', 1079), ('council', 1032), ('international', 1023), ('military', 982), ('people', 935), ('russia', 930), ('afghanistan', 923), ('country', 909), ('years', 906), ('countries', 887), ('time', 875), ('ukraine', 871), ('pakistan', 822), ('economic', 813), ('national', 760), ('energy', 740), ('foreign', 739), ('policy', 715), ('defense', 707), ('center', 707), ('gas', 679), ('russian', 671), ('minister', 664), ('crisis', 653), ('long', 641), ('year', 626), ('power', 598), ('turkey', 589), ('american', 586), ('china', 585), ('global', 581), ('union', 576), ('support', 558), ('forces', 544), ('obama', 533), ('germany', 525), ('percent', 516), ('party', 514), ('leaders', 494), ('public', 486), ('financial', 480), ('strategic', 473), ('region', 471), ('economy', 460), ('future', 447), ('india', 438), ('north', 431), ('washington', 429), ('change', 426), ('member', 426), ('james', 424), ('south', 423), ('cyber', 409), ('group', 406), ('trade', 406), ('greece', 406), ('prime', 396), ('general', 384), ('including', 379), ('german', 371), ('work', 366), ('french', 366), ('west', 362), ('good', 360), ('fact', 360), ('term', 359), ('deal', 355), ('strategy', 355), ('greek', 355), ('relations', 354), ('attacks', 352), ('joyner', 352), ('oil', 351), ('east', 348), ('senior', 348), ('western', 347), ('france', 347), ('major', 346), ('role', 345), ('taliban', 344), ('conflict', 343), ('day', 339), ('today', 335), ('officials', 335), ('current', 334), ('agreement', 334), ('process', 333), ('election', 332), ('peace', 330), ('2009', 330), ('nuclear', 329), ('case', 328)]";
+
 			Instant start = Instant.now();
-			ssssss = ssssss.replace("[","").replace("]", "").replace("),", "-").replace("(", "");
-			System.out.println(ssssss);
-			System.out.println(Arrays.asList(ssssss.split("-")).get(0));
+			JSONArray test_all = new JSONArray();
+//			str1 = str1.replace("[","").replace("]", "").replace("),", "-").replace("(", "");
+			str1 = str1.replace("),", "-").replace("(", "");
+			str2 = str2.replace("),", "-").replace("(", "");
+			str3 = str3.replace("),", "-").replace("(", "");
 			
-			SparkConf conf = new SparkConf().setMaster("spark://144.167.35.50:4042").setAppName("Example").set("spark.ui.port","4042");;
+			System.out.println(str1);
+			System.out.println(str2);
+			System.out.println(str3);
+			
+			System.out.println(str1.replaceAll("[0-9]","").replace("-", ""));
+			System.out.println(str2.replaceAll("[0-9]","").replace("-", ""));
+			System.out.println(str3.replaceAll("[0-9]","").replace("-", ""));
+			
+			
+			String tester1 = str1.replaceAll("[0-9]","").replace("-", "").replace(", )", "");
+			String tester2 = str2.replaceAll("[0-9]","").replace("-", "").replace(", )", "");
+			String tester3 = str3.replaceAll("[0-9]","").replace("-", "").replace(", )", "");
+			
+			JSONArray test1 = new JSONArray(tester1);
+			JSONArray test2 = new JSONArray(tester2);
+			JSONArray test3 = new JSONArray(tester3);
+			
+			test_all.put(test1);
+			test_all.put(test2);
+			test_all.put(test3);
+			//System.out.println(Arrays.asList(ssssss.split("-")).get(0));
+			
+			//SparkConf conf = new SparkConf().setMaster("spark://144.167.35.50:4042").setAppName("Example").set("spark.ui.port","4042");;
 //			conf.set("spark.driver.memory", "64g");
-			JavaSparkContext sc = new JavaSparkContext(conf);
-			sc.stop();
+			//JavaSparkContext sc = new JavaSparkContext(conf);
+			//sc.stop();
 //			String test = "";
 //			String tracker_id = "238";
 //			// get postids from each cluster in tracker and save in JSONObject
@@ -753,6 +780,15 @@ String ssssss = "[(news,1076), (read,1056), (editor,852), (wnu,849), (navy,742),
 
 		Object total = (null == session.getAttribute(tid.toString() + "clusters_total")) ? ""
 				: session.getAttribute(tid.toString() + "clusters_total");
+		
+		Object topterms_object = (null == session.getAttribute(tid.toString() + "cluster_terms")) ? ""
+				: session.getAttribute(tid.toString() + "cluster_terms");
+		
+//		topterms = (HashMap<String, String>()) topterms.get;
+//		HashMap<String, String> topterm = new HashMap<String, String>();
+		HashMap<String, String> topterms = (HashMap<String, String>) topterms_object;
+		//System.out.println("topterms_object --"+topterms_object);
+		
 		String blogdistribution = null;
 		String bloggersMentioned = null;
 		String topPostingLocation = null;
@@ -789,7 +825,12 @@ String ssssss = "[(news,1076), (read,1056), (editor,852), (wnu,849), (navy,742),
 			post_distances_all.put("distances", new JSONObject(distances.toString()));
 			post_distances_all.put("post_data", postData);
 			out.write(post_distances_all.toString());
+		}else if (action.toString().equals("loadkeywords")) {
+			//System.out.println("action" + action + "terms--" + topterms.get(cluster_));
+			out.write(topterms.get(cluster_).toString());
 		}
+		
+		
 
 //		if(Action)
 	}

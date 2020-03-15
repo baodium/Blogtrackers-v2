@@ -23,6 +23,7 @@ $(document).ready(function() {
 		loadbloggersmentioned(idName)
 		loadpostinglocation(idName)
 		loadtitletable(idName)
+		loadkeywords(idName)
 		/*loadscatter(idName - 1);*/
 	});
 
@@ -169,8 +170,8 @@ function loadtitletable(clusterid){
 			/* console.log(response); */
 			
 			var vvv = response['post_data'][0]['_source'].blogpost_id;
-			console.log('post_id',vvv); 
-			console.log('distance',response['distances'][vvv]); 
+			//console.log('post_id',vvv); 
+			//console.log('distance',response['distances'][vvv]); 
 			
 			/*$("#postinglocation").html(response);	*/
 			
@@ -186,7 +187,7 @@ function loadkeywords(clusterid){
 	$.ajax({
 		url: "CLUSTERING",
 		method: 'POST',
-		dataType:'json',
+		/*dataType:'json',*/
 		data: {
 			action:"loadkeywords",
 			cluster:clusterid,
@@ -194,12 +195,15 @@ function loadkeywords(clusterid){
 		},
 		error: function(response)
 		{						
-			//console.log(response);
+			console.log('error in keyword')
+			console.log(response);
 			/*$("#postinglocation").html(response);*/
 		},
 		success: function(response)
 		{   
-			console.log('post details')
+			//alert('i am here')
+			console.log('loadkeywords details')
+			console.log(response);
 			/*console.log(response[0]['_source'].post);*/
 			//alert('here')
 			//console.log(response[0]);
