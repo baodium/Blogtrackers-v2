@@ -166,7 +166,7 @@ function loadtitletable(clusterid){
 		success: function(response)
 		{   
 			console.log('post details')
-			/* console.log(response); */
+			 console.log(response['post_data']);
 			
 			var vvv = response['post_data'][0]['_source'].blogpost_id;
 			console.log('post_id',vvv); 
