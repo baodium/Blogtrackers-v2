@@ -130,7 +130,7 @@ public class RunnableUtil implements Runnable {
 		
 //		this.datatuple = returnedData;
 //		System.out.println(count_);
-		System.out.println(datatuple.size());
+//		System.out.println(datatuple.size());
 //		return returnedData;
 	}
 	
@@ -147,7 +147,7 @@ public class RunnableUtil implements Runnable {
 			try {
 				
 				
-				System.out.println("Thread " + Thread.currentThread().getName() + " started");
+//				System.out.println("Thread " + Thread.currentThread().getName() + " started");
 				String source = null;
 				JSONObject myResponse = term._makeElasticRequest(query, "POST", "/" + index + "/_search/?scroll=1m");
 				if (null != myResponse.get("hits")) {
@@ -163,7 +163,7 @@ public class RunnableUtil implements Runnable {
 
 					jsonArray = term.merge(jsonArray, mergedArray);
 
-					System.out.println("DONE");
+//					System.out.println("DONE");
 
 				}
 
@@ -175,7 +175,7 @@ public class RunnableUtil implements Runnable {
 		} 
 		if (action.equals("loop")) {
 			try {
-				System.out.println("Thread " + Thread.currentThread().getName() + " started");
+//				System.out.println("Thread " + Thread.currentThread().getName() + " started");
 //				get(start,end, jsonArray, d); 
 				Clustering cluster = new Clustering();
 				wrangleDatadata(jsonArray, field, start, end);
