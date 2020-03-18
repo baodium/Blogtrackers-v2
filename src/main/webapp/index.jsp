@@ -511,7 +511,7 @@ ass="text-center text-primary p40 pt10 pb10">Blogtrackers helps sociologists to 
             <div class="col-md-2">
              <!--  <div class="card mb-4 box-shadow"> -->
               <!-- <div class="logocontainer"> -->
-                <img class="card-img-top" alt="" style="width: 80%; display: block;" src="images/sponsors/nationalsciencefoundation.png" data-holder-rendered="true">
+                <img class="card-img-top" alt="National Science Foundation" style="width: 80%; display: block;" src="images/sponsors/nationalsciencefoundation.png" data-holder-rendered="true">
                <!--  </div> -->
                  <div class="card-body"> 
          <p class="logo-text">National Science <br/>Foundation</p>
@@ -522,7 +522,7 @@ ass="text-center text-primary p40 pt10 pb10">Blogtrackers helps sociologists to 
               <div class="col-md-2">
              <!--  <div class="card mb-4 box-shadow"> -->
                <!-- <div class="logocontainer"> -->
-                <img class="card-img-top" alt="" style="width: 80%; display: block;" src="images/sponsors/officeofnavalresearch.png" data-holder-rendered="true">
+                <img class="card-img-top" alt="Office of Naval Research" style="width: 80%; display: block;" src="images/sponsors/officeofnavalresearch.png" data-holder-rendered="true">
                <!-- </div> -->
                 <div class="card-body">
                  <p class="logo-text">Office of Naval <br/>Research</p>
@@ -533,7 +533,7 @@ ass="text-center text-primary p40 pt10 pb10">Blogtrackers helps sociologists to 
             <div class="col-md-2">
              <!--  <div class="card mb-4 box-shadow"> -->
                <!-- <div class="logocontainer"> -->
-                <img class="card-img-top" alt="" style="width: 80%; display: block;" src="images/sponsors/airforceresearch.png" data-holder-rendered="true">
+                <img class="card-img-top" alt="Air Force Research Laboratory" style="width: 80%; display: block;" src="images/sponsors/airforceresearch.png" data-holder-rendered="true">
                <!-- </div> -->
                 <div class="card-body">
                 <p class="logo-text">Air Force Research Laboratory</p>
@@ -544,7 +544,7 @@ ass="text-center text-primary p40 pt10 pb10">Blogtrackers helps sociologists to 
             <div class="col-md-2">
               <!-- <div class="card mb-4 box-shadow"> -->
               <!--  <div class="logocontainer"> -->
-                <img class="card-img-top" alt="" style="width: 80%; display: block;" src="images/sponsors/darpa.png" data-holder-rendered="true">
+                <img class="card-img-top" alt="Defense Advanced Research Project Agency" style="width: 80%; display: block;" src="images/sponsors/darpa.png" data-holder-rendered="true">
                <!-- </div> -->
                 <div class="card-body">
                 <p class="logo-text">Defense Advanced Research <br/>Projects Agency</p>
@@ -555,7 +555,7 @@ ass="text-center text-primary p40 pt10 pb10">Blogtrackers helps sociologists to 
              <div class="col-md-2">
               <!-- <div class="card mb-4 box-shadow"> -->
                <!-- <div class="logocontainer"> -->
-                <img class="card-img-top" alt="" style="width: 80%; display: block;" src="images/sponsors/armyresearchoffice.png" data-holder-rendered="true">
+                <img class="card-img-top" alt="Army Research Office" style="width: 80%; display: block;" src="images/sponsors/armyresearchoffice.png" data-holder-rendered="true">
                <!-- </div> -->
                 <div class="card-body">
              <p class="logo-text">Army Research <br/>Office</p>
@@ -566,7 +566,7 @@ ass="text-center text-primary p40 pt10 pb10">Blogtrackers helps sociologists to 
             <div class="col-md-2">
               <!-- <div class="card mb-4 box-shadow"> -->
                <!-- <div class="logocontainer"> -->
-                <img class="card-img-top" alt="" style="width: 80%; display: block;" src="images/sponsors/departmentofhomeland.png" data-holder-rendered="true">
+                <img class="card-img-top" alt="Department of Homeland Security" style="width: 80%; display: block;" src="images/sponsors/departmentofhomeland.png" data-holder-rendered="true">
                <!-- </div> -->
                 <div class="card-body">
             <p class="logo-text">Department of <br/>Homeland Security</p>
