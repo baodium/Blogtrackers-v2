@@ -312,14 +312,14 @@ public class Clustering extends HttpServlet {
 		return result;
 	}
 
-	public synchronized static ArrayList<JSONObject> _buildSlicedScrollQuery(String ids, String from, String to,
+	public static ArrayList<JSONObject> _buildSlicedScrollQuery(String ids, String from, String to,
 			String type, String index) throws Exception {
 		JSONObject query = new JSONObject();
 		
-		if (type.contentEquals("__ONLY__SITE__ID__")) {
+		if (type.contentEquals("__ONLY__TERMS__BLOGSITE_IDS__")) {
 			query = new JSONObject("{\r\n" + "    \"query\": {\r\n" + "        \"bool\": {\r\n"
 					+ "            \"must\": [\r\n" + "                {\r\n" + "                    \"terms\": {\r\n"
-					+ "                        \"blogsite_id\": [" + ids + "],\r\n"
+					+ "                        \"blogsiteid\": [" + ids + "],\r\n"
 					+ "                        \"boost\": 1\r\n" + "                    }\r\n"
 					+ "                },\r\n" + "                {\r\n" + "                    \"range\": {\r\n"
 					+ "                        \"date\": {\r\n" + "                            \"from\": \"" + from
@@ -339,7 +339,7 @@ public class Clustering extends HttpServlet {
 					+ "            \"blogpost_id\": [" + ids + "],\r\n" + "            \"boost\": 1.0\r\n"
 					+ "        }\r\n" + "    }\r\n" + "    \r\n" + "}");
 		}
-
+System.out.println(query);
 		ArrayList<JSONObject> result = new ArrayList<JSONObject>();
 		String total = term._count(query, "/" + index + "/_count?");
 		// System.out.println(query);
@@ -374,7 +374,7 @@ public class Clustering extends HttpServlet {
 		return result;
 	}
 
-	public static synchronized JSONArray getPosts(String ids, String from, String to, String type) throws Exception {
+	public static JSONArray getPosts(String ids, String from, String to, String type) throws Exception {
 		JSONArray jsonArray = new JSONArray();
 		
 		HashMap<String, String> result = new HashMap<String, String>();
@@ -403,6 +403,16 @@ public class Clustering extends HttpServlet {
 				executorServiceBlogSiteIds.execute(esR2);
 			}
 		} else if (type.contentEquals("__ONLY__TERMS__")) {
+			jsonArray = new JSONArray();
+			for (JSONObject q : _buildSlicedScrollQuery(ids, from, to, type, "blogpost_terms")) {
+//				 System.out.println(q);
+				int start1 = 0;
+				int end = 0;
+				RunnableUtil esR2 = new RunnableUtil(q, jsonArray, start1, end, datatuple, d, "elastic",
+						"blogpost_terms", "terms");
+				executorServiceBlogSiteIds.execute(esR2);
+			}
+		} else if (type.contentEquals("__ONLY__TERMS__BLOGSITE_IDS__")) {
 			jsonArray = new JSONArray();
 			for (JSONObject q : _buildSlicedScrollQuery(ids, from, to, type, "blogpost_terms")) {
 //				 System.out.println(q);
@@ -579,10 +589,12 @@ public class Clustering extends HttpServlet {
 
 	}
 	
-	public static String getTopTerms(String PostIds) throws Exception{
+	public static String getTopTermsFromBlogIds(String ids, String from, String to, String limit) throws Exception{
 		String result = null;
-		
-		JSONArray postDataAll = getPosts(PostIds, "", "", "__ONLY__TERMS__");
+//		ids = 3, 8,10,13,9,0,88,55
+//		"from": "2008-08-09",
+//        "to": "2015-06-01",
+		JSONArray postDataAll = getPosts(ids, from, to, "__ONLY__TERMS__BLOGSITE_IDS__");
 
 		System.out.println("postall" + postDataAll.length());
 
@@ -600,7 +612,7 @@ public class Clustering extends HttpServlet {
 
 		Map<String, Integer> d = new HashMap<String, Integer>();
 
-		for (int i = 0; i < 10; i = i + b) {
+		for (int i = 0; i < a; i = i + b) {
 
 			int start1 = 0;
 			int end_ = 0;
@@ -637,45 +649,49 @@ public class Clustering extends HttpServlet {
 		System.out.println("returned--" + returnedData.size());
 //		System.out.println(returnedData.get(0));
 
+		result = term.mapReduce(returnedData, limit);
+		
+		return result;
+	}
+	public static String getTopTermsFromBlogIds2(String ids, String from, String to) throws Exception{
+		String result = null;
+		JSONArray postDataAll = getPosts(ids, from, to, "__ONLY__TERMS__BLOGSITE_IDS__");
+		List<Tuple2<String, Integer>> returnedData = Collections
+				.synchronizedList(new ArrayList<Tuple2<String, Integer>>());
+
+		System.out.println("postall" + postDataAll.length());
+		RunnableUtil es = new RunnableUtil(returnedData);
+		int a = postDataAll.length();
+		int b = 1000;
+//		int poolsize = ((a / b)) > 0 ? (a / b) + 1 : 1;
+//		System.out.println(poolsize);
+
+		es.wrangleDatadata(postDataAll, "terms", 0, a);
+
+		
+		System.out.println("json array size" + postDataAll.length());
+
+		System.out.println("returned--" + returnedData.size());
+
 		result = term.mapReduce(returnedData, "100");
 		
 		return result;
 	}
-
 	public static void main(String[] args) {
 
 		try {
-String str1 = "[('nato', 2485), ('russia', 2257), ('security', 1878), ('military', 1700), ('united', 1675), ('iran', 1588), ('president', 1522), ('ukraine', 1444), ('russian', 1369), ('europe', 1261), ('government', 1179), ('european', 1125), ('policy', 1119), ('obama', 1113), ('nuclear', 1112), ('afghanistan', 1085), ('political', 1071), ('international', 1063), ('defense', 1015), ('foreign', 941), ('atlantic', 863), ('council', 843), ('time', 831), ('american', 811), ('economic', 807), ('years', 737), ('national', 737), ('forces', 736), ('countries', 721), ('power', 716), ('putin', 689), ('country', 670), ('china', 656), ('people', 655), ('strategic', 655), ('alliance', 642), ('support', 627), ('global', 624), ('allies', 607), ('iraq', 575), ('strategy', 569), ('administration', 558), ('year', 552), ('long', 545), ('center', 541), ('east', 541), ('washington', 538), ('leaders', 534), ('crisis', 497), ('syria', 496), ('weapons', 488), ('america', 485), ('future', 474), ('west', 473), ('union', 470), ('minister', 460), ('sanctions', 439), ('moscow', 434), ('region', 425), ('middle', 410), ('relations', 409), ('members', 404), ('turkey', 393), ('iranian', 393), ('germany', 390), ('including', 389), ('percent', 385), ('troops', 382), ('senior', 381), ('nations', 380), ('public', 379), ('western', 375), ('interests', 375), ('economy', 373), ('major', 371), ('deal', 367), ('libya', 364), ('james', 348), ('today', 347), ('energy', 344), ('cooperation', 341), ('conflict', 337), ('regime', 337), ('leadership', 337), ('change', 336), ('eastern', 334), ('term', 332), ('secretary', 329), ('ukrainian', 325), ('israel', 324), ('pakistan', 320), ('soviet', 319), ('financial', 319), ('clear', 316), ('000', 316), ('role', 315), ('north', 314), ('prime', 308), ('threat', 308), ('general', 306)]";
-String str2 = "[('albania', 485), ('albanian', 382), ('greek', 373), ('minister', 351), ('kosovo', 340), ('greece', 260), ('serbia', 219), ('government', 202), ('prime', 151), ('serbian', 151), ('police', 149), ('nato', 146), ('president', 138), ('2015', 135), ('tirana', 133), ('year', 123), ('country', 123), ('international', 119), ('belgrade', 116), ('community', 113), ('people', 112), ('himara', 107), ('years', 105), ('security', 104), ('pristina', 104), ('rama', 104), ('party', 102), ('foreign', 101), ('time', 99), ('told', 99), ('albanians', 97), ('europe', 96), ('council', 96), ('region', 96), ('agreement', 96), ('northern', 94), ('2016', 93), ('european', 89), ('athens', 89), ('church', 88), ('national', 85), ('vucic', 85), ('day', 82), ('political', 80), ('july', 80), ('source', 80), ('2009', 79), ('000', 76), ('decision', 76), ('epirus', 76), ('friday', 75), ('visit', 74), ('center', 73), ('rights', 72), ('countries', 72), ('group', 71), ('atlantic', 70), ('june', 69), ('statement', 68), ('photo', 67), ('turkish', 66), ('tanjug', 66), ('edi', 66), ('2014', 65), ('15', 65), ('court', 65), ('leader', 64), ('relations', 64), ('beta', 64), ('orthodox', 63), ('12', 62), ('serb', 62), ('ministry', 61), ('authorities', 61), ('called', 61), ('media', 60), ('energy', 60), ('today', 58), ('report', 58), ('meeting', 58), ('parliament', 58), ('serbs', 58), ('january', 57), ('30', 57), ('2013', 56), ('18', 56), ('ethnic', 56), ('11', 55), ('asked', 55), ('members', 54), ('general', 54), ('official', 54), ('deputy', 54), ('union', 54), ('area', 54), ('officials', 53), ('based', 53), ('defense', 53), ('corfu', 53), ('law', 52)]";
-String str3 = "[('government', 1513), ('security', 1443), ('european', 1425), ('nato', 1374), ('europe', 1327), ('united', 1257), ('president', 1253), ('political', 1139), ('atlantic', 1079), ('council', 1032), ('international', 1023), ('military', 982), ('people', 935), ('russia', 930), ('afghanistan', 923), ('country', 909), ('years', 906), ('countries', 887), ('time', 875), ('ukraine', 871), ('pakistan', 822), ('economic', 813), ('national', 760), ('energy', 740), ('foreign', 739), ('policy', 715), ('defense', 707), ('center', 707), ('gas', 679), ('russian', 671), ('minister', 664), ('crisis', 653), ('long', 641), ('year', 626), ('power', 598), ('turkey', 589), ('american', 586), ('china', 585), ('global', 581), ('union', 576), ('support', 558), ('forces', 544), ('obama', 533), ('germany', 525), ('percent', 516), ('party', 514), ('leaders', 494), ('public', 486), ('financial', 480), ('strategic', 473), ('region', 471), ('economy', 460), ('future', 447), ('india', 438), ('north', 431), ('washington', 429), ('change', 426), ('member', 426), ('james', 424), ('south', 423), ('cyber', 409), ('group', 406), ('trade', 406), ('greece', 406), ('prime', 396), ('general', 384), ('including', 379), ('german', 371), ('work', 366), ('french', 366), ('west', 362), ('good', 360), ('fact', 360), ('term', 359), ('deal', 355), ('strategy', 355), ('greek', 355), ('relations', 354), ('attacks', 352), ('joyner', 352), ('oil', 351), ('east', 348), ('senior', 348), ('western', 347), ('france', 347), ('major', 346), ('role', 345), ('taliban', 344), ('conflict', 343), ('day', 339), ('today', 335), ('officials', 335), ('current', 334), ('agreement', 334), ('process', 333), ('election', 332), ('peace', 330), ('2009', 330), ('nuclear', 329), ('case', 328)]";
 
 			Instant start = Instant.now();
-			JSONArray test_all = new JSONArray();
-//			str1 = str1.replace("[","").replace("]", "").replace("),", "-").replace("(", "");
-			str1 = str1.replace("),", "-").replace("(", "");
-			str2 = str2.replace("),", "-").replace("(", "");
-			str3 = str3.replace("),", "-").replace("(", "");
-			
-			System.out.println(str1);
-			System.out.println(str2);
-			System.out.println(str3);
-			
-			System.out.println(str1.replaceAll("[0-9]","").replace("-", ""));
-			System.out.println(str2.replaceAll("[0-9]","").replace("-", ""));
-			System.out.println(str3.replaceAll("[0-9]","").replace("-", ""));
-			
-			
-			String tester1 = str1.replaceAll("[0-9]","").replace("-", "").replace(", )", "");
-			String tester2 = str2.replaceAll("[0-9]","").replace("-", "").replace(", )", "");
-			String tester3 = str3.replaceAll("[0-9]","").replace("-", "").replace(", )", "");
-			
-			JSONArray test1 = new JSONArray(tester1);
-			JSONArray test2 = new JSONArray(tester2);
-			JSONArray test3 = new JSONArray(tester3);
-			
-			test_all.put(test1);
-			test_all.put(test2);
-			test_all.put(test3);
+//			String ids = "3,8,10,13,9,0,88,55";
+			String ids = "813,815,809,811,812,806,808,817,644,652,616,641,732,761,709,128";
+//			String from = "2008-08-09";
+//			String to = "2015-06-01";
+			String from = "1970-01-01";
+			String to = "2020-03-15";
+//					"from": "2008-08-09",
+//			        "to": "2015-06-01",
+			System.out.println(getTopTermsFromBlogIds(ids, from, to, "1"));
+//			
 			//System.out.println(Arrays.asList(ssssss.split("-")).get(0));
 			
 			//SparkConf conf = new SparkConf().setMaster("spark://144.167.35.50:4042").setAppName("Example").set("spark.ui.port","4042");;

@@ -28,6 +28,10 @@ public class RunnableUtil implements Runnable {
 
 	Map<Integer, JSONArray> res = new HashMap<Integer, JSONArray>();
 
+	public RunnableUtil(List<Tuple2<String, Integer>> datatuple) {
+		this.datatuple = datatuple;
+	}
+	
 	public RunnableUtil(JSONObject query, JSONArray jsonArray, int start, int end, List<Tuple2<String, Integer>> datatuple, Map<String, Integer> d,String action, String index, String field) {
 		this.query = query;
 		this.jsonArray = jsonArray;

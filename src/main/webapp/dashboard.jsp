@@ -77,7 +77,7 @@
 				ids = query;
 			}
 		}
-
+		
 		userinfo = DbConnection.query("SELECT * FROM usercredentials where Email = '" + email + "'");
 
 		if (userinfo.size() < 1 || !isowner) {
@@ -3005,7 +3005,9 @@ var mymarker = [
 				}
 			});
 		} --%>
-		
+		<%
+		String post_ids = null;
+		%>
 		function loadKeywordDashboard(blogger,ids){
 			
 			 $(".word-cld").html("<img src='images/loading.gif' /> COMPUTING TERMS FOR <b style='color : blue;  font-size: 20px;'><%=NumberFormat.getNumberInstance(Locale.US).format(new Double(totalpost).intValue())%></b> POSTS PLEASE WAIT...."); 
@@ -3015,7 +3017,7 @@ var mymarker = [
 			$.ajax({
 				url: "Terms",
 				method: 'POST',
-	            dataType: 'json',
+	           /*  dataType: 'json', */
 				data: {
 					action:"getkeyworddashboard",
 					blogger:null,
@@ -3027,6 +3029,7 @@ var mymarker = [
 				{		
 					$(".word-cld").html("FAILED TO COMPUTE TERMS.. RETRYING.. PLEASE WAIT.... <img src='images/loading.gif' />g");
 					$(".word-cld").html("<div style='min-height: 420px;'><div class='chart-container word-cld'><div class='chart' id='tagcloudcontainer'><div class='jvectormap-zoomin zoombutton' id='zoom_in'>+</div><div class='jvectormap-zoomout zoombutton' id='zoom_out'>−</div></div></div></div>");
+										
 					wordtagcloud("#tagcloudcontainer",450,{"NO KEYWORD":1});
 					console.log("This is failure dashboard"+response);
 
@@ -3035,12 +3038,20 @@ var mymarker = [
 				{   		
 				
 					<%-- <%JSONObject d = new JSONObject(response);%> --%>
-				 console.log(response)
-				console.log("this is the response dashboard"+response)
+				 /* console.log(response) */
+				
 				
 				    $(".word-cld").html("<div style='min-height: 420px;'><div class='chart-container word-cld'><div class='chart' id='tagcloudcontainer'><div class='jvectormap-zoomin zoombutton' id='zoom_in'>+</div><div class='jvectormap-zoomout zoombutton' id='zoom_out'>−</div></div></div></div>");
-				
-				wordtagcloud("#tagcloudcontainer",450,response); 
+				 let terms = response;
+				 var new_dd = terms.replace('[','{').replace(']','}').replace(/\),/g,'-').replace(/\(/g,'').replace(/,/g,':').replace(/-/g,',').replace(/\)/g,'').replace(/'/g,"");
+					var newjson = new_dd.replace(/\s+/g,'').replace(/{/g,'{"').replace(/:/g,'":"').replace(/,/g,'","').replace(/}/g,'"}')
+					var jsondata = JSON.parse(newjson)
+					
+					/* data = [];
+					for (var key in jsondata) {var dic = {}; dic["text"] = key; dic["size"] = jsondata[key]; data.push(dic);} */
+					console.log("this is the response dashboard",new_dd);
+					wordtagcloud("#tagcloudcontainer",450,jsondata); 
+				/* wordtagcloud("#tagcloudcontainer",450,response);  */
 				$('#keywordbtn').prop("disabled", false);
 				$("#hrefkeyword").attr("href", "<%=request.getContextPath()%>/keywordtrend.jsp?tid=<%=tid%>");
 				}

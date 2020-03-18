@@ -1047,7 +1047,10 @@ public class Terms extends HttpServlet implements Runnable {
 		// TODO Auto-generated method stub
 		// doGet(request, response);
 		PrintWriter out = response.getWriter();
-		Map<String, Integer> result = new HashMap<String, Integer>();
+		
+		Clustering cluster = new Clustering();
+		
+//		Map<String, Integer> result = new HashMap<String, Integer>();
 		String output = null;
 		Object action = (null == request.getParameter("action")) ? "" : request.getParameter("action");
 		Object date_start = (null == request.getParameter("date_start")) ? "" : request.getParameter("date_start");
@@ -1063,29 +1066,23 @@ public class Terms extends HttpServlet implements Runnable {
 		if (action.toString().equals("getkeyworddashboard")) {
 			System.out.println("action is getkeyworddashboard and ids are " + ids.toString());
 			try {
-				this._getTerms("___NO__TERM___", "__NOBLOGGER__", date_start.toString(), date_end.toString(),
-						ids.toString());
-				List<Tuple2<String, Integer>> data = this.datatuple;
-				output = this.mapReduce(data, "dashboard");
-
-				String val = output;
-				String res = val.replace("[", "").replace("]", "");
-				String[] spl = res.split("\\),");
-
-				// perform stream
-				for (String v : spl) {
-					String newstr = v.replace("(", "").replace(")", "");
-					String[] tsplit = newstr.split(",");
-					int val2 = Integer.parseInt(tsplit[1].trim());
-					result.put(tsplit[0], val2);
-				}
+				output = cluster.getTopTermsFromBlogIds(ids.toString(), date_start.toString(), date_end.toString(), "100");
 //				for (Tuple2<String, Integer> x : data) {
 //					result.put(x._1, x._2);
 //				}
 			} catch (Exception e) {
 
 			}
-			out.write(new JSONObject(result).toString());
+			System.out.println("dashboard output");
+			out.write(output.toString());
+		}else if (action.toString().equals("gethighestterms")) {
+			try {
+				output = cluster.getTopTermsFromBlogIds(ids.toString(), date_start.toString(), date_end.toString(), "1");
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			out.write(output.toString());
 		}
 	}
 

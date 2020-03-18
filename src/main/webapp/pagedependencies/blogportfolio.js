@@ -50,6 +50,7 @@ $('#blogger-changed').on("change", function(){
 	loadYearlyChart(blog_id);
 	loadDailyChart(blog_id);
 	loadUrls(date_start,date_end);
+	loadtermss(blog_id)
 });
 
 $( "body" ).delegate( ".blogpost_link", "click", function() {
@@ -225,20 +226,20 @@ function loadStat(blog_id, all_blogs){
 	});
 }
 
-function loadtermss(blog_id, all_blogs){
+function loadtermss(blog_id){
 	$(".top-keyword").html("<img src='images/loading.gif' />");
 	
 	blog_url = $('#blog__'+blog_id).attr('url');
 		
 	$.ajax({
-		url: "TopKeywrds",
+		url: "Terms",
 		method: 'POST',
 		data: {
 			action:"gethighestterms",
-			blog_id:blog_id,
-			all_blogs:all_blogs,
+			blogger:null,
+			ids:blog_id,
 			date_start:$("#date_start").val(),
-			date_end:$("#date_end").val(),
+			date_end:$("#date_end").val()
 		},
 		error: function(response)
 		{						
@@ -246,9 +247,9 @@ function loadtermss(blog_id, all_blogs){
 		},
 		success: function(response)
 		{   		
-		response = response.trim();
+		response = response.trim().replace('[', '').replace(']','').replace('(','').replace(')','').split(',')[0];
 		//var data = JSON.parse(response);
-console.log(response);
+		console.log(response);
 		$(".top-keyword").html(response);		
 		$('#blog_url_link').attr('href', blog_url);
 		}

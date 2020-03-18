@@ -162,8 +162,11 @@ Instant start = Instant.now();
 	HashMap<String, String> topterms = new HashMap<String, String>();
 	
 	String find = "";
+	int [][] termsMatrix = new int[10][10];
+	//int count = 0;
 	
 	for (int i = 1; i < 11; i++) {
+
 		String cluster_ = "cluster_" + String.valueOf(i);
 		String centroids = "C" + String.valueOf(i) + "xy";
 		JSONObject cluster_data = new JSONObject(source.get(cluster_).toString());
@@ -228,9 +231,50 @@ Instant start = Instant.now();
 		
 		
 		String terms = cluster_data.get("topterms").toString();
+		String str1 = null;
+		str1 = terms.replace("),", "-").replace("(", "").replace(")", "").replaceAll("[0-9]","").replace("-", "");
+		List<String> t1 = Arrays.asList(str1.replace("[","").replace("]","").split(","));
+		termsMatrix[i - 1][i - 1] = t1.size();
 		//String terms = cluster.getTopTerms(post_ids);
 		System.out.println(terms);
 
+		//CREATING CHORD MATRIX
+		
+		String str2 = null;
+		
+		for(int k = (i + 1); k < 11; k++)
+		{
+		String cluster_matrix  = "cluster_" + String.valueOf(k);
+		JSONObject cluster_data_matrix = new JSONObject(source.get(cluster_matrix).toString());
+		String terms_matrix = cluster_data_matrix.get("topterms").toString();
+		
+		
+		str2 = terms_matrix.replace("),", "-").replace("(", "").replace(")", "").replaceAll("[0-9]","").replace("-", "");
+		//JSONArray terms_array = new JSONArray(str);
+		
+		
+		List<String> t2 = Arrays.asList(str2.replace("[","").replace("]","").split(","));
+		//System.out.println(t1);
+		//System.out.println(t2);
+//		System.out.println("ttt"+t1.retainAll(t2));
+		int count = 0;
+		for (int i_ = 0; i_ < t1.size(); i_++)
+        {
+            for (int j_ = 0; j_ < t2.size(); j_++)
+            {
+                if(t1.get(i_).contentEquals(t2.get(j_)))
+                {
+                 
+                 count ++;
+                 }
+            }
+        }
+		
+		termsMatrix[i-1][k-1] = count;
+		termsMatrix[k-1][i-1] = count;
+		}
+		//DONE CREATING CHORD MATRIX
+		
 		topterms.put(cluster_,terms);
 		
 		key_val = new Pair<String, String>(cluster_, post_ids);
@@ -248,7 +292,10 @@ Instant start = Instant.now();
 	}
 
 	//System.out.println(topterms.size());
-	//System.out.println("find --" + find);
+	/* for(int i = 0; i < termsMatrix.length; i++){
+		System.out.println("termsMatrix --" + Arrays.toString(termsMatrix[i]));
+	} */
+	
 	session.setAttribute(tid.toString() + "cluster_terms", topterms);
 	session.setAttribute(tid.toString() + "cluster_distances", distances);
 	session.setAttribute(tid.toString() + "cluster_result", clusterResult);
@@ -1305,6 +1352,7 @@ Instant start = Instant.now();
 	<script type="text/javascript" src="assets/vendors/d3/d3_tooltip.js"></script> -->
 	<script >
 	var terms = "<%=topterms.get("cluster_1")%>";
+	console.log('terms', terms);
 	var new_dd = terms.replace('[','{').replace(']','}').replace(/\),/g,'-').replace(/\(/g,'').replace(/,/g,':').replace(/-/g,',').replace(/\)/g,'').replace(/'/g,"");
 	var newjson = new_dd.replace(/\s+/g,'').replace(/{/g,'{"').replace(/:/g,'":"').replace(/,/g,'","').replace(/}/g,'"}')
 	var jsondata = JSON.parse(newjson)
@@ -1434,7 +1482,7 @@ Instant start = Instant.now();
     		    "rotation": rotation,
     		    "colors": colors
     		};
-	    clusterMatrix = [
+	    /* clusterMatrix = [
 	    	[0 , 3, 4, 0, 2 , 4 ,5 , 6, 0, 7],
 	    	[0 , 0, 4, 0, 2 , 4 ,5 , 6, 0, 0],
 	    	[1 , 3, 0, 0, 2 , 4 ,5 , 6, 0, 6],
@@ -1445,8 +1493,28 @@ Instant start = Instant.now();
 	    	[0 , 3, 4, 8, 2 , 4 ,5 , 0, 0, 4],
 	    	[0 , 3, 4, 3, 2 , 4 ,5 , 6, 0, 7],
 	    	[0 , 5, 4, 0, 2 , 4 ,5 , 6, 0, 0]
-	    ]
+	    ] */
 	    
+	    var cluster = 1
+	    var clusterMatrix = []
+	     <%for(int j = 0; j < termsMatrix.length; j++){%>
+	    	var temparr = []
+	    	<%for(int k = 0; k < termsMatrix.length; k++){%>
+	    		
+	    		temparr.push(<%=termsMatrix[j][k]%>);
+	    	<%}%>
+	    	clusterMatrix.push(temparr);
+		<%}%>  
+		<%-- <%for(int j = 0; j < termsMatrix.length; j++){%>
+    	var temparr = []
+    	<%System.out.println("items--"+termsMatrix[0][j]);%>
+    	<%for(int k = 0; k < termsMatrix.length; k++){%>
+    		
+    		
+    	<%}%>
+    	clusterMatrix.push(temparr);
+    	temparr.push(<%=termsMatrix[0][j]%>);
+	<%}%>  --%>
 	    drawChord("#chorddiagram", chord_options, clusterMatrix, names); 
  
  </script>

@@ -270,11 +270,11 @@ if(action.toString().equals("getstats")){
 		}
 	} */
 	 
-	try{
+	/* try{
 	JSONObject sql = post._getBloggerPosts(null,selectedblogid,date_start.toString(),date_end.toString(),ids.toString());
 	String sql_ = sql.get("posts").toString();
 	mostactiveterm = post._termVectors(sql_);
-	}catch(Exception e){}
+	}catch(Exception e){} */
 /* 	String sql = post._getBloggerPosts(selectedblogid,date_start.toString(),date_end.toString(),ids.toString());
 	mostactiveterm = post._termVectors(sql); */
 	
@@ -282,7 +282,7 @@ if(action.toString().equals("getstats")){
 	result.put("totalpost",totalpost);
 	result.put("totalsentiment",comb);
 	result.put("totalinfluence",normalized_score);
-	result.put("topterm",mostactiveterm);
+	//result.put("topterm",mostactiveterm);
 	
 	System.out.println("this is the result"+result);
 	
