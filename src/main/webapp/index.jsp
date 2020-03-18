@@ -164,7 +164,7 @@ try{
 
 </head>
 <body style="background-color:none;">
-<%@include file="subpages/loader.jsp" %>
+
 <noscript>
 <%@include file="subpages/googletagmanagernoscript.jsp" %>
 </noscript>
@@ -180,7 +180,7 @@ try{
   <div class="col-lg-2 col-md-12 notificationpanel">
     <div id="closeicon" class="cursor-pointer"><i class="fas fa-times-circle"></i></div>
   <div class="profilesection col-md-12 mt50">
-    <div class="text-center mb10" ><img src="<%=profileimage%>" onerror="this.src='images/default-avatar.png'"  width="60" height="60" onerror="this.src='images/default-avatar.png'" alt="" /></div>
+    <div class="text-center mb10" ><img src="<%=profileimage%>" onerror="this.src='images/default-avatar.png'"  width="60" height="60" onerror="this.src='images/default-avatar.png'" alt="BlogTrackers Background" /></div>
     <div class="text-center" style="margin-left:0px;">
       <h6 class="text-primary m0 bolder profiletext"><%=name%></h6>
       <p class="text-primary profiletext"><%=email%></p>
