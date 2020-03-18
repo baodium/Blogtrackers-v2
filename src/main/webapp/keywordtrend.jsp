@@ -1586,22 +1586,20 @@ $(document).ready(function() {
 
     switch(t) {
 
-      //case 0:
-        //var hex = 'yellow';
-      case 1:
-        var hex = 'green'; 
+    case 1:
+        var hex = '#5de6f8'; 
         break;
       case 2:
-        var hex = '#c18fb6';
+        var hex = '#ed9dfb';
         break;
       case 3:
-        var hex = '#8fc199';
+        var hex = '#b1fcdf';
         break;
       case 4:
-        var hex = '#c1958f';
+        var hex = '#eefcb1';
         break;
       case 5:
-        var hex = '#e17d70';
+        var hex = '#fccfb1';
         break;
       case 6:
         var hex = '#b770e1';
@@ -1619,7 +1617,7 @@ $(document).ready(function() {
         var hex = '#981010';
         break;
       default:
-        var hex = 'red';
+        var hex = '#8088fa';
 
     }
 

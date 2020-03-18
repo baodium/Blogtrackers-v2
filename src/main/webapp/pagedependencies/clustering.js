@@ -12,8 +12,9 @@
 }*/
 
 $(document).ready(function() {
+	
 	$("body").delegate(".clusters_", "click", function() {
-//		alert('here');
+	
 		var idName = $(this).attr("id");
 		var cluster = idName.split("_")[1]
 		$(".activeblog").html("Cluster "+cluster);
@@ -28,6 +29,15 @@ $(document).ready(function() {
 	});
 
 })
+
+
+
+
+
+
+
+
+
 
 function loadblogdistribution(clusterid){
 	$("#blogdistribution").html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />");
@@ -167,13 +177,132 @@ function loadtitletable(clusterid){
 		success: function(response)
 		{   
 			console.log('post details')
-			 console.log(response['post_data']);
+			console.log(response['post_data']);
+			blog_post_data = response['post_data']
+			var arrayLength = response['post_data'].length;
+			$("#posts_display").addClass("hidden");
+			$("#posts_display_loader").removeClass("hidden");
 			
-			var vvv = response['post_data'][0]['_source'].blogpost_id;
-			//console.log('post_id',vvv); 
-			//console.log('distance',response['distances'][vvv]); 
+			$("#posts_details").addClass("hidden");
+			$("#posts_details_loader").removeClass("hidden");
 			
-			/*$("#postinglocation").html(response);	*/
+			$("#posts_display").html("");
+			$('#posts_display').empty();
+			
+			
+			if(arrayLength > 0){
+				
+				
+				var details = "<table id='DataTables_Table_10_wrapper' class='display' style='width: 100%;'>";
+				details += '<thead>';
+				details += '<tr>';
+				details += '<th >Post title</th>';
+				details += '<th >Cluster Distance</th>';
+				details += '</tr>';
+				details += '</thead>';
+				details += '<tbody id="blogPostsContainer1">';
+				
+				
+				//end if empty length check
+		
+				for (var i = 0; i < arrayLength; i++) {
+					
+					
+					var post_identify = response['post_data'][i]['_source'].blogpost_id;
+					
+					details += '<tr>';
+					details += '<td ><a blogid='+post_identify+' id="blog_'+post_identify+'" arr_count="'+i+'" class="blogPostClickListener blogpost_link cursor-pointer">'+response['post_data'][i]['_source'].title+'</a>  <br/>';
+					details += '<a id="viewpost_'+post_identify+'" class="mt20 viewpost makeinvisible" href="'+response['post_data'][i]['_source'].permalink+'" target="_blank"><buttton class="btn btn-primary btn-sm mt10 visitpost">Visit Post &nbsp;<i class="fas fa-external-link-alt"></i></buttton></a></td>';
+					details += '<td>'+response['distances'][post_identify]+'%</td>';
+					details += '</tr>';
+					
+				}
+				
+				
+				details += '</tbody>';
+				details += '</table>';
+				
+				$("#posts_display").html(details);
+				
+				
+				
+				// $('#DataTables_Table_0_wrapper').DataTable().destroy();
+				// table set up datatable for blog posts
+				  $('#DataTables_Table_10_wrapper').DataTable( {
+				         "scrollY": 430,
+				         "scrollX": true,
+				         "order": [],
+				          "pagingType": "simple",
+				        	  "columnDefs": [
+				        	      { "width": "65%", "targets": 0 },
+				        	      { "width": "25%", "targets": 0 }
+				        	    ]
+				     } );
+				  
+				  
+				  
+				  
+					
+					let arr_count = $(this).attr("arr_count");
+				
+					id = blog_post_data[0]['_source'].blogpost_id
+					
+					$(".viewpost").addClass("makeinvisible");
+			    	$('.blogpost_link').removeClass("activeselectedblog");
+			    	$('#blog_'+id).addClass("activeselectedblog");
+			    	$("#viewpost_"+id).removeClass("makeinvisible");
+				
+					$('#titleContainer').html(blog_post_data[0]['_source'].title);
+			    	$('#authorContainer').html(blog_post_data[0]['_source'].blogger);
+			    	$('#dateContainer').html(blog_post_data[0]['_source'].date);
+			    	$('#postContainer').html(blog_post_data[0]['_source'].post);
+			    	$('#numCommentsContainer').html(blog_post_data[0]['_source'].numComments + " comments");
+			    	
+			    	$("#posts_details").removeClass("hidden");
+					$("#posts_details_loader").addClass("hidden");
+			     
+			     ///end instantiating datatable
+			     $("#posts_display").removeClass("hidden");
+				$("#posts_display_loader").addClass("hidden");
+				
+				
+				
+				
+				///////
+				$("body").delegate(".blogPostClickListener", "click", function() {
+					
+					$("#posts_details").addClass("hidden");
+					$("#posts_details_loader").removeClass("hidden");
+					
+					let arr_count = $(this).attr("arr_count");
+				
+					id = blog_post_data[arr_count]['_source'].blogpost_id
+					
+					$(".viewpost").addClass("makeinvisible");
+			    	$('.blogpost_link').removeClass("activeselectedblog");
+			    	$('#blog_'+id).addClass("activeselectedblog");
+			    	$("#viewpost_"+id).removeClass("makeinvisible");
+				
+					$('#titleContainer').html(blog_post_data[arr_count]['_source'].title);
+			    	$('#authorContainer').html(blog_post_data[arr_count]['_source'].blogger);
+			    	$('#dateContainer').html(blog_post_data[arr_count]['_source'].date);
+			    	$('#postContainer').html(blog_post_data[arr_count]['_source'].post);
+			    	$('#numCommentsContainer').html(blog_post_data[arr_count]['_source'].numComments + " comments");
+			    	
+			    	$("#posts_details").removeClass("hidden");
+					$("#posts_details_loader").addClass("hidden");
+			    	
+				});
+				
+				//////
+				
+				
+				
+				
+			}else{
+				console.log('no post title')
+			}
+			
 			
 	
 		}
@@ -204,6 +333,47 @@ function loadkeywords(clusterid){
 			//alert('i am here')
 			console.log('loadkeywords details')
 			console.log(response);
+			
+//			$("#keyword_display").addClass("hidden");
+			$("#keyword_display_loader").removeClass("hidden");
+			
+//			$("#keyword_display").empty();
+//			build = '<div id="tagcloudcontainer2" style="min-height: 300px;"></div>';
+//			
+//			$("#keyword_display").html(build);
+			
+			var terms = response;
+			var new_dd = terms.replace('[','{').replace(']','}').replace(/\),/g,'-').replace(/\(/g,'').replace(/,/g,':').replace(/-/g,',').replace(/\)/g,'').replace(/'/g,"");
+			var newjson = new_dd.replace(/\s+/g,'').replace(/{/g,'{"').replace(/:/g,'":"').replace(/,/g,'","').replace(/}/g,'"}')
+			var jsondata = JSON.parse(newjson)
+			
+			
+			console.log('trtrtrtrtrtrtrtrtrtr')
+			console.log(jsondata)
+			
+			elem = '#tagcloudcontainer1';
+			
+			
+			
+			
+//			doCloud(jsondata,elem)
+			$("#tagcloudcontainer1").removeClass("hidden");
+			$("#tagcloudcontainer1").html("");
+			wordtagcloud("#tagcloudcontainer1",450,jsondata);
+			
+			$("#new_word").removeClass("hidden");
+			
+//			$(".keyword_display").addClass("hidden");
+			$("#keyword_display").addClass("hidden");
+			
+//			$(".new_word").removeClass("hidden");
+//			$("#for_word").addClass("hidden");
+			
+			$("#keyword_display_loader").addClass("hidden");
+			
+			
+			
+			
 			/*console.log(response[0]['_source'].post);*/
 			//alert('here')
 			//console.log(response[0]);
