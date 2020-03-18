@@ -1020,7 +1020,7 @@ JSONObject allposts = new JSONObject();
           Export Options
           </div> -->
           <div id="influence_table">
-                <table id="DataTables_Table_0_wrapper" class="display" style="width:100%">
+                <table id="DataTables_Table_0_wrapper" class="display table_over_cover" style="width:100%">
                         <thead>
                             <tr>
                                 <th>Post title</th>
@@ -1168,12 +1168,20 @@ JSONObject allposts = new JSONObject();
 													for (int y = 0; y < outlinklooper.size(); y++) {
 														String key = outlinklooper.get(y).toString();
 														JSONObject resu = outerlinks.getJSONObject(key);
-									%>
-									<tr>
-										<td class=""><a href="http://<%=resu.get("domain")%>" target="_blank"><%=resu.get("domain")%></a></td>
-										<td><%=resu.get("value")%></td>
-									</tr>
-									<%
+														
+														if(resu.get("domain") != "" ){
+															
+															%>
+															<tr>
+																<td class=""><a href="http://<%=resu.get("domain")%>" target="_blank"><%=resu.get("domain")%></a></td>
+																<td><%=resu.get("value")%></td>
+															</tr>
+															<%
+															
+															
+														}
+														
+									
 										}
 									}
 									%>                     

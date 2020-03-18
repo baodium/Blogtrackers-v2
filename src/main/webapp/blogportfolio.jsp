@@ -2182,7 +2182,7 @@ import java.io.OutputStreamWriter; -->
        
        
       <%--  <%Iterator<String> keys = dayJson.keys();%> --%>
-       <%String [] days = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};%>
+       <%String [] days = {"Sun", "Sat", "Fri", "Thu", "Wed", "Tue", "Mon"};%>
         data = [<%
             for(String d : days){
         	/* while(keys.hasNext()) { */

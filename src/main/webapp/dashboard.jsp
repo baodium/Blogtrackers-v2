@@ -1176,11 +1176,19 @@ display: none;
 						
 					</div>
 				</div>
-				<div class="float-right">
+				<!--  <div class="float-right">
 					<a id = "hreftopicmodels" href="topic_distribution.jsp?tid=<%=tid%>"><button
 							class="btn buttonTopicModelling mt10">
 							<b class="float-left semi-bold-text">Topic Modelling
 								Analysis</b> <b class="fas fa-comment-alt float-right icondash2"></b>
+						</button></a>
+				</div>
+				-->
+				<div class="float-right">
+					<a id = "hreftopicmodels" href="topic_distribution.jsp?tid=<%=tid%>"><button disabled 
+							class="btn buttonportfolio2 buttonTopicModelling mt10">
+							<b class="float-left semi-bold-text">Topic Modelling </b> <b
+								class="fas fa-comment-alt float-right icondash2"></b>
 						</button></a>
 				</div>
 
@@ -1216,7 +1224,7 @@ display: none;
           Export Options
           </div> -->
 							<div id="top-domain-box">
-								<table id="DataTables_Table_0_wrapper" class="display"
+								<table id="DataTables_Table_0_wrapper" class="display table_over_cover"
 									style="width: 100%">
 									<thead>
 										<tr>
@@ -3105,6 +3113,7 @@ var mymarker = [
 			 //let chordDiagram = new ChordDiagram(response, 400, "postingfrequencycontainer");
 			 drawChord(container, options, response, names)
 			 $('.buttonTopicModelling').prop("disabled", false);
+			 $('.buttonTopicModelling').removeAttr("disabled");
 			$("#hreftopicmodels").attr("href", "<%=request.getContextPath()%>/topic_distribution.jsp?tid=<%=tid%>");
 			
 			}

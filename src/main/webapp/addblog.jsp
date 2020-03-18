@@ -430,18 +430,19 @@
 	<div>
 	<h2 class="text-primary addblogtitle bold-text">Blogs Added</h2>
 	<div class="col-md-12 mt10 mb50 pl0 pr0">
-<table class=" "  id="bloglist" style="width:100%">
+	<!-- START TABLE -->
+		<table class=" "  id="bloglist" style="width:100%">
 	
 		
 		
 			<thead>
 				<tr >
-					<th class="text-primay" style="">id</th>
-					<th class="text-primay" style="">Blog Name</th> 
+					<th class="text-primay" style="text-align:center;">id</th>
+					<th class="text-primay" style="text-align:center;">Blog Name</th> 
     
-					<th class="text-priary" style="">Status</th>
-					<th class="text-priary" style="">No. of Posts</th>
-					<th class="text-priary" style="">Latest Update</th>
+					<th class="text-priary" style="text-align:center;">Status</th>
+					<th class="text-priary" style="text-align:center;">No. of Posts</th>
+					<th class="text-priary" style="text-align:center;">Latest Update</th>
 					<th>Function</th>
 				</tr>
 			</thead>
@@ -547,6 +548,8 @@
 				%> --%>
 			</tbody>
 		</table>
+		
+		<!-- END TABLE -->
 		</div>
 	</div>
 	<%-- <p class="text-primary p30 pt30 pb0">Enter the URL of the Blog <b>(with http://)</b> and press Enter to save</p>
@@ -628,7 +631,14 @@
 		$(document).ready(function () {
 			
 
-			$('#bloglist').DataTable();
+			$('#bloglist').DataTable({
+		        
+		          "pagingType": "simple",
+		          "targets": 'no-sort',
+		          "bSort": false
+		        
+		        	  
+		     });
 
 		
 		});
@@ -712,6 +722,11 @@ $(document).ready(function() {
 	<script type="text/javascript">
 	
 	$(document).ready(function () {
+		
+		
+		
+		
+	
 
 	    $("#selected_file").change(function (event) {
 	    	

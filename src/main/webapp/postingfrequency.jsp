@@ -388,7 +388,7 @@ userinfo = (ArrayList<?>)userinfo.get(0);
   <a class="cursor-pointer profilemenulink" href="<%=request.getContextPath()%>/profile.jsp"><h6 class="text-primary">Profile</h6></a>
   <a
 						class="cursor-pointer profilemenulink"
-						href="https://addons.mozilla.org/en-US/firefox/addon/blogtrackers/"><h6
+						href="https://addons.mozilla.org/en-US/firefox/addon/blogtrackers/" target="_blank"><h6
 							class="text-primary">Plugin</h6></a>
   <a class="cursor-pointer profilemenulink" href="<%=request.getContextPath()%>/logout"><h6 class="text-primary">Log Out</h6></a>
   <%}else{ %>
@@ -1070,19 +1070,19 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
       //case 0:
         //var hex = 'yellow';
       case 1:
-        var hex = 'green'; 
+        var hex = '#5de6f8'; 
         break;
       case 2:
-        var hex = '#c18fb6';
+        var hex = '#ed9dfb';
         break;
       case 3:
-        var hex = '#8fc199';
+        var hex = '#b1fcdf';
         break;
       case 4:
-        var hex = '#c1958f';
+        var hex = '#eefcb1';
         break;
       case 5:
-        var hex = '#e17d70';
+        var hex = '#fccfb1';
         break;
       case 6:
         var hex = '#b770e1';
@@ -1100,7 +1100,7 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
         var hex = '#981010';
         break;
       default:
-        var hex = 'red';
+        var hex = '#8088fa';
 
     }
 

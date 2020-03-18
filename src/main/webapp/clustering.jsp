@@ -336,7 +336,7 @@ Instant start = Instant.now();
 <script src="assets/js/jquery-3.2.1.slim.min.js"></script>
 <script src="assets/js/popper.min.js"></script>
 <script src="pagedependencies/googletagmanagerscript.js"></script>
-<script async src="pagedependencies/clustering.js">
+<script  src="pagedependencies/clustering.js">
 </script>
 
 <script>
@@ -700,9 +700,22 @@ Instant start = Instant.now();
 								Keywords of <b class="text-blue activeblog">Cluster 1</b> of
 								Past <b class="text-success">Week</b>
 							</p>
+							
 						</div>
-						<div class="chart-container">
+						
+						<div id="new_word">
+							<div id="tagcloudcontainer1" class="hidden " style="min-height: 300px;"></div>
+						</div>
+						
+						
+						
+						<div class="chart-container keyword_display" id="keyword_display">
 							<div id="tagcloudcontainer" style="min-height: 300px;"></div>
+						</div>
+						
+						
+						<div style="height: 250px; padding-right: 10px !important;" id="keyword_display_loader" class="hidden">
+							<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />
 						</div>
 					</div>
 				</div>
@@ -741,7 +754,10 @@ Instant start = Instant.now();
 					<!-- <div class="p15 pb5 pt0" role="group">
           Export Options
           </div> -->
-					<table id="DataTables_Table_0_wrapper" class="display"
+          
+          			<div id="posts_display">
+          			
+          				<table id="DataTables_Table_0_wrapper" class="display"
 						style="width: 100%">
 						<thead>
 							<tr>
@@ -816,29 +832,44 @@ Instant start = Instant.now();
 
 						</tbody>
 					</table>
+          
+         			</div>
+					
+					<div style="height: 250px; padding-right: 10px !important;" id="posts_display_loader" class="hidden">
+						<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />
+					</div>
+					
+					
+					
+					
+					
 				</div>
 
 			</div>
 
-			<div
+			<div id="blogPostContainer"
 				class="col-md-6 mt20 card card-style nobordertopleft noborderbottomleft">
-				<div style="" class="pt20">
-					<h5 class="text-primary p20 pt0 pb0"><%=currentTitle%></h5>
+				<div id="posts_details" style="" class="pt20">
+					<h5 id="titleContainer" class="text-primary p20 pt0 pb0"><%=currentTitle%></h5>
 					<div class="text-center mb20 mt20">
 						<button class="btn stylebuttonblue">
-							<b class="float-left ultra-bold-text"><%=currentBlogger%></b> <i
+							<b id="authorContainer" class="float-left ultra-bold-text"><%=currentBlogger%></b> <i
 								class="far fa-user float-right blogcontenticon"></i>
 						</button>
-						<button class="btn stylebuttonnocolor">02-01-2018, 5:30pm</button>
+						<button id="dateContainer" class="btn stylebuttonnocolor">02-01-2018, 5:30pm</button>
 						<button class="btn stylebuttonorange">
-							<b class="float-left ultra-bold-text"><%=currentNumComment%>
+							<b id="numCommentsContainer" class="float-left ultra-bold-text"><%=currentNumComment%>
 								comments</b><i class="far fa-comments float-right blogcontenticon"></i>
 						</button>
 					</div>
 					<div style="height: 600px;">
-						<div class="p20 pt0 pb20 text-blog-content text-primary"
+						<div id="postContainer" class="p20 pt0 pb20 text-blog-content text-primary"
 							style="height: 550px; overflow-y: scroll;"><%=currentPost%></div>
 					</div>
+				</div>
+				
+				<div style="height: 250px; padding-right: 10px !important;" id="posts_details_loader" class="hidden">
+					<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />
 				</div>
 			</div>
 		</div>
@@ -1189,12 +1220,6 @@ Instant start = Instant.now();
 	
 	
 	
-	///start blog post title function
-	
-
-	
-	////end blog post title function
-	
 	
 	
 	
@@ -1262,12 +1287,7 @@ Instant start = Instant.now();
 	var max_y = Math.max.apply(Math, new_array.map(function(o) { return o.new_y; }));
 	var min_x = Math.min.apply(Math, new_array.map(function(o) { return o.new_x; }));
 	var min_y = Math.min.apply(Math, new_array.map(function(o) { return o.new_y; }));
-			console.log(data)
 			
-			console.log('max_x', max_x);
-			console.log('max_y', max_y);
-			console.log('min_x', min_x);
-			console.log('min_y', min_y);
 			
 			var x = d3v4_.scaleLinear().domain([min_x, max_x]).range([ 0, width ]);
 			var xAxis = SVG.append("g").attr("transform",
@@ -1351,6 +1371,17 @@ Instant start = Instant.now();
 	<script src="assets/vendors/wordcloud/d3.layout.cloud.js"></script>
 	<script type="text/javascript" src="assets/vendors/d3/d3_tooltip.js"></script> -->
 	<script >
+	
+	function doCloud(jsondata, elem){
+		
+		
+			$(elem).html('');
+	
+			
+			wordtagcloud(elem,450,jsondata); 
+			
+		}
+	
 	var terms = "<%=topterms.get("cluster_1")%>";
 	console.log('terms', terms);
 	var new_dd = terms.replace('[','{').replace(']','}').replace(/\),/g,'-').replace(/\(/g,'').replace(/,/g,':').replace(/-/g,',').replace(/\)/g,'').replace(/'/g,"");
@@ -1359,8 +1390,15 @@ Instant start = Instant.now();
 	
 	/* data = [];
 	for (var key in jsondata) {var dic = {}; dic["text"] = key; dic["size"] = jsondata[key]; data.push(dic);} */
+	console.log('weeweweweewewewewewewew')
+	console.log(jsondata)
+	elem = '#tagcloudcontainer';
 	
-	wordtagcloud("#tagcloudcontainer",450,jsondata); 
+	
+	
+	
+	doCloud(jsondata,elem)
+
 	 /* d3version3 = d3
 	   // window.d3 = null
 	    // test it worked

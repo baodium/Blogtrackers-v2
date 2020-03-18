@@ -3,6 +3,12 @@
   color: green;
 }
 
+.table_over_cover{
+	width: 100%;
+
+	overflow: hidden;
+}
+
 .valid:before {
   position: relative;
   left: -35px;
