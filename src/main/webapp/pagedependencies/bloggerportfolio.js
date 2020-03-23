@@ -4,15 +4,17 @@ $(document).ready(function(){
 	var all_bloggers = $("#all_bloggers").val();
 	
 	var blogger = $('#blogger-changed').val();
-	var blg = blogger.split("_");
+	var blg = blogger.split("______");
 	var blog_id = blg[0];
 	
 	var all_ids = $("#id__").val();
 	
 	$(".active-blog").html(blg[1]);
 	$("#blogger").val(blg[1]);
+	console.log('blogger ', blg[1]);
 	
 	loadStat(blg[1], all_bloggers,all_ids);
+	loadtermss(blg[1]);
 })
 
 
@@ -23,7 +25,7 @@ $('#blogger-changed').on("change", function(){
 	var date_end = $("#date_end").val();
 	var all_ids = $("#id__").val();
 	var blogger = $(this).val();
-	var blg = blogger.split("_");
+	var blg = blogger.split("______");
 	
 	
 	
@@ -49,8 +51,39 @@ $('#blogger-changed').on("change", function(){
 	loadUrls(date_start,date_end,all_ids, blog_id);
 	
 	loadInfluence(blg[1],date_start,date_end);
+	
+	loadtermss(blg[1]);
 });
 
+function loadtermss(blogger){
+	$(".top-keyword").html("<img src='images/loading.gif' />");
+	
+	/*blog_url = $('#blog__'+blog_id).attr('url');*/
+		
+	$.ajax({
+		url: "Terms",
+		method: 'POST',
+		data: {
+			action:"getbloggerhighestterms",
+			blogger:blogger,
+			/*ids:blog_id,*/
+			date_start:$("#date_start").val(),
+			date_end:$("#date_end").val()
+		},
+		error: function(response)
+		{						
+			console.log("The error log is "+response);
+		},
+		success: function(response)
+		{   		
+		response = response.trim().replace('[', '').replace(']','').replace('(','').replace(')','').split(',')[0];
+		//var data = JSON.parse(response);
+		console.log(response);
+		$(".top-keyword").html(response);		
+		//$('#blog_url_link').attr('href', blog_url);
+		}
+	});
+}
 
 function loadInfluence(blogger,start_date,end_date){
 	$("#influence_table").html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />");
@@ -154,7 +187,7 @@ function loadStat(blogger, all_bloggers,ids){
 	$(".total-influence").html("<img src='images/loading.gif' />");
 	$(".total-post").html("<img src='images/loading.gif' />");
 	$(".total-sentiment").html("<img src='images/loading.gif' />");
-	$(".top-keyword").html("<img src='images/loading.gif' />");
+	/*$(".top-keyword").html("<img src='images/loading.gif' />");*/
 	$.ajax({
 		url: app_url+"subpages/bloggerportfoliochart.jsp",
 		method: 'POST',
@@ -180,7 +213,7 @@ function loadStat(blogger, all_bloggers,ids){
 		$(".total-post").html(parseInt(data.totalpost).toLocaleString('en'));
 		$(".total-sentiment").html(parseInt(data.totalsentiment).toLocaleString('en'));
 	
-		$(".top-keyword").html(data.topterm);
+		/*$(".top-keyword").html(data.topterm);*/
 		//$("#overall-chart").delay(3000).html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />").delay(2000).html(response);
 			/* $.getScript("assets/js/generic.js", function(data, textStatus, jqxhr) {	
 			  });*/

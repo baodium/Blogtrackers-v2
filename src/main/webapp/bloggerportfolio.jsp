@@ -831,7 +831,7 @@ JSONObject allposts = new JSONObject();
 					all_bloggers += bloggerName;
 					
 					%>
-					<option value="<%=blogsiteId%>_<%=bloggerName%>" <% if(mostactiveblogger.equals(bloggerName)){ %> selected <% } %>><%=bloggerName%></option>
+					<option value="<%=blogsiteId%>______<%=bloggerName%>" <% if(mostactiveblogger.equals(bloggerName)){ %> selected <% } %>><%=bloggerName%></option>
  
 				<%	p++;
 					
@@ -1235,6 +1235,9 @@ JSONObject allposts = new JSONObject();
  <script src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.print.min.js"></script>
 
  <script>
+ <%-- $(document).ready(function(){
+	 loadtermss(<%=mostactiveblogid%>);
+	}) --%>
  $(document).ready(function() {
 	 
 	 $('#printdoc').on('click',function(){

@@ -788,11 +788,12 @@
 
     </small> -->
 						<div style="height: 250px; padding-right: 10px !important;"
-							id="scroll_list_loader" class="">
-							<img style='position: absolute; top: 50%; left: 50%;'
-								src='images/loading.gif' />
+							id="scroll_list_loader1" class="hidden">
+							<!-- <img style='position: absolute; top: 50%; left: 50%;'
+								src='images/loading.gif' /> -->
+								
 						</div>
-						<div id="scroll_list" class="hidden scrolly"
+						<div id="scroll_list" class=" scrolly"
 							style="height: 250px; padding-right: 10px !important;">
 
 
@@ -821,10 +822,10 @@
 
 										if (null == session.getAttribute(tid.toString())) {
 							%>
-<script> loadKeywordDashboard(null, "<%=ids%>"); </script>
+<%-- <script> loadKeywordDashboard(null, "<%=ids%>"); </script> --%>
 							
 							<%
-								} else {
+								} /* else {
 											json_type_2 = (null == session.getAttribute(tid.toString()))
 													? ""
 													: session.getAttribute(tid.toString());
@@ -851,7 +852,7 @@
 											}else{
 												dselected = "";
 												activew = "";
-											}
+											} */
 							%>
 
 
@@ -860,19 +861,23 @@
 							<%-- <a
 								class="btn btn-primary form-control select-term bloggerinactive mb20 <%=dselected%> size-<%=size%>"
 							id="<%=tm.replaceAll(" ","_")%>***<%=terms_id%>"><b><%=tm%></b></a> --%>
-							<a name="<%=entry.getKey()%>"
-								class="topics topics1 btn btn-primary form-control select-term bloggerinactive mb20  size-1 <%=activew%>"
-								value="<%=entry.getValue()%>"><b> <%-- <%=entry.getKey()%> --%> SEUN
-							</b></a>
+							<a name="<%-- <%=entry.getKey()%> --%>"
+								class="topics topics1 btn btn-primary form-control select-term bloggerinactive mb20  size-1 <%-- <%=activew%> --%>"
+								value="<%-- <%=entry.getValue()%> --%>"><b> <%-- <%=entry.getKey()%> --%> 
+							</b>SEUN</a> 
+							<a name="<%-- <%=entry.getKey()%> --%>"
+								class="topics topics1 btn btn-primary form-control select-term bloggerinactive mb20  size-1 <%-- <%=activew%> --%>"
+								value="<%-- <%=entry.getValue()%> --%>"><b> <%-- <%=entry.getKey()%> --%> 
+							</b>SEUN</a> 
 							<%
-							k++;
+							/* k++;
 								}
-										}
+										} */
 										/* 	}
 										  }
 										}	 */
 
-										Integer blog_mentioned = post._getBlogOrPostMentioned("blogsite_id", mostactiveterm, dt, dte, ids);
+										/* Integer blog_mentioned = post._getBlogOrPostMentioned("blogsite_id", mostactiveterm, dt, dte, ids);
 										System.out.println(dt + dte + ids);
 
 										try {
@@ -882,7 +887,7 @@
 										} catch (Exception e) {
 
 										}
-										top_location =(null == top_location || "" == top_location) ? "NOT AVAILABLE" : top_location;
+										top_location =(null == top_location || "" == top_location) ? "NOT AVAILABLE" : top_location; */
 										/* Integer post_mentioned=post._getBlogOrPostMentioned("post","care",dt, dte,ids); */
 							%>
 							<!-- BY SEUN--ENDING -->
@@ -931,7 +936,7 @@
 								<h6 class="card-title mb0">Blog Mentioned</h6>
 								<%-- <h2 class="mb0 bold-text blog-mentioned"><%=NumberFormat.getNumberInstance(Locale.US).format(new Integer(blogmentioned))%>
 								</h2> --%>
-								<h2 class="mb0 bold-text blog-mentioned"><%=NumberFormat.getNumberInstance(Locale.US).format(new Integer(blog_mentioned))%></h2>
+								<h2 class="mb0 bold-text blog-mentioned"><%=NumberFormat.getNumberInstance(Locale.US).format(new Integer(1/* blog_mentioned */))%></h2>
 								<!-- <small class="text-success">+5% from <b>Last Week</b></small> -->
 							</div>
 
@@ -946,7 +951,7 @@
 							<div class="col-md-3 mt5 mb5">
 								<h6 class="card-title mb0">Posts Mentioned</h6>
 								<h2 class="mb0 bold-text post-mentioned">
-									<%-- <%=post_mentioned%> --%>
+									<%-- <%=post_mentioned%> --%>100
 								</h2>
 								<!-- <small class="text-success">+5% from <b>Last Week</b></small> -->
 							</div>
@@ -954,7 +959,7 @@
 							<div class="col-md-3 mt5 mb5">
 								<h6 class="card-title mb0">Top Posting Location</h6>
 
-								<h3 class="mb0 bold-text top-location"><%=(null == top_location || "" == top_location) ? "NOT AVAILABLE" : top_location%></h3>
+								<h3 class="mb0 bold-text top-location">LAGOS<%-- <%=(null == top_location || "" == top_location) ? "NOT AVAILABLE" : top_location%> --%></h3>
 								<!-- <small class="text-success">+5% from <b>Last Week</b></small> -->
 							</div>
 
@@ -989,19 +994,19 @@
 					id="post-list">
 					<div class="card-body p0 pt20 pb20" style="min-height: 420px;">
 						<p>
-							Posts that mentioned <b class="text-green active-term"><%=mostactiveterm%></b>
+							Posts that mentioned <b class="text-green active-term">SEUN<%-- <%=mostactiveterm%> --%></b>
 						</p>
 						<!--  <div class="p15 pb5 pt0" role="group">
           Export Options
           </div> -->
 						<%
 							System.out.println("values1--" + mostactiveterm + "NOBLOGGER" + "," + dt + "," + dte + "," + ids);
-									JSONObject sql = post._getBloggerPosts(mostactiveterm, "NOBLOGGER", dt, dte, ids);
+									/* JSONObject sql = post._getBloggerPosts(mostactiveterm, "NOBLOGGER", dt, dte, ids);
 
-									JSONObject firstpost = new JSONObject();
+									JSONObject firstpost = new JSONObject(); */
 									/*if(allposts.size()>0){ */
 
-									if (sql.getJSONArray("data").length() > 0) {
+									/* if (sql.getJSONArray("data").length() > 0) {
 										String perma_link = null;
 										String j = null;
 										String title = null;
@@ -1010,7 +1015,7 @@
 										String num_comments = null;
 										String blogger = null;
 										String posts = null;
-										Integer occurence = null;
+										Integer occurence = null; */
 						%>
 						<table id="DataTables_Table_2_wrapper" class="display"
 							style="width: 100%">
@@ -1037,8 +1042,8 @@
 													tresu = tresp.get("_source").toString();
 													tobj = new JSONObject(tresu); */
 
-												String sql_ = sql.get("data").toString();
-												for (int i = 0; i < sql.getJSONArray("data").length(); i++) {
+												//String sql_ = sql.get("data").toString();
+												/* for (int i = 0; i < sql.getJSONArray("data").length(); i++) {
 													Object jsonArray = sql.getJSONArray("data").get(i);
 
 													j = jsonArray.toString();
@@ -1059,7 +1064,7 @@
 													LocalDate date_ = LocalDate.parse(date, inputFormatter);
 													Integer d = date_.getYear();
 													/* String formattedDate = outputFormatter.format(date); */
-													System.out.println(d.toString());
+													/* System.out.println(d.toString());
 
 													String replace = "<span style=background:red;color:#fff>" + mostactiveterm + "</span>";
 													String active2 = mostactiveterm.substring(0, 1).toUpperCase()
@@ -1082,7 +1087,7 @@
 													}else{
 														activeDefLink = "makeinvisible";
 														activeDef = "";
-													}
+													} */
 
 													/* 	LocalDate datee = LocalDate.parse(date);
 														DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");
@@ -1092,19 +1097,20 @@
 								%>
 								<tr>
 									<td><a class="blogpost_link cursor-pointer blogpost_link <%=activeDef %>"
-										id="<%-- <%=tobj.get("blogpost_id")%> --%><%=blogpost_id%>">
-											<%-- <%=tobj.get("title") %> --%><%=title%></a><br /> <a
+										id="<%-- <%=tobj.get("blogpost_id")%> --%><%-- <%=blogpost_id%> --%> 1">
+											<%-- <%=tobj.get("title") %> --%><%-- <%=title%> --%> TESTING</a><br /> <a
 										class="mt20 viewpost <%=activeDefLink %>"
-										href="<%-- <%=tobj.get("permalink") %> --%><%=perma_link%>"
+										href="<%-- <%=tobj.get("permalink") %> --%><%-- <%=perma_link%> --%> XXX"
 										target="_blank"> <buttton
 												class="btn btn-primary btn-sm mt10 visitpost">Visit
 											Post &nbsp;<i class="fas fa-external-link-alt"></i></buttton>
 									</a></td>
 									<td align="center">
-										<%-- <%=(bodyoccurencece) %> --%><%=occurence%></td>
+									1
+										<%-- <%=(bodyoccurencece) %> --%><%-- <%=occurence%> --%></td>
 								</tr>
 								<%
-									}
+									//}
 								%>
 								</tr>
 							</tbody>
@@ -1156,21 +1162,21 @@
 													body = body.replaceAll(active3,replace); */
 						%>
 						<h5 class="text-primary p20 pt0 pb0">
-							<%-- <%=title%> --%><%=title%></h5>
+							<%-- <%=title%> --%><%-- <%=title%> --%> TESTING</h5>
 						<div class="text-center mb20 mt20">
 							<%-- <a href="<%=request.getContextPath()%>/bloggerportfolio.jsp?tid=<%=tid.toString()%>&blogger=<%=tobj.get("blogger")%>">
 							<button class="btn stylebuttonblue">
 								--%>
 							<button class="btn stylebuttonblue"
-								onclick="window.location.href = '<%=request.getContextPath()%>/bloggerportfolio.jsp?tid=<%=tid%>&blogger=<%-- <%=tobj.get("blogger")%> --%><%=blogger%>'">
-								<b class="float-left ultra-bold-text"> <%-- <%=tobj.get("blogger")%> --%><%=blogger%></b>
+								onclick="window.location.href = '<%=request.getContextPath()%>/bloggerportfolio.jsp?tid=<%=tid%>&blogger=<%-- <%=tobj.get("blogger")%> --%><%-- <%=blogger%> --%> BLOGGER SEUN'">
+								<b class="float-left ultra-bold-text"> <%-- <%=tobj.get("blogger")%> --%><%-- <%=blogger%> --%>BLOGGER SEUN</b>
 								<i class="far fa-user float-right blogcontenticon"></i>
 							</button>
 							</a>
 							<button class="btn stylebuttonnocolor nocursor">
-								<%-- <%=date %> --%><%=date%></button>
+								<%-- <%=date %> --%><%-- <%=date%> --%>2000</button>
 							<button class="btn stylebuttonnocolor nocursor">
-								<b class="float-left ultra-bold-text"> <%-- <%=tobj.get("num_comments")%> --%><%=num_comments%>
+								<b class="float-left ultra-bold-text"> <%-- <%=tobj.get("num_comments")%> --%><%-- <%=num_comments%> --%>6000
 									comments
 								</b><i class="far fa-comments float-right blogcontenticon"></i>
 							</button>
@@ -1179,13 +1185,13 @@
 							<div class="p20 pt0 pb20  text-primary"
 								style="height: 550px; overflow-y: scroll;">
 								<%-- <%=body%> --%>
-								<p><%=posts%></p>
+								<p><%-- <%=posts%> --%> TESTING THE POSTS</p>
 							</div>
 						</div>
 						<%
-							System.out
-												.println("dd--" + title + blogpost_id + date + num_comments + blogger + mostactiveterm);
-									}
+							/* System.out
+												.println("dd--" + title + blogpost_id + date + num_comments + blogger + mostactiveterm); */
+									//}
 						%>
 
 					</div>
@@ -1364,7 +1370,7 @@ $(document).ready(function() {
 						System.out.println("session obj" + data_table);%>
 		  // Keywords have been computed
 		  <%-- updateTable(<%=data_table%>); --%>
-		  
+		  /* no active selection */
 		<%}%>
 		
 });
@@ -1754,7 +1760,7 @@ $(document).ready(function() {
     		 
     		 
     		 
-    		 $( ".thanks" ).each(function( index ) {
+    		 $( ".thanks" ).each(function( index ) {g
     			 
        		  		var ind = index;
        		  		

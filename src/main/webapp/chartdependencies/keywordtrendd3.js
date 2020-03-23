@@ -28,15 +28,15 @@
             
 		var xScale = d3.scale.linear()
         .domain([0, d3.max(word_entries, function(d) {
-           return d.value;
+           return d.value/10000;
          })
         ])
-        .range([10,100]);
+        .range([0,100]);
 
      d3.layout.cloud().size([width, height])
        .timeInterval(20)
        .words(word_entries)
-       .fontSize(function(d) { return xScale(+d.value); })
+       .fontSize(function(d) { return xScale(+d.value/10000); })
        .text(function(d) { return d.key; })
       // .rotate(function() { return ~~(Math.random() * 2) * 90; })
        .rotate(0)
@@ -79,7 +79,7 @@
            svg.selectAll("text").transition()
                      .delay(200)
                      .duration(1000)
-                     .style("font-size", function(d) { return xScale(d.value) + "px"; })
+                     .style("font-size", function(d) { return xScale(d.value/10000) + "px"; })
                      
           	// animation effect for tag cloud
    	 		 $(element).bind('inview', function (event, visible) {
@@ -87,7 +87,7 @@
            		  svg.selectAll("text").transition()
                      .delay(200)
                      .duration(1000)
-                     .style("font-size", function(d) { return xScale(d.value) + "px"; })
+                     .style("font-size", function(d) { return xScale(d.value/10000) + "px"; })
            	  } else {
            		  svg.selectAll("text")
                      .style("font-size", 0)

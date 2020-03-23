@@ -130,7 +130,7 @@ public class ElasticRunnable implements Runnable {
 					JSONArray mergedArray = new JSONArray(source);
 //				System.out.println("merged array length  -- >" + mergedArray.length());
 
-					jsonArray = term.merge(jsonArray, mergedArray);
+//					jsonArray = term.merge(jsonArray, mergedArray);
 
 					System.out.println("DONE GETTING POSTS FOR BLOGGER");
 

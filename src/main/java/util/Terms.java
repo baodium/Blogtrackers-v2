@@ -10,11 +10,19 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.concurrent.*;
 
 import org.json.JSONObject;
 
@@ -43,6 +51,7 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 @WebServlet("/Terms")
 
@@ -688,31 +697,170 @@ public class Terms extends HttpServlet implements Runnable {
 		return result;
 	}
 
-	public synchronized JSONArray merge(JSONArray jsonArray, JSONArray jsonArray1) {
-//	public  JSONArray merge(JSONArray jsonArray, JSONArray jsonArray1) {
-
+	public synchronized JSONArray merge(JSONArray jsonArray, JSONArray jsonArray1, String type) {
+		List<Tuple2<String, Integer>> returnedData = Collections
+				.synchronizedList(new ArrayList<Tuple2<String, Integer>>());
 		try {
-//			Arrays.asList(jsonArray1).parallelStream().forEach(entity ->{
-//				//System.out.println(entity);
-//				jsonArray.put(entity);
-//				
-//			});
+
 			// check to perform stream or check normal array or check best way to store ES
 			// hits
-			for (int i = 0; i < jsonArray1.length(); i++) {
-				JSONObject jsonObject = jsonArray1.getJSONObject(i);
-				jsonArray.put(jsonObject);
+			if (type.contentEquals("all")) {
+				for (int i = 0; i < jsonArray1.length(); i++) {
+					JSONObject jsonObject = jsonArray1.getJSONObject(i);
+					jsonArray.put(jsonObject);
+				}
+				return jsonArray;
+			} else if (type.contentEquals("terms")) {
+				JSONArray postDataAll = jsonArray1;
+//				RunnableUtil es = new RunnableUtil(returnedData);
+//				es.wrangleDatadata(postDataAll, "terms", 0, postDataAll.length());
+//				jsonArray.put(returnedData);
+//				es.wrangleDatadata(postDataAll, String field, int start, int end);
+//				JSONArray postDataAll = jsonArray1;
+//				System.out.println("postall" + postDataAll.length());
+//
+//				int a = postDataAll.length();
+//				int b = 1000;
+//				int poolsize = ((a / b)) > 0 ? (a / b) + 1 : 1;
+//				System.out.println(poolsize);
+//////			System.out.println(jsonArray.length());
+//				ExecutorService executorServiceSplitLoop = Executors.newFixedThreadPool(poolsize);
+//				System.out.println("1" + executorServiceSplitLoop.isShutdown());
+//		
+//				
+//
+//				Map<String, Integer> d = new HashMap<String, Integer>();
+//
+//				for (int i = 0; i < a; i = i + b) {
+//
+//					int start1 = 0;
+//					int end_ = 0;
+//					start1 = i;
+//
+//					if ((i + b) > a) {
+//						end_ = i + (a % b);
+//					} else {
+//						end_ = i + b;
+//					}
+//					System.out.println(start1 + "--" + end_);
+//					JSONObject q = new JSONObject();
+//					RunnableUtil es = new RunnableUtil(q, postDataAll, start1, end_, returnedData, d, "loop",
+//							"blogpost_terms", "terms");
+//					executorServiceSplitLoop.execute(es);
+//
+//					jsonArray.put(returnedData);
+//				}
+//
+//				
+////				return returnedData;
+//				executorServiceSplitLoop.shutdown();
+//				while (!executorServiceSplitLoop.isTerminated()) {
+//				}
+//
+//				System.out.println("2" + executorServiceSplitLoop.isShutdown());
+//				System.out.println("json array size" + postDataAll.length());
+//				RunnableUtil es = new RunnableUtil();
+//				(în,114787)
+
 			}
 
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
+		System.out.println("returned222--" + jsonArray.length());
 		return jsonArray;
 	}
 
-	public synchronized List<Tuple2<String, Integer>>  dtuple(JSONArray jsonArray, int start, int end) {
-		List<Tuple2<String, Integer>> datatuple_ = new ArrayList<Tuple2<String, Integer>>();
+	public <K, V extends Comparable<? super V>> List<Entry<K, V>> entriesSortedByValues(Map<K, V> map) {
+
+		List<Entry<K, V>> sortedEntries = new ArrayList<Entry<K, V>>(map.entrySet());
+
+		Collections.sort(sortedEntries, new Comparator<Entry<K, V>>() {
+			@Override
+			public int compare(Entry<K, V> e1, Entry<K, V> e2) {
+				return e2.getValue().compareTo(e1.getValue());
+			}
+		});
+
+		return sortedEntries;
+	}
+
+	public Map<String, Integer> wrangleDatadata2(JSONArray postarray, String field, int start, int end) {
+//		List<Tuple2<String, Integer>> returnedData = new ArrayList<Tuple2<String, Integer>>();
+//		ConcurrentSkipListMap<String, Integer> m = new ConcurrentSkipListMap<String, Integer>();
+//		HashMap<String, Integer> m = new HashMap<String, Integer>();
+		Map<String, Integer> m = Collections.synchronizedMap(new HashMap<String, Integer>());
+//		ConcurrentHashMap<String, Integer> m = new ConcurrentHashMap<String, Integer>();
+		String result = null;
+//		int count_ = 0;
+		for (int i = start; i < end; i++) {
+			String indx = postarray.get(i).toString();
+			JSONObject j1 = new JSONObject(indx);
+			String ids = j1.get("_source").toString();
+			JSONObject j2 = new JSONObject(ids);
+			String terms = j2.get(field).toString();
+
+			String val = terms;
+//			System.out.println(val);
+
+//			try {
+//			JSONArray t = new JSONArray(val);
+////			System.out.println(t.length());
+//			}catch(Exception e) {
+//				System.out.println("error--" + e);
+//				System.out.println("error--" + val);
+//			}
+
+			result = val.replace("[", "").replace("]", "");
+			String[] spl = result.split("\\),");
+//			System.out.println(spl.length);
+//			count_ = count_ + spl.length;
+
+			for (String v : spl) {
+				if (!terms.equals("BLANK")) {
+					String newstr = v.replace("(", "").replace(")", "");
+					String[] tsplit = newstr.split(",");
+					int val2 = Integer.parseInt(tsplit[1].trim());
+
+					String first = tsplit[0].replace("\'", "").trim();
+					Integer second = val2;
+
+					// Tuple2<String, Integer> pair = new Tuple2(first, second);
+//				returnedData.add(pair);
+//					this.datatuple.add(pair);
+					if (!m.containsKey(first)) {
+						m.put(first, second);
+					} else {
+						int m_val = m.get(first);
+						int new_mval = m_val + second;
+						m.put(first, new_mval);
+					}
+
+				}
+//				else {
+//					Tuple2<String, Integer> pair = new Tuple2("__BLANK__", 1);
+//					this.datatuple.add(pair);
+//				}
+			}
+		}
+		System.out.println("done");
+
 		
+//		.entrySet().iterator().next();
+		List<Entry<String, Integer>> entry = entriesSortedByValues(m);
+//		String key = entry.getKey();
+//		Integer value = entry.getValue();
+		System.out.println(entry.get(0));
+		return m;
+//		this.datatuple = returnedData;
+//		System.out.println(count_);
+//		System.out.println(datatuple.size());
+//		return returnedData;
+	}
+
+	public synchronized List<Tuple2<String, Integer>> dtuple(JSONArray jsonArray, int start, int end) {
+		List<Tuple2<String, Integer>> datatuple_ = new ArrayList<Tuple2<String, Integer>>();
+
 		String blogsiteid = null;
 		String blogpost_id = null;
 		String terms = null;
@@ -812,7 +960,7 @@ public class Terms extends HttpServlet implements Runnable {
 			Object total = myResponse.getJSONObject("hits").getJSONObject("total").get("value");
 			source = hits.toString();
 
-			jsonArray = merge(jsonArray, new JSONArray(source));
+			jsonArray = merge(jsonArray, new JSONArray(source), "all");
 
 			System.out.println("DONE GETTING POSTS FOR BLOGGER");
 
@@ -821,7 +969,7 @@ public class Terms extends HttpServlet implements Runnable {
 			scrollResult = this._scrollRequest(scroll_id);
 			allhits = scrollResult.getJSONObject("hits").getJSONArray("hits");
 			source = allhits.toString();
-			jsonArray = merge(jsonArray, new JSONArray(source));
+			jsonArray = merge(jsonArray, new JSONArray(source), "all");
 			// jsonArray.put(new JSONArray(source));
 
 			for (int i = 0; i < jsonArray.length(); i++) {
@@ -836,7 +984,7 @@ public class Terms extends HttpServlet implements Runnable {
 				allhits = scrollResult.getJSONObject("hits").getJSONArray("hits");
 				source = allhits.toString();
 
-				jsonArray = merge(jsonArray, new JSONArray(source));
+				jsonArray = merge(jsonArray, new JSONArray(source), "all");
 				// jsonArray.put(new JSONArray(source));
 			}
 
@@ -965,17 +1113,16 @@ public class Terms extends HttpServlet implements Runnable {
 	public int compare(Tuple2<String, Integer> x, Tuple2<String, Integer> y) {
 		return Integer.compare(x._2(), y._2());
 	}
-	
+
 	public String mapReduce(List<Tuple2<String, Integer>> data, String type) throws Exception {
 		JavaPairRDD<String, Integer> result = null;
 		String result2 = null;
-		SparkConf conf = new SparkConf().setMaster("local[*]").setAppName("Example");
+		SparkConf conf = new SparkConf().setMaster("local[6]").setAppName("Example");
 //		SparkConf conf = new SparkConf().setMaster("spark://144.167.35.50:4042").setAppName("Example").set("spark.ui.port","4042");
 //		conf.set("spark.driver.memory", "64g");
 		JavaSparkContext sc = new JavaSparkContext(conf);
 		try {
-			
-			
+
 //			data.stream().collect(Collectors.groupingBy(Tuple2::getKey, Collectors.mapping(Tuple2::getValue, Collectors.toList())));
 //			data.parallelStream().reduce((int a, int b) -> a+b);
 //			data.parallelStream().filter(x -> x._2 > 10 ).forEach(System.out::println);
@@ -987,12 +1134,12 @@ public class Terms extends HttpServlet implements Runnable {
 			if (type.contentEquals("topterm")) {
 				System.out.println("i am here");
 				System.out.println(data.size());
-				//System.out.println(data.parallelStream().max(new DummyComparator()));
+				// System.out.println(data.parallelStream().max(new DummyComparator()));
 //				System.out.println(pairRdd.groupByKey().toString());
 //				result2 = pairRdd.reduceByKey((a, b) -> (a + b)).max(new DummyComparator())._1().toString();
 				result2 = pairRdd.reduceByKey((a, b) -> (a + b)).max(new DummyComparator()).toString();
 //				result = pairRdd.reduceByKey((a,b) -> (a + b));
-				
+
 //				for (JavaPairRDD<String, Integer> tuple2 : pairRdd) {
 //					
 //				}
@@ -1008,19 +1155,19 @@ public class Terms extends HttpServlet implements Runnable {
 				return result2;
 
 			} else {
-				result2 = pairRdd.reduceByKey((a, b) -> (a + b)).takeOrdered(Integer.parseInt(type), TupleTakeOrder.INSTANCE).toString();
+				result2 = pairRdd.reduceByKey((a, b) -> (a + b))
+						.takeOrdered(Integer.parseInt(type), TupleTakeOrder.INSTANCE).toString();
 				sc.stop();
 				return result2;
 			}
 			// System.out.println();
-			
 
 		} catch (Exception e) {
 			System.out.println(e);
 		}
-		
+
 		return result2;
-		
+
 	}
 
 	public Terms() {
@@ -1047,9 +1194,10 @@ public class Terms extends HttpServlet implements Runnable {
 		// TODO Auto-generated method stub
 		// doGet(request, response);
 		PrintWriter out = response.getWriter();
-		
+
 		Clustering cluster = new Clustering();
-		
+		HttpSession session = request.getSession();
+
 //		Map<String, Integer> result = new HashMap<String, Integer>();
 		String output = null;
 		Object action = (null == request.getParameter("action")) ? "" : request.getParameter("action");
@@ -1066,7 +1214,10 @@ public class Terms extends HttpServlet implements Runnable {
 		if (action.toString().equals("getkeyworddashboard")) {
 			System.out.println("action is getkeyworddashboard and ids are " + ids.toString());
 			try {
-				output = cluster.getTopTermsFromBlogIds(ids.toString(), date_start.toString(), date_end.toString(), "100");
+				output = cluster.getTopTermsFromBlogIds(ids.toString(), date_start.toString(), date_end.toString(),
+						"100");
+				
+				session.setAttribute(ids.toString() + "--" + action.toString(), output);
 //				for (Tuple2<String, Integer> x : data) {
 //					result.put(x._1, x._2);
 //				}
@@ -1075,15 +1226,26 @@ public class Terms extends HttpServlet implements Runnable {
 			}
 			System.out.println("dashboard output");
 			out.write(output.toString());
-		}else if (action.toString().equals("gethighestterms")) {
+		} else if (action.toString().equals("gethighestterms")) {
 			try {
-				output = cluster.getTopTermsFromBlogIds(ids.toString(), date_start.toString(), date_end.toString(), "1");
+				output = cluster.getTopTermsFromBlogIds(ids.toString(), date_start.toString(), date_end.toString(),
+						"1");
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			out.write(output.toString());
+		}else if (action.toString().equals("getbloggerhighestterms")) {
+			try {
+				output = cluster.getTopTermsBlogger(blogger.toString(), date_start.toString(), date_end.toString(),
+						"1");
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			out.write(output.toString());
 		}
+			
 	}
 
 }

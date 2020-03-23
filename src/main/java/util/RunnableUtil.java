@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -23,16 +25,24 @@ public class RunnableUtil implements Runnable {
 	public List<Tuple2<String, Integer>> datatuple = Collections.synchronizedList(new ArrayList<Tuple2<String, Integer>>());
 	public int start;
 	public int end;
-	public Map<String, Integer> d = new HashMap<String, Integer>();
+//	public Map<String, Integer> d = new HashMap<String, Integer>();
+	public ConcurrentHashMap<String, Integer> d = new ConcurrentHashMap<String, Integer>();
+//	Map<String, Integer> d = Collections.synchronizedMap(new HashMap<String, Integer>());
 	public String field;
 
-	Map<Integer, JSONArray> res = new HashMap<Integer, JSONArray>();
+//	Map<Integer, JSONArray> res = new HashMap<Integer, JSONArray>();
 
-	public RunnableUtil(List<Tuple2<String, Integer>> datatuple) {
-		this.datatuple = datatuple;
-	}
+//	public RunnableUtil(List<Tuple2<String, Integer>> datatuple) {
+//		this.datatuple = datatuple;
+//	}
+
+//	public RunnableUtil(JSONArray jsonArray) {
+//		this.jsonArray = jsonArray;
+//	}
 	
-	public RunnableUtil(JSONObject query, JSONArray jsonArray, int start, int end, List<Tuple2<String, Integer>> datatuple, Map<String, Integer> d,String action, String index, String field) {
+	public RunnableUtil(JSONObject query, JSONArray jsonArray, int start, int end,
+			List<Tuple2<String, Integer>> datatuple, ConcurrentHashMap<String, Integer> d, String action, String index,
+			String field) {
 		this.query = query;
 		this.jsonArray = jsonArray;
 		this.action = action;
@@ -45,8 +55,8 @@ public class RunnableUtil implements Runnable {
 	}
 
 	static Terms term = new Terms();
-	
-	public synchronized void  get(int start, int end, JSONArray jsonArray, Map<String, Integer> data) throws Exception{
+
+	public synchronized void get(int start, int end, JSONArray jsonArray, Map<String, Integer> data) throws Exception {
 		String blogsiteid = null;
 		String blogpost_id = null;
 		String terms = null;
@@ -75,15 +85,15 @@ public class RunnableUtil implements Runnable {
 				String newstr = v.replace("(", "").replace(")", "");
 				String[] tsplit = newstr.split(",");
 				int val2 = Integer.parseInt(tsplit[1].trim());
-				
+
 				String first = tsplit[0].replace("\'", "").trim();
 				Integer second = val2;
-				
+
 				Integer count = d.get(first);
-				
-				if(count == null) {
+
+				if (count == null) {
 					data.put(first, second);
-				}else {
+				} else {
 					data.put(first, second + 1);
 				}
 			});
@@ -94,14 +104,12 @@ public class RunnableUtil implements Runnable {
 //			Object date_json = j1.getJSONObject("fields").getJSONArray("date").get(0);
 //			date = date_json.toString();
 		}
-		
-		
-		
+
 //		return null;
-		 
+
 	}
-	
-	public void wrangleDatadata(JSONArray postarray, String field, int start, int end) {
+
+	public synchronized void wrangleDatadata(JSONArray postarray, String field, int start, int end) {
 //		List<Tuple2<String, Integer>> returnedData = new ArrayList<Tuple2<String, Integer>>();
 		String result = null;
 //		int count_ = 0;
@@ -119,26 +127,89 @@ public class RunnableUtil implements Runnable {
 //			count_ = count_ + spl.length;
 
 			for (String v : spl) {
-				String newstr = v.replace("(", "").replace(")", "");
-				String[] tsplit = newstr.split(",");
-				int val2 = Integer.parseInt(tsplit[1].trim());
+				if (!terms.equals("BLANK")) {
+					String newstr = v.replace("(", "").replace(")", "");
+					String[] tsplit = newstr.split(",");
+					int val2 = Integer.parseInt(tsplit[1].trim());
 
-				String first = tsplit[0].replace("\'", "").trim();
-				Integer second = val2;
+					String first = tsplit[0].replace("\'", "").trim();
+					Integer second = val2;
 
-				Tuple2<String, Integer> pair = new Tuple2(first, second);
+					Tuple2<String, Integer> pair = new Tuple2<String, Integer>(first, second);
 //				returnedData.add(pair);
-				this.datatuple.add(pair);
+					this.datatuple.add(pair);
+				}
+//				else {
+//					Tuple2<String, Integer> pair = new Tuple2("__BLANK__", 1);
+//					this.datatuple.add(pair);
+//				}
 			}
 		}
-		
+
 //		this.datatuple = returnedData;
 //		System.out.println(count_);
 //		System.out.println(datatuple.size());
 //		return returnedData;
 	}
-	
-	public List<Tuple2<String, Integer>> gettuple(){
+	public synchronized void wrangleDatadata2(JSONArray postarray, String field, int start, int end) {
+//		List<Tuple2<String, Integer>> returnedData = new ArrayList<Tuple2<String, Integer>>();
+//		ConcurrentSkipListMap<String, Integer> m = new ConcurrentSkipListMap<String, Integer>();
+//		HashMap<String, Integer> m = new HashMap<String, Integer>();
+		
+//		ConcurrentHashMap<String, Integer> m = new ConcurrentHashMap<String, Integer>();
+		String result = null;
+//		int count_ = 0;
+		for (int i = start; i < end; i++) {
+			String indx = postarray.get(i).toString();
+			JSONObject j1 = new JSONObject(indx);
+			String ids = j1.get("_source").toString();
+			JSONObject j2 = new JSONObject(ids);
+			String terms = j2.get(field).toString();
+
+			String val = terms;
+//			System.out.println(val);
+
+//			try {
+//			JSONArray t = new JSONArray(val);
+////			System.out.println(t.length());
+//			}catch(Exception e) {
+//				System.out.println("error--" + e);
+//				System.out.println("error--" + val);
+//			}
+
+			result = val.replace("[", "").replace("]", "");
+			String[] spl = result.split("\\),");
+//			System.out.println(spl.length);
+//			count_ = count_ + spl.length;
+
+			for (String v : spl) {
+				if (!terms.equals("BLANK")) {
+					String newstr = v.replace("(", "").replace(")", "");
+					String[] tsplit = newstr.split(",");
+					int val2 = Integer.parseInt(tsplit[1].trim());
+
+					String first = tsplit[0].replace("\'", "").trim();
+					Integer second = val2;
+
+					if (!this.d.containsKey(first)) {
+						this.d.put(first, second);
+					} else {
+						int m_val = this.d.get(first);
+						int new_mval = m_val + second;
+						this.d.put(first, new_mval);
+					}
+
+				}
+
+			}
+		}
+		System.out.println("done");
+
+		
+
+	}
+
+	public List<Tuple2<String, Integer>> gettuple() {
 		return this.datatuple;
 	}
 
@@ -149,8 +220,7 @@ public class RunnableUtil implements Runnable {
 
 		if (action.equals("elastic")) {
 			try {
-				
-				
+
 //				System.out.println("Thread " + Thread.currentThread().getName() + " started");
 				String source = null;
 				JSONObject myResponse = term._makeElasticRequest(query, "POST", "/" + index + "/_search/?scroll=1m");
@@ -165,7 +235,7 @@ public class RunnableUtil implements Runnable {
 					JSONArray mergedArray = new JSONArray(source);
 //				System.out.println("merged array length  -- >" + mergedArray.length());
 
-					jsonArray = term.merge(jsonArray, mergedArray);
+					jsonArray = term.merge(jsonArray, mergedArray,"all");
 
 //					System.out.println("DONE");
 
@@ -176,13 +246,14 @@ public class RunnableUtil implements Runnable {
 				e.printStackTrace();
 			}
 
-		} 
+		}
 		if (action.equals("loop")) {
 			try {
 //				System.out.println("Thread " + Thread.currentThread().getName() + " started");
 //				get(start,end, jsonArray, d); 
-				Clustering cluster = new Clustering();
+//				Clustering cluster = new Clustering();
 				wrangleDatadata(jsonArray, field, start, end);
+//				wrangleDatadata(jsonArray, field, start, end);
 
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -192,4 +263,3 @@ public class RunnableUtil implements Runnable {
 	}
 
 }
-
