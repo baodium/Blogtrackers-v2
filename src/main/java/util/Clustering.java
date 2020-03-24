@@ -9,6 +9,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.io.*;
@@ -35,6 +37,7 @@ import authentication.DbConnection;
 import javafx.util.Pair;
 import scala.Tuple2;
 
+import org.apache.lucene.search.MultiTermQuery.TopTermsBlendedFreqScoringRewrite;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
@@ -268,11 +271,11 @@ public class Clustering extends HttpServlet {
 		return result;
 	}
 
-	public static int getShardSize(JSONObject query,String index) {
+	public static int getShardSize(JSONObject query, String index) {
 		JSONObject myResponse = new JSONObject();
 		int result = 0;
 		try {
-			myResponse = term._makeElasticRequest(query, "GET", "/"+index+"/_search_shards");
+			myResponse = term._makeElasticRequest(query, "GET", "/" + index + "/_search_shards");
 			// System.out.println(myResponse);
 
 			if (!(myResponse.getJSONArray("shards").getJSONArray(0) == null)) {
@@ -312,10 +315,10 @@ public class Clustering extends HttpServlet {
 		return result;
 	}
 
-	public static ArrayList<JSONObject> _buildSlicedScrollQuery(String ids, String from, String to,
-			String type, String index) throws Exception {
+	public static ArrayList<JSONObject> _buildSlicedScrollQuery(String ids, String from, String to, String type,
+			String index) throws Exception {
 		JSONObject query = new JSONObject();
-		
+
 		if (type.contentEquals("__ONLY__TERMS__BLOGSITE_IDS__")) {
 			query = new JSONObject("{\r\n" + "    \"query\": {\r\n" + "        \"bool\": {\r\n"
 					+ "            \"must\": [\r\n" + "                {\r\n" + "                    \"terms\": {\r\n"
@@ -338,27 +341,42 @@ public class Clustering extends HttpServlet {
 			query = new JSONObject("{\r\n" + "   \r\n" + "    \"query\": {\r\n" + "        \"terms\": {\r\n"
 					+ "            \"blogpost_id\": [" + ids + "],\r\n" + "            \"boost\": 1.0\r\n"
 					+ "        }\r\n" + "    }\r\n" + "    \r\n" + "}");
+		} else if (type.contentEquals("__ONLY__TERMS__BLOGGERS")) {
+			query = new JSONObject("{\r\n" + "    \"query\": {\r\n" + "        \"bool\": {\r\n"
+					+ "            \"must\": [\r\n" + "                {\r\n" + "                    \"terms\": {\r\n"
+					+ "                        \"blogger.keyword\": ["+ids+"],\r\n"
+					+ "                        \"boost\": 1\r\n" + "                    }\r\n"
+					+ "                },\r\n" + "                {\r\n" + "                    \"range\": {\r\n"
+					+ "                        \"date\": {\r\n"
+					+ "                            \"from\": \""+from+"\",\r\n"
+					+ "                            \"to\": \""+to+"\",\r\n"
+					+ "                            \"include_lower\": true,\r\n"
+					+ "                            \"include_upper\": true,\r\n"
+					+ "                            \"boost\": 1\r\n" + "                        }\r\n"
+					+ "                    }\r\n" + "                }\r\n" + "            ],\r\n"
+					+ "            \"adjust_pure_negative\": true,\r\n" + "            \"boost\": 1\r\n"
+					+ "        }\r\n" + "    }\r\n" + "}");
 		}
-System.out.println(query);
+		System.out.println(query);
 		ArrayList<JSONObject> result = new ArrayList<JSONObject>();
 		String total = term._count(query, "/" + index + "/_count?");
 		// System.out.println(query);
-		int shardCount = getShardSize(query,index);
+		int shardCount = getShardSize(query, index);
 //		System.out.println(shardCount);
 //		System.out.println("total -->"+total);
 		int size = 0;
-		if(Integer.parseInt(total) > 10000) {
+		if (Integer.parseInt(total) > 10000) {
 			size = Math.round(Integer.parseInt(total) / shardCount) + 5;
-		}else {
+		} else {
 			size = 1000;
 		}
 //		int 
 		size = (size == 0) ? 0 : size;
 
 		System.out.println("size -->" + size);
-		 int id = Math.round(Integer.parseInt(total) / size);
-		 int max = (id + 2 > shardCount) ? shardCount : (id + 2);
-		//int max = shardCount;
+		int id = Math.round(Integer.parseInt(total) / size);
+		int max = (id + 2 > shardCount) ? shardCount : (id + 2);
+		// int max = shardCount;
 //		System.out.println(String.valueOf(0));	
 
 		System.out.println("max -->" + String.valueOf(max));
@@ -374,15 +392,18 @@ System.out.println(query);
 		return result;
 	}
 
-	public static JSONArray getPosts(String ids, String from, String to, String type) throws Exception {
+	public static JSONArray getPosts(String ids, String from, String to, String type, String index) throws Exception {
 		JSONArray jsonArray = new JSONArray();
-		
+
 		HashMap<String, String> result = new HashMap<String, String>();
 //		Instant start = Instant.now();
-		List<Tuple2<String, Integer>> datatuple = new ArrayList<Tuple2<String, Integer>>();
-		Map<String, Integer> d = new HashMap<String, Integer>();
-
-		int shardCount = getShardSize(new JSONObject(),"blogposts");
+//		List<Tuple2<String, Integer>> datatuple = new ArrayList<Tuple2<String, Integer>>();
+		List<Tuple2<String, Integer>> datatuple = Collections
+				.synchronizedList(new ArrayList<Tuple2<String, Integer>>());
+//		Map<String, Integer> d = new HashMap<String, Integer>();
+		ConcurrentHashMap<String, Integer> d = new ConcurrentHashMap<String, Integer>();
+//		Map<String, Integer> d = Collections.synchronizedMap(new HashMap<String, Integer>());
+		int shardCount = getShardSize(new JSONObject(), index);
 		System.out.println("shard c 2==>" + shardCount);
 
 		ExecutorService executorServiceBlogSiteIds = Executors.newFixedThreadPool(shardCount + 1);
@@ -394,32 +415,41 @@ System.out.println(query);
 //		String ids = "162";
 		if (type.contentEquals("__ONLY__POST__ID__")) {
 			jsonArray = new JSONArray();
-			for (JSONObject q : _buildSlicedScrollQuery(ids, from, to, type, "blogposts")) {
+			for (JSONObject q : _buildSlicedScrollQuery(ids, from, to, type, index)) {
 				// System.out.println(q);
 				int start1 = 0;
 				int end = 0;
-				RunnableUtil esR2 = new RunnableUtil(q, jsonArray, start1, end, datatuple, d, "elastic", "blogposts",
-						"post");
+				RunnableUtil esR2 = new RunnableUtil(q, jsonArray, start1, end, datatuple, d, "elastic", index, "post");
 				executorServiceBlogSiteIds.execute(esR2);
 			}
 		} else if (type.contentEquals("__ONLY__TERMS__")) {
 			jsonArray = new JSONArray();
-			for (JSONObject q : _buildSlicedScrollQuery(ids, from, to, type, "blogpost_terms")) {
+			for (JSONObject q : _buildSlicedScrollQuery(ids, from, to, type, index)) {
 //				 System.out.println(q);
 				int start1 = 0;
 				int end = 0;
-				RunnableUtil esR2 = new RunnableUtil(q, jsonArray, start1, end, datatuple, d, "elastic",
-						"blogpost_terms", "terms");
+				RunnableUtil esR2 = new RunnableUtil(q, jsonArray, start1, end, datatuple, d, "elastic", index,
+						"terms");
 				executorServiceBlogSiteIds.execute(esR2);
 			}
 		} else if (type.contentEquals("__ONLY__TERMS__BLOGSITE_IDS__")) {
 			jsonArray = new JSONArray();
-			for (JSONObject q : _buildSlicedScrollQuery(ids, from, to, type, "blogpost_terms")) {
+			for (JSONObject q : _buildSlicedScrollQuery(ids, from, to, type, index)) {
 //				 System.out.println(q);
 				int start1 = 0;
 				int end = 0;
-				RunnableUtil esR2 = new RunnableUtil(q, jsonArray, start1, end, datatuple, d, "elastic",
-						"blogpost_terms", "terms");
+				RunnableUtil esR2 = new RunnableUtil(q, jsonArray, start1, end, datatuple, d, "elastic", index,
+						"terms");
+				executorServiceBlogSiteIds.execute(esR2);
+			}
+		} else if (type.contentEquals("__ONLY__TERMS__BLOGGERS")) {
+			jsonArray = new JSONArray();
+			for (JSONObject q : _buildSlicedScrollQuery(ids, from, to, type, index)) {
+//				 System.out.println(q);
+				int start1 = 0;
+				int end = 0;
+				RunnableUtil esR2 = new RunnableUtil(q, jsonArray, start1, end, datatuple, d, "elastic", index,
+						"terms");
 				executorServiceBlogSiteIds.execute(esR2);
 			}
 		}
@@ -519,7 +549,9 @@ System.out.println(query);
 		ArrayList<String> result = new ArrayList<String>();
 //			Instant start = Instant.now();
 		List<Tuple2<String, Integer>> datatuple = new ArrayList<Tuple2<String, Integer>>();
-		Map<String, Integer> d = new HashMap<String, Integer>();
+//		Map<String, Integer> d = new HashMap<String, Integer>();
+		ConcurrentHashMap<String, Integer> d = new ConcurrentHashMap<String, Integer>();
+//		Map<String, Integer> d = Collections.synchronizedMap(new HashMap<String, Integer>());
 
 		int shardCount = this.getShardSize(new JSONObject(), "blogposts");
 		System.out.println("shard c 2==>" + shardCount);
@@ -557,7 +589,7 @@ System.out.println(query);
 		int size = 50;
 		DbConnection db = new DbConnection();
 		String count = "0";
-		//System.out.println("SELECT *  FROM clusters WHERE tid = '" + tid + "");
+		// System.out.println("SELECT * FROM clusters WHERE tid = '" + tid + "");
 
 		ArrayList result = new ArrayList();
 		try {
@@ -570,12 +602,14 @@ System.out.println(query);
 		return result;
 
 	}
+
 	public static ArrayList _getSvd(String postids) throws Exception {
 
 		int size = 50;
 		DbConnection db = new DbConnection();
 		String count = "0";
-		//System.out.println("SELECT *  FROM cluster_svd WHERE post_id in ( " + postids + ")");
+		// System.out.println("SELECT * FROM cluster_svd WHERE post_id in ( " + postids
+		// + ")");
 
 		ArrayList result = new ArrayList();
 		try {
@@ -588,15 +622,12 @@ System.out.println(query);
 		return result;
 
 	}
-	
-	public static String getTopTermsFromBlogIds(String ids, String from, String to, String limit) throws Exception{
-		String result = null;
-//		ids = 3, 8,10,13,9,0,88,55
-//		"from": "2008-08-09",
-//        "to": "2015-06-01",
-		JSONArray postDataAll = getPosts(ids, from, to, "__ONLY__TERMS__BLOGSITE_IDS__");
 
+	public static JSONArray topTerms(JSONArray postDataAll, String limit) {
+		JSONArray output = new JSONArray();
 		System.out.println("postall" + postDataAll.length());
+//		Terms t = new Terms();
+//		t.wrangleDatadata2(postDataAll,"terms", 0, postDataAll.length());
 
 		int a = postDataAll.length();
 		int b = 1000;
@@ -610,7 +641,8 @@ System.out.println(query);
 		List<Tuple2<String, Integer>> returnedData = Collections
 				.synchronizedList(new ArrayList<Tuple2<String, Integer>>());
 
-		Map<String, Integer> d = new HashMap<String, Integer>();
+//		Map<String, Integer> d = Collections.synchronizedMap(new HashMap<String, Integer>());
+		ConcurrentHashMap<String, Integer> d = new ConcurrentHashMap<String, Integer>();
 
 		for (int i = 0; i < a; i = i + b) {
 
@@ -630,8 +662,8 @@ System.out.println(query);
 			}
 			System.out.println(start1 + "--" + end_);
 			JSONObject q = new JSONObject();
-			RunnableUtil es = new RunnableUtil(q, postDataAll, start1, end_, returnedData, d, "loop",
-					"blogpost_terms", "terms");
+			RunnableUtil es = new RunnableUtil(q, postDataAll, start1, end_, returnedData, d, "loop", "blogpost_terms",
+					"terms");
 			executorServiceSplitLoop.execute(es);
 //			returnedData = es.datatuple;
 			// System.out.println("returned"+returnedData.size());
@@ -642,62 +674,112 @@ System.out.println(query);
 		while (!executorServiceSplitLoop.isTerminated()) {
 		}
 
-		System.out.println("2" + executorServiceSplitLoop.isShutdown());
+//		System.out.println("2" + executorServiceSplitLoop.isShutdown());
 		System.out.println("json array size" + postDataAll.length());
 //		RunnableUtil es = new RunnableUtil();
 //		(în,114787)
 		System.out.println("returned--" + returnedData.size());
+		HashMap<String, Integer> m = new HashMap<String, Integer>();
+		for (Tuple2<String, Integer> p : returnedData) {
+			String first = p._1;
+			Integer second = p._2;
+			if (!m.containsKey(first)) {
+				m.put(first, second);
+			} else {
+				int m_val = m.get(first);
+				int new_mval = m_val + second;
+				m.put(first, new_mval);
+			}
+		}
 //		System.out.println(returnedData.get(0));
 
-		result = term.mapReduce(returnedData, limit);
-		
-		return result;
+//		result = term.mapReduce(returnedData, limit);
+		List<Entry<String, Integer>> entry = new Terms().entriesSortedByValues(m);
+//		
+		if(entry.size() > 0) {
+		for (int i = 0; i < Integer.parseInt(limit); i++) {
+			String left = entry.get(i).getKey();
+			Integer right = entry.get(i).getValue();
+//			String v =  "(" + left + "," + String.valueOf(right) + ")";
+			Tuple2<String, Integer> v = new Tuple2<String, Integer>(left, right);
+			output.put(v);
+		}
+		System.out.println("answer--" + entry.get(0));
+		System.out.println("output--" + output);
+
+		return output;
 	}
-	public static String getTopTermsFromBlogIds2(String ids, String from, String to) throws Exception{
+		return output;
+	}
+
+	public static String getTopTermsFromBlogIds(String ids, String from, String to, String limit) throws Exception {
 		String result = null;
-		JSONArray postDataAll = getPosts(ids, from, to, "__ONLY__TERMS__BLOGSITE_IDS__");
-		List<Tuple2<String, Integer>> returnedData = Collections
-				.synchronizedList(new ArrayList<Tuple2<String, Integer>>());
 
-		System.out.println("postall" + postDataAll.length());
-		RunnableUtil es = new RunnableUtil(returnedData);
-		int a = postDataAll.length();
-		int b = 1000;
-//		int poolsize = ((a / b)) > 0 ? (a / b) + 1 : 1;
-//		System.out.println(poolsize);
+		JSONArray postDataAll = getPosts(ids, from, to, "__ONLY__TERMS__BLOGSITE_IDS__", "blogpost_terms");
+		JSONArray output = topTerms(postDataAll, limit);
 
-		es.wrangleDatadata(postDataAll, "terms", 0, a);
-
-		
-		System.out.println("json array size" + postDataAll.length());
-
-		System.out.println("returned--" + returnedData.size());
-
-		result = term.mapReduce(returnedData, "100");
-		
+		result = output.toString().replaceAll("\"", "");
 		return result;
 	}
+	
+	public static String getTopTermsBlogger(String bloggers, String from, String to, String limit) throws Exception {
+		String result = null;
+
+		JSONArray postDataAll = getPosts(bloggers, from, to, "__ONLY__TERMS__BLOGGERS", "blogpost_terms");
+		
+		if(postDataAll.length() > 0){
+		JSONArray output = topTerms(postDataAll, limit);
+
+		result = output.toString().replaceAll("\"", "");
+		}else {
+			JSONArray output = new JSONArray("[-]");
+
+			result = output.toString().replaceAll("\"", "");
+		}
+		return result;
+	}
+
+	public static String getTopTermsFromBlogIds2(String ids, String from, String to, String limit) throws Exception {
+		String result = null;
+
+		JSONArray postDataAll = getPosts(ids, from, to, "__ONLY__TERMS__BLOGSITE_IDS__", "blogpost_terms");
+
+		System.out.println(postDataAll.length());
+
+		// result = term.mapReduce(returnedData, limit);
+
+		return result;
+	}
+
 	public static void main(String[] args) {
 
 		try {
 
 			Instant start = Instant.now();
 //			String ids = "3,8,10,13,9,0,88,55";
-			String ids = "813,815,809,811,812,806,808,817,644,652,616,641,732,761,709,128";
+//			String ids = "142,153,229,148,127,46,3,170,154,72,38,224,157,128,61,112,140,116,125,193,173,74,249,250,243,263,98,69,62,78,117,73,135,133,100,143,77,233,221,163,132,147,150,43,242,111,101,86,199,251,118,106,121,129,49,48,66,91,176,124,167,215,141,166,17,220,119,236,230,225,252,20,130,22,76,235,85,245,79,26,109,80,131,253,105,226,137,115,52,53,65,213,96,238,210,136,239,27,206,107,63,57,204,205,216,208,36,102,134,108,113,59,54,88";
+//			String ids = "813";
 //			String from = "2008-08-09";
 //			String to = "2015-06-01";
-			String from = "1970-01-01";
-			String to = "2020-03-15";
+//			String from = "1970-01-01";
+//			String to = "2020-03-15";
+//			String from = "1012-10-17";
+//			String to = "2020-03-15";
 //					"from": "2008-08-09",
 //			        "to": "2015-06-01",
-			System.out.println(getTopTermsFromBlogIds(ids, from, to, "1"));
-//			
-			//System.out.println(Arrays.asList(ssssss.split("-")).get(0));
 			
-			//SparkConf conf = new SparkConf().setMaster("spark://144.167.35.50:4042").setAppName("Example").set("spark.ui.port","4042");;
+			String ids = "";
+			String from = "2000-01-01";
+			String to = "2020-03-20";
+			System.out.println(getTopTermsBlogger(ids, from, to, "1"));
+//			
+			// System.out.println(Arrays.asList(ssssss.split("-")).get(0));
+
+			// SparkConf conf = new
+			// SparkConf().setMaster("spark://144.167.35.50:4042").setAppName("Example").set("spark.ui.port","4042");;
 //			conf.set("spark.driver.memory", "64g");
-			//JavaSparkContext sc = new JavaSparkContext(conf);
-			//sc.stop();
+			// JavaSparkContext sc = new JavaSparkContext(conf);
+			// sc.stop();
 //			String test = "";
 //			String tracker_id = "238";
 //			// get postids from each cluster in tracker and save in JSONObject
@@ -732,8 +814,6 @@ System.out.println(query);
 ////			System.out.println(test.substring(test.length() - 1));
 //			System.out.println("count ---" + count_);
 //			System.out.println("test length---" + test.split(",").length);
-
-			
 
 			Instant end = Instant.now();
 			Duration timeElapsed = Duration.between(start, end);
@@ -780,7 +860,7 @@ System.out.println(query);
 				: session.getAttribute(tid.toString() + "cluster_result");
 		Object result_key_val = (null == session.getAttribute(tid.toString() + "cluster_result_key_val")) ? ""
 				: session.getAttribute(tid.toString() + "cluster_result_key_val");
-		
+
 		Object distances = (null == session.getAttribute(tid.toString() + "cluster_distances")) ? ""
 				: session.getAttribute(tid.toString() + "cluster_distances");
 
@@ -796,15 +876,15 @@ System.out.println(query);
 
 		Object total = (null == session.getAttribute(tid.toString() + "clusters_total")) ? ""
 				: session.getAttribute(tid.toString() + "clusters_total");
-		
+
 		Object topterms_object = (null == session.getAttribute(tid.toString() + "cluster_terms")) ? ""
 				: session.getAttribute(tid.toString() + "cluster_terms");
-		
+
 //		topterms = (HashMap<String, String>()) topterms.get;
 //		HashMap<String, String> topterm = new HashMap<String, String>();
 		HashMap<String, String> topterms = (HashMap<String, String>) topterms_object;
-		//System.out.println("topterms_object --"+topterms_object);
-		
+		// System.out.println("topterms_object --"+topterms_object);
+
 		String blogdistribution = null;
 		String bloggersMentioned = null;
 		String topPostingLocation = null;
@@ -841,12 +921,10 @@ System.out.println(query);
 			post_distances_all.put("distances", new JSONObject(distances.toString()));
 			post_distances_all.put("post_data", postData);
 			out.write(post_distances_all.toString());
-		}else if (action.toString().equals("loadkeywords")) {
-			//System.out.println("action" + action + "terms--" + topterms.get(cluster_));
+		} else if (action.toString().equals("loadkeywords")) {
+			// System.out.println("action" + action + "terms--" + topterms.get(cluster_));
 			out.write(topterms.get(cluster_).toString());
 		}
-		
-		
 
 //		if(Action)
 	}

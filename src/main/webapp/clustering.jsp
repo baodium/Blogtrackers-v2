@@ -222,7 +222,7 @@ Instant start = Instant.now();
 		//scatterplotfinaldata.add(new JSONObject("{columns:['','new_x','new_y','cluster']}"));
 		//System.out.println(svd);
 		
-		JSONArray postDataAll = cluster.getPosts(post_ids, "", "", "__ONLY__POST__ID__");
+		JSONArray postDataAll = cluster.getPosts(post_ids, "", "", "__ONLY__POST__ID__","blogposts");
 
 		//String terms = cluster.getTopTerms(post_ids);
 		//System.out.println(terms);
