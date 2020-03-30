@@ -300,7 +300,11 @@ function loadtitletable(clusterid){
 				         "scrollY": 430,
 				         "scrollX": true,
 				         "order": [[ 1, "asc" ]],
-				          "pagingType": "simple"
+				         "pagingType": "simple",
+				         "columnDefs": [
+			        	      { "width": "65%", "targets": 0 },
+			        	      { "width": "25%", "targets": 0 }
+			        	    ]
 				        	 
 				     } );
 			    	
@@ -312,6 +316,7 @@ function loadtitletable(clusterid){
 					  
 					  $("#posts_display").empty()
 			     $("#posts_display2").removeClass("hidden");
+				$(".posts_display2").removeClass("hidden");
 				$("#posts_display_loader").addClass("hidden");
 				
 				

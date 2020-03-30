@@ -574,6 +574,23 @@ Instant start = Instant.now();
 
 								for (Map.Entry<Pair<String, String>, JSONArray> entry : clusterResult.entrySet()) {
 									Pair<String, String> key = entry.getKey();
+									
+									String temp_terms = topterms.get("cluster_" + (i + 1));
+									//System.out.println("terms ---" + terms);
+									String word_build = "";
+									
+									//System.out.println("terms ---" + terms);
+									temp_terms = temp_terms.replace("[","").replace("]", "").replace("),", "-").replace("(", "").replace("\'", "");
+									List<String> termlist = Arrays.asList(temp_terms.split("-"));
+									
+									for(int m = 0; m < 10; m++){
+										if(m > 0){
+											word_build += ", ";
+										}
+										word_build += termlist.get(m).split(",")[0];
+									
+									}
+									
 
 									if (key.getKey().equals("cluster_1")) {
 
@@ -597,14 +614,14 @@ Instant start = Instant.now();
 										/* postData = cluster.getPosts(currentPostIds, "", "", "__ONLY__POST__ID__");
 										System.out.println(postData.length()); */
 							%>
-							<a data-toggle="tooltip" data-placement="top" title="goat, for , ttkd" class="clusters_ btn  form-control stylebuttonactive mb20 "
+							<a data-toggle="tooltip" data-placement="top" title="<%=word_build%>" class="clusters_ btn  form-control stylebuttonactive mb20 "
 								id="cluster_<%=i + 1%>" counter_value="<%=i  +1%>"
 								style="background-color: <%=colors[i]%>;"> <b>Cluster <%=i + 1%></b>
 							</a>
 							<%
 								} else {
 							%>
-							<a data-toggle="tooltip" data-placement="top" title="hector, bellerin, manga"
+							<a data-toggle="tooltip" data-placement="top" title="<%=word_build%>"
 								class="clusters_ btn form-control stylebuttoninactive text-primary mb20 "
 								id="cluster_<%=i + 1%>" counter_value="<%=i+1 %>"
 								style="background-color: <%=colors[i]%>;"> <b>Cluster <%=i + 1%></b>
@@ -757,7 +774,7 @@ Instant start = Instant.now();
           
           <div id="posts_display2 hidden">
           			
-          				<table id="DataTables_Table_20_wrapper" class="display"
+          				<table id="DataTables_Table_20_wrapper" class="display posts_display2 hidden"
 						style="width: 100%">
 						<thead>
 							<tr>
@@ -780,8 +797,8 @@ Instant start = Instant.now();
 						style="width: 100%">
 						<thead>
 							<tr>
-								<th>Post title1</th>
-								<th>Cluster distance1</th>
+								<th>Post title</th>
+								<th>Cluster distance</th>
 
 
 							</tr>
@@ -927,12 +944,13 @@ Instant start = Instant.now();
 						<div style="min-height: 420px;">
 							<!-- <p class="text-primary">Top keywords of <b>Past Week</b></p> -->
 							<div class="p15 pb5 pt0" role="group"></div>
-							<table id="DataTables_Table_3_wrapper" class="display"
+							<table id="DataTables_Table_3_wrapper" class="display table_over_cover"
 								style="width: 100%">
 								<thead>
 									<tr>
 										<%
 											JSONObject toptermsjson = new JSONObject();
+											ArrayList <List<String>> all_terms = new ArrayList<List<String>>();
 											for (int k = 0; k < clusterResult.size(); k++) {
 												//Object terms = result.getJSONArray(String.valueOf(i)).getJSONObject(0).getJSONObject("cluster_" + String.valueOf((i+1))).get("topterms");
 												//toptermsjson.put(String.valueOf((i+1)),terms);
@@ -947,22 +965,22 @@ Instant start = Instant.now();
 									</tr>
 								</thead>
 								<tbody>
-								<%for(int j = 0; j < topterms.size(); j++) {
-									String terms = topterms.get("cluster_" + (j + 1));
-									//System.out.println("terms ---" + terms);
-									terms = terms.replace("[","").replace("]", "").replace("),", "-").replace("(", "").replace("\'", "");
-									List<String> termlist = Arrays.asList(terms.split("-"));
-									//System.out.println(ssssss);
-									//System.out.println(Arrays.asList(ssssss.split("-")).get(0));
-								%>
-									
+								
+								<% for(int k = 0; k < topterms.size(); k++){ %>
+								
 									<tr>
 										
-										<%
-										for(int k = 0; k < 10; k++){
-											//JSONArray test = (JSONArray)toptermsjson.get("1");
-											//for(int i = 0; i < test.length(); i++) {
+										<% 
+										
+										for(int m = 0; m < 10; m++){
+											
+											String terms = topterms.get("cluster_" + (m + 1));
+											//System.out.println("terms ---" + terms);
+											terms = terms.replace("[","").replace("]", "").replace("),", "-").replace("(", "").replace("\'", "");
+											List<String> termlist = Arrays.asList(terms.split("-"));	
+											
 										%>
+										
 										<td>
 											<%=termlist.get(k).split(",")[0]%>
 										</td>
@@ -970,9 +988,8 @@ Instant start = Instant.now();
 										<%} %>
 									</tr>
 									
-
-
-								<% }%>
+								<%} %>
+								
 								</tbody>
 							</table>
 						</div>
@@ -1082,6 +1099,16 @@ Instant start = Instant.now();
         	      { "width": "25%", "targets": 0 }
         	    ]
      } );
+     
+     $('#DataTables_Table_3_wrapper').DataTable( {
+         "scrollY": 430,
+         "scrollX": true,
+         "targets": 'no-sort',
+         "bSort": false
+        	 
+     } );
+     
+    
      
      ///getting post with highest distance
      id = <%=max_post_id %>
