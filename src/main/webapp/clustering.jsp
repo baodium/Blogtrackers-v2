@@ -575,6 +575,23 @@ Instant start = Instant.now();
 
 								for (Map.Entry<Pair<String, String>, List<JSONObject>> entry : clusterResult.entrySet()) {
 									Pair<String, String> key = entry.getKey();
+									
+									String temp_terms = topterms.get("cluster_" + (i + 1));
+									//System.out.println("terms ---" + terms);
+									String word_build = "";
+									
+									//System.out.println("terms ---" + terms);
+									temp_terms = temp_terms.replace("[","").replace("]", "").replace("),", "-").replace("(", "").replace("\'", "");
+									List<String> termlist = Arrays.asList(temp_terms.split("-"));
+									
+									for(int m = 0; m < 10; m++){
+										if(m > 0){
+											word_build += ", ";
+										}
+										word_build += termlist.get(m).split(",")[0];
+									
+									}
+									
 
 									if (key.getKey().equals("cluster_1")) {
 
@@ -598,14 +615,14 @@ Instant start = Instant.now();
 										/* postData = cluster.getPosts(currentPostIds, "", "", "__ONLY__POST__ID__");
 										System.out.println(postData.length()); */
 							%>
-							<a class="clusters_ btn  form-control stylebuttonactive mb20 "
+							<a data-toggle="tooltip" data-placement="top" title="<%=word_build%>" class="clusters_ btn  form-control stylebuttonactive mb20 "
 								id="cluster_<%=i + 1%>" counter_value="<%=i  +1%>"
 								style="background-color: <%=colors[i]%>;"> <b>Cluster <%=i + 1%></b>
 							</a>
 							<%
 								} else {
 							%>
-							<a
+							<a data-toggle="tooltip" data-placement="top" title="<%=word_build%>"
 								class="clusters_ btn form-control stylebuttoninactive text-primary mb20 "
 								id="cluster_<%=i + 1%>" counter_value="<%=i+1 %>"
 								style="background-color: <%=colors[i]%>;"> <b>Cluster <%=i + 1%></b>
@@ -756,6 +773,25 @@ Instant start = Instant.now();
           Export Options
           </div> -->
           
+          <div id="posts_display2 hidden">
+          			
+          				<table id="DataTables_Table_20_wrapper" class="display posts_display2 hidden"
+						style="width: 100%">
+						<thead>
+							<tr>
+								<th>Post title</th>
+								<th>Cluster distance</th>
+
+
+							</tr>
+						</thead>
+						<tbody id="cluster_post_body2">
+						
+						</tbody>
+					</table>
+          
+         			</div>
+          
           			<div id="posts_display">
           			
           				<table id="DataTables_Table_0_wrapper" class="display"
@@ -768,21 +804,64 @@ Instant start = Instant.now();
 
 							</tr>
 						</thead>
-						<tbody>
+						<tbody id="">
 							<%
 								String currentTitle = null;
 								String currentBlogger = null;
 								String currentPost = null;
 								String currentDate = null;
 								String currentNumComment = null;
+								String activeDef = "";
+								String activeDefLink = "";
+								
+								float max_distance_id = 0;
+								String max_post_id = "";
 
 								postData = clusterResult.get(currentKey);
 								/* System.out.println("This is key--" + key); */
 
+
 								for (int j = 0; j < postData.size(); j++) {
 									if (j == 0) {
 										
+										
+
+								
+										Object blog_post_id = postData.get(0).getJSONObject("_source").get("blogpost_id");
 										Object title = postData.get(0).getJSONObject("_source").get("title");
+										Object permalink = postData.get(0).getJSONObject("_source").get("permalink");
+									/* Object title = postData.getJSONObject(j).getJSONObject("_source").get("title");
+									
+									Object blog_post_id = postData.getJSONObject(j).getJSONObject("_source").get("blogpost_id"); */
+									/* Object title = postData.get(j).getJSONObject("_source").get("title");
+									Object blog_post_id = postData.get(j).getJSONObject("_source").get("blogpost_id"); */
+									
+									if (j == 0) {
+										max_distance_id = (float)Float.parseFloat(distances.get(blog_post_id.toString()).toString());
+									}else{
+										activeDefLink = "makeinvisible";
+										activeDef = "";
+									}
+									
+									if(max_distance_id > (float)Float.parseFloat(distances.get(blog_post_id.toString()).toString())){
+										max_distance_id = (float)Float.parseFloat(distances.get(blog_post_id.toString()).toString());
+										max_post_id = blog_post_id.toString();
+										
+										//currentTitle = title.toString();
+
+										//Object blogger = postData.getJSONObject(j).getJSONObject("_source").get("blogger");
+										//currentBlogger = blogger.toString();
+
+										//Object comments = postData.getJSONObject(j).getJSONObject("_source").get("num_comments");
+										//currentNumComment = comments.toString();
+
+										//Object post = postData.getJSONObject(j).getJSONObject("_source").get("post");
+
+										
+										
+										
+										
+										
 										currentTitle = title.toString();
 
 										Object blogger = postData.get(0).getJSONObject("_source").get("blogger");
@@ -793,10 +872,17 @@ Instant start = Instant.now();
 
 										Object post = postData.get(0).getJSONObject("_source").get("post");
 										currentPost = post.toString();
+										activeDef = "activeselectedblog";
+										activeDefLink = "";
 									}
 
-									Object title = postData.get(j).getJSONObject("_source").get("title");
-									Object blog_post_id = postData.get(j).getJSONObject("_source").get("blogpost_id");
+
+									
+
+									
+									
+									
+
 
 									//String distances = source.get("distances").toString();
 									//ObjectMapper mapper = new ObjectMapper();
@@ -808,14 +894,17 @@ Instant start = Instant.now();
 									//System.out.println(post_distances.get(blog_post_id.toString()));
 							%>
 							<tr>
-
-								<td><%=title.toString()%></td>
+							
+								<td><a class="blogpost_link cursor-pointer <%=activeDef %>" id="<%=blog_post_id.toString()%>" ><%=title.toString()%></a><br/>
+								<a id="viewpost_<%=blog_post_id.toString()%>" class="mt20 viewpost <%=activeDefLink %>" href="<%=permalink.toString()%>" target="_blank"><buttton class="btn btn-primary btn-sm mt10 visitpost">Visit Post &nbsp;<i class="fas fa-external-link-alt"></i></buttton></a></td>
 								<%-- <td><%=(double) Math.round(Double.parseDouble(distances.get(blog_post_id.toString()))) / 100000%></td> --%>
 								<td><%=String.format("%.5f", (float)Float.parseFloat(distances.get(blog_post_id.toString()).toString()))%></td>
 
 							</tr>
+							
+					
 							<%
-								}
+								}}
 							%>
 
 							<!-- <tr>
@@ -885,12 +974,13 @@ Instant start = Instant.now();
 						<div style="min-height: 420px;">
 							<!-- <p class="text-primary">Top keywords of <b>Past Week</b></p> -->
 							<div class="p15 pb5 pt0" role="group"></div>
-							<table id="DataTables_Table_3_wrapper" class="display"
+							<table id="DataTables_Table_3_wrapper" class="display table_over_cover"
 								style="width: 100%">
 								<thead>
 									<tr>
 										<%
 											JSONObject toptermsjson = new JSONObject();
+											ArrayList <List<String>> all_terms = new ArrayList<List<String>>();
 											for (int k = 0; k < clusterResult.size(); k++) {
 												//Object terms = result.getJSONArray(String.valueOf(i)).getJSONObject(0).getJSONObject("cluster_" + String.valueOf((i+1))).get("topterms");
 												//toptermsjson.put(String.valueOf((i+1)),terms);
@@ -905,22 +995,22 @@ Instant start = Instant.now();
 									</tr>
 								</thead>
 								<tbody>
-								<%for(int j = 0; j < topterms.size(); j++) {
-									String terms = topterms.get("cluster_" + (j + 1));
-									//System.out.println("terms ---" + terms);
-									terms = terms.replace("[","").replace("]", "").replace("),", "-").replace("(", "").replace("\'", "");
-									List<String> termlist = Arrays.asList(terms.split("-"));
-									//System.out.println(ssssss);
-									//System.out.println(Arrays.asList(ssssss.split("-")).get(0));
-								%>
-									
+								
+								<% for(int k = 0; k < topterms.size(); k++){ %>
+								
 									<tr>
 										
-										<%
-										for(int k = 0; k < 10; k++){
-											//JSONArray test = (JSONArray)toptermsjson.get("1");
-											//for(int i = 0; i < test.length(); i++) {
+										<% 
+										
+										for(int m = 0; m < 10; m++){
+											
+											String terms = topterms.get("cluster_" + (m + 1));
+											//System.out.println("terms ---" + terms);
+											terms = terms.replace("[","").replace("]", "").replace("),", "-").replace("(", "").replace("\'", "");
+											List<String> termlist = Arrays.asList(terms.split("-"));	
+											
 										%>
+										
 										<td>
 											<%=termlist.get(k).split(",")[0]%>
 										</td>
@@ -928,9 +1018,8 @@ Instant start = Instant.now();
 										<%} %>
 									</tr>
 									
-
-
-								<% }%>
+								<%} %>
+								
 								</tbody>
 							</table>
 						</div>
@@ -1028,16 +1117,37 @@ Instant start = Instant.now();
        // }
      } ); */
      
+    
+     
      $('#DataTables_Table_0_wrapper').DataTable( {
          "scrollY": 430,
          "scrollX": true,
-         "order": [],
+         "order": [[ 1, "asc" ]],
           "pagingType": "simple",
         	  "columnDefs": [
         	      { "width": "65%", "targets": 0 },
         	      { "width": "25%", "targets": 0 }
         	    ]
      } );
+     
+     $('#DataTables_Table_3_wrapper').DataTable( {
+         "scrollY": 430,
+         "scrollX": true,
+         "targets": 'no-sort',
+         "bSort": false
+        	 
+     } );
+     
+    
+     
+     ///getting post with highest distance
+     id = <%=max_post_id %>
+					
+	$(".viewpost").addClass("makeinvisible");
+   	$('.blogpost_link').removeClass("activeselectedblog");
+   	$('#'+id).addClass("activeselectedblog");
+   	$("#viewpost_"+id).removeClass("makeinvisible");
+
  } );
  </script>
 	<!--end for table  -->
@@ -1360,6 +1470,42 @@ Instant start = Instant.now();
  <script type="text/javascript" src="assets/vendors/d3/d3_tooltip.js" ></script>
  <script type="text/javascript"
 		src="chartdependencies/keywordtrendd3.js"></script>
+		
+<script>
+$('.blogpost_link').on("click", function(){
+	$("body").addClass("loaded");
+	var post_id = $(this).attr("id");
+	//alert(post_id);
+	//console.log(post_id);
+	$("#posts_details").html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />");
+	$(".viewpost").addClass("makeinvisible");
+	$('.blogpost_link').removeClass("activeselectedblog");
+	$('#'+post_id).addClass("activeselectedblog");
+	$(this).parent().children(".viewpost").removeClass("makeinvisible");
+	//grab all id of blog and perform an ajax request
+	$.ajax({
+		url: app_url+"subpages/influencedetail.jsp",
+		method: 'POST',
+		data: {
+			action:"fetchpost",
+			post_id:post_id,
+			tid:$("#alltid").val()
+		},
+		error: function(response)
+		{						
+			//console.log(response);
+			//$("#blogpost_detail").html(response);
+		},
+		success: function(response)
+		{   
+			//console.log(response);
+			$("#posts_details").html(response).hide();
+			$("#posts_details").fadeIn(700);
+		}
+	});
+	
+});
+</script>
  
 <script>
     var d3v3_ = window.d3;
@@ -1503,6 +1649,7 @@ Instant start = Instant.now();
 }); --%>
 
  </script>
+ <script src="pagedependencies/baseurl.js?v=93"></script>
  <!-- <script type="text/javascript"></script>
 	<script type="text/javascript" src="assets/vendors/d3/d3.min.js"></script>
 	<script src="assets/vendors/wordcloud/d3.layout.cloud.js"></script>
