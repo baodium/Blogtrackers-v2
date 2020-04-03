@@ -2552,7 +2552,7 @@ public class Blogposts {
 //			val = buckets.toString();
 //			JSONObject bucket_ = new JSONObject(val);
 //			freq = (Integer) bucket_.getJSONObject("dat").get("value");
-//			System.out.println("DONE GETTING POSTS FOR BLOGGER--" + freq);
+//			System.out.println("DONE GETTING POSoccutTS FOR BLOGGER--" + freq);
 
 		}
 		return jsonArray;
@@ -3013,35 +3013,20 @@ public class Blogposts {
 	}
 
 	public int countOccurences(String str, String word) {
-		/*
-		 * // split the string by spaces in a Pattern pt =
-		 * Pattern.compile("[^a-zA-Z0-9]"); Matcher match = pt.matcher(str);
-		 * 
-		 * while (match.find()) { String s = match.group(); str =
-		 * str.replaceAll("\\" + s, " "); }
-		 */
-		word = word.replaceAll("\"", "");
-		System.out.println("This is the word-" + word);
-		String a[] = str.split("\\W+");
-
-		String wrd[] = word.split(",");
-//		System.out.println("This is the word-" + wrd[1]);
-
-		String str_ = null;
-
-		// search for pattern in a
 		int count = 0;
-		for (int i = 0; i < a.length; i++) {
-			// if match found increase count
-			str_ = a[i].toLowerCase();
-			for (int j = 0; j < wrd.length; j++) {
-//				System.out.println("This is the splitted word-"+wrd[j]+"--"+str_);
-				if (wrd[j].trim().equals(str_.trim())) {
+		word = word.toLowerCase();
+	
+
+			String[] postsplit = str.split("\\W+");
+			for (String pst : postsplit) {
+				pst = pst.toLowerCase();
+				if (pst.equals(word)) {
+					//System.out.println("pst--"+pst);
 					count++;
-//					System.out.println("Count =="+count);
+					//title = title_;
 				}
 			}
-		}
+		
 
 		return count;
 	}
@@ -3397,7 +3382,7 @@ public class Blogposts {
 
 				if (bloggerName == "NOBLOGGER" && term != "___NO__TERM___") {
 					if (j.get("title").toString() != null || j.get("title").toString() != "") {
-						//occurence = this.countOccurences(src, term);
+						occurence = this.countOccurences(src, term);
 						System.out.println(term + "----------------------" + occurence);
 						title = j.get("title").toString();
 						blogpost_id = j.get("blogpost_id").toString();

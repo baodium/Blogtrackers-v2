@@ -49,9 +49,9 @@ $(document).delegate('.topics1', 'click', function(){
 	$(".keyword-count").html(value.replace(/\B(?=(\d{3})+(?!\d))/g, ","));
 
 	// loadInfluence(bloog,blg[1]);
-	$("#term").val(all_selected_names);
+	//$("#term").val(all_selected_names);
 	$('#d3-line-basic').html('');
-	
+	console.log("terms", $("#term").val());
 	/* $("#term_id").val(term_id); */
 	loadBlogMentioned(date_start, date_end);
 	
@@ -127,7 +127,7 @@ function loadBlogMentioned(date_start,date_end) {
 	$.ajax({
 		url : app_url + "KeywordTrend1",
 		method : 'POST',
-		dataType : 'json',
+		/*dataType : 'json',*/
 		data : {
 			action : "getblogmentioned",
 			term : $("#term").val(),
@@ -140,7 +140,7 @@ function loadBlogMentioned(date_start,date_end) {
 		},
 		success : function(response) {
 			console.log(response)
-			$(".blog-mentioned").html(parseInt(response.blogmentioned));
+			$(".blog-mentioned").html(parseInt(response));
 		}
 	});
 }
@@ -150,7 +150,7 @@ function loadMostLocation(date_start,date_end) {
 	$.ajax({
 		url : app_url + "KeywordTrend1",
 		method : 'POST',
-		dataType : 'json',
+		/*dataType : 'json',*/
 		data : {
 			action : "getmostlocation",
 			term : $("#term").val(),
@@ -164,7 +164,7 @@ function loadMostLocation(date_start,date_end) {
 		},
 		success : function(response) {
 			console.log(response)
-			$(".top-location").html(response.toplocation);
+			$(".top-location").html(response);
 		}
 	});
 }
@@ -174,7 +174,7 @@ function loadMostPost(date_start,date_end) {
 	$.ajax({
 		url : app_url + "KeywordTrend1",
 		method : 'POST',
-		dataType : 'json',
+		/*dataType : 'json',*/
 		data : {
 			action : "getmostpost",
 			term : $("#term").val(),
@@ -187,7 +187,7 @@ function loadMostPost(date_start,date_end) {
 		},
 		success : function(response) {
 			console.log(response)
-			$(".post-mentioned").html(response.post);
+			$(".post-mentioned").html(response);
 		}
 	});
 }

@@ -3,6 +3,8 @@ package util;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.NumberFormat;
+import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -30,6 +32,7 @@ import java.io.OutputStreamWriter;
  */
 //@WebServlet("/KeywordTrend1")
 public class KeywordTrend1 extends HttpServlet {
+
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -41,6 +44,109 @@ public class KeywordTrend1 extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
+	static Terms term = new Terms();
+
+	public static String getPostsMentioned(String terms, String ids, String from, String to, String index)
+			throws Exception {
+		String result = null;
+		JSONObject query = new JSONObject();
+		query = new JSONObject("{\r\n" + "   \r\n" + "    \"query\": {\r\n" + "        \"bool\": {\r\n"
+				+ "            \"must\": [\r\n" + "                {\r\n" + "                    \"terms\": {\r\n"
+				+ "                        \"post\": [\r\n" + "							"+terms+"\r\n"
+				+ "                        ]\r\n" + "                    }\r\n" + "                },\r\n"
+				+ "                {\r\n" + "                    \"terms\": {\r\n"
+				+ "                        \"blogsite_id\": ["+ids+"],\r\n"
+				+ "                        \"boost\": 1\r\n" + "                    }\r\n" + "                },\r\n"
+				+ "                {\r\n" + "                    \"range\": {\r\n"
+				+ "                        \"date\": {\r\n"
+				+ "                            \"from\": \""+from+"\",\r\n"
+				+ "                            \"to\": \""+to+"\",\r\n"
+				+ "                            \"include_lower\": true,\r\n"
+				+ "                            \"include_upper\": true,\r\n"
+				+ "                            \"boost\": 1\r\n" + "                        }\r\n"
+				+ "                    }\r\n" + "                }\r\n" + "            ]\r\n" + "        }\r\n"
+				+ "    }\r\n" + "}");
+System.out.println(query);
+		result = term._count(query, "/" + index + "/_count?");
+		return result;
+	}
+
+	public static String aggregation(String terms, String ids, String from, String to, String index, String field, String sort, String type)
+			throws Exception {
+		String result = null;
+		JSONObject query = new JSONObject();
+		query = new JSONObject("{\r\n" + "    \"size\": 0,\r\n" + "    \r\n" + "    \"query\": {\r\n"
+				+ "        \"bool\": {\r\n" + "            \"must\": [\r\n" + "                {\r\n"
+				+ "                    \"terms\": {\r\n" + "                        \"post\": [\r\n"
+				+ "                            " + terms + "\r\n" + "                        ]\r\n"
+				+ "                    }\r\n" + "                },\r\n" + "                {\r\n"
+				+ "                    \"terms\": {\r\n" + "                        \"blogsite_id\": [" + ids + "],\r\n"
+				+ "                        \"boost\": 1\r\n" + "                    }\r\n" + "                },\r\n"
+				+ "                {\r\n" + "                    \"range\": {\r\n"
+				+ "                        \"date\": {\r\n" + "                            \"from\": \"" + from
+				+ "\",\r\n" + "                            \"to\": \"" + to + "\",\r\n"
+				+ "                            \"include_lower\": true,\r\n"
+				+ "                            \"include_upper\": true,\r\n"
+				+ "                            \"boost\": 1\r\n" + "                        }\r\n"
+				+ "                    }\r\n" + "                }\r\n" + "            ]\r\n" + "        }\r\n"
+				+ "    },\r\n" + "    \"aggregations\": {\r\n" + "        \"groupby\": {\r\n"
+				+ "            \"composite\": {\r\n" + "                \"size\": 1000,\r\n"
+				+ "                \"sources\": [\r\n" + "                    {\r\n"
+				+ "                        \"dat\": {\r\n" + "                            \"terms\": {\r\n"
+				+ "                                \"field\": \""+field+"\",\r\n"
+				+ "                                \"missing_bucket\": true,\r\n"
+				+ "                                \"order\": \""+sort+"\"\r\n" + "                            }\r\n"
+				+ "                        }\r\n" + "                    }\r\n" + "                ]\r\n"
+				+ "            }\r\n" + "        }\r\n" + "    }\r\n" + "}");
+System.out.println(query);
+System.out.println(index);
+		JSONObject myResponse = term._makeElasticRequest(query, "POST", "/" + index + "/_search/?");
+		if (null != myResponse.get("hits")) {
+
+//		JSONArray jsonArray = new JSONArray();
+			
+			if(type.contentEquals("bucket_length")) {
+				Object bucket_length = myResponse.getJSONObject("aggregations").getJSONObject("groupby")
+						.getJSONArray("buckets").length();
+				result = bucket_length.toString();
+			}else if(type.contentEquals("bucket_highest")) {
+				Object key = myResponse.getJSONObject("aggregations").getJSONObject("groupby").getJSONArray("buckets").getJSONObject(0).getJSONObject("key").get("dat");
+				Object value = myResponse.getJSONObject("aggregations").getJSONObject("groupby").getJSONArray("buckets").getJSONObject(0).get("doc_count");
+				
+				result = key.toString() + "___" + value.toString();
+			}
+			
+
+		}
+		return result;
+	}
+
+	public static void main(String[] args) {
+		Instant start = Instant.now();
+		Clustering terms = new Clustering();
+		String ids = "813,815,809,811,812,806,808,817,644,652,616,641,732,761,709,128";
+		String from = "1970-01-01";
+		String to = "2020-03-26";
+		try {
+			String t_ = "\"opens" + "\",\"seun\"";
+			String t = "__TERMS__KEYWORD__" + t_;
+			System.out.println("__TERMS__KEYWORD__" + t);
+
+//			Clustering._buildSlicedScrollQuery(ids, from, to, t,"blogposts");
+			Clustering.getPosts(ids, from, to, t, "blogposts");
+//			System.out.println(aggregation(t_, ids, from, to, "blogposts","location","desc","bucket_highest"));
+//			System.out.println(aggregation(t_, ids, from, to, "blogposts","blogsite_id","asc","bucket_length"));
+//			System.out.println(getPostsMentioned(t_, ids, from, to, "blogposts"));
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Instant end = Instant.now();
+		Duration timeElapsed = Duration.between(start, end);
+		System.out.println("Time taken: " + timeElapsed.getSeconds() + " seconds");
+	}
+
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
@@ -57,9 +163,10 @@ public class KeywordTrend1 extends HttpServlet {
 		String date_start = (null == request.getParameter("date_start")) ? "" : request.getParameter("date_start");
 		String date_end = (null == request.getParameter("date_end")) ? "" : request.getParameter("date_end");
 		String mostactiveterm = (null == request.getParameter("term")) ? "" : request.getParameter("term").toString();
-		
-		String all_selected_terms = (null == request.getParameter("all_selected_names")) ? "" : request.getParameter("all_selected_names").toString();
-		
+
+		String all_selected_terms = (null == request.getParameter("all_selected_names")) ? ""
+				: request.getParameter("all_selected_names").toString();
+
 		Object index = (null == request.getParameter("index")) ? "" : request.getParameter("index");
 
 		String sort = (null == request.getParameter("sort")) ? "" : request.getParameter("sort");
@@ -80,9 +187,9 @@ public class KeywordTrend1 extends HttpServlet {
 		String top_location = null;
 		String posts = null;
 
-		JSONObject result_blogmentioned = new JSONObject();
+		String result_blogmentioned = null;
 		JSONObject result_location = new JSONObject();
-		JSONObject result_posts = new JSONObject();
+		String result_posts = null;
 		JSONObject sql = new JSONObject();
 
 		String sql__ = null;
@@ -92,16 +199,10 @@ public class KeywordTrend1 extends HttpServlet {
 			try {
 				System.out.println("i am here----");
 				PrintWriter out = response.getWriter();
-				blog_mentioned = post._getBlogOrPostMentioned("blogsite_id", mostactiveterm.toString(),
-						date_start.toString(), date_end.toString(), all_blog_ids.toString());
-
-				System.out.println("bloger men-----" + blog_mentioned + mostactiveterm.toString()
-						+ date_start.toString() + date_end.toString() + all_blog_ids.toString());
-
-				result_blogmentioned.put("blogmentioned",
-						NumberFormat.getNumberInstance(Locale.US).format(new Integer(blog_mentioned.toString())));
-				String new_result = result_blogmentioned.toString();
-				result_blogmentioned = new JSONObject(new_result);
+				System.out.println("mostactiveterm----"+mostactiveterm);
+				String t_ = "\"" + mostactiveterm.toString() + "\"";
+				String t = "__TERMS__KEYWORD__" + t_;
+				result_blogmentioned = aggregation(t_, all_blog_ids, date_start, date_end, "blogposts","blogsite_id","asc","bucket_length");
 
 				out.write(result_blogmentioned.toString());
 			} catch (Exception e) {
@@ -112,46 +213,23 @@ public class KeywordTrend1 extends HttpServlet {
 		} else if (action.toString().equals("getmostlocation")) {
 			PrintWriter out = response.getWriter();
 			try {
-
-				top_location = post._getMostLocation(mostactiveterm.toString(), date_start.toString(),
-						date_end.toString(), all_blog_ids.toString());
+				String t_ = "\"" + mostactiveterm.toString() + "\"";
+				String t = "__TERMS__KEYWORD__" + t_;
+				top_location = aggregation(t_, all_blog_ids, date_start, date_end, "blogposts","location","desc","bucket_highest");
 			} catch (Exception e) {
 
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			System.out.println("loacation---" + top_location.toString() + mostactiveterm.toString()
-					+ date_start.toString() + date_end.toString() + all_blog_ids.toString());
-
-			System.out.println("location_str" + top_location.toString());
-			result_location.put("toplocation", top_location.toString());
-			String new_result = result_location.toString();
-			result_location = new JSONObject(new_result);
-
-			System.out.println("locationfinal_str" + result_location.toString());
-			out.write(result_location.toString());
+			
+			out.write(top_location.toString());
 
 		} else if (action.toString().equals("getmostpost")) {
 			try {
 				PrintWriter out = response.getWriter();
-//				sql = post._getBloggerPosts(mostactiveterm.toString(), "NOBLOGGER", date_start.toString(),
-//						date_end.toString(), all_blog_ids.toString());
-				sql__ = post._countPostMentioned(mostactiveterm.toString(), date_start.toString(), date_end.toString(),
-						all_blog_ids.toString());
-//				posts = sql.get("total").toString();
-				// posts = post._getBlogOrPostMentioned("post",
-				// mostactiveterm.toString(),date_start.toString(), date_end.toString(),
-				// date_end.toString());
-
-				System.out.println("post---" + sql__ + mostactiveterm.toString() + date_start.toString()
-						+ date_end.toString() + all_blog_ids.toString());
-
-				System.out.println("post_str" + sql__.toString());
-				result_posts.put("post", NumberFormat.getNumberInstance(Locale.US).format(new Integer(sql__)));
-				String new_result = result_posts.toString();
-				result_posts = new JSONObject(new_result);
-
-				System.out.println("post" + result_posts.toString());
+				String t_ = "\"" + mostactiveterm.toString() + "\"";
+				String t = "__TERMS__KEYWORD__" + t_;
+				result_posts = getPostsMentioned(t_, all_blog_ids, date_start, date_end, "blogposts");
 				out.write(result_posts.toString());
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -229,8 +307,8 @@ public class KeywordTrend1 extends HttpServlet {
 				JSONObject result = new JSONObject();
 
 //				System.out.println("terms_ma--"+all_selected_terms);
-				sql = post._getBloggerPosts(mostactiveterm, "NOBLOGGER", date_start.toString(),
-						date_end.toString(), all_blog_ids.toString());
+				sql = post._getBloggerPosts(mostactiveterm, "NOBLOGGER", date_start.toString(), date_end.toString(),
+						all_blog_ids.toString());
 
 				JSONObject firstpost = new JSONObject();
 				Object map = null;
@@ -280,21 +358,20 @@ public class KeywordTrend1 extends HttpServlet {
 						items.add(i, hm2);
 
 						mostActiveTerms = all_selected_terms.split(",");
-						
 
 //						for (int k = 0; k < mostActiveTerms.length; i++) {
-							String replace = "<span style=background:red;color:#fff>" + mostactiveterm + "</span>";
-							String active2 = mostactiveterm.substring(0, 1).toUpperCase()
-									+ mostactiveterm.substring(1, mostactiveterm.length());
-							String active3 = mostactiveterm.toUpperCase();
+						String replace = "<span style=background:red;color:#fff>" + mostactiveterm + "</span>";
+						String active2 = mostactiveterm.substring(0, 1).toUpperCase()
+								+ mostactiveterm.substring(1, mostactiveterm.length());
+						String active3 = mostactiveterm.toUpperCase();
 
-							posts = posts.replaceAll(mostactiveterm, replace);
-							posts = posts.replaceAll(active2, replace);
-							posts = posts.replaceAll(active3, replace);
+						posts = posts.replaceAll(mostactiveterm, replace);
+						posts = posts.replaceAll(active2, replace);
+						posts = posts.replaceAll(active3, replace);
 
-							title = title.replaceAll(mostactiveterm, replace);
-							title = title.replaceAll(active2, replace);
-							title = title.replaceAll(active3, replace);
+						title = title.replaceAll(mostactiveterm, replace);
+						title = title.replaceAll(active2, replace);
+						title = title.replaceAll(active3, replace);
 //							String replace = "<span style=background:red;color:#fff>" + mostActiveTerms[k]+ "</span>";
 //							String active2 = mostActiveTerms[k].substring(0, 1).toUpperCase()
 //									+ mostActiveTerms[k].substring(1, mostActiveTerms[k].length());
@@ -312,13 +389,13 @@ public class KeywordTrend1 extends HttpServlet {
 					}
 
 				}
-				
+
 				System.out.println("items--" + items);
-				
+
 				Map<String, Integer> json = (HashMap<String, Integer>) items.stream()
 						.flatMap(m -> m.entrySet().stream())
 						.collect(toMap(Map.Entry::getKey, Map.Entry::getValue, Integer::sum));
-				
+
 				System.out.println("map" + map);
 				JSONObject mapped = new JSONObject(json);
 				System.out.println("map2" + mapped);

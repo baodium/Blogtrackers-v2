@@ -2948,25 +2948,41 @@ var mymarker = [
 		
 		
 		$(document).ready(function(){
-			 <%if (null == session.getAttribute(tid.toString())) {%>
+			 <%if (null == session.getAttribute(ids + "--getkeyworddashboard")) {%>
 			  // keywords have not been computed.
 			loadKeywordDashboard(null, "<%=ids%>")
 
 			<%} else {
-							 /* Object json_type_2 = (null == session.getAttribute(tid.toString()))
-									? ""
-									: session.getAttribute(tid.toString());
+				
+				Object dashboardWordCloudObject = (null == session.getAttribute(ids + "--getkeyworddashboard")) ? "": session.getAttribute(ids + "--getkeyworddashboard");
+				JSONObject o = new JSONObject(dashboardWordCloudObject.toString());
+				JSONArray out_ = new JSONArray();
+
+				//HashMap<String, String> post_id_pair = new HashMap<String, String>();
+				/* String terms = dashboardWordCloudObject.toString().replace("{","[").replace("}","]").replace("),","-").replace("(","").replace(",",":").replace("-",",").replace(")","").replace("'","").replaceAll("[0-9]", "").replace(":", ""); */
+				out_ = (JSONArray) o.get("output");
+				/*
 							Map<String, Integer> json = (HashMap<String, Integer>)json_type_2;
 							JSONObject d = new JSONObject(json);
 							String s = json_type_2.toString();
 						
 							JSONObject o = new JSONObject(json_type_2); */
 							//System.out.println("testing w" + d);%>
+							var terms = "<%=out_.toString().replace("\"","")%>";
+				 var new_dd = terms.replace('[','{').replace(']','}').replace(/\),/g,'-').replace(/\(/g,'').replace(/,/g,':').replace(/-/g,',').replace(/\)/g,'').replace(/'/g,"");
+					var newjson = new_dd.replace(/\s+/g,'').replace(/{/g,'{"').replace(/:/g,'":"').replace(/,/g,'","').replace(/}/g,'"}')
+					var jsondata = JSON.parse(newjson)
+					
+					/* data = [];
+					for (var key in jsondata) {var dic = {}; dic["text"] = key; dic["size"] = jsondata[key]; data.push(dic);} */
+					console.log("this is the response dashboard from session",new_dd);
+					wordtagcloud("#tagcloudcontainer",450,jsondata); 
 			  		<%-- <wordtagcloud("#tagcloudcontainer",450,<%=d%>);   --%>
 			<%}%> 
 			
 			
-			
+			console.log('dt',"<%=dt%>");
+			 console.log('dte',"<%=dte%>");
 			loadChordDashboard();
 			
 
@@ -3025,7 +3041,7 @@ var mymarker = [
 			$.ajax({
 				url: "Terms",
 				method: 'POST',
-	           /*  dataType: 'json', */
+	           dataType: 'json',
 				data: {
 					action:"getkeyworddashboard",
 					blogger:null,
@@ -3038,7 +3054,7 @@ var mymarker = [
 					$(".word-cld").html("FAILED TO COMPUTE TERMS.. RETRYING.. PLEASE WAIT.... <img src='images/loading.gif' />g");
 					$(".word-cld").html("<div style='min-height: 420px;'><div class='chart-container word-cld'><div class='chart' id='tagcloudcontainer'><div class='jvectormap-zoomin zoombutton' id='zoom_in'>+</div><div class='jvectormap-zoomout zoombutton' id='zoom_out'>−</div></div></div></div>");
 										
-					wordtagcloud("#tagcloudcontainer",450,{"NO KEYWORD":1});
+					wordtagcloud("#tagcloudcontainer",450,{"NO KEYWORD":100});
 					console.log("This is failure dashboard"+response);
 
 				},
@@ -3047,12 +3063,19 @@ var mymarker = [
 				
 					<%-- <%JSONObject d = new JSONObject(response);%> --%>
 				 /* console.log(response) */
-				
+				 console.log('dtajax',"<%=dt%>");
+			 console.log('dteajax',"<%=dte%>");
+				response = response['output'];
+				 console.log('response',response);
 				
 				    $(".word-cld").html("<div style='min-height: 420px;'><div class='chart-container word-cld'><div class='chart' id='tagcloudcontainer'><div class='jvectormap-zoomin zoombutton' id='zoom_in'>+</div><div class='jvectormap-zoomout zoombutton' id='zoom_out'>−</div></div></div></div>");
-				 let terms = response;
-				 var new_dd = terms.replace('[','{').replace(']','}').replace(/\),/g,'-').replace(/\(/g,'').replace(/,/g,':').replace(/-/g,',').replace(/\)/g,'').replace(/'/g,"");
+				 var terms = response.toString()
+				 terms = "{" + terms + "}";
+				 var new_dd = terms.replace('[','{').replace(']','}').replace(/\),/g,'-').replace(/\(/g,'').replace(/,/g,':').replace(/-/g,',').replace(/\)/g,'').replace(/'/g,'');
 					var newjson = new_dd.replace(/\s+/g,'').replace(/{/g,'{"').replace(/:/g,'":"').replace(/,/g,'","').replace(/}/g,'"}')
+					console.log('newjson', newjson);
+					
+					console.log('afternewjson', newjson);
 					var jsondata = JSON.parse(newjson)
 					
 					/* data = [];

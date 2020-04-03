@@ -151,7 +151,7 @@ Instant start = Instant.now();
 	//			ArrayList R2 = (ArrayList)result.get(0);
 	//for()
 	//			System.out.println(source.get("cluster_3"));
-	HashMap<Pair<String, String>, JSONArray> clusterResult = new HashMap<Pair<String, String>, JSONArray>();
+	HashMap<Pair<String, String>, List<JSONObject>> clusterResult = new HashMap<Pair<String, String>, List<JSONObject>>();
 	//JSONObject key_val = new JSONObject();
 	Pair<String, String> key_val = new Pair<String, String>(null, null);
 
@@ -222,7 +222,7 @@ Instant start = Instant.now();
 		//scatterplotfinaldata.add(new JSONObject("{columns:['','new_x','new_y','cluster']}"));
 		//System.out.println(svd);
 		
-		JSONArray postDataAll = cluster.getPosts(post_ids, "", "", "__ONLY__POST__ID__","blogposts");
+		List<JSONObject>  postDataAll = cluster.getPosts(post_ids, "", "", "__ONLY__POST__ID__","blogposts");
 
 		//String terms = cluster.getTopTerms(post_ids);
 		//System.out.println(terms);
@@ -566,13 +566,14 @@ Instant start = Instant.now();
 								String total = source.get("total").toString();
 								session.setAttribute(tid.toString() + "clusters_total", total);
 								String blogdistribution = null;
-								JSONArray postData = new JSONArray();
+								//JSONArray postData = new JSONArray();
+								List<JSONObject> postData;
 
 								String[] colors = {"green", "red", "blue", "orange", "purple", "pink", "black", "grey", "brown", "yellow"};
 								int i = 0;
 								Pair<String, String> currentKey = new Pair<String, String>(null, null);
 
-								for (Map.Entry<Pair<String, String>, JSONArray> entry : clusterResult.entrySet()) {
+								for (Map.Entry<Pair<String, String>, List<JSONObject>> entry : clusterResult.entrySet()) {
 									Pair<String, String> key = entry.getKey();
 
 									if (key.getKey().equals("cluster_1")) {
@@ -778,23 +779,24 @@ Instant start = Instant.now();
 								postData = clusterResult.get(currentKey);
 								/* System.out.println("This is key--" + key); */
 
-								for (int j = 0; j < postData.length(); j++) {
+								for (int j = 0; j < postData.size(); j++) {
 									if (j == 0) {
-										Object title = postData.getJSONObject(0).getJSONObject("_source").get("title");
+										
+										Object title = postData.get(0).getJSONObject("_source").get("title");
 										currentTitle = title.toString();
 
-										Object blogger = postData.getJSONObject(0).getJSONObject("_source").get("blogger");
+										Object blogger = postData.get(0).getJSONObject("_source").get("blogger");
 										currentBlogger = blogger.toString();
 
-										Object comments = postData.getJSONObject(0).getJSONObject("_source").get("num_comments");
+										Object comments = postData.get(0).getJSONObject("_source").get("num_comments");
 										currentNumComment = comments.toString();
 
-										Object post = postData.getJSONObject(0).getJSONObject("_source").get("post");
+										Object post = postData.get(0).getJSONObject("_source").get("post");
 										currentPost = post.toString();
 									}
 
-									Object title = postData.getJSONObject(j).getJSONObject("_source").get("title");
-									Object blog_post_id = postData.getJSONObject(j).getJSONObject("_source").get("blogpost_id");
+									Object title = postData.get(j).getJSONObject("_source").get("title");
+									Object blog_post_id = postData.get(j).getJSONObject("_source").get("blogpost_id");
 
 									//String distances = source.get("distances").toString();
 									//ObjectMapper mapper = new ObjectMapper();

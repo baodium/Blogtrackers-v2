@@ -29,7 +29,8 @@ import java.io.OutputStreamWriter;
  * Servlet implementation class KeywordTrend
  */
 //@WebServlet("/KeywordTrend")
-public class KeywordTrend extends HttpServlet {
+public class KeywordTrend extends HttpServlet{
+	Clustering terms = new Clustering();
 	private static final long serialVersionUID = 1L;
 
 	/**
