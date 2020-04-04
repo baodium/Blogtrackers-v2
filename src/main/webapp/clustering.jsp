@@ -151,7 +151,7 @@ Instant start = Instant.now();
 	//			ArrayList R2 = (ArrayList)result.get(0);
 	//for()
 	//			System.out.println(source.get("cluster_3"));
-	HashMap<Pair<String, String>, List<JSONObject>> clusterResult = new HashMap<Pair<String, String>, List<JSONObject>>();
+	HashMap<Pair<String, String>, ArrayList<JSONObject>> clusterResult = new HashMap<Pair<String, String>, ArrayList<JSONObject>>();
 	//JSONObject key_val = new JSONObject();
 	Pair<String, String> key_val = new Pair<String, String>(null, null);
 
@@ -222,8 +222,8 @@ Instant start = Instant.now();
 		//scatterplotfinaldata.add(new JSONObject("{columns:['','new_x','new_y','cluster']}"));
 		//System.out.println(svd);
 		
-		List<JSONObject>  postDataAll = cluster.getPosts(post_ids, "", "", "__ONLY__POST__ID__","blogposts");
-
+		//List<JSONObject>  postDataAll = cluster.getPosts(post_ids, "", "", "__ONLY__POST__ID__","blogposts");
+		ArrayList<JSONObject> postDataAll = DbConnection.queryJSON("select date,post,num_comments, blogger,permalink, title, blogpost_id, location, blogsite_id from blogposts where blogpost_id in ("+post_ids+")");
 		//String terms = cluster.getTopTerms(post_ids);
 		//System.out.println(terms);
 		//System.out.println("done");
@@ -567,13 +567,13 @@ Instant start = Instant.now();
 								session.setAttribute(tid.toString() + "clusters_total", total);
 								String blogdistribution = null;
 								//JSONArray postData = new JSONArray();
-								List<JSONObject> postData;
+								ArrayList postData;
 
 								String[] colors = {"green", "red", "blue", "orange", "purple", "pink", "black", "grey", "brown", "yellow"};
 								int i = 0;
 								Pair<String, String> currentKey = new Pair<String, String>(null, null);
 
-								for (Map.Entry<Pair<String, String>, List<JSONObject>> entry : clusterResult.entrySet()) {
+								for (Map.Entry<Pair<String, String>, ArrayList<JSONObject>> entry : clusterResult.entrySet()) {
 									Pair<String, String> key = entry.getKey();
 									
 									String temp_terms = topterms.get("cluster_" + (i + 1));
@@ -818,23 +818,17 @@ Instant start = Instant.now();
 								String max_post_id = "";
 
 								postData = clusterResult.get(currentKey);
+								
 								/* System.out.println("This is key--" + key); */
 
 
 								for (int j = 0; j < postData.size(); j++) {
-									if (j == 0) {
-										
-										
-
+									JSONObject p = new JSONObject(postData.get(j).toString());
+									Object blog_post_id = p.getJSONObject("_source").get("blogpost_id");
+									Object title = p.getJSONObject("_source").get("title");
+									Object permalink = p.getJSONObject("_source").get("permalink");
 								
-										Object blog_post_id = postData.get(0).getJSONObject("_source").get("blogpost_id");
-										Object title = postData.get(0).getJSONObject("_source").get("title");
-										Object permalink = postData.get(0).getJSONObject("_source").get("permalink");
-									/* Object title = postData.getJSONObject(j).getJSONObject("_source").get("title");
 									
-									Object blog_post_id = postData.getJSONObject(j).getJSONObject("_source").get("blogpost_id"); */
-									/* Object title = postData.get(j).getJSONObject("_source").get("title");
-									Object blog_post_id = postData.get(j).getJSONObject("_source").get("blogpost_id"); */
 									
 									if (j == 0) {
 										max_distance_id = (float)Float.parseFloat(distances.get(blog_post_id.toString()).toString());
@@ -844,33 +838,24 @@ Instant start = Instant.now();
 									}
 									
 									if(max_distance_id > (float)Float.parseFloat(distances.get(blog_post_id.toString()).toString())){
+										System.out.println(p);
 										max_distance_id = (float)Float.parseFloat(distances.get(blog_post_id.toString()).toString());
 										max_post_id = blog_post_id.toString();
 										
-										//currentTitle = title.toString();
-
-										//Object blogger = postData.getJSONObject(j).getJSONObject("_source").get("blogger");
-										//currentBlogger = blogger.toString();
-
-										//Object comments = postData.getJSONObject(j).getJSONObject("_source").get("num_comments");
-										//currentNumComment = comments.toString();
-
-										//Object post = postData.getJSONObject(j).getJSONObject("_source").get("post");
-
-										
-										
-										
-										
-										
 										currentTitle = title.toString();
 
-										Object blogger = postData.get(0).getJSONObject("_source").get("blogger");
+										Object blogger = p.getJSONObject("_source").get("blogger");
 										currentBlogger = blogger.toString();
 
-										Object comments = postData.get(0).getJSONObject("_source").get("num_comments");
-										currentNumComment = comments.toString();
+										if(p.getJSONObject("_source").get("num_comments") == null){
+											currentNumComment = "0";
+										}else{
+											Object comments = p.getJSONObject("_source").get("num_comments");
+											currentNumComment = comments.toString();
+										}
+										
 
-										Object post = postData.get(0).getJSONObject("_source").get("post");
+										Object post = p.getJSONObject("_source").get("post");
 										currentPost = post.toString();
 										activeDef = "activeselectedblog";
 										activeDefLink = "";
@@ -878,7 +863,7 @@ Instant start = Instant.now();
 
 
 									
-
+									 //}
 									
 									
 									
@@ -904,7 +889,7 @@ Instant start = Instant.now();
 							
 					
 							<%
-								}}
+								}
 							%>
 
 							<!-- <tr>

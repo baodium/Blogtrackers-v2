@@ -220,14 +220,14 @@
 													LocalDate date_ = LocalDate.parse(date, inputFormatter);
 													Integer d = date_.getYear();
 													/* String formattedDate = outputFormatter.format(date); */
-													System.out.println(d.toString());
+													//System.out.println(d.toString());
 
 													String replace = "<span style=background:red;color:#fff>" + mostactiveterm + "</span>";
 													String active2 = mostactiveterm.substring(0, 1).toUpperCase()
 															+ mostactiveterm.substring(1, mostactiveterm.length());
 													String active3 = mostactiveterm.toUpperCase();
 													
-													System.out.println("mostactiveterms--"+mostactiveterm);
+													//System.out.println("mostactiveterms--"+mostactiveterm);
 													
 													mostActiveTerms = mostactiveterm.split(",");
 													
@@ -235,7 +235,7 @@
 													
 													for (int i_ = 0; i_ < mostActiveTerms.length; i_++){
 														
-														System.out.println("mostactiveterms--=.."+mostActiveTerms[i_]);
+														//System.out.println("mostactiveterms--=.."+mostActiveTerms[i_]);
 														mostactiveterm_ = mostActiveTerms[i_].replaceAll("\"", "");
 														mostactiveterm_ =  mostactiveterm.trim();
 														

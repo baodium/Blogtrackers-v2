@@ -3013,20 +3013,25 @@ public class Blogposts {
 	}
 
 	public int countOccurences(String str, String word) {
+		//System.out.println("str-"+str);
 		int count = 0;
 		word = word.toLowerCase();
+		word = word.replace("\"", "");
+		String [] word_split = word.split(",");
 	
-
+		for(String w: word_split) {
+			//System.out.println("terms--" + w);
 			String[] postsplit = str.split("\\W+");
 			for (String pst : postsplit) {
+				
 				pst = pst.toLowerCase();
-				if (pst.equals(word)) {
-					//System.out.println("pst--"+pst);
+				if (w.trim().equals(pst.trim())) {
+					System.out.println(pst + "--" + w);
 					count++;
 					//title = title_;
 				}
 			}
-		
+		}
 
 		return count;
 	}
@@ -3383,7 +3388,7 @@ public class Blogposts {
 				if (bloggerName == "NOBLOGGER" && term != "___NO__TERM___") {
 					if (j.get("title").toString() != null || j.get("title").toString() != "") {
 						occurence = this.countOccurences(src, term);
-						System.out.println(term + "----------------------" + occurence);
+						//System.out.println(term + "----------------------" + occurence);
 						title = j.get("title").toString();
 						blogpost_id = j.get("blogpost_id").toString();
 						permalink = j.get("permalink").toString();
@@ -3411,7 +3416,7 @@ public class Blogposts {
 
 			System.out.println("DONE and size of list is --" + list.size());
 
-			result = String.join(" ", list);
+			//result = String.join(" ", list);
 		}
 
 		System.out.println("Done Escaped the necessary");

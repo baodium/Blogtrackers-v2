@@ -1073,14 +1073,14 @@ int start_test = 0;
 				: session.getAttribute(tid.toString() + "cluster_distances");
 
 		HashMap<String, String> key_val_posts = (HashMap<String, String>) result_key_val;
-		HashMap<Pair<String, String>, JSONArray> clusterResult = (HashMap<Pair<String, String>, JSONArray>) result;
+		HashMap<Pair<String, String>, ArrayList<JSONObject>> clusterResult = (HashMap<Pair<String, String>, ArrayList<JSONObject>>) result;
 
 		Pair<String, String> key_val = new Pair<String, String>(null, null);
 		String cluster_ = cluster.toString();
 		String post_ids = key_val_posts.get(cluster_);
 
 		key_val = new Pair<String, String>(cluster_, post_ids);
-		clusterResult.get(key_val);
+		//clusterResult.get(key_val);
 
 		Object total = (null == session.getAttribute(tid.toString() + "clusters_total")) ? ""
 				: session.getAttribute(tid.toString() + "clusters_total");
@@ -1096,13 +1096,14 @@ int start_test = 0;
 		String blogdistribution = null;
 		String bloggersMentioned = null;
 		String topPostingLocation = null;
-		JSONArray postData = new JSONArray();
+		ArrayList<JSONObject> postData = new ArrayList<JSONObject>();
 
 		try {
 			blogdistribution = this.getBlogDistribution(post_ids, (double) Integer.parseInt(total.toString()));
 			bloggersMentioned = this.getBloggersMentioned(post_ids);
 			topPostingLocation = this.getTopPostingLocation(post_ids);
 			postData = clusterResult.get(key_val);
+			//System.out.println("postData--"+postData);
 		} catch (NumberFormatException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -1127,7 +1128,7 @@ int start_test = 0;
 			// postData.getJSONObject(j).getJSONObject("_source").get("title");
 			JSONObject post_distances_all = new JSONObject();
 			post_distances_all.put("distances", new JSONObject(distances.toString()));
-			post_distances_all.put("post_data", postData);
+			post_distances_all.put("post_data", new JSONArray(postData.toString()));
 			out.write(post_distances_all.toString());
 		} else if (action.toString().equals("loadkeywords")) {
 			// System.out.println("action" + action + "terms--" + topterms.get(cluster_));

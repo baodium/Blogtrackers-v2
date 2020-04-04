@@ -51,6 +51,7 @@ $(document).delegate('.topics1', 'click', function(){
 	// loadInfluence(bloog,blg[1]);
 	//$("#term").val(all_selected_names);
 	$('#d3-line-basic').html('');
+	$("#term").val(all_selected_names);
 	console.log("terms", $("#term").val());
 	/* $("#term_id").val(term_id); */
 	loadBlogMentioned(date_start, date_end);
@@ -164,7 +165,13 @@ function loadMostLocation(date_start,date_end) {
 		},
 		success : function(response) {
 			console.log(response)
-			$(".top-location").html(response);
+			if(response.includes("___")){
+				$(".top-location").html(response.split("___")[0].toUpperCase());
+			}
+			else{
+				$(".top-location").html(response);
+			}
+			
 		}
 	});
 }

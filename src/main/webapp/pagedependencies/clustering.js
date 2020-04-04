@@ -204,7 +204,7 @@ function loadtitletable(clusterid){
 		},
 		success: function(response)
 		{   
-			
+			console.log("response", response);
 			blog_post_data = response['post_data']
 			var arrayLength = response['post_data'].length;
 			$("#posts_display").addClass("hidden");

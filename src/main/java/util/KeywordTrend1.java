@@ -200,7 +200,7 @@ System.out.println(index);
 				System.out.println("i am here----");
 				PrintWriter out = response.getWriter();
 				System.out.println("mostactiveterm----"+mostactiveterm);
-				String t_ = "\"" + mostactiveterm.toString() + "\"";
+				String t_ = mostactiveterm.toString();
 				String t = "__TERMS__KEYWORD__" + t_;
 				result_blogmentioned = aggregation(t_, all_blog_ids, date_start, date_end, "blogposts","blogsite_id","asc","bucket_length");
 
@@ -213,7 +213,7 @@ System.out.println(index);
 		} else if (action.toString().equals("getmostlocation")) {
 			PrintWriter out = response.getWriter();
 			try {
-				String t_ = "\"" + mostactiveterm.toString() + "\"";
+				String t_ = mostactiveterm.toString();
 				String t = "__TERMS__KEYWORD__" + t_;
 				top_location = aggregation(t_, all_blog_ids, date_start, date_end, "blogposts","location","desc","bucket_highest");
 			} catch (Exception e) {
@@ -227,7 +227,7 @@ System.out.println(index);
 		} else if (action.toString().equals("getmostpost")) {
 			try {
 				PrintWriter out = response.getWriter();
-				String t_ = "\"" + mostactiveterm.toString() + "\"";
+				String t_ = mostactiveterm.toString();
 				String t = "__TERMS__KEYWORD__" + t_;
 				result_posts = getPostsMentioned(t_, all_blog_ids, date_start, date_end, "blogposts");
 				out.write(result_posts.toString());

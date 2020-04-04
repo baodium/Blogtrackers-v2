@@ -957,8 +957,8 @@
 													activew = "thanks";
 													//selectedkeycount = term.getTermOcuurence(tm, dt, dte);
 							%>
-							<a
-								class="btn btn-primary form-control select-term bloggerinactive mb20 <%=dselected%>  <%=activew%> size-<%=size%>"
+							<a name="<%=tm %>"
+								class="topics topics1 btn btn-primary form-control select-term bloggerinactive mb20 <%=dselected%>  <%=activew%> value=" <%=v%>" size-<%=size%>"
 								id="<%=tm.replaceAll(" ", "_")%>***<%=terms_id%>"><b><%=tm%></b></a>
 							<%
 								} else {
@@ -974,9 +974,9 @@
 
 
 							<%--   --%>
-							<a name="<%-- <%=entry.getKey()%> --%>"
+							<a name="<%=tm %>"
 								class="topics topics1 btn btn-primary form-control select-term bloggerinactive mb20 <%=activew%>  size-1 <%-- <%=activew%> --%>"
-								value="<%-- <%=entry.getValue()%> --%>"><b> <%-- <%=entry.getKey()%> --%>
+								value=" <%=v%>"><b> <%-- <%=entry.getKey()%> --%>
 							</b><%=tm%></a>
 
 							<%
@@ -1226,6 +1226,7 @@
 												JSONArray lineValues = new JSONArray();
 												int occurenceTotal = 0;
 												String date = null;
+												int max_occurence = 0;
 												HashMap<String,String> values = new HashMap<String,String>();
 												int i = 0;
 												//for (int i = 0; i < p.length(); i++) {
@@ -1252,6 +1253,15 @@
 															occurenceTotal = occurenceTotal + Integer.parseInt(occurence);
 
 															if (i == 0) {
+																max_occurence = Integer.parseInt(occurence);
+															}
+															if(max_occurence > Integer.parseInt(occurence)){
+																max_occurence = Integer.parseInt(occurence);
+																String indx = p.get(post_id).toString();
+																JSONObject j1 = new JSONObject(indx);
+																title = j1.get("title").toString();
+																singleTitle = title;
+															}
 																/* System.out.println("first--" +post_id_pair.get(post_id));
 																jsonObject = "{"+post_id_pair.get(post_id).toString().replace("\"", "").replace("[", "").replace("]", "").replace("),", "-").replace("(", "").replace(",", ":").replace("-", ",").replace(")", "").replace("'", "")+"}";
 																json = new JSONObject(jsonObject);
@@ -1265,7 +1275,7 @@
 																singlePost = j2.get("post").toString();
 																singlePost = singlePost.replaceAll(mostactiveterm,replace);
 																System.out.println("first--" +post_id); */
-															}
+															
 															//String terms = j2.get(field).toString();
 
 															String indx = p.get(post_id).toString();
@@ -1994,15 +2004,15 @@ $(document).ready(function() {
     		    	
     		    	all_selected_names += '"'+blog_name+'"';
     		    	
-/*     		    	all_selected_names += '"'+blog_name+'"';
-    		    	all_selected_names1 += blog_name; */
+     		    	//all_selected_names += '"'+blog_name+'"';
+    		    	//all_selected_names1 += blog_name; 
     		    	
     		    		
     		    	i++;
     			    		
     			});
-    			 
-    			 
+    			 $("#term").val(all_selected_names);
+    			 console.log('/////'+ all_selected_names);
     		 }
     		////////////end collecting names
     		 
