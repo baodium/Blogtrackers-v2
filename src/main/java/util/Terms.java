@@ -1178,7 +1178,12 @@ public class Terms extends HttpServlet implements Runnable {
 //				output_.put(key, value);
 				//JSONObject ttt = (JSONObject) o.get("post_id_term_pair");
 				//System.out.println("keyssssss--" + ttt.keySet());
+				JSONObject pp = (JSONObject)o.get("post_id_post");
+				System.out.println("pp --" + pp.length());
+				if(pp.length() > 0) {
+					
 				session.setAttribute(ids.toString() + "--" + action.toString(), o);
+				}
 //				for (Tuple2<String, Integer> x : data) {
 //					result.put(x._1, x._2);
 //				}
