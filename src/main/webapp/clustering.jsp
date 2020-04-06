@@ -171,6 +171,7 @@ Instant start = Instant.now();
 	ArrayList result = cluster._getClusters(tracker_id);
 
 	JSONObject res = new JSONObject(result.get(0).toString());
+	
 	JSONObject source = new JSONObject(res.get("_source").toString());
 
 	//			ArrayList R2 = (ArrayList)result.get(0);
@@ -195,7 +196,9 @@ Instant start = Instant.now();
 		String cluster_ = "cluster_" + String.valueOf(i);
 		String centroids = "C" + String.valueOf(i) + "xy";
 		JSONObject cluster_data = new JSONObject(source.get(cluster_).toString());
-		
+		//Map s = new LinkedHashMap();
+		//System.out.println(source.get(cluster_).toString());
+		//System.out.println(cluster_data);
 		String post_ids = cluster_data.get("post_ids").toString();
 		///break;
 		

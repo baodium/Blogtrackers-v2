@@ -1233,10 +1233,15 @@
 												String max_occurence_post_blogger = "";
 												String max_occurence_id = "";
 												HashMap<String,String> values = new HashMap<String,String>();
+												int i_found = 0;
 												int i = 0;
 												//for (int i = 0; i < p.length(); i++) {
 													while(count < 100){
+													//for (int i = 0; i < 100; i++) {
+													//while(count < 100){
+												
 												//for (int i = 0; i < 10; i++) {
+
 													if (iter.hasNext()) {
 														post_id = iter.next();
 													}
@@ -1252,10 +1257,13 @@
 														JSONObject json = new JSONObject(jsonObject);
 
 														if (json.has(mostactiveterm)) {
-															//System.out.println(json);
+															i = i_found;
+															//System.out.println("i--"+ i + mostactiveterm);
 															count++;
 															occurence = json.get(mostactiveterm).toString();
 															occurenceTotal = occurenceTotal + Integer.parseInt(occurence);
+
+
 															
 														if (i == 0) {
 																
@@ -1267,6 +1275,7 @@
 																System.out.println("ENDED HERE");
 																activeDefLink = "makeinvisible";
 																activeDef = "";
+
 															}
 															
 															

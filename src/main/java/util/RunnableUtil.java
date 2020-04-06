@@ -312,11 +312,15 @@ public class RunnableUtil implements Runnable {
 			String blogger = b.toString();
 			Object p_id = jsonarray.getJSONObject(i).getJSONObject("_source").get("blogpost_id");
 			String post_ids = p_id.toString();
+//			Object n_c = jsonarray.getJSONObject(i).getJSONObject("_source").get("num_comments");
+//			String num_comments = n_c.toString();
+			Object d = jsonarray.getJSONObject(i).getJSONObject("_source").get("date");
+			String date = d.toString();
 			temp.put("post", post);
 			temp.put("title", title);
 			temp.put("blogger", blogger);
 //			temp.put("num_comments", num_comments);
-//			temp.put("date", date);
+			temp.put("date", date);
 
 			this.datatuple3.put(post_ids.trim(), temp);
 			JSONObject jsonObject = jsonarray.getJSONObject(i);

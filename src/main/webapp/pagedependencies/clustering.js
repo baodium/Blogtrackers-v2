@@ -344,7 +344,7 @@ function loadkeywords(clusterid){
 	$.ajax({
 		url: "CLUSTERING",
 		method: 'POST',
-		/*dataType:'json',*/
+		dataType:'json',
 		data: {
 			action:"loadkeywords",
 			cluster:clusterid,
@@ -370,14 +370,15 @@ function loadkeywords(clusterid){
 //			
 //			$("#keyword_display").html(build);
 			
-			var terms = response;
-			var new_dd = terms.replace('[','{').replace(']','}').replace(/\),/g,'-').replace(/\(/g,'').replace(/,/g,':').replace(/-/g,',').replace(/\)/g,'').replace(/'/g,"");
-			var newjson = new_dd.replace(/\s+/g,'').replace(/{/g,'{"').replace(/:/g,'":"').replace(/,/g,'","').replace(/}/g,'"}')
-			var jsondata = JSON.parse(newjson)
-			
+			//var terms = response;
+			//var new_dd = terms.replace('[','{').replace(']','}').replace(/\),/g,'-').replace(/\(/g,'').replace(/,/g,':').replace(/-/g,',').replace(/\)/g,'').replace(/'/g,"");
+			//var newjson = new_dd.replace(/\s+/g,'').replace(/{/g,'{"').replace(/:/g,'":"').replace(/,/g,'","').replace(/}/g,'"}')
+			//var newjson = terms.replace(/"/g,"");
+			//var jsondata = JSON.parse(terms)
+			var jsondata =response;
 			
 			console.log('trtrtrtrtrtrtrtrtrtr')
-			console.log(jsondata)
+			console.log('data',jsondata)
 			
 			elem = '#tagcloudcontainer1';
 			
