@@ -1228,10 +1228,12 @@
 												String date = null;
 												int max_occurence = 0;
 												HashMap<String,String> values = new HashMap<String,String>();
+												int i_found = 0;
 												int i = 0;
 												//for (int i = 0; i < p.length(); i++) {
+													//for (int i = 0; i < 100; i++) {
 													while(count < 100){
-
+														
 													if (iter.hasNext()) {
 														post_id = iter.next();
 													}
@@ -1247,14 +1249,17 @@
 														JSONObject json = new JSONObject(jsonObject);
 
 														if (json.has(mostactiveterm)) {
-															//System.out.println(json);
+															i = i_found;
+															//System.out.println("i--"+ i + mostactiveterm);
 															count++;
 															occurence = json.get(mostactiveterm).toString();
 															occurenceTotal = occurenceTotal + Integer.parseInt(occurence);
 
 															if (i == 0) {
+																System.out.println("found--"+i+mostactiveterm);
 																max_occurence = Integer.parseInt(occurence);
 															}
+															
 															if(max_occurence > Integer.parseInt(occurence)){
 																max_occurence = Integer.parseInt(occurence);
 																String indx = p.get(post_id).toString();

@@ -146,6 +146,7 @@ Instant start = Instant.now();
 	ArrayList result = cluster._getClusters(tracker_id);
 
 	JSONObject res = new JSONObject(result.get(0).toString());
+	
 	JSONObject source = new JSONObject(res.get("_source").toString());
 
 	//			ArrayList R2 = (ArrayList)result.get(0);
@@ -170,7 +171,9 @@ Instant start = Instant.now();
 		String cluster_ = "cluster_" + String.valueOf(i);
 		String centroids = "C" + String.valueOf(i) + "xy";
 		JSONObject cluster_data = new JSONObject(source.get(cluster_).toString());
-		
+		//Map s = new LinkedHashMap();
+		//System.out.println(source.get(cluster_).toString());
+		//System.out.println(cluster_data);
 		String post_ids = cluster_data.get("post_ids").toString();
 		///break;
 		
@@ -276,6 +279,7 @@ Instant start = Instant.now();
 		//DONE CREATING CHORD MATRIX
 		
 		topterms.put(cluster_,terms);
+		System.out.println(terms);
 		
 		key_val = new Pair<String, String>(cluster_, post_ids);
 		//key_val.put(cluster_,post_ids);
@@ -581,17 +585,19 @@ Instant start = Instant.now();
 									String word_build = "";
 									
 									//System.out.println("terms ---" + terms);
-									temp_terms = temp_terms.replace("[","").replace("]", "").replace("),", "-").replace("(", "").replace("\'", "");
-									List<String> termlist = Arrays.asList(temp_terms.split("-"));
+									temp_terms = temp_terms.replace("{","").replace("}", "").replace("[","").replace("]", "").replace("),", "-").replace("(", "").replace("\'", "").replace("\"", "");;
+									List<String> termlist = Arrays.asList(temp_terms.split(","));
 									
 									for(int m = 0; m < 10; m++){
 										if(m > 0){
 											word_build += ", ";
 										}
-										word_build += termlist.get(m).split(",")[0];
+										word_build += termlist.get(m).split(":")[0];
+										//System.out.println("original--" + termlist.get(m));
+										//System.out.println("building--" + termlist.get(m).split(":")[0]);
 									
 									}
-									
+									System.out.println("original--" + word_build);
 
 									if (key.getKey().equals("cluster_1")) {
 
@@ -847,11 +853,12 @@ Instant start = Instant.now();
 										Object blogger = p.getJSONObject("_source").get("blogger");
 										currentBlogger = blogger.toString();
 
-										if(p.getJSONObject("_source").get("num_comments") == null){
-											currentNumComment = "0";
-										}else{
+										try {
 											Object comments = p.getJSONObject("_source").get("num_comments");
 											currentNumComment = comments.toString();
+										}catch(Exception e){
+											currentNumComment = "0";
+											
 										}
 										
 
@@ -986,18 +993,19 @@ Instant start = Instant.now();
 									<tr>
 										
 										<% 
-										
+										int max = 0;
 										for(int m = 0; m < 10; m++){
 											
 											String terms = topterms.get("cluster_" + (m + 1));
 											//System.out.println("terms ---" + terms);
-											terms = terms.replace("[","").replace("]", "").replace("),", "-").replace("(", "").replace("\'", "");
-											List<String> termlist = Arrays.asList(terms.split("-"));	
+											terms = terms.replace("{","").replace("}","").replace("[","").replace("]", "").replace("),", "-").replace("(", "").replace("\'", "").replace("\"", "");
+											List<String> termlist = Arrays.asList(terms.split(","));
+											max = Integer.parseInt(termlist.get(k).split(":")[1]);
 											
 										%>
 										
 										<td>
-											<%=termlist.get(k).split(",")[0]%>
+											<%=termlist.get(k).split(":")[0]%>
 										</td>
 
 										<%} %>
@@ -1515,11 +1523,12 @@ $('.blogpost_link').on("click", function(){
 			
 		}
 	
-	var terms = "<%=topterms.get("cluster_1")%>";
-	console.log('terms', terms);
-	var new_dd = terms.replace('[','{').replace(']','}').replace(/\),/g,'-').replace(/\(/g,'').replace(/,/g,':').replace(/-/g,',').replace(/\)/g,'').replace(/'/g,"");
-	var newjson = new_dd.replace(/\s+/g,'').replace(/{/g,'{"').replace(/:/g,'":"').replace(/,/g,'","').replace(/}/g,'"}')
-	var jsondata = JSON.parse(newjson)
+	var jsondata = <%=topterms.get("cluster_1").toString().trim()%>;
+	//console.log('terms', terms);
+	//var new_dd = terms.replace('[','{').replace(']','}').replace(/\),/g,'-').replace(/\(/g,'').replace(/,/g,':').replace(/-/g,',').replace(/\)/g,'').replace(/'/g,"");
+	//var newjson = new_dd.replace(/\s+/g,'').replace(/{/g,'{"').replace(/:/g,'":"').replace(/,/g,'","').replace(/}/g,'"}')
+	//var newjson = terms.replace(/"/g,"");
+	//var jsondata = JSON.parse(terms);
 	
 	/* data = [];
 	for (var key in jsondata) {var dic = {}; dic["text"] = key; dic["size"] = jsondata[key]; data.push(dic);} */
