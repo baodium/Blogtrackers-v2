@@ -1950,19 +1950,19 @@ $(document).ready(function() {
         //case 0:
           //var hex = 'yellow';
         case 1:
-          var hex = '#5de6f8'; 
+          var hex = '#e50471'; 
           break;
         case 2:
-          var hex = '#ed9dfb';
+          var hex = '#0571a0';
           break;
         case 3:
-          var hex = '#b1fcdf';
+          var hex = '#038a2c';
           break;
         case 4:
-          var hex = '#eefcb1';
+          var hex = '#6b8a03';
           break;
         case 5:
-          var hex = '#fccfb1';
+          var hex = '#a02f05';
           break;
         case 6:
           var hex = '#b770e1';
@@ -1980,7 +1980,7 @@ $(document).ready(function() {
           var hex = '#981010';
           break;
         default:
-          var hex = '#8088fa';
+          var hex = '#6b085e';
 
       }
 
@@ -2033,8 +2033,13 @@ $(document).ready(function() {
             
           $(this).removeClass("thanks"); 
 
-          $(this).addClass('nobccolor');
-
+          $(this).addClass('white_bac');
+		
+          $(this).addClass("bloggerinactive"); 
+          
+          $(this).removeClass('selectionactive');
+          
+          $(this).css('font-weight', 400);
 
         }else{
 
