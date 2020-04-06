@@ -37,12 +37,37 @@ Instant start = Instant.now();
 	
 
 	userinfo = new DbConnection().query("SELECT * FROM usercredentials where Email = '" + email + "'");
+	String trackername = "";
 	//System.out.println(userinfo);
 	if (userinfo.size() < 1) {
 		//response.sendRedirect("login.jsp");
 	} else {
 		userinfo = (ArrayList<?>) userinfo.get(0);
+		ArrayList detail = new ArrayList();
+		Object user = (null == session.getAttribute("username")) ? "" : session.getAttribute("username");
+		Trackers tracker = new Trackers();
 		try {
+			
+			if (tid != "") {
+				detail = tracker._fetch(tid.toString());
+				//System.out.println(detail);
+			} else {
+				detail = tracker._list("DESC", "", user.toString(), "1");
+				//System.out.println("List:"+detail);
+			}
+			
+			if (detail.size() > 0) {
+				//String res = detail.get(0).toString();
+				ArrayList resp = (ArrayList<?>) detail.get(0);
+
+				String tracker_userid = resp.get(1).toString();
+
+				trackername = resp.get(2).toString();
+
+				
+			}
+			
+			
 			username = (null == userinfo.get(0)) ? "" : userinfo.get(0).toString();
 
 			name = (null == userinfo.get(4)) ? "" : (userinfo.get(4).toString());
@@ -498,11 +523,15 @@ Instant start = Instant.now();
 		<div class="row bottom-border pb20">
 			<div class="col-md-6 paddi">
 				<nav class="breadcrumb">
-					<a class="breadcrumb-item text-primary" href="trackerlist.html">MY
-						TRACKER</a> <a class="breadcrumb-item text-primary" href="#">Second
-						Tracker</a> <a class="breadcrumb-item active text-primary"
-						href="postingfrequency.html">Clustering</a>
-
+					<a class="breadcrumb-item text-primary"
+						href="<%=request.getContextPath()%>/trackerlist.jsp">Trackers</a>
+					<a class="breadcrumb-item text-primary"
+						href="<%=request.getContextPath()%>/edittracker.jsp?tid=<%=tid%>"><%=trackername%></a>
+					<a class="breadcrumb-item  text-primary"
+						href="<%=request.getContextPath()%>/dashboard.jsp?tid=<%=tid%>">Dashboard</a>
+					<a class="breadcrumb-item active text-primary"
+						href="#">Clustering Analysis
+						</a>
 				</nav>
 				<div>
 					Tracking:
@@ -666,7 +695,7 @@ Instant start = Instant.now();
 								<p class="text-primary mt10">Cluster Map</p>
 							</div>
 
-							<div class="chart-container">
+							<div id="chart-container" class="chart-container">
 								<div class="chart" id="clusterdiagram"></div>
 								
 								<div id="clusterdiagram_loader" class="hidden">
@@ -1331,12 +1360,13 @@ Instant start = Instant.now();
 	
 	
 	function loadscatter(clusterid){
+		var lengthy = $('#chart-container').width();
 		var margin = {
 				top : 10,
 				right : 30,
 				bottom : 30,
 				left : 60
-			}, width = 1000 - margin.left - margin.right, height = 300 - margin.top
+			}, width = lengthy - margin.left - margin.right, height = 300 - margin.top
 					- margin.bottom;
 
 			//append the SVG object to the body of the page

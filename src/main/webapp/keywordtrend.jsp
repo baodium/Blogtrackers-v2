@@ -801,10 +801,10 @@
 						href="<%=request.getContextPath()%>/trackerlist.jsp">Trackers</a>
 					<a class="breadcrumb-item text-primary"
 						href="<%=request.getContextPath()%>/edittracker.jsp?tid=<%=tid%>"><%=trackername%></a>
-					<a class="breadcrumb-item active text-primary"
+					<a class="breadcrumb-item  text-primary"
 						href="<%=request.getContextPath()%>/dashboard.jsp?tid=<%=tid%>">Dashboard</a>
 					<a class="breadcrumb-item active text-primary"
-						href="<%=request.getContextPath()%>/postingfrequency.jsp?tid=<%=tid%>">Keyword
+						href="#">Keyword
 						Trend</a>
 				</nav>
 				<!-- <div>
@@ -1235,7 +1235,7 @@
 												HashMap<String,String> values = new HashMap<String,String>();
 												int i = 0;
 												//for (int i = 0; i < p.length(); i++) {
-													while(count < 10){
+													while(count < 100){
 												//for (int i = 0; i < 10; i++) {
 													if (iter.hasNext()) {
 														post_id = iter.next();
@@ -1524,7 +1524,7 @@
 							<!-- <div class="p15 pb5 pt0" role="group">
           Export Options
               </div> -->
-							<table id="DataTables_Table_1_wrapper" class="display"
+							<table id="DataTables_Table_1_wrapper" class="display table_over_cover"
 								style="width: 100%">
 								<thead>
 									<tr>

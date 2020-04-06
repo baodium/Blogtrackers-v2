@@ -331,14 +331,12 @@ function loadTable(date_start, date_end, term_string) {
 			});
 }
 
-$('.blogpost_link')
-		.on(
-				"click",
-				function() {
+//$('.blogpost_link').on("click",function() {
+					
+					$('body').delegate('.blogpost_link', 'click', function(){
 
 					var post_id = $(this).attr("id");
 					
-
 					$("#blogpost_detail")
 							.html(
 									"<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />");

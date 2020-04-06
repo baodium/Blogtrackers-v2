@@ -161,7 +161,14 @@
 
 									JSONObject firstpost = new JSONObject();
 									/*if(allposts.size()>0){ */
-
+									String max_occurence_id = "";
+									String max_occurence_post = "";
+									String max_occurence_post_date = "";
+									String max_occurence_post_title = "";
+									String max_occurence_post_blogger = "";
+									
+									String max_occurence_post_num_comments = "";
+									String max_occurence_post_permalink = "";
 									if (sql.getJSONArray("data").length() > 0) {
 										String perma_link = null;
 										String j = null;
@@ -191,7 +198,8 @@
 												JSONObject tobj = null;
 
 												int k = 0;
-
+												int max_occurence = 0;
+												
 												/* for(int i=0; i< allposts.size(); i++){
 													tres = allposts.get(i).toString();	
 													tresp = new JSONObject(tres);									
@@ -199,6 +207,7 @@
 													tobj = new JSONObject(tresu); */
 
 												String sql_ = sql.get("data").toString();
+												
 												for (int i = 0; i < sql.getJSONArray("data").length(); i++) {
 													Object jsonArray = sql.getJSONArray("data").get(i);
 
@@ -233,6 +242,8 @@
 													
 													String mostactiveterm_=null;
 													
+													
+													
 													for (int i_ = 0; i_ < mostActiveTerms.length; i_++){
 														
 														//System.out.println("mostactiveterms--=.."+mostActiveTerms[i_]);
@@ -247,7 +258,25 @@
 														title = title.replaceAll(active2, replace);
 														title = title.replaceAll(active3, replace);
 													}
-												
+													
+													if(max_occurence < occurence){
+														System.out.println("3GUESS HERE");
+														System.out.println(j_);
+														System.out.println("3HERE");
+													
+														System.out.println("3ENTERED HERE");
+														max_occurence = (Integer) j_.get("occurence");
+														max_occurence_id = j_.get("blogpost_id").toString();
+														max_occurence_post = j_.get("post").toString();
+														max_occurence_post_blogger = j_.get("blogger").toString();
+														max_occurence_post_date = j_.get("date").toString();
+														max_occurence_post_title = j_.get("title").toString();
+														max_occurence_post_permalink = j_.get("permalink").toString();
+														max_occurence_post_num_comments = j_.get("num_comments").toString();
+														//JSONObject j1 = new JSONObject(max_occurence_id);
+														
+														//singleTitle = title;
+													}
 
 													/* 	LocalDate datee = LocalDate.parse(date);
 														DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");
@@ -259,6 +288,7 @@
 									<td><a class="blogpost_link cursor-pointer blogpost_link"
 										id="<%-- <%=tobj.get("blogpost_id")%> --%><%=blogpost_id%>">
 											<%-- <%=tobj.get("title") %> --%><%=title%></a><br /> <a
+											id="viewpost_<%=blogpost_id%>"
 										class="mt20 viewpost makeinvisible"
 										href="<%-- <%=tobj.get("permalink") %> --%><%=perma_link%>"
 										target="_blank"> <buttton
@@ -321,7 +351,7 @@
 										body = body.replaceAll(active3,replace); */
 						%>
 						<h5 class="text-primary p20 pt0 pb0">
-							<%-- <%=title%> --%><%=title%></h5>
+							<%-- <%=title%> --%><%=max_occurence_post_title%></h5>
 						<div class="text-center mb20 mt20">
 							<%-- <a href="<%=request.getContextPath()%>/bloggerportfolio.jsp?tid=<%=tid.toString()%>&blogger=<%=tobj.get("blogger")%>">
 							<button class="btn stylebuttonblue">
@@ -329,15 +359,15 @@
 							<button class="btn stylebuttonblue"
 								onclick="window.location.href = '<%=request.getContextPath()%>/bloggerportfolio.jsp?tid=<%=tid%>&blogger=<%-- <%=tobj.get("blogger")%> --%><%=blogger%>'">
 								<b class="float-left ultra-bold-text">
-									<%-- <%=tobj.get("blogger")%> --%><%=blogger%></b> <i
+									<%-- <%=tobj.get("blogger")%> --%><%=max_occurence_post_blogger%></b> <i
 									class="far fa-user float-right blogcontenticon"></i>
 							</button>
 							</a>
 							<button class="btn stylebuttonnocolor nocursor">
-								<%-- <%=date %> --%><%=date%></button>
+								<%-- <%=date %> --%><%=max_occurence_post_date%></button>
 							<button class="btn stylebuttonnocolor nocursor">
 								<b class="float-left ultra-bold-text">
-									<%-- <%=tobj.get("num_comments")%> --%><%=num_comments%>
+									<%-- <%=tobj.get("num_comments")%> --%><%=max_occurence_post_num_comments%>
 									comments
 								</b><i class="far fa-comments float-right blogcontenticon"></i>
 							</button>
@@ -346,7 +376,7 @@
 							<div class="p20 pt0 pb20  text-primary"
 								style="height: 550px; overflow-y: scroll;">
 								<%-- <%=body%> --%>
-								<p><%=posts%></p>
+								<p><%=max_occurence_post%></p>
 							</div>
 						</div>
 						<%
@@ -368,6 +398,15 @@
  $(document).ready(function() {
 	 
 	 
+	 
+	 
+	 id = <%=max_occurence_id %>
+		$(".viewpost").addClass("makeinvisible");
+	  	$('.blogpost_link').removeClass("activeselectedblog");
+	 	$('#'+id).addClass("activeselectedblog");
+	  	$("#viewpost_"+id).removeClass("makeinvisible");
+	 
+	 
 	$('#printdoc').on('click',function(){
 		print();
 	}) 
@@ -377,7 +416,7 @@
 		    $('#DataTables_Table_2_wrapper').DataTable( {
 		        "scrollY": 480,
 		        "scrollX": true,
-		        "order": [],
+		        "order": [[1, "desc"]],
 		         "pagingType": "simple",
 		        	 "bLengthChange": false,
 		             //"order": [[ 1, "desc" ]]
