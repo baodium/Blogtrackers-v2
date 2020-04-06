@@ -175,7 +175,7 @@
 										
 										String mostActiveTerms[] = null;
 						%>
-						<table id="DataTables_Table_2_wrapper" class="display"
+						<table id="DataTables_Table_2_wrapper" class="display table_over_cover"
 							style="width: 100%">
 							<thead>
 								<tr>

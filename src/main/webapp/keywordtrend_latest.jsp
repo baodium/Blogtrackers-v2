@@ -1134,7 +1134,7 @@
 											String posts = null;
 											Integer occurence = null; */
 						%>
-						<table id="DataTables_Table_2_wrapper" class="table_over_cover display"
+						<table id="DataTables_Table_2_wrapper" class="display"
 							style="width: 100%">
 							<thead>
 								<tr>
@@ -1227,16 +1227,11 @@
 												int occurenceTotal = 0;
 												String date = null;
 												int max_occurence = 0;
-												String max_occurence_post = "";
-												String max_occurence_post_date = "";
-												String max_occurence_post_title = "";
-												String max_occurence_post_blogger = "";
-												String max_occurence_id = "";
 												HashMap<String,String> values = new HashMap<String,String>();
 												int i = 0;
 												//for (int i = 0; i < p.length(); i++) {
-													while(count < 10){
-												//for (int i = 0; i < 10; i++) {
+													while(count < 100){
+
 													if (iter.hasNext()) {
 														post_id = iter.next();
 													}
@@ -1256,20 +1251,20 @@
 															count++;
 															occurence = json.get(mostactiveterm).toString();
 															occurenceTotal = occurenceTotal + Integer.parseInt(occurence);
-															
-														if (i == 0) {
-																
-																System.out.println("STARTED HERE");
-																//max_occurence = Integer.parseInt(occurence);
-																//System.out.println(max_occurence);
+
+															if (i == 0) {
+																max_occurence = Integer.parseInt(occurence);
 															}else{
-																
-																System.out.println("ENDED HERE");
 																activeDefLink = "makeinvisible";
 																activeDef = "";
 															}
-															
-															
+															if(max_occurence > Integer.parseInt(occurence)){
+																max_occurence = Integer.parseInt(occurence);
+																String max_occurence_id = p.get(post_id).toString();
+																JSONObject j1 = new JSONObject(max_occurence_id);
+																title = j1.get("title").toString();
+																singleTitle = title;
+															}
 																/* System.out.println("first--" +post_id_pair.get(post_id));
 																jsonObject = "{"+post_id_pair.get(post_id).toString().replace("\"", "").replace("[", "").replace("]", "").replace("),", "-").replace("(", "").replace(",", ":").replace("-", ",").replace(")", "").replace("'", "")+"}";
 																json = new JSONObject(jsonObject);
@@ -1310,33 +1305,14 @@
 																
 																
 																
-																if(max_occurence < Integer.parseInt(occurence)){
-																	System.out.println("GUESS HERE");
-																	System.out.println(j1);
-																	System.out.println("HERE");
-																
-																	System.out.println("ENTERED HERE");
-																	max_occurence = Integer.parseInt(occurence);
-																	max_occurence_id = post_id.toString();
-																	max_occurence_post = j1.get("post").toString();
-																	max_occurence_post_blogger = j1.get("blogger").toString();
-																	max_occurence_post_date = j1.get("date").toString();
-																	max_occurence_post_title = j1.get("title").toString();
-																	//max_occurence_post_perma_link = j1.get("permalinks").toString();
-																	//max_occurence_post_title = j1.get("title").toString();
-																	//JSONObject j1 = new JSONObject(max_occurence_id);
-																	
-																	//singleTitle = title;
-																}
+															//}
 								%>
-								
 								<tr>
 									<td><a
 										class="blogpost_link cursor-pointer <%=activeDef %>"
-										id="<%-- <%=tobj.get("blogpost_id")%> --%><%=post_id%>">
+										id=" <%-- <%=tobj.get("blogpost_id")%> --%> <%=post_id%>">
 											<%-- <%=tobj.get("title") %> --%> <%=title%>
 									</a><br /> <a class="mt20 viewpost <%=activeDefLink%>"
-									id="viewpost_<%=post_id%>"
 										href="<%-- <%=tobj.get("permalink") %> --%><%-- <%=perma_link%> --%> XXX"
 										target="_blank"> <buttton
 												class="btn btn-primary btn-sm mt10 visitpost">Visit
@@ -1357,27 +1333,8 @@
 															/* if (iter_.hasNext()) {
 																title_ = iter_.next();
 															} */
-															
 															title_ = j1.get("title").toString();
 															post_ = j1.get("post").toString();
-															
-															
-															if (i == 0) {
-																
-																System.out.println("2STARTED HERE");
-																max_occurence = 0;
-																max_occurence_id = "";
-																//max_occurence = Integer.parseInt(occurence);
-																System.out.println(occurence);
-															}else{
-																
-																System.out.println("2ENDED HERE");
-																activeDefLink = "makeinvisible";
-																activeDef = "";
-															}
-															
-															
-															
 
 															int occurence_new = 0;
 															if (post_.indexOf(mostactiveterm) != -1) {
@@ -1394,17 +1351,6 @@
 																if (occurence_new > 0) {
 																	title = title_;
 																	occurence = String.valueOf(occurence_new);
-																	
-															
-														if(max_occurence > Integer.parseInt(occurence)){
-															System.out.println("2ENTERED HERE");
-															max_occurence = Integer.parseInt(occurence);
-															max_occurence_id = post_id.toString();
-															//j1 = new JSONObject(max_occurence_id);
-															//title = j1.get("title").toString();
-															//singleTitle = title;
-														}
-																		
 								%>
 								<tr>
 									<td><a
@@ -1425,15 +1371,13 @@
 																System.out.print("-" + post_id);}
 
 															} else {
-																System.out.println("WELL HERE");
-																//System.out.println(occurence);
+
 															}
 														}
 													}
-													
-												i++;
+													i++;
+
 												}
-												//end while loop here
 													lineGraph.put("name", mostactiveterm);
 													lineGraph.put("identify", occurenceTotal);
 													JSONArray vals = new JSONArray();
@@ -1447,8 +1391,6 @@
 													}
 													lineGraph.put("values",vals);
 													System.out.println("lineGraph --" + lineGraph);
-													System.out.println("MAXXXXXXXX --" + max_occurence_id);
-													System.out.println("MAMMMMM --" + max_occurence);
 												/* BY SEUN ENDING */
 								%>
 								</tr>
@@ -1469,7 +1411,7 @@
 						<h5 class="text-primary p20 pt0 pb0">
 							<%-- <%=title%> --%>
 							<%-- <%=title%> --%>
-							<%=max_occurence_post_title%>
+							<%=singleTitle%>
 						</h5>
 						<div class="text-center mb20 mt20">
 							<%-- <a href="<%=request.getContextPath()%>/bloggerportfolio.jsp?tid=<%=tid.toString()%>&blogger=<%=tobj.get("blogger")%>">
@@ -1478,13 +1420,13 @@
 							<button class="btn stylebuttonblue"
 								onclick="window.location.href = '<%=request.getContextPath()%>/bloggerportfolio.jsp?tid=<%=tid%>&blogger= <%=singleBlogger%>'">
 								<b class="float-left ultra-bold-text"> <%-- <%=tobj.get("blogger")%> --%>
-									<%=max_occurence_post_blogger%>
+									<%=singleBlogger%>
 								</b> <i class="far fa-user float-right blogcontenticon"></i>
 							</button>
 							</a>
 							<button class="btn stylebuttonnocolor nocursor">
 								<%-- <%=date %> --%>
-								<%=max_occurence_post_date%>
+								<%=singleDate%>
 
 							</button>
 							<button class="btn stylebuttonnocolor nocursor">
@@ -1498,7 +1440,7 @@
 								style="height: 550px; overflow-y: scroll;">
 								<%-- <%=body%> --%>
 								<p>
-									<%=max_occurence_post%>
+									<%=singlePost%>
 
 								</p>
 							</div>
@@ -1674,8 +1616,6 @@
 	<script>
 $(document).ready(function() {
 	<%-- loadMostPost("<%=mostactiveterm%>"); --%>
-	
-	
 });
 
 
@@ -1701,23 +1641,6 @@ $(document).ready(function() {
 	<script>
 		$(document).ready(function () {
 			
-			$('#DataTables_Table_1_wrapper').DataTable({
-				"scrollY": 430,
-
-				"pagingType": "simple"
-				/*   ,
-			 dom: 'Bfrtip'
-		   ,
-		 buttons:{
-		   buttons: [
-			   { extend: 'pdfHtml5',orientation: 'potrait', pageSize: 'LEGAL', className: 'btn-primary stylebutton1'},
-			   {extend:'csv',className: 'btn-primary stylebutton1'},
-			   {extend:'excel',className: 'btn-primary stylebutton1'},
-			  // {extend:'copy',className: 'btn-primary stylebutton1', text: 'Copy to Clipboard'},
-			   {extend:'print',className: 'btn-primary stylebutton1'},
-		   ]
-		 } */
-			});
 
 			$('#DataTables_Table_0_wrapper').DataTable({
 				"scrollY": 430,
@@ -1755,14 +1678,6 @@ $(document).ready(function() {
 		   ]
 		 } */
 			});
-			
-			 ///getting post with highest distance
-		    id = <%=max_occurence_id %>
-			$(".viewpost").addClass("makeinvisible");
-		  	$('.blogpost_link').removeClass("activeselectedblog");
-		 	$('#'+id).addClass("activeselectedblog");
-		  	$("#viewpost_"+id).removeClass("makeinvisible");
-		  	
 		});
 	</script>
 	<!--end for table  -->
