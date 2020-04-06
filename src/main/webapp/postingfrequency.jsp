@@ -1110,8 +1110,11 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
     	
     	var g = $(this).attr('name');
     	
-        if ( $(this).attr('name') == ''+name+'' ) {
+    	if ( $(this).attr('name') == ''+name+'' ) {
         	$(this).css('background-color', hex);
+        	$(this).removeClass('bloggerinactive ');
+        	$(this).addClass('selectionactive');
+        	$(this).css('font-weight', 'bold');
         };
         
     });

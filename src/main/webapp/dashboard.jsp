@@ -1299,9 +1299,9 @@ display: none;
 							</p>
 						</div> 
 						 <div class="min-height-table" style="min-height: 500px;">
-							<div align="center" class="chart-container chord_body" id="postingfrequencycontainer">
+							<div align="center" class="chart-container " id="">
 								<!-- <div class="chart" id="postingfrequencybar"></div>-->
-								<div align="center" class="chart" id="chord_body" ></div>
+								<div align="center" class="chart" id="" ></div>
 							</div>
 
 						</div>
@@ -1591,7 +1591,7 @@ display: none;
 		<script>
 		//set the dimensions and margins of the graph
 		var plot_width = $('#scatter-container').width();
-		var plot_height = $('#scatter-container1').height() - 30;
+		var plot_height = $('#scatter-container1').height() - 25;
 		
 		var margin = {
 			top : 10,

@@ -875,9 +875,9 @@
 
     </small> -->
 						<div style="height: 250px; padding-right: 10px !important;"
-							id="scroll_list_loader1" class="hidden">
-							<!-- <img style='position: absolute; top: 50%; left: 50%;'
-								src='images/loading.gif' /> -->
+							id="scroll_list_loader" class="hidden">
+							 <img style='position: absolute; top: 50%; left: 50%;'
+								src='images/loading.gif' /> 
 
 						</div>
 						<div id="scroll_list" class=" scrolly"
@@ -1945,44 +1945,44 @@ $(document).ready(function() {
     	
     	var t = parseFloat(i);
 
-    switch(t) {
+    	switch(t) {
 
-      //case 0:
-        //var hex = 'yellow';
-      case 1:
-        var hex = 'green'; 
-        break;
-      case 2:
-        var hex = '#c18fb6';
-        break;
-      case 3:
-        var hex = '#8fc199';
-        break;
-      case 4:
-        var hex = '#c1958f';
-        break;
-      case 5:
-        var hex = '#e17d70';
-        break;
-      case 6:
-        var hex = '#b770e1';
-        break;
-      case 7:
-        var hex = '#1fa701';
-        break;
-      case 8:
-        var hex = '#011aa7';
-        break;
-      case 9:
-        var hex = '#a78901';
-        break;
-      case 10:
-        var hex = '#981010';
-        break;
-      default:
-        var hex = 'red';
+        //case 0:
+          //var hex = 'yellow';
+        case 1:
+          var hex = '#5de6f8'; 
+          break;
+        case 2:
+          var hex = '#ed9dfb';
+          break;
+        case 3:
+          var hex = '#b1fcdf';
+          break;
+        case 4:
+          var hex = '#eefcb1';
+          break;
+        case 5:
+          var hex = '#fccfb1';
+          break;
+        case 6:
+          var hex = '#b770e1';
+          break;
+        case 7:
+          var hex = '#1fa701';
+          break;
+        case 8:
+          var hex = '#011aa7';
+          break;
+        case 9:
+          var hex = '#a78901';
+          break;
+        case 10:
+          var hex = '#981010';
+          break;
+        default:
+          var hex = '#8088fa';
 
-    }
+      }
 
 
     
@@ -1992,6 +1992,9 @@ $(document).ready(function() {
     	
         if ( $(this).attr('name') == ''+name+'' ) {
         	$(this).css('background-color', hex);
+        	$(this).removeClass('bloggerinactive ');
+        	$(this).addClass('selectionactive');
+        	$(this).css('font-weight', 'bold');
         };
         
     });
