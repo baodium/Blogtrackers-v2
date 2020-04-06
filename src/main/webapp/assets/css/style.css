@@ -3,7 +3,36 @@
   color: green;
 }
 
+.selectionactive
+{
+border-radius:15px;
+border: 2px solid #17394C;
+color: #ffffff !important;
+background-color: transparent;	
 
+}
+
+.white_bac
+{
+
+background-color: white !important;	
+
+}
+
+.white_bac:hover
+{
+
+color: black !important;	
+background-color:#0080CC !important;
+border: 2px solid #0080CC;
+}
+
+.selectionactive:hover, .abloggerselected
+{
+background-color:#0080CC;
+border: 2px solid #0080CC;
+color: #ffffff !important;
+}
 
 
 .table_over_cover{

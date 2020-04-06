@@ -501,6 +501,42 @@
 <script src="pagedependencies/googletagmanagerscript.js"></script>
 
 <script src="pagedependencies/baseurl.js"></script>
+
+<!-- Start scatter plot css  -->
+<style>
+.node {
+	cursor: pointer;
+}
+
+.node:hover {
+	stroke: #000;
+	stroke-width: 1.5px;
+}
+
+.node--leaf {
+	fill: white;
+}
+
+.label {
+	font: 11px "Helvetica Neue", Helvetica, Arial, sans-serif;
+	text-anchor: middle;
+	text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff, 0 -1px 0 #fff;
+}
+
+.label, .node--root, .node--leaf {
+	pointer-events: none;
+}
+
+.meter-background {
+	fill: #DFEAFD;
+}
+
+.meter-foreground {
+	fill: #2E7AF9;
+}
+</style>
+<!-- End scatter plot css -->
+
 <!-- start sample chord css -->
 <style>
 
@@ -1196,6 +1232,102 @@ display: none;
 			
 			
 		</div>
+		
+		
+		<div class="row mb0">
+			
+
+			<div class="col-md-6 mt20 zoom">
+				<div class="card card-style mt20">
+					<div class="card-body p30 pt5 pb5">
+						<div>
+							<p class="text-primary mt10 float-left">
+
+								Clustering Analysis 
+								<%-- 
+						   of Past <select
+									class="text-primary filtersort sortbytimerange"><option
+										value="week" <%=(single.equals("week"))?"selected":"" %>>Week</option>
+									<option value="month" <%=(single.equals("month"))?"selected":"" %>>Month</option>
+									<option value="year" <%=(single.equals("year"))?"selected":"" %>>Year</option></select>  --%>
+							</p>
+						</div>
+						<div id="scatter-container1" class="min-height-table" style="min-height: 500px;">
+							<div class="chart-container" id="scatter-container">
+								<div class="chart" id="dataviz_axisZoom"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="float-right">
+					<a href="clustering.jsp?tid=<%=tid%>"><button
+							class="btn buttonportfolio2 mt10">
+							<b class="float-left semi-bold-text">Clustering Analysis </b> <b
+								class="fas fa-exchange-alt float-right icondash2"></b>
+						</button></a>
+				</div>
+
+			</div>
+			
+			
+								<!-- <div style="min-height: 420px;">
+							<div class="chart-container word-cld">
+								<div class="chart" id="tagcloudcontainer">
+									<div class="jvectormap-zoomin zoombutton" id="zoom_in">+</div>
+									<div class="jvectormap-zoomout zoombutton" id="zoom_out">−</div>
+								</div>
+							</div>
+						</div> -->
+			
+			
+			<div class="col-md-6 mt20 zoom">
+				<div class="card card-style mt20">
+					<div class="card-body   p30 pt5 pb5">
+						<div>
+							  <p class="text-primary mt10 float-left">
+								Narrative Analysis <!-- <select id="swapBlogger"
+									class="text-primary filtersort sortbyblogblogger">
+									<option value="blogs">Blogs</option>
+
+									<option value="bloggers">Bloggers</option>
+								</select> -->
+								<%-- 		of Past <select
+									class="text-primary filtersort sortbytimerange" id="active-sortdate"><option
+										value="week" <%=(single.equals("week"))?"selected":"" %>>Week</option>
+									<option value="month" <%=(single.equals("month"))?"selected":"" %>>Month</option>
+									<option value="year" <%=(single.equals("year"))?"selected":"" %>>Year</option></select> --%>
+							</p>
+						</div> 
+						 <div class="min-height-table" style="min-height: 500px;">
+							<div align="center" class="chart-container " id="">
+								<!-- <div class="chart" id="postingfrequencybar"></div>-->
+								<div align="center" class="chart" id="" ></div>
+							</div>
+
+						</div>
+						
+					</div>
+				</div>
+				<!--  <div class="float-right">
+					<a id = "hreftopicmodels" href="topic_distribution.jsp?tid=<%=tid%>"><button
+							class="btn buttonTopicModelling mt10">
+							<b class="float-left semi-bold-text">Topic Modelling
+								Analysis</b> <b class="fas fa-comment-alt float-right icondash2"></b>
+						</button></a>
+				</div>
+				-->
+				<div class="float-right">
+					<a id = "hreftopicmodels" href="topic_distribution.jsp?tid=<%=tid%>"><button disabled 
+							class="btn buttonportfolio2 buttonTopicModelling mt10">
+							<b class="float-left semi-bold-text">Narrative Analysis </b> <b
+								class="fas fa-comment-alt float-right icondash2"></b>
+						</button></a>
+				</div>
+
+			</div>
+			
+			
+		</div>
 
 		<div class="row mb50">
 			<div class="col-md-12 mt20 zoom">
@@ -1452,6 +1584,169 @@ display: none;
 		src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.html5.min.js"></script>
 	<script
 		src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.print.min.js"></script>
+		
+		
+		<!-- Start scatter plot js -->
+		<script src="https://d3js.org/d3.v4.js"></script>
+		<script>
+		//set the dimensions and margins of the graph
+		var plot_width = $('#scatter-container').width();
+		var plot_height = $('#scatter-container1').height() - 25;
+		
+		var margin = {
+			top : 10,
+			right : 30,
+			bottom : 30,
+			left : 60
+		}, width = plot_width - margin.left - margin.right, height = plot_height - margin.top
+				- margin.bottom;
+
+		//append the SVG object to the body of the page
+		var SVG = d3.select("#dataviz_axisZoom").append("svg").attr("width",
+				width + margin.left + margin.right).attr("height",
+				height + margin.top + margin.bottom).append("g").attr(
+				"transform",
+				"translate(" + margin.left + "," + margin.top + ")");
+
+		//Read the data
+		d3.csv("test_data2.csv", function(data) {
+			console.log(data)
+		})
+
+		/* var data2 = []; */
+		var data = [ 
+			 {
+				"cluster" : "0",
+				"new_x" : "1",
+				"new_y" : "3"
+
+			
+		}, {
+			
+				"cluster" : "1",
+				"new_x" : "4",
+				"new_y" : "5"
+			
+		}, {
+			
+				"cluster" : "2",
+				"new_x" : "6",
+				"new_y" : "7"
+		
+
+		}, {
+			
+			"cluster" : "2",
+			"new_x" : "4",
+			"new_y" : "1"
+	
+
+		} , {
+			
+			"cluster" : "2",
+			"new_x" : "6",
+			"new_y" : "7"
+	
+
+		}, {
+			
+			"cluster" : "8",
+			"new_x" : "9",
+			"new_y" : "3"
+	
+
+		}, {
+				
+				"cluster" : "1",
+				"new_x" : "7",
+				"new_y" : "5"
+		
+
+		}, {
+			
+			"cluster" : "2",
+			"new_x" : "2",
+			"new_y" : "3"
+	
+
+			}, {
+				
+			"cluster" : "8",
+			"new_x" : "1",
+			"new_y" : "3"
+	
+	
+			}];
+		/* var data_final = data2.push(data);
+		console.log(data_final) */
+		// Add X axis
+		
+		var x = d3.scaleLinear().domain([ 1, 10 ]).range([ 0, width ]);
+		var xAxis = SVG.append("g").attr("transform",
+				"translate(0," + height + ")").call(d3.axisBottom(x));
+
+		// Add Y axis
+		var y = d3.scaleLinear().domain([ 1, 10 ]).range([ height, 0 ]);
+		var yAxis = SVG.append("g").call(d3.axisLeft(y));
+
+		// Add a clipPath: everything out of this area won't be drawn.
+		var clip = SVG.append("defs").append("SVG:clipPath").attr("id", "clip")
+				.append("SVG:rect").attr("width", width).attr("height", height)
+				.attr("x", 0).attr("y", 0);
+
+		var color = d3.scaleOrdinal().domain([ "0", "1", "2" ]).range(
+				[ 'red', 'green', 'blue' ])
+		/* .domain(["0", "1", "2","3","4","5","6","7","8","9" ]) */
+		/* .range([ 'red', 'green', 'blue', 'orange', 'purple','pink', 'black', 'grey', 'brown','yellow']) */
+
+		// Create the scatter variable: where both the circles and the brush take place
+		var scatter = SVG.append('g').attr("clip-path", "url(#clip)")
+
+		// Add circles
+		scatter.selectAll("circle").data(data).enter().append("circle").attr(
+				"cx", function(d) {
+					return x(d.new_x);
+				}).attr("cy", function(d) {
+			return y(d.new_y);
+		}).attr("r", 8).style("fill", function(d) {
+			return color(d.cluster)
+		}).style("opacity", 0.5)
+
+		// Set the zoom and Pan features: how much you can zoom, on which part, and what to do when there is a zoom
+		var zoom = d3.zoom().scaleExtent([ .5, 20 ]) // This control how much you can unzoom (x0.5) and zoom (x20)
+		.extent([ [ 0, 0 ], [ width, height ] ]).on("zoom", updateChart);
+
+		// This add an invisible rect on top of the chart area. This rect can recover pointer events: necessary to understand when the user zoom
+		SVG.append("rect").attr("width", width).attr("height", height).style(
+				"fill", "none").style("pointer-events", "all").attr(
+				'transform',
+				'translate(' + margin.left + ',' + margin.top + ')').call(zoom);
+		// now the user can zoom and it will trigger the function called updateChart
+
+		// A function that updates the chart when the user zoom and thus new boundaries are available
+		function updateChart() {
+
+			// recover the new scale
+			var newX = d3.event.transform.rescaleX(x);
+			var newY = d3.event.transform.rescaleY(y);
+
+			// update axes with these new boundaries
+			xAxis.call(d3.axisBottom(newX))
+			yAxis.call(d3.axisLeft(newY))
+
+			// update circle position
+			scatter.selectAll("circle").attr('cx', function(d) {
+				return newX(d.new_x)
+			}).attr('cy', function(d) {
+				return newY(d.new_y)
+			});
+		}
+
+		/* }) */
+	</script>
+		
+		
+		<!-- End Scatter plot JS -->
 		
 		
 	

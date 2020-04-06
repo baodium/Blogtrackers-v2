@@ -801,10 +801,10 @@
 						href="<%=request.getContextPath()%>/trackerlist.jsp">Trackers</a>
 					<a class="breadcrumb-item text-primary"
 						href="<%=request.getContextPath()%>/edittracker.jsp?tid=<%=tid%>"><%=trackername%></a>
-					<a class="breadcrumb-item active text-primary"
+					<a class="breadcrumb-item  text-primary"
 						href="<%=request.getContextPath()%>/dashboard.jsp?tid=<%=tid%>">Dashboard</a>
 					<a class="breadcrumb-item active text-primary"
-						href="<%=request.getContextPath()%>/postingfrequency.jsp?tid=<%=tid%>">Keyword
+						href="#">Keyword
 						Trend</a>
 				</nav>
 				<!-- <div>
@@ -875,9 +875,9 @@
 
     </small> -->
 						<div style="height: 250px; padding-right: 10px !important;"
-							id="scroll_list_loader1" class="hidden">
-							<!-- <img style='position: absolute; top: 50%; left: 50%;'
-								src='images/loading.gif' /> -->
+							id="scroll_list_loader" class="hidden">
+							 <img style='position: absolute; top: 50%; left: 50%;'
+								src='images/loading.gif' /> 
 
 						</div>
 						<div id="scroll_list" class=" scrolly"
@@ -1236,11 +1236,10 @@
 												int i_found = 0;
 												int i = 0;
 												//for (int i = 0; i < p.length(); i++) {
+													while(count < 100){
 													//for (int i = 0; i < 100; i++) {
 													//while(count < 100){
-														
-
-													while(count < 10){
+												
 												//for (int i = 0; i < 10; i++) {
 
 													if (iter.hasNext()) {
@@ -1534,7 +1533,7 @@
 							<!-- <div class="p15 pb5 pt0" role="group">
           Export Options
               </div> -->
-							<table id="DataTables_Table_1_wrapper" class="display"
+							<table id="DataTables_Table_1_wrapper" class="display table_over_cover"
 								style="width: 100%">
 								<thead>
 									<tr>
@@ -1946,44 +1945,44 @@ $(document).ready(function() {
     	
     	var t = parseFloat(i);
 
-    switch(t) {
+    	switch(t) {
 
-      //case 0:
-        //var hex = 'yellow';
-      case 1:
-        var hex = 'green'; 
-        break;
-      case 2:
-        var hex = '#c18fb6';
-        break;
-      case 3:
-        var hex = '#8fc199';
-        break;
-      case 4:
-        var hex = '#c1958f';
-        break;
-      case 5:
-        var hex = '#e17d70';
-        break;
-      case 6:
-        var hex = '#b770e1';
-        break;
-      case 7:
-        var hex = '#1fa701';
-        break;
-      case 8:
-        var hex = '#011aa7';
-        break;
-      case 9:
-        var hex = '#a78901';
-        break;
-      case 10:
-        var hex = '#981010';
-        break;
-      default:
-        var hex = 'red';
+        //case 0:
+          //var hex = 'yellow';
+        case 1:
+          var hex = '#e50471'; 
+          break;
+        case 2:
+          var hex = '#0571a0';
+          break;
+        case 3:
+          var hex = '#038a2c';
+          break;
+        case 4:
+          var hex = '#6b8a03';
+          break;
+        case 5:
+          var hex = '#a02f05';
+          break;
+        case 6:
+          var hex = '#b770e1';
+          break;
+        case 7:
+          var hex = '#1fa701';
+          break;
+        case 8:
+          var hex = '#011aa7';
+          break;
+        case 9:
+          var hex = '#a78901';
+          break;
+        case 10:
+          var hex = '#981010';
+          break;
+        default:
+          var hex = '#6b085e';
 
-    }
+      }
 
 
     
@@ -1993,6 +1992,9 @@ $(document).ready(function() {
     	
         if ( $(this).attr('name') == ''+name+'' ) {
         	$(this).css('background-color', hex);
+        	$(this).removeClass('bloggerinactive ');
+        	$(this).addClass('selectionactive');
+        	$(this).css('font-weight', 'bold');
         };
         
     });
@@ -2031,8 +2033,13 @@ $(document).ready(function() {
             
           $(this).removeClass("thanks"); 
 
-          $(this).addClass('nobccolor');
-
+          $(this).addClass('white_bac');
+		
+          $(this).addClass("bloggerinactive"); 
+          
+          $(this).removeClass('selectionactive');
+          
+          $(this).css('font-weight', 400);
 
         }else{
 

@@ -1065,44 +1065,44 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
     	
     	var t = parseFloat(i);
 
-    switch(t) {
+    	switch(t) {
 
-      //case 0:
-        //var hex = 'yellow';
-      case 1:
-        var hex = '#5de6f8'; 
-        break;
-      case 2:
-        var hex = '#ed9dfb';
-        break;
-      case 3:
-        var hex = '#b1fcdf';
-        break;
-      case 4:
-        var hex = '#eefcb1';
-        break;
-      case 5:
-        var hex = '#fccfb1';
-        break;
-      case 6:
-        var hex = '#b770e1';
-        break;
-      case 7:
-        var hex = '#1fa701';
-        break;
-      case 8:
-        var hex = '#011aa7';
-        break;
-      case 9:
-        var hex = '#a78901';
-        break;
-      case 10:
-        var hex = '#981010';
-        break;
-      default:
-        var hex = '#8088fa';
+        //case 0:
+          //var hex = 'yellow';
+        case 1:
+          var hex = '#e50471'; 
+          break;
+        case 2:
+          var hex = '#0571a0';
+          break;
+        case 3:
+          var hex = '#038a2c';
+          break;
+        case 4:
+          var hex = '#6b8a03';
+          break;
+        case 5:
+          var hex = '#a02f05';
+          break;
+        case 6:
+          var hex = '#b770e1';
+          break;
+        case 7:
+          var hex = '#1fa701';
+          break;
+        case 8:
+          var hex = '#011aa7';
+          break;
+        case 9:
+          var hex = '#a78901';
+          break;
+        case 10:
+          var hex = '#981010';
+          break;
+        default:
+          var hex = '#6b085e';
 
-    }
+      }
 
 
     
@@ -1110,8 +1110,11 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
     	
     	var g = $(this).attr('name');
     	
-        if ( $(this).attr('name') == ''+name+'' ) {
+    	if ( $(this).attr('name') == ''+name+'' ) {
         	$(this).css('background-color', hex);
+        	$(this).removeClass('bloggerinactive ');
+        	$(this).addClass('selectionactive');
+        	$(this).css('font-weight', 'bold');
         };
         
     });
@@ -1151,20 +1154,25 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
        $('#chart').html('');
 
        if ( $(this).hasClass("thanks") ) {
-            
-          $(this).removeClass("thanks"); 
+           
+           $(this).removeClass("thanks"); 
 
-          $(this).addClass('nobccolor');
+           $(this).addClass('white_bac');
+ 		
+           $(this).addClass("bloggerinactive"); 
+           
+           $(this).removeClass('selectionactive');
+           
+           $(this).css('font-weight', 400);
 
+         }else{
 
-        }else{
+           $(this).removeClass('nobccolor');
 
-          $(this).removeClass('nobccolor');
+           $(this).addClass("thanks"); 
+           
 
-          $(this).addClass("thanks"); 
-          
-
-        }
+         }
 
       	
        setTimeout(
