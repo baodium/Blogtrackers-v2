@@ -775,7 +775,13 @@ display: none;
 						<h5 class="text-primary mb0">
 							<i class="fas fa-comment icondash"></i>Comments
 						</h5>
-						<h3 class="text-blue mb0 countdash dash-label"><%=NumberFormat.getNumberInstance(Locale.US).format(new Double(totalcomment).intValue())%></h3>
+						<%
+						String numcomments = totalcomment;
+						if(numcomments == null || numcomments == ""){
+							numcomments = "0";
+						}
+						%>
+						<h3 class="text-blue mb0 countdash dash-label"><%=NumberFormat.getNumberInstance(Locale.US).format(new Double(numcomments).intValue())%></h3>
 					</div>
 				</div>
 			</div>
@@ -2900,11 +2906,23 @@ $(function () {
 					String neg = "";
 					for (int i = 0; i < getPositiveEmotion.size(); i++) {
 						ArrayList<?> posi = (ArrayList<?>) getPositiveEmotion.get(i);
-						pos = posi.get(0).toString();
+						System.out.println(posi.get(0));
+						if(posi.get(0) == null){
+							pos = "0";
+						}else{
+							pos = posi.get(0).toString();
+						}
+						//pos = () ? "" : posi.get(0).toString();
+						
 					}
 					for (int i = 0; i < getNegativeEmotion.size(); i++) {
 						ArrayList<?> nega = (ArrayList<?>) getNegativeEmotion.get(i);
-						neg = nega.get(0).toString();
+						if(nega.get(0) == null){
+							neg = "0";
+						}else{
+							neg = nega.get(0).toString();
+						}
+						
 
 					}%>
       sentimentdata = [
@@ -3169,6 +3187,8 @@ var gdpData = {
     
     */ 
 <%JSONObject location = new JSONObject();
+    
+    
 					location.put("Vatican City", "41.90, 12.45");
 					location.put("Monaco", "43.73, 7.41");
 					location.put("Salt Lake City", "40.726, -111.778");
@@ -3243,7 +3263,7 @@ var mymarker = [
 		
 		
 		$(document).ready(function(){
-			 <%if (null == session.getAttribute(ids + "--getkeyworddashboard")) {%>
+			 <%-- <%if (null == session.getAttribute(ids + "--getkeyworddashboard")) {%>
 			  // keywords have not been computed.
 			loadKeywordDashboard(null, "<%=ids%>")
 
@@ -3272,20 +3292,24 @@ var mymarker = [
 					for (var key in jsondata) {var dic = {}; dic["text"] = key; dic["size"] = jsondata[key]; data.push(dic);} */
 					console.log("this is the response dashboard from session",new_dd);
 					wordtagcloud("#tagcloudcontainer",450,jsondata); 
-			  		<%-- <wordtagcloud("#tagcloudcontainer",450,<%=d%>);   --%>
-			<%}%> 
+			  		<wordtagcloud("#tagcloudcontainer",450,<%=d%>);  
+			<%}%>  --%>
+			<%
+			ArrayList response_terms = DbConnection.query("select terms from tracker_keyword where tid = " + tid);
+			ArrayList res = (ArrayList)response_terms.get(0);
+			System.out.println("terms_result" + res.get(0));
 			
+			JSONObject finalres = new JSONObject(res.get(0).toString());
+			
+			%>
+			var response = {'seun':39, 'bola':100}
+			wordtagcloud("#tagcloudcontainer",450,<%=finalres%>); 
 			
 			console.log('dt',"<%=dt%>");
 			 console.log('dte',"<%=dte%>");
 			loadChordDashboard();
-			
-
-			
 	
-	
-			
-})
+		})
 		
 		
 		<%-- function loadKeywordDashboard(blogger,ids){

@@ -23,6 +23,7 @@ import org.json.JSONObject;
 
 import util.Trackers;
 import util.Blogposts;
+import util.Clustering;
 import authentication.DbConnection;
 import java.util.*;
 
@@ -71,9 +72,12 @@ public class Tracker extends HttpServlet {
         String description = (null==request.getParameter("description"))?"":request.getParameter("description").replaceAll("\\<.*?\\>", "");
         String blogs = (null==request.getParameter("blogs"))?"":request.getParameter("blogs").replaceAll("\\<.*?\\>", "");
         String tracker_id = (null==request.getParameter("tracker_id"))?"":request.getParameter("tracker_id").replaceAll("\\<.*?\\>", "");
+        String type = (null==request.getParameter("type"))?"":request.getParameter("type").replaceAll("\\<.*?\\>", "");
 		
         String query = "";
 		String action = (null==request.getParameter("action"))?"":request.getParameter("action");
+		//String tracker_id = (null==request.getParameter("tracker_id"))?"":request.getParameter("action");
+		
 		String userid = username;//(String) session.getAttribute("user");
 		
 		if(action.equals("create"))
@@ -150,7 +154,26 @@ public class Tracker extends HttpServlet {
 				response.setContentType("text/html");
 				pww.write("Trackername cannot be empty");
 			}
-		}else if(action.equals("update")) {
+		}
+		else if(action.equals("uploadTerms")) {
+			String url = " http://127.0.0.1:5000/";
+			String str = "{\r\n" + 
+					"	\"tracker_id\":\""+tracker_id+"\",\r\n" + 
+					"	\"type\":\""+type+"\"\r\n" + 
+					"}";
+			System.out.println(str);
+			JSONObject js = new JSONObject(str);
+			Clustering c = new Clustering();
+			try {
+				System.out.println(c._getResult(url, js));
+				pww.write(c._getResult(url, js).toString());
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		else if(action.equals("update")) {
 String[] bloggs = blogs.replaceAll(", $", "").split(",");
 			
 			try {
@@ -506,7 +529,11 @@ String[] bloggs = blogs.replaceAll(", $", "").split(",");
 							String date = dtf.format(datee);
 							
 							String replace = 	"<span style=background:red;color:#fff>"+mostactiveterm+"</span>";
-							
+							for(String s: mostactiveterm.split(",")){
+								String new_s = s.replace("\"","").replace(" ","");
+								replace = "<span style=background:red;color:#fff>" + new_s + "</span>";
+								body = body.toLowerCase().replace(new_s, replace);
+							}
 							
 							output+="<h5 class='text-primary p20 pt0 pb0'>#1: "+title.replaceAll(mostactiveterm,replace)+"</h5>" + 
 									"					<div class='text-center mb20 mt20'>" + 
@@ -523,7 +550,7 @@ String[] bloggs = blogs.replaceAll(", $", "").split(",");
 									
 									"					<div style=\"height: 600px;\"><div class='p20 pt0 pb20 text-blog-content text-primary'" + 
 									"						style='height: 550px; overflow-y: scroll;'>" + 
-									"						"+body.replaceAll(mostactiveterm,replace)+""+ 
+									"						"+body.toLowerCase().replace(mostactiveterm,replace)+""+ 
 									"						</div></div>";
 									
 							

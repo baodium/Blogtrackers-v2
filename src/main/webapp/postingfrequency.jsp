@@ -43,7 +43,9 @@ ArrayList allentitysentiments = new ArrayList();
 
 
 userinfo = new DbConnection().query("SELECT * FROM usercredentials where Email = '"+email+"'");
-if (userinfo.size()<1) {
+
+if (user == null || user == "") {
+	System.out.println("user--"+user);
 	response.sendRedirect("index.jsp");
 }
 else{
@@ -119,7 +121,7 @@ userinfo = (ArrayList<?>)userinfo.get(0);
 	}
 	}catch(Exception e){}
 	
-	}
+	
 
 	ArrayList detail =new ArrayList();
 	if (tid != "") {
@@ -545,10 +547,12 @@ userinfo = (ArrayList<?>)userinfo.get(0);
 												dselected = "abloggerselected";
 												activew = "thanks";
 												mostactiveblogger = bloggerName;
-												//pids = post._getPostIdsByBloggerName("date",dt, dte,"'"+bloggerName+"'","date","DESC");
+												pids = post._getPostIdsByBloggerName("date",dt, dte,"'"+bloggerName+"'","date","DESC");
 												//allterms = term._searchByRange("blogsiteid", dt, dte, blogsiteId);//_searchByRange("blogpostid",dt, dte,postids);
 												System.out.println("Most active blogger:"+mostactiveblogger);
-												//allentitysentiments = blogpostsentiment._searchByRange("date", dt, dte, pids);
+												allentitysentiments = blogpostsentiment._searchByRange("date", dt, dte, pids);
+												System.out.println("entity--" + allentitysentiments.size());
+												System.out.println("pids--" + pids);
 												selectedid=blogsiteId; 
 												
 												
@@ -1817,7 +1821,8 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
  <script>
  
 $(document).ready(function(){
-	loadTerms("<%=mostactiveblogger%>",$("#blogid").val(),"<%=dt%>","<%=dte%>");
+	var blogger = "<%=mostactiveblogger%>"
+	loadTerms("\'"+blogger+"\'",$("#blogid").val(),"<%=dt%>","<%=dte%>");
 })
 	
 	//console.log(word_count2);
@@ -1856,3 +1861,5 @@ $(document).ready(function(){
 
 </body>
 </html>
+
+<%} %>

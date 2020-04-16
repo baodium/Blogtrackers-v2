@@ -1,5 +1,26 @@
 $(document).ready(function(){
 
+	function uploadTerms(tid, type){
+		$.ajax({
+			url: app_url+'tracker',
+			method: 'POST',
+			data: {
+				action:"uploadTerms",
+				tracker_id:tid,
+				type:type,
+				
+			},
+			error: function(response)
+			{
+				//alert('could not compute terms')
+				console.log('could not compute terms')
+			},
+			success: function(response)
+			{
+				console.log('term response',response);
+			}
+		});
+	}
 var numberofblogs = $('.edittrackerblogindividual').length;
 //console.log(numberofblogs);
 $('#totalblogcount').html(numberofblogs);
@@ -222,10 +243,15 @@ $('.deleteblog').on('click', function(){
 			success: function(response)
 			{   
 				console.log(response);
+				
 				if(response.indexOf("success")>-1){					
 						eachblogdelete.parent().parent().remove();
+						alert(id)
+						alert(allid)
+						
 					// should kick in the automated crawler or something 	
 						toastr.success("Blog Deleted from Tracker","Success");
+						uploadTerms($("#teeid").val() + "------" +allid, "update")
 						$('.tooltip').hide();
 						
 						numberofblogs = $('.edittrackerblogindividual').length;
@@ -238,7 +264,8 @@ $('.deleteblog').on('click', function(){
 //						console.log(countselectedfromdefault);
 						blogselectedcount = countselectedfromdefault;
 						$('#selectedblogcount').html(blogselectedcount);
-						setTimeout(function(){location.reload();},2000);
+						//setTimeout(function(){location.reload();},2000);
+						
 					
 				}else{
 					toastr.error('Blogs could not be removed!','Error');
@@ -499,6 +526,7 @@ if(confirmdeletetracker)
 		{   
 			console.log(response);
 			if(response.indexOf("success")>-1){
+				//uploadTerms($("#teeid").val(), 'delete')
 				toastr.success('Tracker successfully deleted!','Success');
 				//location.href=app_url+"trackerlist.jsp";
 				
@@ -544,3 +572,6 @@ console.log("tracker deleted")
 
 	
 });
+
+$(document).ready(function(){
+})

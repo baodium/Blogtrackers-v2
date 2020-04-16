@@ -65,7 +65,7 @@ public class TopKeywords extends HttpServlet {
 				System.out.println("looking for blog id"+selectedblogid);
 				System.out.println("looking for dt"+dt);
 				System.out.println("looking for dte"+dte);
-			sql = post._getBloggerPosts("___NO__TERM___","NOBLOGGER",dt,dte,selectedblogid); 
+			sql = post._getBloggerPosts("___NO__TERM___","NOBLOGGER",dt,dte,selectedblogid,1000); 
 			sql_ = sql.get("posts").toString();
 			
 			}catch(Exception e) {

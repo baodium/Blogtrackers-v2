@@ -103,9 +103,10 @@ public class Clustering extends HttpServlet {
 //		jsc.stop();
 //
 //	}
-	public JSONObject _getResult(String url, JSONObject jsonObj) throws Exception {
+	public static String  _getResult(String url, JSONObject jsonObj) throws Exception {
 		ArrayList<String> list = new ArrayList<String>();
 		JSONObject myResponse = new JSONObject();
+		String out = null;
 		try {
 			URL obj = new URL(url);
 			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -138,12 +139,13 @@ public class Clustering extends HttpServlet {
 			in.close();
 
 			myResponse = new JSONObject(response.toString());
+			out = myResponse.toString();
 			// System.out.println("RESPONSE ==> " + myResponse);
 
 		} catch (Exception ex) {
 		}
 		// System.out.println("This is the list for -----" + url + "---" + list);
-		return myResponse;
+		return out;
 
 	}
 
@@ -517,14 +519,14 @@ int start_test = 0;
 		return result_;
 	}
 
-	public String getBloggersMentioned(String postIds) throws Exception {
+	public static String getBloggersMentioned(String postIds) throws Exception {
 		String result = null;
 		JSONObject query = new JSONObject("{\r\n" + "    \"size\": 0,\r\n" + "    \"query\": {\r\n"
 				+ "        \"terms\": {\r\n" + "            \"blogpost_id\": [" + postIds + "],\r\n"
 				+ "            \"boost\": 1.0\r\n" + "        }\r\n" + "    },\r\n" + "    \"_source\": false,\r\n"
 				+ "    \"stored_fields\": \"_none_\",\r\n" + "    \"aggregations\": {\r\n"
 				+ "        \"groupby\": {\r\n" + "            \"composite\": {\r\n"
-				+ "                \"size\": 1000,\r\n" + "                \"sources\": [\r\n"
+				+ "                \"size\": 10000,\r\n" + "                \"sources\": [\r\n"
 				+ "                    {\r\n" + "                        \"442\": {\r\n"
 				+ "                            \"terms\": {\r\n"
 				+ "                                \"field\": \"blogger.keyword\",\r\n"
@@ -532,7 +534,7 @@ int start_test = 0;
 				+ "                                \"order\": \"asc\"\r\n" + "                            }\r\n"
 				+ "                        }\r\n" + "                    }\r\n" + "                ]\r\n"
 				+ "            }\r\n" + "        }\r\n" + "    }\r\n" + "}");
-
+//System.out.println("getBloggersMentioned --" + query);
 		JSONObject myResponse = term._makeElasticRequest(query, "POST", "/blogposts/_search");
 		if (null != myResponse.get("hits")) {
 			Object aggregations = myResponse.getJSONObject("aggregations").getJSONObject("groupby")
@@ -549,7 +551,7 @@ int start_test = 0;
 				+ "            \"boost\": 1.0\r\n" + "        }\r\n" + "    },\r\n" + "    \"_source\": false,\r\n"
 				+ "    \"stored_fields\": \"_none_\",\r\n" + "    \"aggregations\": {\r\n"
 				+ "        \"groupby\": {\r\n" + "            \"composite\": {\r\n"
-				+ "                \"size\": 1000,\r\n" + "                \"sources\": [\r\n"
+				+ "                \"size\": 10000,\r\n" + "                \"sources\": [\r\n"
 				+ "                    {\r\n" + "                        \"dat\": {\r\n"
 				+ "                            \"terms\": {\r\n"
 				+ "                                \"field\": \"location.keyword\",\r\n"
@@ -562,7 +564,7 @@ int start_test = 0;
 				+ "                            \"boost\": 1.0\r\n" + "                        }\r\n"
 				+ "                    }\r\n" + "                }\r\n" + "            }\r\n" + "        }\r\n"
 				+ "    }\r\n" + "}");
-
+		//System.out.println("getTopPostingLocation --" + query);
 		JSONObject myResponse = term._makeElasticRequest(query, "POST", "/blogposts/_search");
 		if (null != myResponse.get("hits")) {
 			Object aggregations = myResponse.getJSONObject("aggregations").getJSONObject("groupby")
@@ -671,7 +673,7 @@ int start_test = 0;
 
 	}
 
-	public static JSONObject topTerms(List<JSONObject> postDataAll, String limit) {
+	public static JSONObject topTerms(List postDataAll, String limit) {
 		JSONObject res = new JSONObject();
 		JSONArray output = new JSONArray();
 		System.out.println("postall" + postDataAll.size());
@@ -770,79 +772,9 @@ int start_test = 0;
 	}
 
 	public static JSONObject topTerms2(List<JSONObject> postDataAll, String limit) {
-		JSONObject res = new JSONObject();
-		JSONArray output = new JSONArray();
-		System.out.println("postall" + postDataAll.size());
+		
 
-		int a = postDataAll.size();
-		int b = 1000;
-		int poolsize = ((a / b)) > 0 ? (a / b) + 1 : 1;
-		System.out.println(poolsize);
-		ExecutorService executorServiceSplitLoop = Executors.newFixedThreadPool(poolsize);
-		System.out.println("1" + executorServiceSplitLoop.isShutdown());
-
-		List<Tuple2<String, Integer>> returnedData = Collections
-				.synchronizedList(new ArrayList<Tuple2<String, Integer>>());
-		ConcurrentHashMap<String, String> datatuple2 = new ConcurrentHashMap<String, String>();
-		ConcurrentHashMap<String, ConcurrentHashMap<String, String>>  datatuple3 = new ConcurrentHashMap<String, ConcurrentHashMap<String, String>> ();
-		ConcurrentHashMap<String, Integer> d = new ConcurrentHashMap<String, Integer>();
-		StringBuffer buffer = new StringBuffer();
-
-		for (int i = 0; i < a; i = i + b) {
-
-			int start1 = 0;
-			int end_ = 0;
-			start1 = i;
-
-			if ((i + b) > a) {
-				end_ = i + (a % b);
-			} else {
-				end_ = i + b;
-			}
-			System.out.println(start1 + "--" + end_);
-			JSONObject q = new JSONObject();
-			RunnableUtil es = new RunnableUtil(q, postDataAll, start1, end_, returnedData, datatuple2, d, "loop",
-					"blogpost_terms", "terms", buffer,datatuple3);
-			executorServiceSplitLoop.execute(es);
-
-		}
-
-		executorServiceSplitLoop.shutdown();
-		while (!executorServiceSplitLoop.isTerminated()) {
-		}
-
-//		System.out.println("2" + executorServiceSplitLoop.isShutdown());
-		System.out.println("datatule2--" + datatuple2.size());
-		System.out.println("json array size" + postDataAll.size());
-//		RunnableUtil es = new RunnableUtil();
-//		(în,114787)
-		System.out.println("returned--" + returnedData.size());
-		// CREATE KEY VALUE OF TERMS AND OCCURENCE (MAP_REDUCE)
-		String finalbuffer = "[" + buffer + "]";
-
-		System.out.println("finalbuffer created");
-		JSONArray ja = new JSONArray(finalbuffer);
-		System.out.println("finalbuffer list_array_created");
-
-//		HashMap<String, Integer> m = new HashMap<String, Integer>();
-		ConcurrentHashMap<String, Integer> m = new ConcurrentHashMap<String, Integer>();
-		for (int i = 0; i < ja.length(); i++) {
-//			System.out.println(ja.get(i).toString());
-			String first = ja.get(i).toString().split("__________term")[0];
-			Integer second = Integer.parseInt(ja.get(i).toString().split("__________term")[1]);
-			if (!m.containsKey(first)) {
-				m.put(first, second);
-			} else {
-				int m_val = m.get(first);
-				int new_mval = m_val + second;
-				m.put(first, new_mval);
-			}
-		}
-//		int a__ = ja.length();
-//		int b__ = 100000;
-//		int poolsize__ = ((a__ / b__)) > 0 ? (a__ / b__) + 1 : 1;
-//		ExecutorService executorServiceSplit = Executors.newFixedThreadPool(poolsize__);
-//		for (int i = 0; i < a__; i = i + b__) {
+//		for (int i = 0; i < a; i = i + b) {
 //
 //			int start1 = 0;
 //			int end_ = 0;
@@ -851,61 +783,93 @@ int start_test = 0;
 ////test[0] = i;
 //			start1 = i;
 //
-//			if ((i + b__) > a__) {
+//			if ((i + b) > a) {
 ////test[1] = i +(a%b);
-//				end_ = i + (a__ % b__);
+//				end_ = i + (a % b);
 //			} else {
 ////test[1] = i + b;
-//				end_ = i + b__;
+//				end_ = i + b;
 //			}
 //			System.out.println(start1 + "--" + end_);
-////			JSONObject q = new JSONObject();
-//			RunnableUtil es = new RunnableUtil(m,ja,start1, end_, "test");
-//			executorServiceSplit.execute(es);
+//			JSONObject q = new JSONObject();
+//			RunnableUtil es = new RunnableUtil(q, postDataAll, start1, end_, returnedData, datatuple2, d, "loop",
+//					"blogpost_terms", "terms", buffer,datatuple3);
+//			executorServiceSplitLoop.execute(es);
 ////			returnedData = es.datatuple;
 //			// System.out.println("returned"+returnedData.size());
 //
 //		}
-//		executorServiceSplit.shutdown();
-//		while (!executorServiceSplit.isTerminated()) {
+//
+//		System.out.println("datatule2--" + datatuple2.size());
+//		System.out.println("datatule3--" + datatuple3.size());
+//		System.out.println("json array size" + postDataAll.size());
+////		RunnableUtil es = new RunnableUtil();
+////		(în,114787)
+//		System.out.println("returned--" + returnedData.size());
+//		HashMap<String, Integer> m = new HashMap<String, Integer>();
+//		for (Tuple2<String, Integer> p : returnedData) {
+//			String first = p._1;
+//			Integer second = p._2;
+//			if (!m.containsKey(first)) {
+//				m.put(first, second);
+//			} else {
+//				int m_val = m.get(first);
+//				int new_mval = m_val + second;
+//				m.put(first, new_mval);
+//			}
 //		}
-		
-		System.out.println("HASHMAP CREATION DONE");
-
-		List<Entry<String, Integer>> entry = new Terms().entriesSortedByValues(m);
-//		
-		if (entry.size() > 0) {
-			for (int i = 0; i < Integer.parseInt(limit); i++) {
-				String left = entry.get(i).getKey();
-				Integer right = entry.get(i).getValue();
-//			String v =  "(" + left + "," + String.valueOf(right) + ")";
-				Tuple2<String, Integer> v = new Tuple2<String, Integer>(left, right);
-				output.put(v);
-			}
-			System.out.println("answer--" + entry.get(0));
-			System.out.println("output--" + output);
-
-//			return output;
-		}
-		res.put("output", output);
-		res.put("post_id_term_pair", datatuple2);
-		return res;
+////		System.out.println(returnedData.get(0));
+//
+////		result = term.mapReduce(returnedData, limit);
+//		List<Entry<String, Integer>> entry = new Terms().entriesSortedByValues(m);
+////		
+//		if (entry.size() > 0) {
+//			for (int i = 0; i < Integer.parseInt(limit); i++) {
+//				String left = entry.get(i).getKey();
+//				Integer right = entry.get(i).getValue();
+////			String v =  "(" + left + "," + String.valueOf(right) + ")";
+//				Tuple2<String, Integer> v = new Tuple2<String, Integer>(left, right);
+//				output.put(v);
+//			}
+//			System.out.println("answer--" + entry.get(0));
+//			System.out.println("output--" + output);
+//
+////			return output;
+//		}
+//		res.put("output", output);
+//		res.put("post_id_term_pair", datatuple2);
+//		res.put("post_id_post", datatuple3);
+//		return res;
 	}
 
 	public static JSONObject getTopTermsFromBlogIds(String ids, String from, String to, String limit) throws Exception {
 		String result = null;
 
-		List<JSONObject> postDataAll = getPosts(ids, from, to, "__ONLY__TERMS__BLOGSITE_IDS__", "blogpost_terms");
+		//List<JSONObject> postDataAll = getPosts(ids, from, to, "__ONLY__TERMS__BLOGSITE_IDS__", "blogpost_terms");
+		System.out.println("select * from blogpost_terms where blogsiteid in  (" + ids + ") and date > \"" + from + "\" and date < \"" +  to +"\"");
+		List postDataAll = DbConnection.queryJSON("select * from blogpost_terms where blogsiteid in  (" + ids + ") and date > \"" + from + "\" and date < \"" +  to +"\"");
 		JSONObject o = topTerms(postDataAll, limit);
 
 		return o;
+	}
+	
+	public static String getTopTermsFromBlogger(String blogger, String from, String to, String limit) throws Exception {
+		String result = null;
+
+		//List<JSONObject> postDataAll = getPosts(ids, from, to, "__ONLY__TERMS__BLOGSITE_IDS__", "blogpost_terms");
+		System.out.println("select * from blogpost_terms where blogger in  (" + blogger + ") and date > \"" + from + "\" and date < \"" +  to +"\"");
+		List postDataAll = DbConnection.queryJSON("select * from blogpost_terms where blogger in  (" + blogger + ") and date > \"" + from + "\" and date < \"" +  to +"\"");
+		JSONObject o = topTerms(postDataAll, limit);
+
+		return o.get("output").toString();
 	}
 
 	public static String getTopTermsBlogger(String bloggers, String from, String to, String limit) throws Exception {
 		String result = null;
 
-		List<JSONObject> postDataAll = getPosts(bloggers, from, to, "__ONLY__TERMS__BLOGGERS", "blogpost_terms");
-
+		//List<JSONObject> postDataAll = getPosts(bloggers, from, to, "__ONLY__TERMS__BLOGGERS", "blogpost_terms");
+		System.out.println("select * from blogpost_terms where blogger = \"" + bloggers + "\" and date > \"" + from + "\" and date < \"" +  to +"\"");
+		List postDataAll = DbConnection.queryJSON("select * from blogpost_terms where blogger = \"" + bloggers + "\" and date > \"" + from + "\" and date < \"" +  to +"\"");
 		if (postDataAll.size() > 0) {
 			JSONObject o = topTerms(postDataAll, limit);
 			JSONArray output = (JSONArray) o.get("output");
@@ -979,8 +943,43 @@ int start_test = 0;
 			System.out.println(ja);
 
 //			getTopTermsFromBlogIds(ids, from, to, "100");
-			getPosts(ids, from, to, "__ONLY__TERMS__BLOGSITE_IDS__", "blogpost_terms");
+			System.out.println(getTopTermsFromBlogger("\"George McGinn\",\"Southfront analytic team\"", "2000-01-01", "2020-01-01" , "100"));
+//			getPosts(ids, from, to, "__ONLY__TERMS__BLOGSITE_IDS__", "blogpost_terms");
+			String url = " http://127.0.0.1:5000/";
+			JSONObject js = new JSONObject("{\r\n" + 
+					"	\"tracker_id\":7,\r\n" + 
+					"	\"type\":\"create\"\r\n" + 
+					"}");
 			
+			//System.out.println(_getResult(url, js));
+//			getBloggersMentioned("20,16");
+			//String bloggers = "George McGinn";
+//			String from = "2000-01-01";
+//			String to = "2020-01-01";
+			//System.out.println(getTopTermsBlogger("George McGinn", "2000-01-01", "2020-01-01" , "1"));
+//			List<JSONObject> postDataAll1 = getPosts(bloggers, from, to, "__ONLY__TERMS__BLOGGERS", "blogpost_terms");
+//			//System.out.println("select * from blogpost_terms where blogger = \"" + bloggers + "\" and date > \"" + from + "\" and date < \"" +  to +"\"");
+//			List postDataAll = DbConnection.queryJSON("select * from blogpost_terms where blogger = \"" + bloggers + "\" and date > \"" + from + "\" and date < \"" +  to +"\"");
+//			
+//			System.out.println("first---"+postDataAll1.get(0));
+//			String indx = postDataAll1.get(0).toString();
+//			JSONObject j1 = new JSONObject(indx);
+//			String ids1 = j1.get("_source").toString();
+//			JSONObject j2 = new JSONObject(ids1);
+//			String post_ids = j2.get("blogpost_id").toString();
+//			String title = j2.get("title").toString();
+//			String post = j2.get("post").toString();
+//			System.out.println("first id-- "+post_ids);
+//			
+//			
+//			//String terms = j2.get(field).toString();
+//			
+//			
+//			
+//			System.out.println("second---"+postDataAll.get(0));
+////			 indx = postDataAll.get(0).toString();
+//			 JSONObject source = new JSONObject(postDataAll.get(0).toString());
+//			 System.out.println("source id-- "+source.get("_source"));
 			// System.out.println(Arrays.asList(ssssss.split("-")).get(0));
 
 			// SparkConf conf = new
@@ -1074,7 +1073,12 @@ int start_test = 0;
 
 		HashMap<String, String> key_val_posts = (HashMap<String, String>) result_key_val;
 		HashMap<Pair<String, String>, ArrayList<JSONObject>> clusterResult = (HashMap<Pair<String, String>, ArrayList<JSONObject>>) result;
-
+//		try (FileWriter file = new FileWriter("C:\\Users\\bt_admin\\file2.json")) {
+//			
+//			file.write(key_val_posts.toString());
+//			System.out.println("Successfully Copied JSON Object to File...");
+//
+//		}
 		Pair<String, String> key_val = new Pair<String, String>(null, null);
 		String cluster_ = cluster.toString();
 		String post_ids = key_val_posts.get(cluster_);

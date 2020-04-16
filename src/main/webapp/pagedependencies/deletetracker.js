@@ -32,6 +32,7 @@ if(confirmdelete)
 			if(response.indexOf("success")>-1){
 //				 $.getScript("assets/js/toastr.js", function(data, textStatus, jqxhr) {
 //					 loadCSS("assets/css/toastr.css");
+				uploadTerms(tid, 'delete')
 				toastr.success('Tracker successfully deleted!','Success');
 //				 });
 				//location.href=app_url+"trackerlist.jsp";
@@ -58,5 +59,25 @@ if(confirmdelete)
 
 })	
 	
-	
+function uploadTerms(tid, type){
+	$.ajax({
+		url: app_url+'tracker',
+		method: 'POST',
+		data: {
+			action:"uploadTerms",
+			tracker_id:tid,
+			type:type,
+			
+		},
+		error: function(response)
+		{
+			//alert('could not compute terms')
+			console.log('could not compute terms')
+		},
+		success: function(response)
+		{
+			console.log('term response',response);
+		}
+	});
+}	
 });

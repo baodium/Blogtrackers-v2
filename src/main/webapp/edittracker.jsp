@@ -329,7 +329,8 @@ if(ids.length()>0 && post._getBlogPostById(ids) !=""){
 //u
 								if (!query.equals("")) {
 									blogs = blg._fetch(query);
-									System.out.println(blogs);
+									totalblog = query.split(",").length;
+									System.out.println("blogs--"+query);
 									System.out.println(blogs.size());
 									new_results = blg._getPost(query);
 									

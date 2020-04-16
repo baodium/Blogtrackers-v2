@@ -169,11 +169,13 @@ Instant start = Instant.now();
 	String tracker_id = tid.toString();
 	//get postids from each cluster in tracker and save in JSONObject
 	ArrayList result = cluster._getClusters(tracker_id);
+	System.out.println("done with clusters");
 
 	JSONObject res = new JSONObject(result.get(0).toString());
+	System.out.println("done with res");
 	
 	JSONObject source = new JSONObject(res.get("_source").toString());
-
+	System.out.println("done with source");
 	//			ArrayList R2 = (ArrayList)result.get(0);
 	//for()
 	//			System.out.println(source.get("cluster_3"));
@@ -200,11 +202,13 @@ Instant start = Instant.now();
 		//System.out.println(source.get(cluster_).toString());
 		//System.out.println(cluster_data);
 		String post_ids = cluster_data.get("post_ids").toString();
+		System.out.println("done with postsids --");
 		///break;
 		
 		String centroid = source.get(centroids).toString().replace("[", "").replace("]", "");
 		String centroid_x = centroid.split(",")[0].trim();
 		String centroid_y = centroid.split(",")[1].trim();
+		System.out.println("done with centroid --");
 		//System.out.println(centroid);
 		
 		ArrayList svd = cluster._getSvd(post_ids);
@@ -231,6 +235,7 @@ Instant start = Instant.now();
 				
 			} */
 			scatter_plot.put("cluster",String.valueOf(i));
+			
 			scatter_plot.put("",String.valueOf(counter));
 			scatter_plot.put("new_x",x);
 			scatter_plot.put("new_y",y);
@@ -246,12 +251,13 @@ Instant start = Instant.now();
 			scatterplotfinaldata.add(scatter_plot);
 			
 		}
-		
+		System.out.println("done with svd --");
 		//scatterplotfinaldata.add(new JSONObject("{columns:['','new_x','new_y','cluster']}"));
 		//System.out.println(svd);
 		
 		//List<JSONObject>  postDataAll = cluster.getPosts(post_ids, "", "", "__ONLY__POST__ID__","blogposts");
-		ArrayList<JSONObject> postDataAll = DbConnection.queryJSON("select date,post,num_comments, blogger,permalink, title, blogpost_id, location, blogsite_id from blogposts where blogpost_id in ("+post_ids+")");
+		ArrayList<JSONObject> postDataAll = DbConnection.queryJSON("select date,post,num_comments, blogger,permalink, title, blogpost_id, location, blogsite_id from blogposts where blogpost_id in ("+post_ids+") limit 500" );
+		System.out.println("done with query --");
 		//String terms = cluster.getTopTerms(post_ids);
 		//System.out.println(terms);
 		//System.out.println("done");
@@ -264,7 +270,7 @@ Instant start = Instant.now();
 		List<String> t1 = Arrays.asList(str1.replace("[","").replace("]","").split(","));
 		termsMatrix[i - 1][i - 1] = t1.size();
 		//String terms = cluster.getTopTerms(post_ids);
-		System.out.println(terms);
+		//System.out.println(terms);
 
 		//CREATING CHORD MATRIX
 		
@@ -300,7 +306,7 @@ Instant start = Instant.now();
 		
 		termsMatrix[i-1][k-1] = count;
 		termsMatrix[k-1][i-1] = count;
-		}
+		 }
 		//DONE CREATING CHORD MATRIX
 		
 		topterms.put(cluster_,terms);
@@ -324,7 +330,7 @@ Instant start = Instant.now();
 	/* for(int i = 0; i < termsMatrix.length; i++){
 		System.out.println("termsMatrix --" + Arrays.toString(termsMatrix[i]));
 	} */
-	
+		
 	session.setAttribute(tid.toString() + "cluster_terms", topterms);
 	session.setAttribute(tid.toString() + "cluster_distances", distances);
 	session.setAttribute(tid.toString() + "cluster_result", clusterResult);
@@ -609,24 +615,31 @@ Instant start = Instant.now();
 								for (Map.Entry<Pair<String, String>, ArrayList<JSONObject>> entry : clusterResult.entrySet()) {
 									Pair<String, String> key = entry.getKey();
 									
-									String temp_terms = topterms.get("cluster_" + (i + 1));
+									//String temp_terms = topterms.get("cluster_" + (i + 1));
 									//System.out.println("terms ---" + terms);
 									String word_build = "";
 									
 									//System.out.println("terms ---" + terms);
-									temp_terms = temp_terms.replace("{","").replace("}", "").replace("[","").replace("]", "").replace("),", "-").replace("(", "").replace("\'", "").replace("\"", "");;
-									List<String> termlist = Arrays.asList(temp_terms.split(","));
+									String [] splitted = source.get("cluster_" + (i + 1)).toString().split("\'topterms\':");
+											//System.out.println("terms ---" + terms);
+											//terms = terms.replace("{","").replace("}","").replace("[","").replace("]", "").replace("),", "-").replace("(", "").replace("\'", "").replace("\"", "");
+											//String [] splitted2 = splitted[1].replace("{","").replace("}","").split(",");
+											//List<String> termlist = Arrays.asList(terms.split(","));
+									List<String> termlist = Arrays.asList(splitted[1].replace("{","").replace("}","").split(","));
+									//max = Integer.parseInt(termlist.get(k).split(":")[1].trim());
+									//temp_terms = temp_terms.replace("{","").replace("}", "").replace("[","").replace("]", "").replace("),", "-").replace("(", "").replace("\'", "").replace("\"", "");;
+									//List<String> termlist = Arrays.asList(temp_terms.split(","));
 									
 									for(int m = 0; m < 10; m++){
 										if(m > 0){
 											word_build += ", ";
 										}
-										word_build += termlist.get(m).split(":")[0];
+										word_build += termlist.get(m).split(":")[0].replace("\'","");
 										//System.out.println("original--" + termlist.get(m));
 										//System.out.println("building--" + termlist.get(m).split(":")[0]);
 									
 									}
-									System.out.println("original--" + word_build);
+									//System.out.println("original--" + word_build);
 
 									if (key.getKey().equals("cluster_1")) {
 
@@ -964,10 +977,13 @@ Instant start = Instant.now();
 				<div id="posts_details" style="" class="pt20">
 					<h5 id="titleContainer" class="text-primary p20 pt0 pb0"><%=currentTitle%></h5>
 					<div class="text-center mb20 mt20">
-						<button class="btn stylebuttonblue">
+					<button class="btn stylebuttonblue" onclick="window.location.href = '<%=request.getContextPath()%>/bloggerportfolio.jsp?tid=<%=tid%>&blogger=<%=currentBlogger%>'">
+						<%-- <button class="btn stylebuttonblue">
 							<b id="authorContainer" class="float-left ultra-bold-text"><%=currentBlogger%></b> <i
-								class="far fa-user float-right blogcontenticon"></i>
-						</button>
+								class="far fa-user float-right blogcontenticon"></i>--%>
+						<b class="float-left ultra-bold-text"><%=currentBlogger%></b> <i
+													class="far fa-user float-right blogcontenticon"></i>
+											</button>
 						<button id="dateContainer" class="btn stylebuttonnocolor">02-01-2018, 5:30pm</button>
 						<button class="btn stylebuttonorange">
 							<b id="numCommentsContainer" class="float-left ultra-bold-text"><%=currentNumComment%>
@@ -1017,7 +1033,10 @@ Instant start = Instant.now();
 								</thead>
 								<tbody>
 								
-								<% for(int k = 0; k < topterms.size(); k++){ %>
+								<% 
+								
+								
+								for(int k = 0; k < topterms.size(); k++){ %>
 								
 									<tr>
 										
@@ -1025,16 +1044,19 @@ Instant start = Instant.now();
 										int max = 0;
 										for(int m = 0; m < 10; m++){
 											
-											String terms = topterms.get("cluster_" + (m + 1));
+											//String terms = topterms.get("cluster_" + (m + 1));
+											String [] splitted = source.get("cluster_" + (m + 1)).toString().split("\'topterms\':");
 											//System.out.println("terms ---" + terms);
-											terms = terms.replace("{","").replace("}","").replace("[","").replace("]", "").replace("),", "-").replace("(", "").replace("\'", "").replace("\"", "");
-											List<String> termlist = Arrays.asList(terms.split(","));
-											max = Integer.parseInt(termlist.get(k).split(":")[1]);
+											//terms = terms.replace("{","").replace("}","").replace("[","").replace("]", "").replace("),", "-").replace("(", "").replace("\'", "").replace("\"", "");
+											//String [] splitted2 = splitted[1].replace("{","").replace("}","").split(",");
+											//List<String> termlist = Arrays.asList(terms.split(","));
+											List<String> termlist = Arrays.asList(splitted[1].replace("{","").replace("}","").split(","));
+											max = Integer.parseInt(termlist.get(k).split(":")[1].trim());
 											
 										%>
 										
 										<td>
-											<%=termlist.get(k).split(":")[0]%>
+											<%=termlist.get(k).split(":")[0].replace("\'","")%>
 										</td>
 
 										<%} %>
@@ -1320,7 +1342,7 @@ Instant start = Instant.now();
 	$('#clusterdiagram').addClass('hidden');
 	$('#clusterdiagram_loader').removeClass('hidden');
 	
-	loadscatter(1);
+	//loadscatter(1);
 	
 	$('#clusterdiagram').removeClass('hidden');
 	$('#clusterdiagram_loader').addClass('hidden');
@@ -1337,7 +1359,7 @@ Instant start = Instant.now();
 		
 		 counter_value = $(this).attr("counter_value");
 		//alert(counter_value)
-		loadscatter(counter_value);
+		//loadscatter(counter_value);
 		
 		//loadtitletable(counter_value+1);
 		

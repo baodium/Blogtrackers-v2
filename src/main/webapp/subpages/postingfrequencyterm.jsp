@@ -62,12 +62,15 @@
 /* 			}
 		}
 	} */ 
-
+String bloggerterms = null;
 	if (action.toString().equals("gettopkeyword")) {
 %>
-<%=mostusedkeyword%>
+<%=bloggerterms.split(")")[0]%>
 <%
 	} else {
+		
+		bloggerterms = Clustering.getTopTermsFromBlogger(blogger.toString(), dt,dte , "200");
+		System.out.println("terms --"+bloggerterms);
 %>
 <!-- <div class="tagcloudcontainer" style="min-height: 420px;">
 </div> -->
@@ -91,17 +94,39 @@
      var frequency_list = [{"text":"study","size":40},{"text":"motion","size":15},{"text":"forces","size":10},{"text":"electricity","size":15},{"text":"movement","size":10},{"text":"relation","size":5},{"text":"things","size":10},{"text":"force","size":5},{"text":"ad","size":5},{"text":"energy","size":85},{"text":"living","size":5},{"text":"nonliving","size":5},{"text":"laws","size":15},{"text":"speed","size":45},{"text":"velocity","size":30},{"text":"define","size":5},{"text":"constraints","size":5},{"text":"universe","size":10},{"text":"distinguished","size":5},{"text":"chemistry","size":5},{"text":"biology","size":5},{"text":"includes","size":5},{"text":"radiation","size":5},{"text":"sound","size":5},{"text":"structure","size":5},{"text":"atoms","size":5},{"text":"including","size":10},{"text":"atomic","size":10},{"text":"nuclear","size":10},{"text":"cryogenics","size":10},{"text":"solid-state","size":10},{"text":"particle","size":10},{"text":"plasma","size":10},{"text":"deals","size":5},{"text":"merriam-webster","size":5},{"text":"dictionary","size":10},{"text":"analysis","size":5},{"text":"conducted","size":5},{"text":"order","size":5},{"text":"understand","size":5},{"text":"behaves","size":5},{"text":"en","size":5},{"text":"wikipedia","size":5},{"text":"wiki","size":5},{"text":"physics-","size":5},{"text":"physical","size":5},{"text":"behaviour","size":5},{"text":"collinsdictionary","size":5},{"text":"english","size":5},{"text":"time","size":35},{"text":"distance","size":35},{"text":"wheels","size":5},{"text":"revelations","size":5},{"text":"minute","size":5},{"text":"acceleration","size":20},{"text":"torque","size":5},{"text":"wheel","size":5},{"text":"rotations","size":5},{"text":"resistance","size":5},{"text":"momentum","size":5},{"text":"measure","size":10},{"text":"direction","size":10},{"text":"car","size":5},{"text":"add","size":5},{"text":"traveled","size":5},{"text":"weight","size":5},{"text":"electrical","size":5},{"text":"power","size":5}];
 */
 
+var terms = <%=bloggerterms.toString()%>
+var jsonresult = {}
+var currenttuple = null;
+var currentkey = null;
+var currentvalue = null;
+for(var i = 0; i < terms.length; i++){
+	if (i == 0){
+		var tuple_ = terms[0].replace('(','').replace(')','').replace(' ','');
+		currentkey = tuple_.split(',')[0]
+	}
+	var tuple = terms[i].replace('(','').replace(')','').replace(' ','');
+	var key = tuple.split(',')[0]
+	var value = tuple.split(',')[1]
+	jsonresult[key]=value;
+	
+}
 
-var word_count2 = {}; 
+//var new_dd = terms.replace('[','{').replace(']','}').replace(/\),/g,'-').replace(/\(/g,'').replace(/,/g,':').replace(/-/g,',').replace(/\)/g,'').replace(/'/g,'');
+console.log('terms',jsonresult);
+wordtagcloud("#tagcloudcontainer",450,jsonresult); 
+$(".most-used-keyword").html(currentkey);
 
-<%-- <%if (topterms.length() > 0) {
+
+<%-- var word_count2 = {}; 
+
+<%if (topterms.length() > 0) {
 	 for (int i = 0; i < topterms.length(); i++) {
 		 JSONObject jsonObj = topterms.getJSONObject(i);
 			int size = Integer.parseInt(jsonObj.getString("frequency"));%>
 		{"text":"<%=terms.toString() %>","size":<%=size %>},
 		 word_count2["<%=jsonObj.getString("key")%>"] = <%=size%> 
 <%}
-	}%> --%>
+	}%>
 
 	<%/* outlinks = outl._searchByRange("date", dt, dte, ids); */
 				JSONObject d = new JSONObject();
@@ -144,7 +169,7 @@ var word_count2 = {};
 						session.setAttribute(blogger.toString() + "_topkeyword_" + tid.toString()+ dateStartNew + dateEndNew, d.get("highest"));%>
 
 	wordtagcloud("#tagcloudcontainer",450,<%=d.get("data")%>); 
-	<%-- wordtagcloud("#tagcloudcontainer",450,<%=d%>);  --%>
+	wordtagcloud("#tagcloudcontainer",450,<%=d%>); 
 	console.log("session not collected");
 	console.log(<%=d.get("data")%>);
 	$('.most-used-keyword').html("<%=d.get("highest")%>");
@@ -172,7 +197,7 @@ var word_count2 = {};
 	$('.most-used-keyword').html("<%=ddd.get("highest")%>");	
 
 	
-	<%}%>
+	<%}%> --%>
 /* wordtagcloud("#tagcloudcontainer",450,word_count2); */
 
 <%-- wordtagcloud("#tagcloudcontainer",450);
