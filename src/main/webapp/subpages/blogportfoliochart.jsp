@@ -150,6 +150,7 @@ if(action.toString().equals("getstats")){
 	ArrayList allauthors = post._getBloggerByBlogId("date", dt, dte, selectedblogid, "influence_score", "DESC");
 	
 	System.out.println("sssssss"+selectedblogid);
+	System.out.println("sssssss"+allauthors);
 
 	if(allauthors.size()>0){
 		String tres = null;
@@ -179,15 +180,20 @@ if(action.toString().equals("getstats")){
 	String all_blogs1 = all_blogs.toString();
 	String[] all_blog = all_blogs1.split("---");
     
-    
+    int totalsentiment = 0;
 	
 	double normalized_value;
 	double value = 0;
 	double max = 0;
 	double min = 0;
+	double combo1 = 0;
+	double max_combo = 0;
+	double min_combo = 0;
+	
 	for(int i=0; i < all_blog.length; i++){
 		
 		String blogg_id = all_blog[i];
+		JSONArray sentimentpost1 = new JSONArray();
 		
 		value =  Double.parseDouble(post._searchRangeMaxByBlogId("date", dt, dte, blogg_id));
 		
@@ -205,19 +211,77 @@ if(action.toString().equals("getstats")){
 			min = value;
 		}
 		
+	}
+	//end for loop
+	
+	
+for(int z=0; z < all_blog.length; z++){
+		
+		String blogg_id = all_blog[z];
+		JSONArray sentimentpost1 = new JSONArray();
+		
+		///start normalizing sentiment
+		ArrayList allauthors1 = post._getBloggerByBlogId("date", dt, dte, blogg_id, "influence_score", "DESC");
+		
+		if(allauthors1.size()>0){
+			String tres = null;
+			JSONObject tresp = null;
+			String tresu = null;
+			JSONObject tobj = null;
+			int j=0;
+			int k=0;
+			int n = 0;
+			for(int pj=0; pj< allauthors1.size(); pj++){
+						tres = allauthors1.get(pj).toString();			
+						tresp = new JSONObject(tres);
+					    tresu = tresp.get("_source").toString();
+					    tobj = new JSONObject(tresu);
+					    
+					    sentimentpost1.put(tobj.get("blogpost_id").toString());
+				}
+			
+			String possentiment1=new Liwc()._searchRangeAggregate("date", date_start.toString(), date_end.toString(), sentimentpost1,"posemo");
+			String negsentiment1=new Liwc()._searchRangeAggregate("date", date_start.toString(), date_end.toString(), sentimentpost1,"negemo");
+			
+			int comb1 = Integer.parseInt(possentiment1)+Integer.parseInt(negsentiment1);
+			
+			if(selectedblogid.equals(blogg_id)){
+				totalsentiment = comb1;
+				
+			}
+			
+			
+			
+			if(z == 0){
+				max_combo = comb1;
+				min_combo = comb1;
+			}
+			
+			if(comb1 > max_combo){
+				max_combo = comb1;
+			}
+			
+			if(comb1 < min_combo){
+				min_combo = comb1;
+			}
+			
+		}
+		
+		
+		
+		//end normalizing sentiment
 		
 		
 	}
+	//end for loop
 	
-	System.out.println("maxxxxx"+max);
-	System.out.println("minnnn"+min);
-	System.out.println("totttt"+totalinfluence);
+	
 	
 	
 	normalized_value = ( (totalinfluence - min)/(max - min));
 	
 	String normalized_score = "";
-	if(normalized_value >= 0.0 && normalized_value <= 0.2){
+	if(normalized_value <= 0.0 && normalized_value <= 0.2){
 		normalized_score = "Very Low";
 	}else if(normalized_value > 0.2 && normalized_value < 0.5){
 		normalized_score = "Low";
@@ -234,15 +298,36 @@ if(action.toString().equals("getstats")){
 	//End Normalize value calculation
 	
 	
+normalized_value = ( (totalsentiment - min_combo)/(max_combo - min_combo));
 	
+	String normalized_sentiment = "";
+	if(normalized_value <= 0.0 && normalized_value <= 0.2){
+		normalized_sentiment = "Very Low";
+	}else if(normalized_value > 0.2 && normalized_value < 0.5){
+		normalized_sentiment = "Low";
+	}else if(normalized_value == 0.5){
+		normalized_sentiment = "Medium";
+	}else if(normalized_value > 0.5 && normalized_value < 0.8){
+		normalized_sentiment = "High";
+	}else if(normalized_value > 0.8 && normalized_value <= 1.0){
+		normalized_sentiment = "Very High";
+	}else{
+		normalized_sentiment = "undefined";
+	}
+
+	//End Normalize value calculation
 	
+
+	
+	/* 
 	
 	
 	String possentiment=new Liwc()._searchRangeAggregate("date", date_start.toString(), date_end.toString(), sentimentpost,"posemo");
 	String negsentiment=new Liwc()._searchRangeAggregate("date", date_start.toString(), date_end.toString(), sentimentpost,"negemo");
 	
-	int comb = Integer.parseInt(possentiment)+Integer.parseInt(negsentiment);
+	int comb = Integer.parseInt(possentiment)+Integer.parseInt(negsentiment); */
 	String mostactiveterm = "";
+	
 
 	int highestfrequency = 0; 
 	
@@ -275,7 +360,7 @@ if(action.toString().equals("getstats")){
 	 */
 	JSONObject result = new JSONObject();
 	result.put("totalpost",totalpost);
-	result.put("totalsentiment",comb);
+	result.put("totalsentiment",normalized_sentiment);
 	result.put("totalinfluence",normalized_score);
 	result.put("topterm",mostactiveterm);
 %>

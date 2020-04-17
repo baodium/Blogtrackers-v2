@@ -1488,7 +1488,7 @@ JSONObject allposts = new JSONObject();
 
          // Define main variables
          var d3Container = d3.select(element),
-             margin = {top: 10, right: 10, bottom: 20, left: 80},
+             margin = {top: 10, right: 10, bottom: 20, left:80},
              width = d3Container.node().getBoundingClientRect().width - margin.left - margin.right,
              height = height - margin.top - margin.bottom;
 
@@ -1568,14 +1568,7 @@ JSONObject allposts = new JSONObject();
  //   [{"date":"2016","close":1500},{"date":"2017","close":1800}],
  //   [{"date":"2014","close":500},{"date":"2015","close":900},{"date":"2016","close":1200}]
  // ];
-
- <%-- data = [[<% for(int q=0; q<sortedyearsarray.length(); q++){ 
-	  		String yer=sortedyearsarray.get(q).toString(); 
-	  		int vlue = Integer.parseInt(graphyears.get(yer).toString()); %>
-	  			{"date":"<%=yer%>","close":<%=vlue%>},
-	<% } %>]]; --%>
-	
-	data = [[ <% for(String d : years){
+ data = [[ <% for(String d : years){
 	    %>   
 	    <% int freq = 0;try{freq = (int)year_object.get(d);}catch(Exception e){freq =0;}%>
 	    {"date":"<%=d%>","close":<%=freq%>},
@@ -1583,8 +1576,11 @@ JSONObject allposts = new JSONObject();
 	  	<%-- 
 	  			{"date":"<%=yr%>","close":<%=vlue%>}, --%>
 	<% } %> ]];
-
- //console.log(data);
+ 
+ <%-- <%System.out.println(dayJson);%> --%>
+<%-- console.log(<%=dayJson%>); --%>
+ console.log("DATA FOR LINE PUBLISHED");
+ console.log(data);
  // data = [];
 
  // data = [
@@ -1764,7 +1760,7 @@ JSONObject allposts = new JSONObject();
                         .attr("d", line)
                         // .style("fill", "rgba(0,0,0,0.54)")
                         .style("stroke-width", 2)
-                        .style("stroke", "0080CC")
+                        .style("stroke", "#0080CC")
 
                // add point
                 circles = svg.append("g").attr("class","circlecontainer").selectAll(".circle-point")
@@ -1911,11 +1907,39 @@ JSONObject allposts = new JSONObject();
              if(data.length == 1 )
         	 {
         	 var tick = svg.select(".d3-axis-horizontal").select(".tick");
-            transformfirsttick =  tick[0][0].attributes[1].value;
+        	 var transformfirsttick;
+        	 //transformfirsttick =  tick[0][0].attributes[2].value;
+            //console.log(tick[0][0].attributes[2]);
             //transformfirsttick = "translate(31.5,0)"
-            //console.log(transformfirsttick);
+            //console.log(tick[0][0]);
+            // handle based on browser
+            var browser = "";
+            c = navigator.userAgent.search("Chrome");
+            f = navigator.userAgent.search("Firefox");
+            m8 = navigator.userAgent.search("MSIE 8.0");
+            m9 = navigator.userAgent.search("MSIE 9.0");
+            if (c > -1) {
+                browser = "Chrome";
+                // chrome browser
+            transformfirsttick =  tick[0][0].attributes[1].value;
+
+            } else if (f > -1) {
+                browser = "Firefox";
+                 // firefox browser
+             transformfirsttick =  tick[0][0].attributes[2].value;
+            } else if (m9 > -1) {
+                browser ="MSIE 9.0";
+            } else if (m8 > -1) {
+                browser ="MSIE 8.0";
+            }
+            
             svg.select(".circlecontainer").attr("transform", transformfirsttick);
             svg.select(".linecontainer").attr("transform", transformfirsttick);
+            
+            
+            
+            //console.log(browser);
+            
         	 }
 
 
@@ -1983,11 +2007,39 @@ JSONObject allposts = new JSONObject();
            if(data.length == 1 )
       	 {
       	 var tick = svg.select(".d3-axis-horizontal").select(".tick");
-          transformfirsttick =  tick[0][0].attributes[1].value;
+      	 var transformfirsttick;
+      	 //transformfirsttick =  tick[0][0].attributes[2].value;
+          //console.log(tick[0][0].attributes[2]);
           //transformfirsttick = "translate(31.5,0)"
-          console.log(transformfirsttick);
+          //console.log(tick[0][0]);
+          // handle based on browser
+          var browser = "";
+          c = navigator.userAgent.search("Chrome");
+          f = navigator.userAgent.search("Firefox");
+          m8 = navigator.userAgent.search("MSIE 8.0");
+          m9 = navigator.userAgent.search("MSIE 9.0");
+          if (c > -1) {
+              browser = "Chrome";
+              // chrome browser
+          transformfirsttick =  tick[0][0].attributes[1].value;
+
+          } else if (f > -1) {
+              browser = "Firefox";
+               // firefox browser
+           transformfirsttick =  tick[0][0].attributes[2].value;
+          } else if (m9 > -1) {
+              browser ="MSIE 9.0";
+          } else if (m8 > -1) {
+              browser ="MSIE 8.0";
+          }
+          
           svg.select(".circlecontainer").attr("transform", transformfirsttick);
           svg.select(".linecontainer").attr("transform", transformfirsttick);
+          
+          
+          
+          //console.log(browser);
+          
       	 }
              // Crosshair
              //svg.selectAll('.d3-crosshair-overlay').attr("width", width);
@@ -2380,10 +2432,11 @@ JSONObject allposts = new JSONObject();
  //console.log(data);
  // data = [];
 
- <%-- data = [
+<%--  data = [
  [{"date": "Jan","close": <%=jan%>},{"date": "Feb","close": <%=feb%>},{"date": "Mar","close":<%=march%>},{"date": "Apr","close": <%=jan%>},{"date": "May","close": <%=may%>},{"date": "Jun","close": <%=june%>},{"date": "Jul","close": <%=july%>},{"date": "Aug","close": <%=aug%>},{"date": "Sep","close": <%=sep%>},{"date": "Oct","close": <%=oct%>},{"date": "Nov","close": <%=nov%>},{"date": "Dec","close": <%=dec%>}],
- ]; --%>
- 
+ ];
+ --%>
+ <%-- <%Iterator<String> keysMonth = monthJson.keys();%> --%>
  <%String [] months = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};%> 
  data = [[<%   	
     for(String m: months){
@@ -2395,8 +2448,9 @@ JSONObject allposts = new JSONObject();
  	   <%-- {"letter":"<%=key%>","frequency":<%=dayJson.get(key)%>}   --%>      	            		  		
 		  			
 <% } %>]];
-
- // console.log(data);
+ 
+ console.log("data for yearly pattern")
+  console.log(data);
  var line = d3.svg.line()
  .interpolate("monotone")
       //.attr("width", x.rangeBand())
@@ -2417,7 +2471,7 @@ JSONObject allposts = new JSONObject();
           return "No Information Available";
         }
         else if(d !== null) {
-         return d.date+" ("+d.close+")<br/> Click for more information";
+         return d.date+" ("+d.close+")";
           }
         // return "here";
         });
@@ -2520,7 +2574,7 @@ JSONObject allposts = new JSONObject();
                         .attr("d", line)
                         // .style("fill", "rgba(0,0,0,0.54)")
                         .style("stroke-width", 2)
-                        .style("stroke", "0080CC")
+                        .style("stroke", "#0080CC")
                          //.attr("transform", "translate("+margin.left/4.7+",0)");
                         // .datum(data)
 
@@ -2547,13 +2601,7 @@ JSONObject allposts = new JSONObject();
                       svg.selectAll(".circle-point").data(data[0])
                       .on("mouseover",tip.show)
                       .on("mouseout",tip.hide)
-                      .on("click",function(d){
-                    	  console.log(d.date);
-
-                   	  	  var d1 = 	  d.date + "-01-01";
-                  	      var d2 = 	  d.date + "-12-31";              					
-                  	      loadUrls(d1,d2);  
-                      });
+                      .on("click",function(d){console.log(d.date)});
                                          svg.call(tip)
                                          
                        
@@ -2602,15 +2650,17 @@ JSONObject allposts = new JSONObject();
                                .attr("cy", function(d){return y(d.close)})
 
                                .attr("transform", "translate("+margin.left/4.7+",0)");
-                                svg.selectAll(".circle-point").data(mergedarray)
+                               svg.selectAll(".circle-point").data(mergedarray)
                               .on("mouseover",tip.show)
                               .on("mouseout",tip.hide)
                               .on("click",function(d){
                             	  console.log(d.date);
+                            	  var d1 = 	  d.date + "-01-01";
+                           	      var d2 = 	  d.date + "-12-31";
+                 					
 
-                           	  	  var d1 = 	  d.date + "-01-01";
-                          	      var d2 = 	  d.date + "-12-31";              					
-                          	      loadUrls(d1,d2); 
+                           	      loadUrls(d1,d2); 
+                            	  
                               });
                          //                         svg.call(tip)
 
@@ -2620,7 +2670,13 @@ JSONObject allposts = new JSONObject();
                              svg.selectAll(".circle-point").data(mergedarray)
                              .on("mouseover",tip.show)
                              .on("mouseout",tip.hide)
-                             .on("click",function(d){console.log(d.date)});
+                             .on("click",function(d){
+                            	 console.log(d.date);
+
+                           	  	  var d1 = 	  d.date + "-01-01";
+                          	      var d2 = 	  d.date + "-12-31";              					
+                          	      loadUrls(d1,d2); 	 
+                             });
                                                 svg.call(tip)
 
 
@@ -2671,11 +2727,39 @@ JSONObject allposts = new JSONObject();
              if(data.length == 1 )
         	 {
         	 var tick = svg.select(".d3-axis-horizontal").select(".tick");
-            transformfirsttick =  tick[0][0].attributes[1].value;
+        	 var transformfirsttick;
+        	 //transformfirsttick =  tick[0][0].attributes[2].value;
+            //console.log(tick[0][0].attributes[2]);
             //transformfirsttick = "translate(31.5,0)"
-            //console.log(transformfirsttick);
+            //console.log(tick[0][0]);
+            // handle based on browser
+            var browser = "";
+            c = navigator.userAgent.search("Chrome");
+            f = navigator.userAgent.search("Firefox");
+            m8 = navigator.userAgent.search("MSIE 8.0");
+            m9 = navigator.userAgent.search("MSIE 9.0");
+            if (c > -1) {
+                browser = "Chrome";
+                // chrome browser
+            transformfirsttick =  tick[0][0].attributes[1].value;
+
+            } else if (f > -1) {
+                browser = "Firefox";
+                 // firefox browser
+             transformfirsttick =  tick[0][0].attributes[2].value;
+            } else if (m9 > -1) {
+                browser ="MSIE 9.0";
+            } else if (m8 > -1) {
+                browser ="MSIE 8.0";
+            }
+            
             svg.select(".circlecontainer").attr("transform", transformfirsttick);
             svg.select(".linecontainer").attr("transform", transformfirsttick);
+            
+            
+            
+            //console.log(browser);
+            
         	 }
 
 
@@ -2743,11 +2827,39 @@ JSONObject allposts = new JSONObject();
            if(data.length == 1 )
       	 {
       	 var tick = svg.select(".d3-axis-horizontal").select(".tick");
-          transformfirsttick =  tick[0][0].attributes[1].value;
+      	 var transformfirsttick;
+      	 //transformfirsttick =  tick[0][0].attributes[2].value;
+          //console.log(tick[0][0].attributes[2]);
           //transformfirsttick = "translate(31.5,0)"
-          console.log(transformfirsttick);
+          //console.log(tick[0][0]);
+          // handle based on browser
+          var browser = "";
+          c = navigator.userAgent.search("Chrome");
+          f = navigator.userAgent.search("Firefox");
+          m8 = navigator.userAgent.search("MSIE 8.0");
+          m9 = navigator.userAgent.search("MSIE 9.0");
+          if (c > -1) {
+              browser = "Chrome";
+              // chrome browser
+          transformfirsttick =  tick[0][0].attributes[1].value;
+
+          } else if (f > -1) {
+              browser = "Firefox";
+               // firefox browser
+           transformfirsttick =  tick[0][0].attributes[2].value;
+          } else if (m9 > -1) {
+              browser ="MSIE 9.0";
+          } else if (m8 > -1) {
+              browser ="MSIE 8.0";
+          }
+          
           svg.select(".circlecontainer").attr("transform", transformfirsttick);
           svg.select(".linecontainer").attr("transform", transformfirsttick);
+          
+          
+          
+          //console.log(browser);
+          
       	 }
              // Crosshair
              //svg.selectAll('.d3-crosshair-overlay').attr("width", width);
@@ -2755,7 +2867,16 @@ JSONObject allposts = new JSONObject();
      }
  });
 
+ $(document).ready(function() {
+		
+		$('#top-listtype').on("change",function(e){
+			var date_start = $("#date_start").val();
+			var date_end = $("#date_end").val();
+			loadUrls(date_start,date_end);
+		});
+		
 
+ });
  </script>
 
 <script src="pagedependencies/baseurl.js?v=93"></script>

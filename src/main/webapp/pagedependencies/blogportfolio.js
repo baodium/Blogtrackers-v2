@@ -210,11 +210,10 @@ function loadStat(blog_id, all_blogs){
 		
 		response = response.trim();
 		var data = JSON.parse(response);
-
 //		$(".total-influence").html(parseInt(data.totalinfluence).toLocaleString('en'));
 		$(".total-influence").html(data.totalinfluence).toLocaleString('en');
 		$(".total-post").html(parseInt(data.totalpost).toLocaleString('en'));
-		$(".total-sentiment").html(parseInt(data.totalsentiment).toLocaleString('en'));
+		$(".total-sentiment").html(data.totalsentiment).toLocaleString('en');
 		//$(".top-keyword").html(data.topterm);
 		
 		$('#blog_url_link').attr('href', blog_url);

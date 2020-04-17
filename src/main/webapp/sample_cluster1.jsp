@@ -367,12 +367,155 @@ Instant start = Instant.now();
 <script src="pagedependencies/googletagmanagerscript.js"></script>
 <script  src="pagedependencies/clustering.js">
 </script>
-
+<script type="text/javascript" src="jquery.zoomooz.min.js"></script>
 <script>
 //console.log('scatter data');
 
 </script>
 
+<style>
+   #parentdiv {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  background-color: #ac5;
+  border-radius: 150px;
+  margin: 150px;
+}
+
+.div2 {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  background-color: #ac5;
+  border-radius: 100px;
+}
+  </style>
+
+    <style type="text/css">
+        * { box-sizing: border-box; }
+
+.grid:after {
+  content: '';
+  display: block;
+  clear: both;
+}
+
+.grid-item {
+  width: 80px;
+  height: 60px;
+  float: left;
+  background: #00997B;
+  border: 1px solid #333;
+  border-color: hsla(0, 0%, 0%, 0.5);
+  /* border-radius: 5px; */
+  margin-bottom: 20px;
+  margin: 10px;
+  border-radius: 50%;
+    behavior: url(PIE.htc); /* remove if you don't care about IE8 */
+}
+
+.grid-item1 {
+  width: 80px;
+  height: 60px;
+  float: none;
+  background: #00997B;
+  border: 1px solid #333;
+  border-color: hsla(0, 0%, 0%, 0.5);
+  /* border-radius: 5px; */
+  margin-bottom: 20px;
+  margin: 10px;
+  border-radius: 50%;
+    behavior: url(PIE.htc); /* remove if you don't care about IE8 */
+}
+
+.displayed1 {
+    display: block;
+    margin-left: auto;
+    margin-right: auto }
+
+.holder1
+    {
+      display:table-cell !important;
+      vertical-align:middle !important;
+      text-align:center !important;
+     
+    }
+
+.grid-item2 {
+  width: 80px;
+  height: 60px;
+  float: none;
+  background: grey;
+  border: 1px solid #333;
+  border-color: grey;
+  /* border-radius: 5px; */
+  margin-bottom: 20px;
+  margin: 10px;
+  border-radius: 50%;
+    behavior: url(PIE.htc); /* remove if you don't care about IE8 */
+}
+
+.grid-item--width2 { width: 340px; }
+.grid-item--width3 { width: 520px; }
+.grid-item--width4 { width: 780px; }
+
+.grid-item--height2 { height: 200px; }
+.grid-item--height3 { height: 260px; }
+.grid-item--height4 { height: 360px; }
+
+
+
+.hidden{
+  
+  display: none;
+}
+
+.oga_boss{
+    height: 300px !important;
+     width: 850px !important;
+}
+
+.float_center{
+    text-align: center !important;
+    float: none !important;
+}
+.float_right{
+    float: right !important;
+}
+
+.float_left{
+    float: left !important;
+}
+
+.testy {
+    -webkit-transform: scale(0.2);
+  -moz-transform: scale(0.2);
+  -ms-transform: scale(0.2);
+  transform: scale(0.2);
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
+
+.ctna {
+    min-height: 150px;
+    min-width: 150px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    display: table-cell;
+    vertical-align: middle }
+
+.testyq {
+    -webkit-transform: scale(1.0);
+  -moz-transform: scale(1.0);
+  -ms-transform: scale(1.0);
+  transform: scale(1.0);
+}
+
+    </style>
 </head>
 <body>
 	<input type="hidden" id="tid" value="<%=tid.toString()%>" />
@@ -693,18 +836,10 @@ Instant start = Instant.now();
 			<div class="col-md-9">
 				<div class="card card-style mt20">
 					<div class="card-body  p30 pt5 pb5">
-						<div style="min-height: 250px;">
-							<div>
-								<p class="text-primary mt10">Cluster Map</p>
-							</div>
-
-							<div id="chart-container" class="chart-container">
-								<div class="chart" id="clusterdiagram"></div>
-								
-								<div id="clusterdiagram_loader" class="hidden">
-								<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />
-							</div>
-							</div>
+						<div style="min-height: 500px;">
+						
+						<div id="parentdiv"></div>
+							
 							
 						</div>
 					</div>
@@ -1098,13 +1233,36 @@ Instant start = Instant.now();
 	<script
 		src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.print.min.js"></script>
 
-
-
+ <script src="https://d3js.org/d3.v4.js"></script>
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+var div = 360 / 6;
+var radius = 150;
+var parentdiv = document.getElementById('parentdiv');
+var offsetToParentCenter = parseInt(parentdiv.offsetWidth / 2); //assumes parent is square
+var offsetToChildCenter = 20;
+var totalOffset = offsetToParentCenter - offsetToChildCenter;
+for (var i = 1; i <= 8; ++i) {
+  var childdiv = document.createElement('div');
+  childdiv.className = 'div2';
+  childdiv.style.position = 'absolute';
+  var y = Math.sin((div * i) * (Math.PI / 180)) * radius;
+  var x = Math.cos((div * i) * (Math.PI / 180)) * radius;
+  childdiv.style.top = (y + totalOffset).toString() + "px";
+  childdiv.style.left = (x + totalOffset).toString() + "px";
+  parentdiv.appendChild(childdiv);
+}
+    
+  </script>
 
 	<script>
 	
 	
  $(document).ready(function() {
+	
      $('#DataTables_Table_1_wrapper').DataTable( {
          "scrollY": 450,
          "scrollX": true,
@@ -1488,7 +1646,7 @@ Instant start = Instant.now();
 	}
 </script>
 
-<script type="text/javascript" src="assets/vendors/d3/d3.min.js" ></script>
+<!--  <script type="text/javascript" src="assets/vendors/d3/d3.min.js" ></script> -->
  <script src="assets/vendors/wordcloud/d3.layout.cloud.js" ></script>
  <script type="text/javascript" src="assets/vendors/d3/d3_tooltip.js" ></script>
  <script type="text/javascript"
@@ -1569,7 +1727,7 @@ $('.blogpost_link').on("click", function(){
 	
 	
 	
-	doCloud(jsondata,elem)
+	//doCloud(jsondata,elem)
 
 	 /* d3version3 = d3
 	   // window.d3 = null
@@ -1726,7 +1884,7 @@ $('.blogpost_link').on("click", function(){
     	clusterMatrix.push(temparr);
     	temparr.push(<%=termsMatrix[0][j]%>);
 	<%}%>  --%>
-	    drawChord("#chorddiagram", chord_options, clusterMatrix, names); 
+	   // drawChord("#chorddiagram", chord_options, clusterMatrix, names); 
  
  </script>
 

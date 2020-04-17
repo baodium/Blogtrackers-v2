@@ -367,12 +367,197 @@ Instant start = Instant.now();
 <script src="pagedependencies/googletagmanagerscript.js"></script>
 <script  src="pagedependencies/clustering.js">
 </script>
-
+<script type="text/javascript" src="jquery.zoomooz.min.js"></script>
 <script>
 //console.log('scatter data');
 
 </script>
 
+<style>
+   #container {
+  position: relative;
+  width: 100%;
+  padding-bottom: 100%;
+}
+
+#circle {
+  position: absolute;
+  width: 50%;
+  height: 50%;
+  background-color: #fffea1;
+  border-radius: 50%;
+}
+
+#small-circle{
+  margin-top: 25%;
+  margin-left: 45.5%;
+  position: absolute;
+  width: 40%;
+  height: 40%;
+  background-color: #e5e5e5;
+  border-radius: 50%;
+}#smallest-circle{
+  margin-top: 55%;
+  margin-left: 78%;
+  position: absolute;
+  width: 20%;
+  height: 20%;
+  background-color: #fffbeb;
+  border-radius: 50%;
+}
+#new-circle{
+  margin-top: 55%;
+  margin-left: 40.5%;
+  position: absolute;
+  width: 10%;
+  height: 10%;
+  background-color: #FFD700;
+  border-radius: 50%;
+}
+#new-circle1{
+  margin-top: 1%;
+  margin-left: 48.5%;
+  position: absolute;
+  width: 25%;
+  height: 25%;
+  background-color: #e9f4f6;
+  border-radius: 50%;
+}
+#new-circle2{
+  margin-top: 50%;
+  margin-left: 6.8%;
+  position: absolute;
+  width: 35%;
+  height: 35%;
+  background-color: #fff5f5;
+  border-radius: 50%;
+}
+  </style>
+
+    <style type="text/css">
+        * { box-sizing: border-box; }
+
+.grid:after {
+  content: '';
+  display: block;
+  clear: both;
+}
+
+.grid-item {
+  width: 80px;
+  height: 60px;
+  float: left;
+  background: #00997B;
+  border: 1px solid #333;
+  border-color: hsla(0, 0%, 0%, 0.5);
+  /* border-radius: 5px; */
+  margin-bottom: 20px;
+  margin: 10px;
+  border-radius: 50%;
+    behavior: url(PIE.htc); /* remove if you don't care about IE8 */
+}
+
+.grid-item1 {
+  width: 80px;
+  height: 60px;
+  float: none;
+  background: #00997B;
+  border: 1px solid #333;
+  border-color: hsla(0, 0%, 0%, 0.5);
+  /* border-radius: 5px; */
+  margin-bottom: 20px;
+  margin: 10px;
+  border-radius: 50%;
+    behavior: url(PIE.htc); /* remove if you don't care about IE8 */
+}
+
+.displayed1 {
+    display: block;
+    margin-left: auto;
+    margin-right: auto }
+
+.holder1
+    {
+      display:table-cell !important;
+      vertical-align:middle !important;
+      text-align:center !important;
+     
+    }
+
+.grid-item2 {
+  width: 80px;
+  height: 60px;
+  float: none;
+  background: grey;
+  border: 1px solid #333;
+  border-color: grey;
+  /* border-radius: 5px; */
+  margin-bottom: 20px;
+  margin: 10px;
+  border-radius: 50%;
+    behavior: url(PIE.htc); /* remove if you don't care about IE8 */
+}
+
+.grid-item--width2 { width: 340px; }
+.grid-item--width3 { width: 520px; }
+.grid-item--width4 { width: 780px; }
+
+.grid-item--height2 { height: 200px; }
+.grid-item--height3 { height: 260px; }
+.grid-item--height4 { height: 360px; }
+
+
+
+.hidden{
+  
+  display: none;
+}
+
+.oga_boss{
+    height: 300px !important;
+     width: 850px !important;
+}
+
+.float_center{
+    text-align: center !important;
+    float: none !important;
+}
+.float_right{
+    float: right !important;
+}
+
+.float_left{
+    float: left !important;
+}
+
+.testy {
+    -webkit-transform: scale(0.2);
+  -moz-transform: scale(0.2);
+  -ms-transform: scale(0.2);
+  transform: scale(0.4);
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
+
+.ctna {
+    min-height: 150px;
+    min-width: 150px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    display: table-cell;
+    vertical-align: middle }
+
+.testyq {
+    -webkit-transform: scale(1.0);
+  -moz-transform: scale(1.0);
+  -ms-transform: scale(1.0);
+  transform: scale(1.0);
+}
+
+    </style>
 </head>
 <body>
 	<input type="hidden" id="tid" value="<%=tid.toString()%>" />
@@ -693,18 +878,29 @@ Instant start = Instant.now();
 			<div class="col-md-9">
 				<div class="card card-style mt20">
 					<div class="card-body  p30 pt5 pb5">
-						<div style="min-height: 250px;">
-							<div>
-								<p class="text-primary mt10">Cluster Map</p>
-							</div>
+						<div style="min-height: 500px;">
+						
+						<div id="container">
+						  <div id="circle" data-targetsize="1.0" data-closeclick="true" class="zoomTarget">
+						  <div id="clusterdiagram1" style="padding-top: 100px; padding-left:100px;"></div>
+						  </div>
+						    <div id="small-circle" data-targetsize="1.0" data-closeclick="true" class="zoomTarget">
+						    <div id="clusterdiagram" style="padding-top: 100px; padding-left:100px;"></div>
+						      </div>
+						    <div id="smallest-circle" data-targetsize="1.0" data-closeclick="true" class="zoomTarget">
+						      </div>
+						    <div id="new-circle" data-targetsize="1.0" data-closeclick="true" class="zoomTarget">
+						      </div>
+						    <div id="new-circle1" data-targetsize="1.0" data-closeclick="true" class="zoomTarget">
+						      </div>
+						    <div id="new-circle2" data-targetsize="1.0" data-closeclick="true" class="zoomTarget">
+						    <div id="clusterdiagram6" style="padding-top: 100px; padding-left:100px;"></div>
+						      </div>
+						      
+						      
+						</div>
 
-							<div id="chart-container" class="chart-container">
-								<div class="chart" id="clusterdiagram"></div>
-								
-								<div id="clusterdiagram_loader" class="hidden">
-								<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />
-							</div>
-							</div>
+							
 							
 						</div>
 					</div>
@@ -1098,13 +1294,181 @@ Instant start = Instant.now();
 	<script
 		src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.print.min.js"></script>
 
+ <script src="https://d3js.org/d3.v4.js"></script>
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script src="https://d3js.org/d3.v4.js"></script>
+<script>
+		console.log('seun')
 
+  
+  var d3v4 = window.d3;
+
+ clusterdiagram('#clusterdiagram', 300);
+ clusterdiagram('#clusterdiagram1', 300);
+ clusterdiagram('#clusterdiagram6', 300);
+
+ // Chart setup
+ function clusterdiagram(element, height) {
+
+    var nodes = [
+     { id: "mammal", group: 0, label: "Mammals", level: 2 },
+     { id: "dog"   , group: 0, label: "Dogs"   , level: 2 },
+     { id: "cat"   , group: 0, label: "Cats"   , level: 2 },
+     { id: "fox"   , group: 0, label: "Foxes"  , level: 2 },
+     { id: "elk"   , group: 0, label: "Elk"    , level: 2 },
+     { id: "insect", group: 1, label: "Insects", level: 2 },
+     { id: "ant"   , group: 1, label: "Ants"   , level: 2 },
+     { id: "bee"   , group: 1, label: "Bees"   , level: 2 },
+     { id: "fish"  , group: 2, label: "Fish"   , level: 2 },
+     { id: "carp"  , group: 2, label: "Carp"   , level: 2 },
+     { id: "pike"  , group: 2, label: "Pikes"  , level: 2 },
+   
+	 {'id': 'post_457', 'group': 2, 'label': 'Post_457', 'level': 1},
+	 {'id': 'post_458', 'group': 3, 'label': 'Post_458', 'level': 1},
+	 {'id': 'post_459', 'group': 9, 'label': 'Post_459', 'level': 1},
+	 {'id': 'post_460', 'group': 3, 'label': 'Post_460', 'level': 1},
+	 {'id': 'post_461', 'group': 5, 'label': 'Post_461', 'level': 1},
+	 {'id': 'post_462', 'group': 8, 'label': 'Post_462', 'level': 1},
+	 {'id': 'post_463', 'group': 1, 'label': 'Post_463', 'level': 1},
+	 {'id': 'post_464', 'group': 1, 'label': 'Post_464', 'level': 1},
+	 {'id': 'post_465', 'group': 7, 'label': 'Post_465', 'level': 1},
+	 {'id': 'post_466', 'group': 4, 'label': 'Post_466', 'level': 1},
+	 {'id': 'post_467', 'group': 1, 'label': 'Post_467', 'level': 1},
+	 {'id': 'post_468', 'group': 4, 'label': 'Post_468', 'level': 1},
+	 {'id': 'post_469', 'group': 4, 'label': 'Post_469', 'level': 1},
+	 {'id': 'post_470', 'group': 9, 'label': 'Post_470', 'level': 1},
+	 {'id': 'post_471', 'group': 2, 'label': 'Post_471', 'level': 1},
+	 {'id': 'post_472', 'group': 7, 'label': 'Post_472', 'level': 1},
+	 {'id': 'post_473', 'group': 4, 'label': 'Post_473', 'level': 1},
+	 {'id': 'post_474', 'group': 2, 'label': 'Post_474', 'level': 1},
+	 {'id': 'post_475', 'group': 1, 'label': 'Post_475', 'level': 1},
+	 {'id': 'post_476', 'group': 1, 'label': 'Post_476', 'level': 1},
+	 {'id': 'post_477', 'group': 9, 'label': 'Post_477', 'level': 1},
+	 {'id': 'post_478', 'group': 3, 'label': 'Post_478', 'level': 1},
+	 {'id': 'post_479', 'group': 5, 'label': 'Post_479', 'level': 1},
+	 {'id': 'post_480', 'group': 5, 'label': 'Post_480', 'level': 1},
+	 {'id': 'post_481', 'group': 9, 'label': 'Post_481', 'level': 1},
+	 {'id': 'post_482', 'group': 8, 'label': 'Post_482', 'level': 1},
+	 {'id': 'post_483', 'group': 3, 'label': 'Post_483', 'level': 1},
+	 {'id': 'post_484', 'group': 7, 'label': 'Post_484', 'level': 1},
+	 {'id': 'post_485', 'group': 4, 'label': 'Post_485', 'level': 1},
+	 {'id': 'post_486', 'group': 6, 'label': 'Post_486', 'level': 1},
+	 {'id': 'post_487', 'group': 5, 'label': 'Post_487', 'level': 1},
+	 {'id': 'post_488', 'group': 2, 'label': 'Post_488', 'level': 1},
+	 {'id': 'post_489', 'group': 2, 'label': 'Post_489', 'level': 1},
+	 {'id': 'post_490', 'group': 3, 'label': 'Post_490', 'level': 1},
+	 {'id': 'post_491', 'group': 4, 'label': 'Post_491', 'level': 1},
+	 {'id': 'post_492', 'group': 2, 'label': 'Post_492', 'level': 1},
+	 {'id': 'post_493', 'group': 2, 'label': 'Post_493', 'level': 1},
+	 {'id': 'post_494', 'group': 5, 'label': 'Post_494', 'level': 1},
+	 {'id': 'post_495', 'group': 4, 'label': 'Post_495', 'level': 1}
+   ]; 
+   
+   var links = [
+	   	{ target: "mammal", source: "dog" , strength: 3.0 },
+	   	{ target: "bee", source: "cat" , strength: 3.0 }
+	     /* { target: "mammal", source: "fox" , strength: 3.0 },
+	  
+	     { target: "insect", source: "ant" , strength: 0.7 },
+	     { target: "insect", source: "bee" , strength: 0.7 },
+	     { target: "fish"  , source: "carp", strength: 0.7 },
+	     { target: "fish"  , source: "pike", strength: 0.7 },
+	     { target: "cat"   , source: "elk" , strength: 0.1 },
+	     { target: "carp"  , source: "ant" , strength: 0.1 },
+	     { target: "elk"   , source: "bee" , strength: 0.1 },
+	     { target: "dog"   , source: "cat" , strength: 0.1 },
+	     { target: "fox"   , source: "ant" , strength: 0.1 },
+	   	{ target: "pike"  , source: "cat" , strength: 0.1 } */
+	    ];  
+	 // Define main variables
+	      var d3Container = d3v4.select(element),
+	          margin = {top: 10, right: 10, bottom: 20, left: 20},
+	          width = d3Container.node().getBoundingClientRect().width - margin.left - margin.right,
+	          height = height - margin.top - margin.bottom;
+
+	     var colors = d3v4.scaleOrdinal(d3v4.schemeCategory10);
+
+	      // Add SVG element
+	      var container = d3Container.append("svg");
+
+	      // Add SVG group
+	      var svg = container
+	          .attr("width", width + margin.left + margin.right)
+	          .attr("height", height + margin.top + margin.bottom);
+	         //.append("g")
+	       //   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+	       // simulation setup with all forces
+	    var linkForce = d3v4
+	   .forceLink()
+	   .id(function (link) { return link.id })
+	   .strength(function (link) { return link.strength })
+
+	       // simulation setup with all forces
+	       var simulation = d3v4
+	         .forceSimulation()
+	         .force('link', linkForce)
+	         .force('charge', d3v4.forceManyBody().strength(-50))
+	         .force('center', d3v4.forceCenter(width / 2, height / 2))
+
+	         var linkElements = svg.append("g")
+	           .attr("class", "links")
+	           .selectAll("line")
+	           .data(links)
+	           .enter().append("line")
+	             .attr("stroke-width", 0)
+	         	  .attr("stroke", "rgba(50, 50, 50, 0.2)")
+
+	       function getNodeColor(node) {
+	         return node.level === 1 ? 'red' : 'gray'
+	       }
+
+	       var nodeElements = svg.append("g")
+	         .attr("class", "nodes testy")
+	         .selectAll("circle")
+	         .data(nodes)
+	         .enter().append("circle")
+	           .attr("r", 5)
+	           .attr("fill", function (d, i) {return colors(d.group);})
+
+	       /* var textElements = svg.append("g")
+	         .attr("class", "texts")
+	         .selectAll("text")
+	         .data(nodes)
+	         .enter().append("text")
+	           .text(function (node) { return  node.label })
+	       	  .attr("font-size", 15)
+	       	  .attr("dx", 15)
+	           .attr("dy", 4) */
+
+	         simulation.nodes(nodes).on('tick', () => {
+	           nodeElements
+	             .attr('cx', function (node) { return node.x })
+	             .attr('cy', function (node) { return node.y })
+	           textElements
+	             .attr('x', function (node) { return node.x })
+	             .attr('y', function (node) { return node.y })
+	             linkElements
+	     .attr('x1', function (link) { return link.source.x })
+	     .attr('y1', function (link) { return link.source.y })
+	     .attr('x2', function (link) { return link.target.x })
+	     .attr('y2', function (link) { return link.target.y })
+	         })
+
+
+	 simulation.force("link").links(links)
+	 }
+		</script>
 
 
 	<script>
 	
 	
  $(document).ready(function() {
+	
      $('#DataTables_Table_1_wrapper').DataTable( {
          "scrollY": 450,
          "scrollX": true,
@@ -1488,7 +1852,7 @@ Instant start = Instant.now();
 	}
 </script>
 
-<script type="text/javascript" src="assets/vendors/d3/d3.min.js" ></script>
+<!--  <script type="text/javascript" src="assets/vendors/d3/d3.min.js" ></script> -->
  <script src="assets/vendors/wordcloud/d3.layout.cloud.js" ></script>
  <script type="text/javascript" src="assets/vendors/d3/d3_tooltip.js" ></script>
  <script type="text/javascript"
@@ -1569,7 +1933,7 @@ $('.blogpost_link').on("click", function(){
 	
 	
 	
-	doCloud(jsondata,elem)
+	//doCloud(jsondata,elem)
 
 	 /* d3version3 = d3
 	   // window.d3 = null
@@ -1726,7 +2090,7 @@ $('.blogpost_link').on("click", function(){
     	clusterMatrix.push(temparr);
     	temparr.push(<%=termsMatrix[0][j]%>);
 	<%}%>  --%>
-	    drawChord("#chorddiagram", chord_options, clusterMatrix, names); 
+	   // drawChord("#chorddiagram", chord_options, clusterMatrix, names); 
  
  </script>
 

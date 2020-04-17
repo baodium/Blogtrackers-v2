@@ -211,7 +211,7 @@ function loadStat(blogger, all_bloggers,ids){
 		$(".total-influence").html(data.totalinfluence);
 //		$(".total-influence").html(parseInt(data.totalinfluence).toLocaleString('en'));
 		$(".total-post").html(parseInt(data.totalpost).toLocaleString('en'));
-		$(".total-sentiment").html(parseInt(data.totalsentiment).toLocaleString('en'));
+		$(".total-sentiment").html(data.totalsentiment);
 	
 		/*$(".top-keyword").html(data.topterm);*/
 		//$("#overall-chart").delay(3000).html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />").delay(2000).html(response);
