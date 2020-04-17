@@ -28,8 +28,8 @@
 	
 
 	
-	System.out.println("dateyy---"+date_start);
-	System.out.println("dateyyy---"+date_end);
+	//System.out.println("dateyy---"+date_start);
+	//System.out.println("dateyyy---"+date_end);
 	if (user == null || user == "") {
 		response.sendRedirect("index.jsp");
 	} else {
@@ -73,7 +73,7 @@
 				ids = query;
 			}
 		}
-		System.out.println("id---"+ids);
+		//System.out.println("id---"+ids);
 		userinfo = new DbConnection().query("SELECT * FROM usercredentials where Email = '" + email + "'");
 		if (userinfo.size() < 1 || !isowner) {
 			response.sendRedirect("index.jsp");
@@ -106,7 +106,7 @@
 					}else{
 						/* new File("/path/directory").mkdirs(); */
 						path_new.mkdirs();
-						System.out.println("pathhhhh1--"+path_new);
+						//System.out.println("pathhhhh1--"+path_new);
 					}
 					
 					
@@ -114,17 +114,17 @@
 						
 						String t = "/images/profile_images";
 						int p=userpic.indexOf(t);
-						System.out.println(p);
+						//System.out.println(p);
 						if (p != -1) {
 							
-							System.out.println("pic path---"+userpic);
-							System.out.println("path exists---"+userpic.substring(0, p));
+							//System.out.println("pic path---"+userpic);
+							//System.out.println("path exists---"+userpic.substring(0, p));
 							String path_update=userpic.substring(0, p);
 							if (!path_update.equals(path_new.toString())) {
 								profileimage = "images/profile_images/" + userinfo.get(2).toString() + ".jpg";
 								/* profileimage=userpic.replace(userpic.substring(0, p), path_new.toString()); */
 								String new_file_path = path_new.toString().replace("\\images\\profile_images", "")+"/"+profileimage;
-								System.out.println("ready to be updated--"+ new_file_path);
+								//System.out.println("ready to be updated--"+ new_file_path);
 								/*new DbConnection().updateTable("UPDATE usercredentials SET profile_picture  = '" + pass + "' WHERE Email = '" + email + "'"); */											
 							}
 						}else{
@@ -132,13 +132,13 @@
 							profileimage = "images/profile_images/" + userinfo.get(2).toString() + ".jpg";
 							/* profileimage=userpic.replace(userpic.substring(0, p), path_new.toString()); */
 							String new_file_path = path_new.toString().replace("\\images\\profile_images", "")+"/"+profileimage;
-							System.out.println("ready to be updated--"+ new_file_path);
+							//System.out.println("ready to be updated--"+ new_file_path);
 							
 							new DbConnection().updateTable("UPDATE usercredentials SET profile_picture  = '" + "images/profile_images/" + userinfo.get(2).toString() + ".jpg" + "' WHERE Email = '" + email + "'");
-							System.out.println("updated");
+							//System.out.println("updated");
 						}				
 					}else{
-						System.out.println("path doesnt exist");
+						//System.out.println("path doesnt exist");
 					}
 			} catch (Exception e) {
 			
@@ -197,7 +197,7 @@
 			String test = post._searchRangeTotal("date", "2013-04-01", "2018-04-01", "1");
 			
 			System.out.println(test);  */
-			System.out.println("test here2");
+			//System.out.println("test here2");
 			
 			String totalpost = "0";
 			
@@ -297,7 +297,7 @@
 			
 			ArrayList bloggerPostFrequency = bloggerss._getBloggerPostFrequency(ids);
 			
-			System.out.println("Terms here:"+bloggerPostFrequency);
+			//System.out.println("Terms here:"+bloggerPostFrequency);
 			
 			ArrayList blogs = blog._fetch(ids);
 			
@@ -358,7 +358,7 @@
 				years.add(Integer.toString(i));
 			}
 			
-			System.out.println("year_s"+years);
+			//System.out.println("year_s"+years);
 			
 			JSONObject year_object = new JSONObject();
 			for(int q=0; q<blogPostingFrequency_year.length(); q++){ 
@@ -390,7 +390,7 @@
 			}
 			
 			JSONObject dayJson = post.lineGraphAggregate(items);
-			System.out.println("dayJson --"+dayJson);
+			//System.out.println("dayJson --"+dayJson);
 			
 			for(int i = 0; i < blogPostingFrequency_month.length(); i++){
 				hm3 = new HashMap<String, Integer>();
@@ -407,7 +407,7 @@
 			}
 			
 			JSONObject monthJson = post.lineGraphAggregate(items1);
-			System.out.println("monthJson --"+monthJson);
+			//System.out.println("monthJson --"+monthJson);
 			
 			/* if(activeblogposts.size()>0){
 				String tres = null;
@@ -538,17 +538,17 @@
 			possentiment=new Liwc()._searchRangeAggregate("date", yst[0]+"-01-01", yend[0]+"-12-31", sentimentpost,"posemo");
 			negsentiment=new Liwc()._searchRangeAggregate("date", yst[0]+"-01-01", yend[0]+"-12-31", sentimentpost,"negemo");
 			
-			System.out.println("dddddddddddddddddddde"+possentiment);
-			System.out.println("------------------------"+negsentiment);
+			//System.out.println("dddddddddddddddddddde"+possentiment);
+			//System.out.println("------------------------"+negsentiment);
 			
 			JSONArray sortedyearsarray = yearsarray;//post._sortJson(yearsarray);
 			int highestfrequency = 0;
 			 String blogids = "";
 			 
 outlinks = outl._searchByRange("date", dt, dte, selectedblogid);
-System.out.println("test hereeeeeeeeeeeeeeeeee"+selectedblogid);
-System.out.println("test hereeeeeeeeeeeeeeeeee"+dt);
-System.out.println("test hereeeeeeeeeeeeeeeeee"+dte);
+//System.out.println("test hereeeeeeeeeeeeeeeeee"+selectedblogid);
+//System.out.println("test hereeeeeeeeeeeeeeeeee"+dt);
+//System.out.println("test hereeeeeeeeeeeeeeeeee"+dte);
 JSONObject outerlinks = new JSONObject();
 ArrayList outlinklooper = new ArrayList();
 if (outlinks.size() > 0) {
@@ -596,25 +596,25 @@ if (outlinks.size() > 0) {
 	}
 }
 
-System.out.println("test here4");
+//System.out.println("test here4");
 /* mostactiveterm = term._getMostActiveByBlogger(mostactiveblogger); */
 System.out.println("---''-"+mostactiveblogger+dt+dte+ids);
 //JSONObject sql = post._getBloggerPosts(null,mostactiveblogger,dt,dte,ids);
 //String sql_ = sql.get("posts").toString();
 //mostactiveterm = post._termVectors(sql_); 
 
-System.out.println("test here5");
+//System.out.println("test here5");
 String totalinfluence ="";
 
 
 try{			
 	totalpost = post._searchRangeTotalByBlogger("date", dt, dte, mostactiveblogger);
-	System.out.println("test here5_1");
+	//System.out.println("test here5_1");
 	Double influence =  Double.parseDouble(post._searchRangeMaxByBloggers("date",dt, dte,mostactiveblogger));
-	System.out.println("dt--"+dt+",dte--"+dte+",mstb--"+mostactiveblogger);
-	System.out.println("test here5_2");
+	//System.out.println("dt--"+dt+",dte--"+dte+",mstb--"+mostactiveblogger);
+	//System.out.println("test here5_2");
 	totalinfluence = influence+"";
-	System.out.println("ttl infl"+totalinfluence);
+	//System.out.println("ttl infl"+totalinfluence);
 }
 catch(Exception e){
 	totalinfluence = "0";
