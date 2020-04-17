@@ -446,11 +446,11 @@ public class Blogposts {
 		String count = "0";
 		ArrayList result = new ArrayList();
 		try {
-//			result = db.queryJSON("SELECT *  FROM blogposts WHERE blogger = '" + bloggers + "' AND " + field + ">='"
-//					+ greater + "' AND " + field + "<='" + less + "' ORDER BY " + sort + " " + order + " LIMIT " + size
-//					+ "");
+			result = db.queryJSON("SELECT *  FROM blogposts WHERE blogger = '" + bloggers + "' AND " + field + ">='"
+					+ greater + "' AND " + field + "<='" + less + "' ORDER BY " + sort + " " + order + " LIMIT " + size
+					+ "");
 
-//			return all_data;
+			//return all_data;
 			// result = db.queryJSON("SELECT * FROM blogposts WHERE blogger = '"+bloggers+"'
 			// AND "+field+">="+greater+" AND "+field+"<="+less+" ORDER BY date ASC LIMIT
 			// "+size+"");

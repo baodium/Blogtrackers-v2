@@ -40,9 +40,9 @@
 </style>
 </head>
 <body>
- <div id="clusterdiagram"></div> 
+	<div id="clusterdiagram"></div>
 
-	 <!-- <script type="text/javascript" src="assets/vendors/d3/d3.min.js"></script> -->
+	<!-- <script type="text/javascript" src="assets/vendors/d3/d3.min.js"></script> -->
 	<!-- <script type="text/javascript" src="assets/vendors/d3/d3_tooltip.js"></script> -->
 	<!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script> -->
 	<script src="https://d3js.org/d3.v4.js"></script>
@@ -1090,7 +1090,7 @@ var nodes = [{'id': 'post_0', 'group': 4, 'label': 'Post_0', 'level': 1},
 	   {'target': 'post_113', 'source': 'post_365', 'strength': 3.0}]
       // Define main variables
       var d3Container = d3v4.select(element),
-          margin = {top: 10, right: 10, bottom: 20, left: 20},
+          margin = {top: 1000, right: 100, bottom: 200, left: 200},
           width = d3Container.node().getBoundingClientRect().width - margin.left - margin.right,
           height = height - margin.top - margin.bottom;
 
@@ -1116,8 +1116,8 @@ var nodes = [{'id': 'post_0', 'group': 4, 'label': 'Post_0', 'level': 1},
        var simulation = d3v4
          .forceSimulation()
          .force('link', linkForce)
-         .force('charge', d3v4.forceManyBody().strength(-50))
-         .force('center', d3v4.forceCenter(width / 2, height / 2))
+         .force('charge', d3v4.forceManyBody().strength(10))
+         .force('center', d3v4.forceCenter(width / 5, height / 5))
 
          var linkElements = svg.append("g")
            .attr("class", "links")
@@ -1151,8 +1151,8 @@ var nodes = [{'id': 'post_0', 'group': 4, 'label': 'Post_0', 'level': 1},
 
          simulation.nodes(nodes).on('tick', () => {
            nodeElements
-             .attr('cx', function (node) { return node.x })
-             .attr('cy', function (node) { return node.y })
+             .attr('cx', function (node) { return node.x +111})
+             .attr('cy', function (node) { return node.y +111})
            textElements
              .attr('x', function (node) { return node.x })
              .attr('y', function (node) { return node.y })
