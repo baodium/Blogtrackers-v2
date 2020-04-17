@@ -24,7 +24,7 @@ public class RunnableUtil implements Runnable {
 
 	private JSONObject query;
 //	public JSONArray jsonArray;
-	public List<JSONObject> jsonArray;
+	public List jsonArray;
 	public String action;
 	public String index;
 //	public List<Tuple2<String, Integer>> datatuple = new ArrayList<Tuple2<String, Integer>>();
@@ -66,7 +66,7 @@ public class RunnableUtil implements Runnable {
 		this.datatuple3 = datatuple3;
 	}
 
-	public RunnableUtil(JSONObject query, List<JSONObject> jsonArray, int start, int end,
+	public RunnableUtil(JSONObject query, List jsonArray, int start, int end,
 			List<Tuple2<String, Integer>> datatuple, ConcurrentHashMap<String, String> datatuple2,
 			ConcurrentHashMap<String, Integer> d, String action, String index, String field, StringBuffer buffer,
 			ConcurrentHashMap<String, ConcurrentHashMap<String, String>> datatuple3) {
@@ -85,7 +85,7 @@ public class RunnableUtil implements Runnable {
 		this.buffer = buffer;
 	}
 
-	public RunnableUtil(JSONObject query, List<JSONObject> jsonArray, int start, int end,
+	public RunnableUtil(JSONObject query,List jsonArray, int start, int end,
 			List<Tuple2<String, Integer>> datatuple, ConcurrentHashMap<String, Integer> d, String action, String index,
 			String field) {
 
@@ -100,7 +100,7 @@ public class RunnableUtil implements Runnable {
 		this.field = field;
 	}
 
-	public RunnableUtil(JSONObject query, List<JSONObject> jsonArray, int start, int end,
+	public RunnableUtil(JSONObject query, List jsonArray, int start, int end,
 			List<Tuple2<String, Integer>> datatuple, ConcurrentHashMap<String, Integer> d, String action, String index,
 			String field, List<JSONObject> jsonList, ConcurrentHashMap<String, ConcurrentHashMap<String, String>> datatuple3) {
 
@@ -117,7 +117,7 @@ public class RunnableUtil implements Runnable {
 		this.datatuple3 = datatuple3;
 	}
 
-	public RunnableUtil(JSONObject query, List<JSONObject> jsonArray, int start, int end,
+	public RunnableUtil(JSONObject query, List jsonArray, int start, int end,
 			List<Tuple2<String, Integer>> datatuple, ConcurrentHashMap<String, Integer> d, String action, String index,
 			String field, StringBuffer buffer) {
 
@@ -198,11 +198,12 @@ public class RunnableUtil implements Runnable {
 //
 //	}
 
-	public void wrangleDatadata(List<JSONObject> postarray, String field, int start, int end) {
+	public void wrangleDatadata(List postarray, String field, int start, int end) {
 //		List<Tuple2<String, Integer>> returnedData = new ArrayList<Tuple2<String, Integer>>();
 		String result = null;
 //		int count_ = 0;
 		for (int i = start; i < end; i++) {
+			try {
 			String indx = postarray.get(i).toString();
 			JSONObject j1 = new JSONObject(indx);
 			String ids = j1.get("_source").toString();
@@ -259,8 +260,11 @@ public class RunnableUtil implements Runnable {
 //					this.datatuple.add(pair);
 //				}
 			}
+			}catch(Exception e) {
+				
+			}
 		}
-
+		
 //		this.datatuple = returnedData;
 //		System.out.println(count_);
 //		System.out.println(datatuple.size());

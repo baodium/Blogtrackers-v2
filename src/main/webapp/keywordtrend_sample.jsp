@@ -553,25 +553,26 @@
 				JSONArray out_ = new JSONArray();
 				ArrayList response_terms = DbConnection.query("select terms from tracker_keyword where tid = " + tid);
 				ArrayList res = (ArrayList)response_terms.get(0);
-				System.out.println("terms_result" + res.get(0));
+
+				//System.out.println("terms_result" + res.get(0));
+
 				
 				
 				ArrayList response_terms1 = DbConnection.query("select keyword_trend from tracker_keyword where tid = " + tid);
 				ArrayList res1 = (ArrayList)response_terms1.get(0);
-				System.out.println("uchuehcuhcuhcuhcuhucehuhduhduhu");
-			System.out.println("trend_resulty" + res1.get(0));
-				System.out.println("uchuehcuhcuhcuhcuhucehuhduhduhu");
+
+				//System.out.println("uchuehcuhcuhcuhcuhucehuhduhduhu");
+			//System.out.println("trend_resulty" + res1.get(0));
+				//System.out.println("uchuehcuhcuhcuhcuhucehuhduhduhu");
 				
 				String[] termsSplit1 = res1.get(0).toString().split("}, '");
-				System.out.println("wwwwwwwwwwww");
-				System.out.println("trend_resulty" + termsSplit1);
-				System.out.println("trend_resulty" + termsSplit1.length);
-				System.out.println("wwwwwwwwwwwwww");
+				//System.out.println("wwwwwwwwwwww");
+				//System.out.println("trend_resulty" + termsSplit1);
+				//System.out.println("trend_resulty" + termsSplit1.length);
+				//System.out.println("wwwwwwwwwwwwww");
 				HashMap<String, String> map1 = new HashMap<String, String>();
 				for (int i = 0; i < termsSplit1.length; i++) {
 					
-					System.out.println(termsSplit1[i]);
-					///termsSplit1[i].replace("{", "_||_");
 					//System.out.println(termsSplit1[i]);
 					
 					String[] split1 = termsSplit1[i].split("[{]");
@@ -580,20 +581,22 @@
 					
 					if(i == 0){
 						
-						System.out.println("sweetererer boyyy");
-						System.out.println(split1[2]);
+
+						//System.out.println("sweetererer boyyy");
+						//System.out.println(split1[2]);
 						 term1_ = split1[1].replace("\'", "").replace(":", "").trim();
-						 System.out.println("sweet boyyy");
-						 System.out.println(term1_);
+						 //System.out.println("sweet boyyy");
+						 //System.out.println(term1_);
 						date_details = split1[2];
 						
 					}else{
 						
-						System.out.println("sweetererer boyyy");
-						System.out.println(split1[1]);
+
+						//System.out.println("sweetererer boyyy");
+						//System.out.println(split1[1]);
 						 term1_ = split1[0].replace("\'", "").replace(":", "").trim();
-						 System.out.println("sweet boyyy");
-						 System.out.println(term1_);
+						 //System.out.println("sweet boyyy");
+						 //System.out.println(term1_);
 						date_details = split1[1];
 						
 					}
@@ -604,27 +607,14 @@
 					
 					map1.put(term1_, date_details);
 					
-					/* if (i == 0) {
-						String[] split1 = termsSplit1[i].split("': {");
-						String term1_ = split1[0].replace("\'", "").trim();
-						mosttermOccurence = split1[1].trim();
-						mostactiveterm = term1_;
-						System.out.println(term1_ + mosttermOccurence);
-					}
-					String[] split1 = termsSplit1[i].split("': {");
-					String term1_ = split1[0].replace("\'", "").trim();
-					int termOccurence1 = Integer.parseInt(split1[1].trim());
-					HashMap<String, Integer> map = new HashMap<String, Integer>();
-					map.put(term1_, termOccurence1);
-					termsJson1.add(map); */
-					//System.out.println("+-+_+_+_+_+_+_+_+_+_+-");
-					//System.out.println(term1_ + termOccurence1);
+
+		
 				}
-					System.out.println("FINALLLLL");
+					//System.out.println("FINALLLLL");
 					for (Map.Entry<String, String> entry : map1.entrySet()) {
-					    System.out.println(entry.getKey() + " = " + entry.getValue());
+					    //System.out.println(entry.getKey() + " = " + entry.getValue());
 					}
-					System.out.println("FINALLLLL");
+					//System.out.println("FINALLLLL");
 					
 				//JSONObject finalres = new JSONObject(res.get(0).toString());
 				//HashMap<String, String> pair = new HashMap<String, String>(post_id_pair)
@@ -641,7 +631,8 @@
 						String term_ = split[0].replace("\"", "").trim();
 						mosttermOccurence = split[1].trim();
 						mostactiveterm = term_;
-						System.out.println(term_ + mosttermOccurence);
+
+						//System.out.println(term_ + mosttermOccurence);
 					}
 					String[] split = termsSplit[i].split(":");
 					String term_ = split[0].replace("\"", "").trim();
@@ -671,9 +662,15 @@
 				String t = "__TERMS__KEYWORD__" + m;
 				System.out.println("date range---" + dt + "," + dte);
 
+				
+				
+				JSONObject termOccurenceInPost = KWT.getBloggerTerms( mostactiveterm,  dt,  dte,  ids,  500);
+				JSONArray occurenceData = termOccurenceInPost.getJSONArray("data");
+
 				//List<JSONObject> p = c.getPosts(ids, dt, dte, t, "blogposts");
 				//System.out.println("keysss"+post_id_pair.keySet());
-				//System.out.println("length of a---rray ---" + p.size());
+				//System.out.println("length of a---rray ---" + occurenceData.get(0));
+
 %>
 
 
@@ -1145,7 +1142,9 @@
 							<div class="col-md-3 mt5 mb5">
 								<h6 class="card-title mb0">Posts Mentioned</h6>
 								<h2 class="mb0 bold-text post-mentioned">
-									<%=post_mentioned%>
+
+								
+									<%=NumberFormat.getNumberInstance(Locale.US).format(new Integer(post_mentioned))%>
 								</h2>
 								<!-- <small class="text-success">+5% from <b>Last Week</b></small> -->
 							</div>
@@ -1195,22 +1194,8 @@
           Export Options
           </div> -->
 						<%
-							//System.out.println("values1--" + mostactiveterm + "NOBLOGGER" + "," + dt + "," + dte + "," + ids);
-										/* JSONObject sql = post._getBloggerPosts(mostactiveterm, "NOBLOGGER", dt, dte, ids);
-										
-										JSONObject firstpost = new JSONObject(); */
-										/*if(allposts.size()>0){ */
 
-										/* if (sql.getJSONArray("data").length() > 0) {
-											String perma_link = null;
-											String j = null;
-											String title = null;
-											String blogpost_id = null;
-											String date = null;
-											String num_comments = null;
-											String blogger = null;
-											String posts = null;
-											Integer occurence = null; */
+							
 						%>
 						<table id="DataTables_Table_2_wrapper" class="table_over_cover display"
 							style="width: 100%">
@@ -1293,9 +1278,10 @@
 												String singleComments = null;
 												String singleDate = null;
 												String replace = "<span style=background:red;color:#fff>" + mostactiveterm + "</span>";
-												JSONObject p = post_id_post_pair;
-												String occurence = null;;
-												Iterator<String> iter = p.keys();
+
+												//JSONObject p = post_id_post_pair;
+												String occurence = null;
+												//Iterator<String> iter = p.keys();
 												String post_id = null;
 												String title = null;
 												String post_ = null;
@@ -1312,116 +1298,56 @@
 												String max_occurence_id = "";
 												HashMap<String,String> values = new HashMap<String,String>();
 												int i_found = 0;
-												int i = 0;
-												//for (int i = 0; i < p.length(); i++) {
-													//while(count < 100){
-													//for (int i = 0; i < 100; i++) {
-													//while(count < 100){
+
+												//int i = 0;
 												
-												//for (int i = 0; i < 10; i++) {
+												
+												for (int i = 0; i < occurenceData.length(); i++) {
+													JSONObject j = new JSONObject(occurenceData.get(i).toString());
+													occurence = j.get("occurence").toString();
+													title = j.get("title").toString();
+												
+													if (i == 0) {
+														
+														//System.out.println("STARTED HERE"+j);
+														max_occurence = Integer.parseInt(occurence);
+														//System.out.println(max_occurence);
+													}else{
+														
+														//System.out.println("ENDED HERE");
+														activeDefLink = "makeinvisible";
+														activeDef = "";
 
-													/* if (iter.hasNext()) {
-														post_id = iter.next();
-													} */
-													//String blog_terms = post_id_pair.get(post_id).toString();
-													//String blog_terms = "TESTING";
-													//if (!blog_terms.equals("BLANK")) {
-
-														/* String jsonObject = "{\"" + post_id_pair.get(post_id).toString().replace("[", "")
-																.replace("]", "").replace("),", "-").replace("(", "").replace(",", "\":\"")
-																.replace("-", "\",\"").replace(")", "").replace("'", "").replace(" ", "")
-																+ "\"}";
-														jsonObject = jsonObject.replace("\\", "\\\\");
-														//System.out.println("first--" +jsonObject);
-														JSONObject json = new JSONObject(jsonObject);
-
-														if (json.has(mostactiveterm)) {
-															i = i_found;
-															//System.out.println("i--"+ i + mostactiveterm);
-															count++;
-															occurence = json.get(mostactiveterm).toString();
-															occurenceTotal = occurenceTotal + Integer.parseInt(occurence);
-
-
-															
-														if (i == 0) {
-																
-																System.out.println("STARTED HERE");
-																//max_occurence = Integer.parseInt(occurence);
-																//System.out.println(max_occurence);
-															}else{
-																
-																System.out.println("ENDED HERE");
-																activeDefLink = "makeinvisible";
-																activeDef = "";
-
-															}
-															
-															
-																/* System.out.println("first--" +post_id_pair.get(post_id));
-																jsonObject = "{"+post_id_pair.get(post_id).toString().replace("\"", "").replace("[", "").replace("]", "").replace("),", "-").replace("(", "").replace(",", ":").replace("-", ",").replace(")", "").replace("'", "")+"}";
-																json = new JSONObject(jsonObject);
-																System.out.println(json);
-																System.out.println("second--" +post_id_pair.get(post_id).toString().replace("\"", "").replace("[", "").replace("]", "").replace("),", "-").replace("(", "").replace(",", ":").replace("-", ",").replace(")", "").replace("'", ""));
-																System.out.println("ter--"+mostactiveterm+ "val--"+json.get(mostactiveterm)); */
-																/* singleTitle = j2.get("title").toString();
-																singleBlogger = j2.get("blogger").toString();
-																singleDate = j2.get("date").toString();
-																singleComments = j2.get("num_comments").toString();
-																singlePost = j2.get("post").toString();
-																singlePost = singlePost.replaceAll(mostactiveterm,replace);
-																System.out.println("first--" +post_id); */
-															
-															//String terms = j2.get(field).toString();
-
-															/* String indx = p.get(post_id).toString();
-															JSONObject j1 = new JSONObject(indx);
-															Iterator<String> iter_ = j1.keys();
-
-															//if (iter_.hasNext()) {
-																//title = iter_.next();
-																title = j1.get("title").toString();
-																date = j1.get("date").toString();
-																String [] date_split = date.split("-");
-																String year_ = date_split[0];
-																
-																if(!values.containsKey(year_)){
-																	values.put(year_,occurence);
-																	
-																}else{
-																	String v = values.get(year_);
-																	int new_v = Integer.parseInt(v) + Integer.parseInt(occurence);
-																	values.put(year_,String.valueOf(new_v));
-																}
-																
-																
-																
-																
-																
-																if(max_occurence < Integer.parseInt(occurence)){
-																	System.out.println("GUESS HERE");
-																	System.out.println(j1);
-																	System.out.println("HERE");
-																
-																	System.out.println("ENTERED HERE");
-																	max_occurence = Integer.parseInt(occurence);
-																	max_occurence_id = post_id.toString();
-																	max_occurence_post = j1.get("post").toString();
-																	max_occurence_post_blogger = j1.get("blogger").toString();
-																	max_occurence_post_date = j1.get("date").toString();
-																	max_occurence_post_title = j1.get("title").toString();
-																	//max_occurence_post_perma_link = j1.get("permalinks").toString();
-																	//max_occurence_post_title = j1.get("title").toString();
-																	//JSONObject j1 = new JSONObject(max_occurence_id);
-																	
-																	//singleTitle = title;
-																}  */
+													}
+													
+													if(max_occurence < Integer.parseInt(occurence)){
+														//System.out.println("GUESS HERE");
+														//System.out.println(j1);
+														//System.out.println("HERE");
+													
+														//System.out.println("ENTERED HERE");
+														max_occurence = Integer.parseInt(occurence);
+														max_occurence_id = j.get("blogpost_id").toString();
+														max_occurence_post = j.get("post").toString();
+														max_occurence_post_blogger = j.get("blogger").toString();
+														max_occurence_post_date = j.get("date").toString();
+														max_occurence_post_title = j.get("title").toString();
+														//max_occurence_post_perma_link = j1.get("permalinks").toString();
+														//max_occurence_post_title = j1.get("title").toString();
+														//JSONObject j1 = new JSONObject(max_occurence_id);
+														max_occurence_post = max_occurence_post.toLowerCase().replace(mostactiveterm, replace);
+														
+														//singleTitle = title;
+													} 
+												
 								%>
 								
 								<tr>
 									<td><a
 										class="blogpost_link cursor-pointer <%=activeDef %>"
-										id="<%-- <%=tobj.get("blogpost_id")%> --%><%=post_id%>">
+
+										id="<%-- <%=tobj.get("blogpost_id")%> --%><%=j.get("blogpost_id").toString()%>">
+
 											<%-- <%=tobj.get("title") %> --%> <%=title%>
 									</a><br /> <a class="mt20 viewpost <%=activeDefLink%>"
 									id="viewpost_<%=post_id%>"
@@ -1434,113 +1360,13 @@
 										<%-- <%=occurence%> --%></td>
 								</tr>
 								<%
-									//}
 
-														//else {
-															//System.out.println(post_id + "--" + json);
-															/* String indx = p.get(post_id).toString();
-															JSONObject j1 = new JSONObject(indx);
-															Iterator<String> iter_ = j1.keys();
-															String title_ = null;
-															/* if (iter_.hasNext()) {
-																title_ = iter_.next();
-															} */
-															
-															/* title_ = j1.get("title").toString();
-															post_ = j1.get("post").toString();
-															
-															
-															if (i == 0) {
-																
-																System.out.println("2STARTED HERE");
-																max_occurence = 0;
-																max_occurence_id = "";
-																//max_occurence = Integer.parseInt(occurence);
-																System.out.println(occurence);
-															}else{
-																
-																System.out.println("2ENDED HERE");
-																activeDefLink = "makeinvisible";
-																activeDef = "";
-															}
-															
-															
-															
+									}
 
-															int occurence_new = 0;
-															if (post_.indexOf(mostactiveterm) != -1) {
-
-																String[] postsplit = post_.split("\\W+");
-																for (String pst : postsplit) {
-																	pst = pst.toLowerCase();
-																	if (pst.equals(mostactiveterm)) {
-																		//System.out.println("pst--"+pst);
-																		occurence_new++;
-																		//title = title_;
-																	}
-																}
-																if (occurence_new > 0) {
-																	title = title_;
-																	occurence = String.valueOf(occurence_new);
-																	
-															
-														if(max_occurence > Integer.parseInt(occurence)){
-															System.out.println("2ENTERED HERE");
-															max_occurence = Integer.parseInt(occurence);
-															max_occurence_id = post_id.toString();
-															//j1 = new JSONObject(max_occurence_id);
-															//title = j1.get("title").toString();
-															//singleTitle = title;
-														}  */
 																		
 								%>
-								<tr>
-									<td><a
-										class="blogpost_link cursor-pointer <%=activeDef %>"
-										id=" <%-- <%=tobj.get("blogpost_id")%> --%> <%=post_id%>">
-											<%-- <%=tobj.get("title") %> --%> <%=title%>
-									</a><br /> <a class="mt20 viewpost <%=activeDefLink%>"
-										href="<%-- <%=tobj.get("permalink") %> --%><%-- <%=perma_link%> --%> XXX"
-										target="_blank"> <buttton
-												class="btn btn-primary btn-sm mt10 visitpost">Visit
-											Post &nbsp;<i class="fas fa-external-link-alt"></i></buttton>
-									</a></td>
-									<td align="center"><%=occurence%> <%-- <%=(bodyoccurencece) %> --%>
-										<%-- <%=occurence%> --%></td>
-								</tr>
-								<%
-																//}}}
-																
-														
 								
-																/* else{
-																System.out.print("-" + post_id);}
-
-															} else {
-																System.out.println("WELL HERE");
-																//System.out.println(occurence);
-															}
-														}
-													}
-													
-												i++;
-												}
-												//end while loop here
-													lineGraph.put("name", mostactiveterm);
-													lineGraph.put("identify", occurenceTotal);
-													JSONArray vals = new JSONArray();
-													for(String dates: values.keySet()){
-														String count_ = values.get(dates);
-														JSONObject pair = new JSONObject();
-														pair.put("date", dates);
-														pair.put("close", count_);
-														pair.put("name", mostactiveterm);
-														vals.put(pair);
-													}
-													lineGraph.put("values",vals);
-													System.out.println("lineGraph --" + lineGraph);
-													System.out.println("MAXXXXXXXX --" + max_occurence_id);
-													System.out.println("MAMMMMM --" + max_occurence); */
+								<%
 												/* BY SEUN ENDING */
 								%>
 								</tr>
@@ -1633,39 +1459,11 @@
 								</thead>
 								<tbody id="tbody" class="termtable">
 									<%
-										//if (null != session.getAttribute(tid.toString())) {
-													/* for (int i = 0; i < topterms.length(); i++) {
-														JSONObject jsonObj = topterms.getJSONObject(i);
-														int size = 10;
-														/* int size = Integer.parseInt(jsonObj.getString("frequency")); */
-													/*String terms = jsonObj.getString("key");
-													String postcount = post._searchTotalByTitleAndBody(terms,"date", dt,dte);
-													String blogcount = post._searchTotalAndUnique(terms,"date", dt,dte,"blogsite_id");
-													String bloggercount = post._searchTotalAndUnique(terms,"date", dt,dte,"blogger");
-													String language = jsonObj.getString("language");//jsonObj.getString("language");
-													String location = jsonObj.getString("location");
-													String blogger = jsonObj.getString("leadingblogger");										
-													int keycount = term.getTermOcuurence(terms, dt, dte); */
 
-													//mostactiveterm = keys_.next();
-													/* String t_ = null;
-													Integer blog_mentioned_ = null; */
-
-													//System.out.println("keys2--"+keys_.hasNext());
+										
 
 													for (int j = 0; j < 10; j++) {
-														/* while(keys_.hasNext()) { */
-
-														//System.out.println("values2--"+key+"NOBLOGGER"+","+json.get(key)+","+dt+","+ dte+","+ids);
-														/* try{
-															JSONObject t = post._getBloggerPosts(key,"NOBLOGGER",dt, dte,ids);
-															t_ = t.get("total").toString();
-															blog_mentioned_ = post._getBlogOrPostMentioned("blogsite_id",key,dt, dte,ids);
-															top_location=post._getMostLocation(key,dt, dte,ids);
-														}
-														catch(Exception e){
-															
-														} */
+												
 														HashMap<String, Integer> kys = termsJson.get(j);
 														String tm = kys.keySet().toArray()[0].toString();
 														String v = kys.get(tm).toString();
@@ -1782,7 +1580,8 @@ $(document).ready(function() {
 									? ""
 									: session.getAttribute(tid.toString() + "_termtable");
 
-							System.out.println("session obj" + data_table);%>
+
+							//System.out.println("session obj" + data_table);%>
 		  // Keywords have been computed
 		  <%-- updateTable(<%=data_table%>); --%>
 		  /* no active selection */
@@ -2667,8 +2466,9 @@ $(document).ready(function() {
 </html>
 
 <%
-													}}
-		
+
+				}
+													}
 										
 %>
 

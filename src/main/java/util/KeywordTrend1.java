@@ -46,6 +46,19 @@ public class KeywordTrend1 extends HttpServlet {
 	 */
 	static Terms term = new Terms();
 
+	public static JSONObject getBloggerTerms(String mostactiveterm, String date_start, String date_end, String all_blog_ids, int limit) {
+		Blogposts post = new Blogposts();
+		JSONObject result = new JSONObject();
+		try {
+			JSONObject sql = post._getBloggerPosts(mostactiveterm, "NOBLOGGER", date_start,date_end.toString(), all_blog_ids,limit);
+			result = sql;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
 	public static String getPostsMentioned(String terms, String ids, String from, String to, String index)
 			throws Exception {
 		String result = null;
@@ -133,10 +146,21 @@ System.out.println(index);
 			System.out.println("__TERMS__KEYWORD__" + t);
 
 //			Clustering._buildSlicedScrollQuery(ids, from, to, t,"blogposts");
-			Clustering.getPosts(ids, from, to, t, "blogposts");
+//			Clustering.getPosts(ids, from, to, t, "blogposts");
 //			System.out.println(aggregation(t_, ids, from, to, "blogposts","location","desc","bucket_highest"));
 //			System.out.println(aggregation(t_, ids, from, to, "blogposts","blogsite_id","asc","bucket_length"));
 //			System.out.println(getPostsMentioned(t_, ids, from, to, "blogposts"));
+			
+			String mostactiveterm = "\"people" + "\",\"government\"";
+			String date_start = "1970-01-01";
+			String date_end = "2020-03-26"; 
+			String all_blog_ids = "153,148,259,114,32,123,37,155,46,3,170,154,72,38,224,247,157,128,61,112,140,144,116,125,193,9,173,89,68,87,249,250,263,98,69,152,62,78,117,83,73,264,135,184,120,138,133,100,93,143,77,233,139,132,146,147,149,150,43,242,47,111,101,86,81,118,194,45,106,121,129,49,237,66,179,91,176,124,167,84,174,215,141,119,236,252,185,20,162,130,22,76,235,178,232,85,79,26,109,80,131,253,105,151,142,137,115,52,53,65,94,92,96,136,191,27,29,107,63,99,57,190,169,216,122,126,36,127,134,108,54";
+			int limit = 500;
+			JSONObject res = getBloggerTerms( mostactiveterm,  date_start,  date_end,  all_blog_ids,  limit);
+			JSONArray data = res.getJSONArray("data");
+//			for(int i = 0; i < 1; i++) {
+				System.out.println("length-----"+data.length());
+//			}
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -308,7 +332,7 @@ System.out.println(index);
 
 //				System.out.println("terms_ma--"+all_selected_terms);
 				sql = post._getBloggerPosts(mostactiveterm, "NOBLOGGER", date_start.toString(), date_end.toString(),
-						all_blog_ids.toString());
+						all_blog_ids.toString(),500);
 
 				JSONObject firstpost = new JSONObject();
 				Object map = null;
@@ -329,6 +353,7 @@ System.out.println(index);
 					HashMap<String, Integer> hm2 = new HashMap<String, Integer>();
 
 					String sql_ = sql.get("data").toString();
+					/*for (int i = 0; i < sql.getJSONArray("data").length(); i++) {*/
 					for (int i = 0; i < sql.getJSONArray("data").length(); i++) {
 //						System.out.println(sql.getJSONArray("data").length());
 						Object jsonArray = sql.getJSONArray("data").get(i);
@@ -396,9 +421,9 @@ System.out.println(index);
 						.flatMap(m -> m.entrySet().stream())
 						.collect(toMap(Map.Entry::getKey, Map.Entry::getValue, Integer::sum));
 
-				System.out.println("map" + map);
+				//System.out.println("map" + map);
 				JSONObject mapped = new JSONObject(json);
-				System.out.println("map2" + mapped);
+				//System.out.println("map2" + mapped);
 
 				result.put("values", mapped);
 				result.put("name", mostactiveterm);

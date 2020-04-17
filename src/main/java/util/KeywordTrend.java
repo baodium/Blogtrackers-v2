@@ -42,6 +42,10 @@ public class KeywordTrend extends HttpServlet{
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
+	
+	
+	
+	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
@@ -223,7 +227,7 @@ public class KeywordTrend extends HttpServlet{
 			try {
 				PrintWriter out = response.getWriter();
 				sql = post._getBloggerPosts(mostactiveterm.toString(), "NOBLOGGER", date_start.toString(),
-						date_end.toString(), all_blog_ids.toString());
+						date_end.toString(), all_blog_ids.toString(),1000);
 
 				JSONObject firstpost = new JSONObject();
 				Object map = null;
@@ -301,4 +305,7 @@ public class KeywordTrend extends HttpServlet{
 		}
 	}
 
+	public static void main(String [] args) {
+		
+	}
 }

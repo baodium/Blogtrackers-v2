@@ -1732,6 +1732,7 @@ JSONObject allposts = new JSONObject();
  //console.log(filteredArray.sort());
  // console.log(returnedata);
  x.domain(filteredArray);
+ 
  y.domain([0, d3.max(maxvalue)]);
  }
 

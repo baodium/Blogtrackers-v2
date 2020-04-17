@@ -49,10 +49,12 @@ if(confirmdeletetracker)
 		success: function(response)
 		{   
 			console.log(response);
+			//alert(tracker_id)
 			if(response.indexOf("true")>-1){
+				alert(tracker_id)
 				toastr.success('Tracker successfully deleted!','Success');
 				//location.href=app_url+"trackerlist.jsp";
-				
+				//uploadTerms(tid, type)
 				console.log("tracker deleted")	
 				// add an ajax to deleted tracker 
 				// on success go back to tracker list
@@ -72,3 +74,25 @@ if(confirmdeletetracker)
 
 
 });
+
+function uploadTerms(tid, type){
+	$.ajax({
+		url: app_url+'tracker',
+		method: 'POST',
+		data: {
+			action:"uploadTerms",
+			tracker_id:tid,
+			type:type,
+			
+		},
+		error: function(response)
+		{
+			//alert('could not compute terms')
+			console.log('could not compute terms')
+		},
+		success: function(response)
+		{
+			console.log('term response',response);
+		}
+	});
+}

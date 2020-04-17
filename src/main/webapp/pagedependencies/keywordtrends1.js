@@ -19,6 +19,7 @@ $(document).delegate('.topics1', 'click', function(){
 		 
 		 var all_selected_names = '';
 		 var all_selected_names1 = '';
+		 var total = 0;
 		 var i = 1;
 		 $( ".thanks" ).each(function( index ) {
 			 
@@ -34,6 +35,8 @@ $(document).delegate('.topics1', 'click', function(){
 	    	
 	    	all_selected_names += '"'+blog_name+'"';
 	    	all_selected_names1 += blog_name;
+	    	
+	    	total+=parseInt($(this).attr('value'));
 	    		
 	    	i++;
 		    		
@@ -42,11 +45,12 @@ $(document).delegate('.topics1', 'click', function(){
 		 
 	 }
 	////////////end collecting names
-	 
+	 console.log('total',total);
 	
 	$(".active-term").html(all_selected_names1);
 	/* console.log(freq); */
-	$(".keyword-count").html(value.replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+	
+	$(".keyword-count").html(total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
 
 	// loadInfluence(bloog,blg[1]);
 	//$("#term").val(all_selected_names);
@@ -194,7 +198,7 @@ function loadMostPost(date_start,date_end) {
 		},
 		success : function(response) {
 			console.log(response)
-			$(".post-mentioned").html(response);
+			$(".post-mentioned").html(response.replace(/\B(?=(\d{3})+(?!\d))/g, ","));
 		}
 	});
 }

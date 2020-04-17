@@ -72,7 +72,7 @@
 	//loadChart(bloog,id,date_start,date_end);
 	
 	getTopLocation(bloog,$("#all_blog_ids").val(),date_start,date_end);
-	loadTopKeyword(bloog,$("#all_blog_ids").val(),date_start,date_end);	
+	//loadTopKeyword(bloog,$("#all_blog_ids").val(),date_start,date_end);	
 	loadSentiments(all_selected_names,$("#all_blog_ids").val(),date_start,date_end);
 	/*alert(bloog);*/
 
@@ -253,7 +253,7 @@ function loadTerms(blogger,blog_id,start_date,end_date, activeTerms){
 		},
 		success: function(response)
 		{   
-			console.log(response.highest);
+			//console.log('seun',response);
 			$('.activeblogger').html(activeTerms);
 			$("#tagcloudbox").html("<img src='images/loading.gif' /> COMPUTING TERMS PLEASE WAIT....").html(response);
 			/* $.getScript("assets/js/generic.js", function(data, textStatus, jqxhr) {	
@@ -263,7 +263,7 @@ function loadTerms(blogger,blog_id,start_date,end_date, activeTerms){
 	
 }
 
-function loadTopKeyword(blogger,blog_id,start_date,end_date){
+function loadTopKeyword(blogger,blog_id,start_date,end_date){/*
 	//alert(blogger+blog_id+start_date+end_date)
 	$(".most-used-keyword").html("");
 	var blger = blogger.replaceAll(" ","__");
@@ -286,7 +286,7 @@ function loadTopKeyword(blogger,blog_id,start_date,end_date){
 		{   
 			$(".most-used-keyword").html(response);
 		}
-	});
+	});*/
 	
 }
 

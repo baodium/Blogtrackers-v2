@@ -139,7 +139,7 @@ Terms term  = new Terms();
 <%
 
 if(action.toString().equals("getterms")){
-	JSONObject sql = post._getBloggerPosts("___NO__TERM___","NOBLOGGER",dt,dte,selectedblogid); 
+	JSONObject sql = post._getBloggerPosts("___NO__TERM___","NOBLOGGER",dt,dte,selectedblogid,1000); 
 	String sql_ = sql.get("posts").toString();
 	
 	String result = post.getHighestTerm(sql_);
