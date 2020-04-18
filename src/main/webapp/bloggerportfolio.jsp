@@ -1044,6 +1044,8 @@ JSONObject allposts = new JSONObject();
 											String tresu = null;
 											JSONObject tobj = null;
 											String date =null;
+											String activeDef = "";
+											String activeDefLink = "";
 											int j=0;
 											int k=0;
 											
@@ -1060,10 +1062,19 @@ JSONObject allposts = new JSONObject();
 												LocalDate datee = LocalDate.parse(dat);
 												DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");
 												date = dtf.format(datee);
+												
+												if (i == 0) {
+													activeDefLink = "";
+													activeDef = "activeselectedblog";
+												}else{
+												
+													activeDefLink = "makeinvisible";
+													activeDef = "";
+												}
 									%>
                                     <tr>
-                                   <td><a class="blogpost_link cursor-pointer" id="<%=tobj.get("blogpost_id")%>" ><%=tobj.get("title") %></a><br/>
-								<a class="mt20 viewpost makeinvisible" href="<%=tobj.get("permalink") %>" target="_blank"><buttton class="btn btn-primary btn-sm mt10 visitpost">Visit Post &nbsp;<i class="fas fa-external-link-alt"></i></buttton></a></td>
+                                   <td><a class="blogpost_link cursor-pointer <%=activeDef %>" id="<%=tobj.get("blogpost_id")%>" ><%=tobj.get("title") %></a><br/>
+								<a id="viewpost_<%=tobj.get("blogpost_id")%>" class="mt20 viewpost <%=activeDefLink %>" href="<%=tobj.get("permalink") %>" target="_blank"><buttton class="btn btn-primary btn-sm mt10 visitpost">Visit Post &nbsp;<i class="fas fa-external-link-alt"></i></buttton></a></td>
 								<td align="center"><%=date %></td>
                                      </tr>
                                     <% }} %>
@@ -1307,23 +1318,13 @@ JSONObject allposts = new JSONObject();
 // table set up 2
      $('#DataTables_Table_0_wrapper').DataTable( {
          "scrollY": 430,
-         "scrollX": false,
-          "pagingType": "simple"
-     /*      ,
-          dom: 'Bfrtip',
-
-          "columnDefs": [
-       { "width": "80%", "targets": 0 }
-     ],
-       buttons:{
-         buttons: [
-             { extend: 'pdfHtml5',orientation: 'potrait', pageSize: 'LEGAL', className: 'btn-primary stylebutton1'},
-             {extend:'csv',className: 'btn-primary stylebutton1'},
-             {extend:'excel',className: 'btn-primary stylebutton1'},
-            // {extend:'copy',className: 'btn-primary stylebutton1', text: 'Copy to Clipboard'},
-             {extend:'print',className: 'btn-primary stylebutton1'},
-         ]
-       } */
+         "scrollX": true,
+         "order": [],
+          "pagingType": "simple",
+        	  "columnDefs": [
+        	      { "width": "65%", "targets": 0 },
+        	      { "width": "25%", "targets": 0 }
+        	    ]
      } );
  } );
  </script>
@@ -2879,6 +2880,8 @@ JSONObject allposts = new JSONObject();
 
  });
  </script>
+ 
+ 
 
 <script src="pagedependencies/baseurl.js?v=93"></script>
 <script src="pagedependencies/bloggerportfolio.js"></script>

@@ -1091,6 +1091,8 @@ import java.io.OutputStreamWriter; -->
 											String tresu = null;
 											JSONObject tobj = null;
 											String date =null;
+											String activeDef = "";
+											String activeDefLink = "";
 											int j=0;
 											int k=0;
 											
@@ -1108,11 +1110,20 @@ import java.io.OutputStreamWriter; -->
 												DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");
 												date = dtf.format(datee);
 												
+												if (i == 0) {
+													activeDefLink = "";
+													activeDef = "activeselectedblog";
+												}else{
+												
+													activeDefLink = "makeinvisible";
+													activeDef = "";
+												}
+												
 												
 									%>
                                     <tr>
-                                   <td><a class="blogpost_link cursor-pointer" id="<%=tobj.get("blogpost_id")%>" ><%=tobj.get("title") %></a><br/>
-								<a class="mt20 viewpost makeinvisible" href="<%=tobj.get("permalink") %>" target="_blank"><buttton class="btn btn-primary btn-sm mt10 visitpost">Visit Post &nbsp;<i class="fas fa-external-link-alt"></i></buttton></a></td>
+                                   <td><a class="blogpost_link cursor-pointer <%=activeDef %>" id="<%=tobj.get("blogpost_id")%>" ><%=tobj.get("title") %></a><br/>
+								<a id="viewpost_<%=tobj.get("blogpost_id")%>" class="mt20 viewpost <%=activeDefLink %>" href="<%=tobj.get("permalink") %>" target="_blank"><buttton class="btn btn-primary btn-sm mt10 visitpost">Visit Post &nbsp;<i class="fas fa-external-link-alt"></i></buttton></a></td>
 								<td align="center"><%=date %></td>
                                      </tr>
                                     <% }
@@ -1242,12 +1253,16 @@ import java.io.OutputStreamWriter; -->
 													for (int y = 0; y < outlinklooper.size(); y++) {
 														String key = outlinklooper.get(y).toString();
 														JSONObject resu = outerlinks.getJSONObject(key);
+														if(resu.get("domain") != ""){
+															
+														
 									%>
 									<tr>
 										<td class=""><a href="http://<%=resu.get("domain")%>" target="_blank"><%=resu.get("domain")%></a></td>
 										<td><%=resu.get("value")%></td>
 									</tr>
 									<%
+														}
 										}
 									}
 									%>                     

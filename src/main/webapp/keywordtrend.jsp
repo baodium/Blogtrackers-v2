@@ -2015,38 +2015,46 @@ $(document).ready(function() {
     				    temp_count = holder_details[1].trim();
     				    temp_count = parseInt(temp_count);
     				    total_count = total_count + temp_count;
+    				    let current_year = new Date().getFullYear();
     				    
-    				    if(m == 0 && t ==0){
-    				    	lowest_date = temp_year;
-    				    	highest_date = temp_year;
-    				    	highest_price = temp_count;
+    				    if(temp_year <= current_year && temp_year >= 1999){
+    				    	
+    				    	if(m == 0 && t ==0){
+        				    	lowest_date = temp_year;
+        				    	highest_date = temp_year;
+        				    	highest_price = temp_count;
+        				    }
+        				    
+        				    //start checks
+        				    
+    	  					if(temp_year < lowest_date){
+    	  						lowest_date = temp_year;
+    	  						lowest_date_index = m;
+    	  						lowest_date_name = name;
+    	  					}
+    	  					
+    	  					if(temp_year > highest_date){
+    	  						highest_date = temp_year;
+    	  						highest_date_index = m;
+    	  						highest_date_name = name;
+    	  					}
+    	  					
+    	  					if(temp_count > highest_price){
+    	  						highest_price = temp_count;
+    	  						highest_price_index = m;
+    	  						highest_price_name = name;
+    	  					}
+        				    
+        				    //end checks
+        				    var string2 = temp_year.toString();
+        		  			
+        		  			var string3 = temp_count.toString();
+        				    arr1.push({date: string2 ,close: string3, name:name});
+    				    
+    				    	
     				    }
+    				    //end year 2020 check
     				    
-    				    //start checks
-    				    
-	  					if(temp_year < lowest_date){
-	  						lowest_date = temp_year;
-	  						lowest_date_index = m;
-	  						lowest_date_name = name;
-	  					}
-	  					
-	  					if(temp_year > highest_date){
-	  						highest_date = temp_year;
-	  						highest_date_index = m;
-	  						highest_date_name = name;
-	  					}
-	  					
-	  					if(temp_count > highest_price){
-	  						highest_price = temp_count;
-	  						highest_price_index = m;
-	  						highest_price_name = name;
-	  					}
-    				    
-    				    //end checks
-    				    var string2 = temp_year.toString();
-    		  			
-    		  			var string3 = temp_count.toString();
-    				    arr1.push({date: string2 ,close: string3, name:name});
     				    
     				}
     				//end for loop here
