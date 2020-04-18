@@ -248,8 +248,8 @@ public class Terms extends HttpServlet implements Runnable {
 
 		// jsonObj = new JSONObject(que3);
 		String url = base_url + "_search";
-		System.out.println("term_url" + url);
-		System.out.println("term_jsonobj" + jsonObj);
+		//System.out.println("term_url" + url);
+		//System.out.println("term_jsonobj" + jsonObj);
 		return this._getResult(url, jsonObj);
 
 	}

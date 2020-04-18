@@ -149,8 +149,8 @@ if(action.toString().equals("getstats")){
 	JSONArray sentimentpost = new JSONArray();
 	ArrayList allauthors = post._getBloggerByBlogId("date", dt, dte, selectedblogid, "influence_score", "DESC");
 	
-	System.out.println("sssssss"+selectedblogid);
-	System.out.println("sssssss"+allauthors);
+	//System.out.println("sssssss"+selectedblogid);
+	//System.out.println("sssssss"+allauthors);
 
 	if(allauthors.size()>0){
 		String tres = null;
@@ -389,7 +389,7 @@ normalized_value = ( (totalsentiment - min_combo)/(max_combo - min_combo));
 	}
 	
 	JSONObject dayJson = post.lineGraphAggregate(items);
-	System.out.println("dayJson --"+dayJson);
+	//System.out.println("dayJson --"+dayJson);
 	
 	SimpleDateFormat DAY_NAME_ONLY = new SimpleDateFormat("EEEE");
 	
@@ -730,7 +730,7 @@ normalized_value = ( (totalsentiment - min_combo)/(max_combo - min_combo));
 	}
 	
 	JSONObject monthJson = post.lineGraphAggregate(items1);
-	System.out.println("monthJson --"+monthJson);
+	//System.out.println("monthJson --"+monthJson);
 
 
 %>
@@ -1294,7 +1294,7 @@ normalized_value = ( (totalsentiment - min_combo)/(max_combo - min_combo));
 		years.add(Integer.toString(i));
 	}
 	
-	System.out.println("year_s"+years);
+	//System.out.println("year_s"+years);
 	
 	JSONObject year_object = new JSONObject();
 	for(int q=0; q<blogPostingFrequency_year.length(); q++){ 

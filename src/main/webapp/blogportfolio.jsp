@@ -277,7 +277,8 @@ import java.io.OutputStreamWriter; -->
 			totalpost = post._searchRangeTotal("date", dt, dte, selectedblogid);
 			//termss = term._searchByRange("blogsiteid", dt, dte, selectedblogid);
 			
-			outlinks = outl._searchByRange("date", dt, dte, selectedblogid);
+			
+			System.out.println("onload --"+"date"+ dt+ dte+ selectedblogid);
 			
 			//String totalinfluence = post._searchRangeMaxByBlogId("date", dt, dte, selectedblogid);
 			String totalinfluence = post._searchRangeMaxByBlogId("date", dt, dte, selectedblogid);
@@ -549,7 +550,7 @@ import java.io.OutputStreamWriter; -->
 			String mostactiveblogurl ="";
 			JSONObject outerlinks = new JSONObject();
 			ArrayList outlinklooper = new ArrayList();
-			
+			outlinks = outl._searchByRange("date", dt, dte, mostactiveblogid);
 			if (outlinks.size() > 0) {
 				int mm=0;
 				for (int p = 0; p < outlinks.size(); p++) {
@@ -1235,6 +1236,7 @@ import java.io.OutputStreamWriter; -->
                         </thead>
                         <tbody>
                             <%
+                            System.out.println("outlinklooper----"+outlinklooper.size());
 										if (outlinklooper.size() > 0) {
 													//System.out.println(bloggers);
 													for (int y = 0; y < outlinklooper.size(); y++) {

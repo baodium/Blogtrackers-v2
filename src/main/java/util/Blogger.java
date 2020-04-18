@@ -59,7 +59,7 @@ public class Blogger {
 			
 		}catch(Exception e){
 		}
-		System.out.println("blogids--"+blogids);
+		//System.out.println("blogids--"+blogids);
 		return result;
 
 	}

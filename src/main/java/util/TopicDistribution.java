@@ -47,12 +47,12 @@ public class TopicDistribution extends HttpServlet {
 		PrintWriter out = response.getWriter();
 		
 		
-		System.out.println("action --" + action.toString());
+		//System.out.println("action --" + action.toString());
 		Blogposts blogpostsContainer = new Blogposts();
-		System.out.println("action1 --" + action.toString());
+		//System.out.println("action1 --" + action.toString());
 		
 		if (action.toString().equals("loadChord")) {
-			System.out.println("idss --"+blogIds.toString());
+			//System.out.println("idss --"+blogIds.toString());
 			String stdate = null;
 			
 			try {
@@ -173,12 +173,12 @@ public class TopicDistribution extends HttpServlet {
 				}
 				
 			}
-			System.out.println("chord--"+_chordDiagramMatrix);
+			//System.out.println("chord--"+_chordDiagramMatrix);
 			session.setAttribute(tid.toString() + "_chorddatadashboard", _chordDiagramMatrix.toString());
 			Object chordData = (null == session.getAttribute(tid.toString()+ "_chorddatadashboard"))
 					? ""
 					: session.getAttribute(tid.toString()+ "_chorddatadashboard");
-System.out.println("testing chord" + chordData);
+//System.out.println("testing chord" + chordData);
 			out.write(_chordDiagramMatrix.toString());
 		}else {
 			System.out.println("action2");

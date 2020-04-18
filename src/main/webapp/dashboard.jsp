@@ -254,15 +254,15 @@
 
 			//Our New Code
 			Liwc liwc = new Liwc();
-			System.out.println("COMI----" + request.getHeader("referer"));
+			//System.out.println("COMI----" + request.getHeader("referer"));
 			String totalbloggers = bloggerss._getBloggerById(ids);
 
-			System.out.println("Total bloggers----" + totalbloggers);
+			//System.out.println("Total bloggers----" + totalbloggers);
 
 			ArrayList locations = blog._getLocation(ids);
 			//System.out.println("all blog location");
 			ArrayList languages = blog._getLanguage(ids);
-			System.out.println(languages);
+			//System.out.println(languages);
 			//System.out.println("all blog language");
 			ArrayList bloggerPostFrequency = bloggerss._getBloggerPostFrequency(ids);
 			//System.out.println("all blogger post frequency");
@@ -314,8 +314,8 @@
 				totalpost = post._searchRangeTotal("date", dt, dte, ids); // To be modified later
 			}
 			//System.out.println("termss start");
-			termss = term._searchByRange("blogsiteid", dt, dte, ids);
-			System.out.println("terms---" + termss);
+			//termss = term._searchByRange("blogsiteid", dt, dte, ids);
+			//System.out.println("terms---" + termss);
 			session.setAttribute("terms", termss);
 			//System.out.println("termss end");
 			//System.out.println("outlinks start");
@@ -2906,7 +2906,7 @@ $(function () {
 					String neg = "";
 					for (int i = 0; i < getPositiveEmotion.size(); i++) {
 						ArrayList<?> posi = (ArrayList<?>) getPositiveEmotion.get(i);
-						System.out.println(posi.get(0));
+						//System.out.println(posi.get(0));
 						if(posi.get(0) == null){
 							pos = "0";
 						}else{
@@ -3297,7 +3297,7 @@ var mymarker = [
 			<%
 			ArrayList response_terms = DbConnection.query("select terms from tracker_keyword where tid = " + tid);
 			ArrayList res = (ArrayList)response_terms.get(0);
-			System.out.println("terms_result" + res.get(0));
+			//System.out.println("terms_result" + res.get(0));
 			
 			JSONObject finalres = new JSONObject(res.get(0).toString());
 			

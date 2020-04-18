@@ -38,7 +38,7 @@
 		
 
 			outlinks = outl._searchByRange("date",date_start, date_end, ids);
-			
+			System.out.println("ajax --"+"date"+date_start+ date_end+ids);
 		
 			JSONObject outerlinks = new JSONObject();
 			ArrayList outlinklooper = new ArrayList();

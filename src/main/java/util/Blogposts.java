@@ -1154,7 +1154,7 @@ public class Blogposts {
 					+ "\",\r\n" + "			\"gte\":\"" + 0 + "\"\r\n" + "			}\r\n" + "		}\r\n" + "}");
 		}
 		String url = base_url + "_search?size=" + size + "&from=" + fr;
-		System.out.println("object-----" + jsonObj);
+		//System.out.println("object-----" + jsonObj);
 		return this._getResult(url, jsonObj);
 	}
 
@@ -2120,7 +2120,7 @@ public class Blogposts {
 		} catch (Exception e) {
 			System.out.print("Error in getBlogPostById");
 		}
-		System.out.println("query for elastic _getBlogPostById --> " + query);
+		//System.out.println("query for elastic _getBlogPostById --> " + query);
 		return count;
 	}
 
@@ -2707,7 +2707,7 @@ public class Blogposts {
 		String idx = null;
 		String language = null;
 		JSONArray jsonArray = new JSONArray();
-		System.out.println("query for elastic _getMostLanguage --> " + query);
+		//System.out.println("query for elastic _getMostLanguage --> " + query);
 		if (null != myResponse.get("aggregations")) {
 			Object buckets = myResponse.getJSONObject("aggregations").getJSONObject("groupby").getJSONArray("buckets");
 			val = buckets.toString();
@@ -2791,12 +2791,12 @@ public class Blogposts {
 			Integer value = entry.getValue();
 			String highest = entry.getKey();
 
-			System.out.println("HIGHEST TERM IS -- " + source + " OCCURING " + value + " TIMES");
+			//System.out.println("HIGHEST TERM IS -- " + source + " OCCURING " + value + " TIMES");
 
 			String da = hm1.toString();
 
 			d = new JSONObject(hm1);
-			System.out.println(d);
+			//System.out.println(d);
 
 		} else {
 			source = "Null";
@@ -2809,7 +2809,7 @@ public class Blogposts {
 			throws Exception {
 		//
 //		BloggerName="Stephen Lendman,South Front";
-		System.out.println("postingfreqbloggers" + BloggerName);
+		//System.out.println("postingfreqbloggers" + BloggerName);
 		ArrayList<String> list = new ArrayList<String>();
 		JSONObject query = new JSONObject();
 		String result = null;
@@ -2863,7 +2863,7 @@ public class Blogposts {
 					+ "            }\r\n" + "        }\r\n" + "    ]\r\n" + "}");
 
 		}
-		System.out.println("query for elastic _getMostKeywordDashboard --> " + query);
+		//System.out.println("query for elastic _getMostKeywordDashboard --> " + query);
 		JSONArray jsonArray = (JSONArray) this._elastic(query).getJSONArray("hit_array");
 
 		System.out.println("DONE GETTING POSTS FOR BLOGGER");
@@ -2878,7 +2878,7 @@ public class Blogposts {
 				list.add(src);
 			}
 
-			System.out.println("DONE and size of list is --" + list.size());
+			//System.out.println("DONE and size of list is --" + list.size());
 			result = String.join(" ", list);
 		}
 
@@ -2944,7 +2944,7 @@ public class Blogposts {
 		String result = null;
 		String source = null;
 		String source_ = null;
-		System.out.println(data.length());
+		//System.out.println(data.length());
 //		data = escape2(data);
 		if (data.length() > 0) {
 //		JSONObject jsonObj = new JSONObject("{\r\n" + "  \"query\": {\r\n" + "    \"constant_score\":{\r\n"
@@ -2957,7 +2957,7 @@ public class Blogposts {
 					+ "      \"max_num_terms\" : 1,\r\n" + "      \"min_term_freq\" : 1,\r\n"
 					+ "      \"min_doc_freq\" : 1,\r\n" + "      \"min_word_length\":1\r\n" + "	\r\n" + "    }\r\n"
 					+ "}");
-			System.out.println("INPROCESS");
+			//System.out.println("INPROCESS");
 //			System.out.println(" _termVectors --- "+ query);
 
 //			try (FileWriter file = new FileWriter("C:\\Users\\oljohnson\\Desktop\\SQL\\file2.json")) {
@@ -3002,16 +3002,16 @@ public class Blogposts {
 
 			}
 
-			System.out.println("2--" + data.length());
+			//System.out.println("2--" + data.length());
 			Map<String, Integer> hm1 = this.sortHashMapByValues(hm2);
 			System.out.println("DONE SORTING OBJECT");
-			System.out.println(" OCCURES-- " + hm1);
+			//System.out.println(" OCCURES-- " + hm1);
 
 			Map.Entry<String, Integer> entry = hm1.entrySet().iterator().next();
 			source = entry.getKey().toUpperCase();
 			Integer value = entry.getValue();
 
-			System.out.println("HIGHEST TERM IS -- " + source + " OCCURING " + value + " TIMES");
+			//System.out.println("HIGHEST TERM IS -- " + source + " OCCURING " + value + " TIMES");
 
 		} else {
 			source = "Null";
@@ -3109,7 +3109,7 @@ public class Blogposts {
 			 * for(Tuple2<String, Integer> x: pairRdd.reduceByKey((a,b) -> (a+
 			 * b)).collect()) { //System.out.println(x); test.add(x); }
 			 */
-			System.out.println(pairRdd.reduceByKey((a,b) -> (a+ b)).max(new DummyComparator()));
+			//System.out.println(pairRdd.reduceByKey((a,b) -> (a+ b)).max(new DummyComparator()));
 			sc.stop();
 			
 		} catch (Exception e) {

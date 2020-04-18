@@ -128,7 +128,7 @@ public class Blogs extends DbConnection{
 			}catch(Exception e){
 				return count;
 			}
-			System.out.println(count);
+			//System.out.println(count);
 			return count;
 			
 	}
@@ -236,7 +236,7 @@ public class Blogs extends DbConnection{
 //		System.out.println("testque--"+this._getResult(url, jsonObj).size());
 //		System.out.println("url--"+url);
 //		System.out.println("elasticquery--"+jsonObj);
-		System.out.println("query for fetch in blogs.java "+ jsonObj);
+		//System.out.println("query for fetch in blogs.java "+ jsonObj);
 //		System.out.println("elasticresult--"+this._getResult(url, jsonObj));
 		return this._getResult(url, jsonObj);
 
@@ -307,8 +307,8 @@ public class Blogs extends DbConnection{
 		try {
 		result = db.query("select blogger_name, max(influence_score), blogsite_id from blogger where blogsite_id in "+
 				(blogids)+" group by blogger_name order by influence_score desc");		
-		System.out.println("query for _getInfluencialBlogger" + "select blogger_name, max(influence_score), blogsite_id from blogger where blogsite_id in "+
-				(blogids)+" group by blogger_name order by influence_score desc");	
+		//System.out.println("query for _getInfluencialBlogger" + "select blogger_name, max(influence_score), blogsite_id from blogger where blogsite_id in "+
+				//(blogids)+" group by blogger_name order by influence_score desc");	
 		}catch(Exception e){
 		}
 		return result;
@@ -346,7 +346,7 @@ public class Blogs extends DbConnection{
 			
 		}catch(Exception e){
 		}
-		System.out.println("query for _getblogPostFrequency"+"select blogsite_name, totalposts, blogsite_id, blogsite_url from blogsites where blogsite_id in "+blogids+" order by totalposts DESC");
+		//System.out.println("query for _getblogPostFrequency"+"select blogsite_name, totalposts, blogsite_id, blogsite_url from blogsites where blogsite_id in "+blogids+" order by totalposts DESC");
 		return result;
 		
 
