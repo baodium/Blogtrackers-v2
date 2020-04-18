@@ -886,7 +886,7 @@ authoryears.put(mostactiveblogger,postyear);
           Export Options
           </div> -->
           <div id="influence_table">
-					<table id="DataTables_Table_0_wrapper" class="display"
+					<table id="DataTables_Table_0_wrapper" class="display table_over_cover"
 						style="width: 100%">
 						<thead>
 							<tr>
@@ -1108,44 +1108,44 @@ authoryears.put(mostactiveblogger,postyear);
     	
     	var t = parseFloat(i);
 
-    switch(t) {
+    	switch(t) {
 
-      //case 0:
-        //var hex = 'yellow';
-      case 1:
-        var hex = 'green'; 
-        break;
-      case 2:
-        var hex = '#c18fb6';
-        break;
-      case 3:
-        var hex = '#8fc199';
-        break;
-      case 4:
-        var hex = '#c1958f';
-        break;
-      case 5:
-        var hex = '#e17d70';
-        break;
-      case 6:
-        var hex = '#b770e1';
-        break;
-      case 7:
-        var hex = '#1fa701';
-        break;
-      case 8:
-        var hex = '#011aa7';
-        break;
-      case 9:
-        var hex = '#a78901';
-        break;
-      case 10:
-        var hex = '#981010';
-        break;
-      default:
-        var hex = 'red';
+        //case 0:
+          //var hex = 'yellow';
+        case 1:
+          var hex = '#e50471'; 
+          break;
+        case 2:
+          var hex = '#0571a0';
+          break;
+        case 3:
+          var hex = '#038a2c';
+          break;
+        case 4:
+          var hex = '#6b8a03';
+          break;
+        case 5:
+          var hex = '#a02f05';
+          break;
+        case 6:
+          var hex = '#b770e1';
+          break;
+        case 7:
+          var hex = '#1fa701';
+          break;
+        case 8:
+          var hex = '#011aa7';
+          break;
+        case 9:
+          var hex = '#a78901';
+          break;
+        case 10:
+          var hex = '#981010';
+          break;
+        default:
+          var hex = '#6b085e';
 
-    }
+      }
 
 
     

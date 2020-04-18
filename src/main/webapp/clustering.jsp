@@ -887,7 +887,7 @@ Instant start = Instant.now();
 									}
 									
 									if(max_distance_id > (float)Float.parseFloat(distances.get(blog_post_id.toString()).toString())){
-										System.out.println(p);
+										
 										max_distance_id = (float)Float.parseFloat(distances.get(blog_post_id.toString()).toString());
 										max_post_id = blog_post_id.toString();
 										

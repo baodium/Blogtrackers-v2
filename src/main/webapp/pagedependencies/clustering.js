@@ -139,6 +139,8 @@ function loadbloggersmentioned(clusterid){
 		},
 		error: function(response)
 		{						
+			
+			
 			//console.log(response);
 			$("#bloggersmentioned").html(response);
 		},

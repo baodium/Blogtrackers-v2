@@ -89,7 +89,7 @@
 %>
 								<link rel="stylesheet" href="assets/css/table.css" />
 								<link rel="stylesheet" href="assets/css/style.css" />
-								<table id="DataTables_Table_1_wrapper" class="display" style="width:100%">
+								<table id="DataTables_Table_1_wrapper" class="display table_over_cover" style="width:100%">
 									<thead>
                                      <tr>
                                 <th>URL</th>
@@ -99,23 +99,31 @@
                             </tr>
                                     </thead>
                                     <tbody>
-									<%
+									<% String temp_domain;
 										if (outlinklooper.size() > 0) {
 													for (int y = 0; y < outlinklooper.size(); y++) {
 														String key = outlinklooper.get(y).toString();
 														JSONObject resu = outerlinks.getJSONObject(key);
+														
 									%>
 
 						
 									
+									
+									<% if(listtype.equals("urls") && resu.get("link").toString() != null ){ %>
 									<tr>
-									<% if(listtype.equals("urls")){ %>
-										<td class=""><a href="<%=resu.get("link")%>" target="_blank"><%=resu.get("link")%></a></td>
-									<% }else{ %>
-										<td class=""><a href="<%=resu.get("domain")%>" target="_blank"><%=resu.get("domain")%></a> </td>
-									<% } %>
+										<td class=""><a href="<%=resu.get("link")%>" target="_blank">1<%=resu.get("link")%></a></td>
 										<td><%=resu.get("value")%></td>
-									</tr>
+										</tr>
+									<% }else{ temp_domain = resu.get("domain").toString().trim(); if( temp_domain.trim().length() > 0){%>
+										<tr>
+										<td class=""><a href="<%=resu.get("domain")%>" target="_blank"><%=temp_domain%></a> </td>
+										<td><%=resu.get("value")%></td>
+										</tr>
+									<% }} %>
+									
+										
+									
 									<% }}} %>
 									 </tbody>
 									</table>
