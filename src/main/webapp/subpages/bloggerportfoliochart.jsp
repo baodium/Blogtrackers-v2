@@ -149,10 +149,10 @@ Terms term  = new Terms();
 <%  
 if(action.toString().equals("getstats")){	
 	JSONArray sentimentpost = new JSONArray();
-	System.out.println("selectedblogid"+selectedblogid);
+	//System.out.println("selectedblogid"+selectedblogid);
 	ArrayList allauthors = post._getBloggerByBloggerName("date", dt, dte, selectedblogid, "influence_score", "DESC");
 	
-	System.out.println("allauthors"+allauthors);
+	//System.out.println("allauthors"+allauthors);
 	String blogids = "";
 	if(allauthors.size()>0){
 		String tres = null;
@@ -377,7 +377,7 @@ for(int z=0; z < all_blogger.length; z++){
 	result.put("totalinfluence",normalized_score);
 	//result.put("topterm",mostactiveterm);
 	
-	System.out.println("this is the result"+result);
+	//System.out.println("this is the result"+result);
 	
 	%>
 <%=result.toString()%>
@@ -458,7 +458,7 @@ for(int z=0; z < all_blogger.length; z++){
 		}
 		
 		JSONObject dayJson = post.lineGraphAggregate(items);
-		System.out.println("dayJson --"+dayJson);
+		//System.out.println("dayJson --"+dayJson);
 	
 %>
   <div class="chart" id="d3-bar-horizontal"></div>
@@ -745,7 +745,7 @@ for(int z=0; z < all_blogger.length; z++){
 	}
 	
 	JSONObject monthJson = post.lineGraphAggregate(items1);
-	System.out.println("monthJson --"+monthJson);
+	//System.out.println("monthJson --"+monthJson);
 %>
  <div class="chart" id="yearlypattern"></div>
  
@@ -1309,7 +1309,7 @@ for(int z=0; z < all_blogger.length; z++){
 		years.add(Integer.toString(i));
 	}
 	
-	System.out.println("year_s"+years);
+	//System.out.println("year_s"+years);
 	
 	JSONObject year_object = new JSONObject();
 	for(int q=0; q<blogPostingFrequency_year.length(); q++){ 
