@@ -23,11 +23,14 @@
 	Object user = (null == session.getAttribute("username")) ? "" : session.getAttribute("username");
 	Object date_start = (null == request.getParameter("date_start")) ? "" : request.getParameter("date_start");
 	Object date_end = (null == request.getParameter("date_end")) ? "" : request.getParameter("date_end");
+	Object date_set = (null == request.getParameter("date_set")) ? "" : request.getParameter("date_set");
 	Object single = (null == request.getParameter("single_date")) ? "" : request.getParameter("single_date");
 	String sort = (null == request.getParameter("sortby"))
 			? "blog"
 			: request.getParameter("sortby").toString().replaceAll("[^a-zA-Z]", " ");
 	System.out.println("email--" + email);
+	
+	System.out.println("valueeeeee"+date_set);
 	
 	if (user == null || user == "") {
 		response.sendRedirect("index.jsp");
@@ -1460,6 +1463,7 @@ display: none;
 		<input type="hidden" name="tid" value="<%=tid%>" /> <input
 			type="hidden" name="date_start" id="date_start" value="" /> <input
 			type="hidden" name="date_end" id="date_end" value="" />
+			<input type="hidden" name="date_set" id="date_set" value="0" />
 		<textarea style="display: none" name="blogs" id="blogs">
 			<%
 				if (blogPostFrequency.size() > 0) {
@@ -1917,10 +1921,13 @@ $(document).ready(function() {
             	
             	var start = picker.startDate.format('YYYY-MM-DD');
             	var end = picker.endDate.format('YYYY-MM-DD');
+            	var set = 1;
             	//console.log("End:"+end);
             	
             	$("#date_start").val(start);
             	$("#date_end").val(end);
+            	$("#date_set").val(set);
+            	
             	//toastr.success('Date changed!','Success');
             	$("form#customform").submit();
          });
@@ -3295,6 +3302,43 @@ var mymarker = [
 			  		<wordtagcloud("#tagcloudcontainer",450,<%=d%>);  
 			<%}%>  --%>
 			<%
+			if(date_set.toString().equals("1")){%>
+			
+			$(".word-cld").html("<img src='images/loading.gif' /> COMPUTING TERMS FOR <b style='color : blue;  font-size: 20px;'><%=NumberFormat.getNumberInstance(Locale.US).format(new Double(totalpost).intValue())%></b> POSTS PLEASE WAIT...."); 
+			 /* $('#keywordbtn').prop("disabled", true);
+			 $("#hrefkeyword").attr("href", ""); */
+			$.ajax({
+				url: app_url+"subpages/dashboardcharts.jsp",
+				method: 'POST',
+	            /* dataType: 'json', */
+				data: {
+					action:"getkeyworddashboard",
+					/* blogger:null, */
+					
+					ids:"<%=ids%>",
+					date_start:"<%=dt%>",
+					date_end:"<%=dte%>"
+				},
+				error: function(response)
+				{		
+					$(".word-cld").html("FAILED TO COMPUTE TERMS.. RETRYING.. PLEASE WAIT.... <img src='images/loading.gif' />g");
+					$(".word-cld").html("<div style='min-height: 420px;'><div class='chart-container word-cld'><div class='chart' id='tagcloudcontainer'><div class='jvectormap-zoomin zoombutton' id='zoom_in'>+</div><div class='jvectormap-zoomout zoombutton' id='zoom_out'>−</div></div></div></div>");
+					wordtagcloud("#tagcloudcontainer",450,{"NO KEYWORD":1});
+					console.log("This is failure"+response);
+
+				},
+				success: function(response)
+				{   				  
+				 console.log(response)
+				console.log("this is the response"+data)
+				
+				    $(".word-cld").html("<div style='min-height: 420px;'><div class='chart-container word-cld'><div class='chart' id='tagcloudcontainer'><div class='jvectormap-zoomin zoombutton' id='zoom_in'>+</div><div class='jvectormap-zoomout zoombutton' id='zoom_out'>−</div></div></div></div>");
+				 $("#tagcloudcontainer").html("<img src='images/loading.gif' /> COMPUTING TERMS PLEASE WAIT....").html(response);
+				}
+			});
+			
+			<%}else{
+			
 			ArrayList response_terms = DbConnection.query("select terms from tracker_keyword where tid = " + tid);
 			ArrayList res = (ArrayList)response_terms.get(0);
 			//System.out.println("terms_result" + res.get(0));
@@ -3302,14 +3346,16 @@ var mymarker = [
 			JSONObject finalres = new JSONObject(res.get(0).toString());
 			
 			%>
-			var response = {'seun':39, 'bola':100}
+			//var response = {'seun':39, 'bola':100}
 			wordtagcloud("#tagcloudcontainer",450,<%=finalres%>); 
 			
 			console.log('dt',"<%=dt%>");
 			 console.log('dte',"<%=dte%>");
 			loadChordDashboard();
-	
+			
+			<%}%>
 		})
+		
 		
 		
 		<%-- function loadKeywordDashboard(blogger,ids){

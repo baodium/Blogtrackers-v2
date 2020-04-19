@@ -752,13 +752,21 @@ int start_test = 0;
 //		result = term.mapReduce(returnedData, limit);
 		List<Entry<String, Integer>> entry = new Terms().entriesSortedByValues(m);
 //		
+		//System.out.println("entry-"+entry);
 		if (entry.size() > 0) {
+			
 			for (int i = 0; i < Integer.parseInt(limit); i++) {
+				if(i < entry.size()) {
+					
+				
 				String left = entry.get(i).getKey();
 				Integer right = entry.get(i).getValue();
 //			String v =  "(" + left + "," + String.valueOf(right) + ")";
 				Tuple2<String, Integer> v = new Tuple2<String, Integer>(left, right);
 				output.put(v);
+				}else {
+					break;
+				}
 			}
 			System.out.println("answer--" + entry.get(0));
 			System.out.println("output--" + output);
@@ -859,6 +867,17 @@ int start_test = 0;
 		//List<JSONObject> postDataAll = getPosts(ids, from, to, "__ONLY__TERMS__BLOGSITE_IDS__", "blogpost_terms");
 		System.out.println("select * from blogpost_terms where blogger in  (" + blogger + ") and date > \"" + from + "\" and date < \"" +  to +"\"");
 		List postDataAll = DbConnection.queryJSON("select * from blogpost_terms where blogger in  (" + blogger + ") and date > \"" + from + "\" and date < \"" +  to +"\"");
+		JSONObject o = topTerms(postDataAll, limit);
+
+		return o.get("output").toString();
+	}
+	
+	public static String getTopTermsFromDashboard(String ids, String from, String to, String limit) throws Exception {
+		String result = null;
+
+		//List<JSONObject> postDataAll = getPosts(ids, from, to, "__ONLY__TERMS__BLOGSITE_IDS__", "blogpost_terms");
+		System.out.println("select * from blogpost_terms where blogsiteid in  (" + ids + ") and date > \"" + from + "\" and date < \"" +  to +"\"");
+		List postDataAll = DbConnection.queryJSON("select * from blogpost_terms where blogsiteid in  (" + ids + ") and date > \"" + from + "\" and date < \"" +  to +"\"");
 		JSONObject o = topTerms(postDataAll, limit);
 
 		return o.get("output").toString();
