@@ -924,7 +924,8 @@ authoryears.put(mostactiveblogger,postyear);
 											String date =null;
 											int j=0;
 											int k=0;
-											
+											String activeDef = "";
+											String activeDefLink = "";
 											
 											for(int i=0; i< all.length(); i++){
 												tres = all.get(i).toString();	
@@ -938,10 +939,18 @@ authoryears.put(mostactiveblogger,postyear);
 												LocalDate datee = LocalDate.parse(dat);
 												DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");
 												date = dtf.format(datee);
+												
+												if(i == 0){
+													activeDef = "activeselectedblog";
+													activeDefLink = "";
+												}else{
+													activeDefLink = "makeinvisible";
+													activeDef = "";
+												}
 									%>
                                     <tr>
-                                   <td><a class="blogpost_link cursor-pointer" id="<%=tobj.get("blogpost_id")%>" ><%=tobj.get("title") %></a><br/>
-								<a class="mt20 viewpost makeinvisible" href="<%=tobj.get("permalink") %>" target="_blank"><buttton class="btn btn-primary btn-sm mt10 visitpost">Visit Post &nbsp;<i class="fas fa-external-link-alt"></i></button></buttton></a>
+                                   <td><a class="blogpost_link cursor-pointer <%=activeDef %>" id="<%=tobj.get("blogpost_id")%>" ><%=tobj.get("title") %></a><br/>
+								<a class="mt20 viewpost <%=activeDefLink %>" href="<%=tobj.get("permalink") %>" target="_blank"><buttton class="btn btn-primary btn-sm mt10 visitpost">Visit Post &nbsp;<i class="fas fa-external-link-alt"></i></button></buttton></a>
 								</td>
 								<td align="center"><%=tobj.get("influence_score") %></td>
                                      </tr>
