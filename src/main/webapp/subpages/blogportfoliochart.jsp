@@ -292,7 +292,7 @@ for(int z=0; z < all_blog.length; z++){
 	}else if(normalized_value > 0.8 && normalized_value <= 1.0){
 		normalized_score = "Very High";
 	}else{
-		normalized_score = "undefined";
+		normalized_score = "Very Low";
 	}
 
 	//End Normalize value calculation
@@ -302,17 +302,17 @@ normalized_value = ( (totalsentiment - min_combo)/(max_combo - min_combo));
 	
 	String normalized_sentiment = "";
 	if(normalized_value <= 0.0 && normalized_value <= 0.2){
-		normalized_sentiment = "Very Low";
+		normalized_sentiment = "Very Negative";
 	}else if(normalized_value > 0.2 && normalized_value < 0.5){
-		normalized_sentiment = "Low";
+		normalized_sentiment = "Negative";
 	}else if(normalized_value == 0.5){
-		normalized_sentiment = "Medium";
+		normalized_sentiment = "Neutral";
 	}else if(normalized_value > 0.5 && normalized_value < 0.8){
-		normalized_sentiment = "High";
+		normalized_sentiment = "Positive";
 	}else if(normalized_value > 0.8 && normalized_value <= 1.0){
-		normalized_sentiment = "Very High";
+		normalized_sentiment = "Very Positive";
 	}else{
-		normalized_sentiment = "undefined";
+		normalized_sentiment = "Very Negative";
 	}
 
 	//End Normalize value calculation

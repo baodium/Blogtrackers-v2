@@ -783,7 +783,7 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
                 
                   </div> 
                   <div id="entity_table">
-                        <table id="DataTables_Table_1_wrapper" class="display" style="width:100%">
+                        <table id="DataTables_Table_1_wrapper" class="display table_over_cover" style="width:100%">
                                 <thead>
                                     <tr>
                                         <th>Entity</th>
@@ -1178,12 +1178,8 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
 
          }
 
-      	
-       setTimeout(
- 			  function() 
- 			  { 
        finalGraph();
-    }, 2000)
+       //setTimeout(function() {  finalGraph(); }, 2000)
       
       
 
@@ -1212,6 +1208,8 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
     
     	 
     	 if(count > 0){
+    		 
+    		 var t = 0;
     		
     		 $( ".thanks" ).each(function( index ) {
     			 
@@ -1282,48 +1280,36 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
     				  		});
     		  				
     		  				
-    		  				data1.push(
-    		  						      
-    		  						      {
-    		  						        name: response.name,
-    		  						      	identify: response.identify,
-    		  						        values: 
-    		  						          
-    		  						        	  arr1
-    		  						        	
-    		  						      }
-    		  						    );
+    		  				data1.push({name: response.name,identify: response.identify,values:  arr1 });
     		  				
-    		    	
+    		  				t++;
+    	    		    	
+    			    		if(count == t){
+    			    			data1.forEach((arrayItem) => {data.push(arrayItem) });
+    		  					beginBuilder(data)
+    		  				}
+    		  				
+    		  				
     				  			}
-    		  			
-    		  			
-    		  			
+    		  			//end ajax success
     				  		});
-    		    	
-    		  
     		    ///////end ajax
     		    		
-    		    		});
-    		 
+    		    	
+    		    
+    		    
+    		    });
+    		 /////end for each for active 
     		 
     		 
     		 
     	    	
-    	    	
-    	    	  setTimeout(
-    	    			  function() 
-    	    			  {
-    	    					
-    	    				  data1.forEach((arrayItem) => {
-    	    				    data.push(arrayItem)
-    	    				  });
-    	    				  
+    	    		///start begin builder function
+    	    		    function beginBuilder(data){
+    			 
     	    			/////////start graph stuff
     	    				indexy = data.findIndex(x => x.name === highest_date_name);
   	    				   
-  	    				    
-    	    			
   				 			//var width = 750;
   				 			var width = $('#chart-container').width();
   				 		    var height = 200;
@@ -1583,24 +1569,19 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
 			                  .attr("fill", "black")
 			              	  .text("Total values");
 			              
-			                  
-  				 		    
-  				 		    
-  				 		    
-  				 		    
-  				 		    
+			                
   				 		
   				 	/////////end graph stuff	
     	    				  
-    	    				 		   $('.line_graph').removeClass('hidden');
-    	    				 	       $('#line_graph_loader').addClass('hidden');
-    	    				 	       
-    	    				 	      $("#scroll_list_loader").addClass("hidden");
-    	    				 	   	   $("#scroll_list").removeClass("hidden");
+   				 		   $('.line_graph').removeClass('hidden');
+   				 	       $('#line_graph_loader').addClass('hidden');
+   				 	       
+   				 	      $("#scroll_list_loader").addClass("hidden");
+   				 	   	   $("#scroll_list").removeClass("hidden");
     	    				  
     	    				  
-    	    			  }, 3000)
-    	    			  
+    	    			  }
+    	    			  //end begiBuilder function
     		 
     		 
     		 

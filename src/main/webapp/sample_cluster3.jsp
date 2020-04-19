@@ -492,10 +492,16 @@ Instant start = Instant.now();
   width: 50%;
 }
 
-.container1 .overlay1 {
+.container1:hover .overlay1 {
   bottom: 0;
   height: 100%;
 }
+
+.karat{
+	 bottom: 0;
+  height: 100%;
+}
+
 .overlay1 {
   position: absolute;
   bottom: 100%;
@@ -860,7 +866,7 @@ Instant start = Instant.now();
 						<div style="min-height: 500px;">
 						
 						<div id="parentdiv"></div>
-							<div class="overlay1">
+							<div id="overlay2" class="overlay1">
 							    
 							    <div style="min-height: 450px; width: 1000px;" class="text1 card card-style ">
 					<div class="card-body  p30 pt5 pb5 container1">
@@ -874,6 +880,7 @@ Instant start = Instant.now();
 						</div>
 					</div>
 				</div>
+				<button id="overlay1">click</button>
 				<div class="card card-style mt20">
 					<div class="card-body  p30 pt20 pb20">
 						<div class="row">
@@ -1265,6 +1272,11 @@ Instant start = Instant.now();
 		
 		<script src="https://d3js.org/d3.v4.js"></script>
 <script>
+$('#overlay1').click(function(){
+	$('#overlay2').addClass('karat overlay1');
+	
+})
+
 		console.log('seun')
 
   
@@ -1274,6 +1286,7 @@ Instant start = Instant.now();
 
  // Chart setup
  function clusterdiagram(element, height) {
+	 
 
     var nodes = [
      { id: "mammal", group: 0, label: "Mammals", level: 2 },
