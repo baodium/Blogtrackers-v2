@@ -1065,7 +1065,7 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
      
     
 
-    function color1(i, id, name){
+  function color1(i, id, name){
     	
     	var t = parseFloat(i);
 
@@ -1114,7 +1114,7 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
     	
     	var g = $(this).attr('name');
     	
-    	if ( $(this).attr('name') == ''+name+'' ) {
+        if ( $(this).attr('name') == ''+name+'' ) {
         	$(this).css('background-color', hex);
         	$(this).removeClass('bloggerinactive ');
         	$(this).addClass('selectionactive');
@@ -1135,12 +1135,8 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
     	$('.line_graph').addClass('hidden');
         $('#line_graph_loader').removeClass('hidden');
         
-        
-    	  setTimeout(
-     			  function() 
-     			  { 
-           finalGraph();
-        }, 1000)
+        finalGraph();
+    	 // setTimeout(function()  {  finalGraph();}, 1000)
     });
     
     

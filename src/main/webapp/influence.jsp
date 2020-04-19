@@ -1104,7 +1104,7 @@ authoryears.put(mostactiveblogger,postyear);
      
     
 
-    function color1(i, id, name){
+function color1(i, id, name){
     	
     	var t = parseFloat(i);
 
@@ -1155,6 +1155,9 @@ authoryears.put(mostactiveblogger,postyear);
     	
         if ( $(this).attr('name') == ''+name+'' ) {
         	$(this).css('background-color', hex);
+        	$(this).removeClass('bloggerinactive ');
+        	$(this).addClass('selectionactive');
+        	$(this).css('font-weight', 'bold');
         };
         
     });
@@ -1170,11 +1173,8 @@ authoryears.put(mostactiveblogger,postyear);
     	
     	$('.line_graph').addClass('hidden');
         $('#line_graph_loader').removeClass('hidden');
-    	  setTimeout(
-     			  function() 
-     			  { 
-           finalGraph();
-        }, 1000)
+        finalGraph();
+   	 // setTimeout(function()  {  finalGraph();}, 1000)
     });
     
     
@@ -1192,20 +1192,25 @@ authoryears.put(mostactiveblogger,postyear);
        $('#chart').html('');
 
        if ( $(this).hasClass("thanks") ) {
-            
-          $(this).removeClass("thanks"); 
+           
+           $(this).removeClass("thanks"); 
 
-          $(this).addClass('nobccolor');
+           $(this).addClass('white_bac');
+ 		
+           $(this).addClass("bloggerinactive"); 
+           
+           $(this).removeClass('selectionactive');
+           
+           $(this).css('font-weight', 400);
 
+         }else{
 
-        }else{
+           $(this).removeClass('nobccolor');
 
-          $(this).removeClass('nobccolor');
+           $(this).addClass("thanks"); 
+           
 
-          $(this).addClass("thanks"); 
-          
-
-        }
+         }
 
       	finalGraph();
        //setTimeout(function() { finalGraph();}, 2000)
