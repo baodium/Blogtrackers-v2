@@ -1207,12 +1207,8 @@ authoryears.put(mostactiveblogger,postyear);
 
         }
 
-      	
-       setTimeout(
- 			  function() 
- 			  { 
-       finalGraph();
-    }, 2000)
+      	finalGraph();
+       //setTimeout(function() { finalGraph();}, 2000)
       
       
 
@@ -1237,7 +1233,7 @@ authoryears.put(mostactiveblogger,postyear);
     	 
     	 if(count > 0){
     		 
-    		 
+    		 var t = 0;
     		 $( ".thanks" ).each(function( index ) {
     			 
        		  		var ind = index;
@@ -1303,44 +1299,33 @@ authoryears.put(mostactiveblogger,postyear);
     				  		});
     		  				
     		  				
-    		  				data1.push(
-    		  						      
-    		  						      {
-    		  						        name: response.name,
-    		  						      	identify: response.identify,
-    		  						        values: 
-    		  						          
-    		  						        	  arr1
-    		  						        	
-    		  						      }
-    		  						    );
+    		  				data1.push({ name: response.name,identify: response.identify,values:  arr1});
+    		  				
+							t++;
+    	    		    	
+    			    		if(count == t){
+    			    			data1.forEach((arrayItem) => {data.push(arrayItem) });
+    		  					beginBuilder(data)
+    		  				}
     		  				
     		    	
-    				  			}
-    		  			
+    				  	}
+    		  			//end success
     		  			
     		  			
     				  		});
-    		    	
-    		  
     		    ///////end ajax
-    		    		
-    		    		
-    		    		
     		    		});
-    		 
+    		 //end for each active class
     		 
     		 
     		 
     	    	
     	    	
-    	    	  setTimeout(
-    	    			  function() 
-    	    			  {
-    	    					
-    	    				  data1.forEach((arrayItem) => {
-    	    				    data.push(arrayItem)
-    	    				  });
+    	    	  
+    	    				  
+    	    				///start begin builder function
+    	    	    function beginBuilder(data){
     	    				  
     	    			/////////start graph stuff
 
@@ -1614,7 +1599,8 @@ authoryears.put(mostactiveblogger,postyear);
     	    				 	   	   $("#scroll_list").removeClass("hidden");
     	    				  
     	    				  
-    	    			  }, 3000)
+    	    			  }
+    	    			  ///end beginBuilder
     	    			  
     		 
     		 
