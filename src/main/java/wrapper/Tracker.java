@@ -156,7 +156,7 @@ public class Tracker extends HttpServlet {
 			}
 		}
 		else if(action.equals("uploadTerms")) {
-			String url = " http://127.0.0.1:5000/";
+			String url = " http://144.167.35.138:5000/";
 			String str = "{\r\n" + 
 					"	\"tracker_id\":\""+tracker_id+"\",\r\n" + 
 					"	\"type\":\""+type+"\"\r\n" + 

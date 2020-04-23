@@ -962,15 +962,15 @@ int start_test = 0;
 			System.out.println(ja);
 
 //			getTopTermsFromBlogIds(ids, from, to, "100");
-			System.out.println(getTopTermsFromBlogger("\"George McGinn\",\"Southfront analytic team\"", "2000-01-01", "2020-01-01" , "100"));
+//			System.out.println(getTopTermsFromBlogger("\"George McGinn\",\"Southfront analytic team\"", "2000-01-01", "2020-01-01" , "100"));
 //			getPosts(ids, from, to, "__ONLY__TERMS__BLOGSITE_IDS__", "blogpost_terms");
-			String url = " http://127.0.0.1:5000/";
+			String url = " http://144.167.35.138:5000/";
 			JSONObject js = new JSONObject("{\r\n" + 
 					"	\"tracker_id\":7,\r\n" + 
 					"	\"type\":\"create\"\r\n" + 
 					"}");
 			
-			//System.out.println(_getResult(url, js));
+			System.out.println(_getResult(url, js));
 //			getBloggersMentioned("20,16");
 			//String bloggers = "George McGinn";
 //			String from = "2000-01-01";
