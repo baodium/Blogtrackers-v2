@@ -349,6 +349,7 @@ try{
 								int totalblog = 0;
 								String id = resut.get(0).toString();
 								query = resut.get(5).toString();//obj.get("query").toString();
+								totalpost = Integer.parseInt(resut.get(8).toString());
 								/*
 								res = results.get(i).toString();
 								resp = new JSONObject(res);
@@ -361,7 +362,7 @@ try{
 								query = query.replaceAll("\\)", "");
 
 								String dtt = resut.get(3).toString();
-								totalpost = 0;
+								//totalpost = 0;
 								String dt = "";
 								String bloggerCount = "0";
 								if (!dtt.equals("null")) {
@@ -372,7 +373,8 @@ try{
 									String[] blogCount = query.split(",");
 
 									totalblog = blogCount.length;
-									bloggerCount = bloggers._getBloggerById(query); 
+									//bloggerCount = bloggers._getBloggerById(query);
+									bloggerCount = post._getBlogBloggerById(query);
 									/*
 									String stdate = post._getDate(query,"first");
 									String endate = post._getDate(query,"last");
@@ -401,12 +403,13 @@ try{
 									String tot = post._searchRangeTotal("date", dst, dend, query);
 									totalpost = Integer.parseInt(tot);
 									*/
-									//System.out.println("quer" + query);
+								 System.out.println("quer" + id);
 									if (post._getBlogPostById(query) != "") {
 										totalpost = Integer.parseInt(post._getBlogPostById(query));
 									} else {
 										totalpost = 0;
-									}
+									} 
+									
 								}
 			%>
 

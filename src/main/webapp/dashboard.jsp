@@ -257,6 +257,8 @@
 
 			//Our New Code
 			Liwc liwc = new Liwc();
+			
+			
 			//System.out.println("COMI----" + request.getHeader("referer"));
 			String totalbloggers = bloggerss._getBloggerById(ids);
 
@@ -3336,6 +3338,7 @@ var mymarker = [
 				 $("#tagcloudcontainer").html("<img src='images/loading.gif' /> COMPUTING TERMS PLEASE WAIT....").html(response);
 				}
 			});
+			 
 			
 			<%}else{
 			

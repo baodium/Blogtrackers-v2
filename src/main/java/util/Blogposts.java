@@ -42,10 +42,7 @@ import org.json.JSONException;
 import java.io.OutputStreamWriter;
 import static java.util.stream.Collectors.toMap;
 
-
-
 public class Blogposts {
-	
 
 	static HashMap<String, String> hm = DbConnection.loadConstant();
 
@@ -450,7 +447,7 @@ public class Blogposts {
 					+ greater + "' AND " + field + "<='" + less + "' ORDER BY " + sort + " " + order + " LIMIT " + size
 					+ "");
 
-			//return all_data;
+			// return all_data;
 			// result = db.queryJSON("SELECT * FROM blogposts WHERE blogger = '"+bloggers+"'
 			// AND "+field+">="+greater+" AND "+field+"<="+less+" ORDER BY date ASC LIMIT
 			// "+size+"");
@@ -1127,6 +1124,43 @@ public class Blogposts {
 		return dt;
 	}
 
+	public static String getBlogIdsfromsearch(String term) {
+		String result = "";
+		JSONObject query = new JSONObject("{\r\n" + "	\r\n" + "    \"query\": {\r\n" + "        \"bool\": {\r\n"
+				+ "            \"must\": [\r\n" + "                {\r\n" + "                    \"terms\": {\r\n"
+				+ "                        \"post\": [\r\n" + "                            \""+term+"\"\r\n"
+				+ "                        ]\r\n" + "                    }\r\n" + "                }\r\n"
+				+ "            ]\r\n" + "        }\r\n" + "    },\r\n" + "    \"size\": 0,\r\n"
+				+ "    \"_source\": false,\r\n" + "    \"stored_fields\": \"_none_\",\r\n"
+				+ "    \"aggregations\": {\r\n" + "        \"groupby\": {\r\n" + "            \"composite\": {\r\n"
+				+ "                \"size\": 1000,\r\n" + "                \"sources\": [\r\n"
+				+ "                    {\r\n" + "                        \"dat\": {\r\n"
+				+ "                            \"terms\": {\r\n"
+				+ "                                \"field\": \"blogsite_id\",\r\n"
+				+ "                                \"missing_bucket\": true,\r\n"
+				+ "                                \"order\": \"asc\"\r\n" + "                            }\r\n"
+				+ "                        }\r\n" + "                    }\r\n" + "                ]\r\n"
+				+ "            }\r\n" + "        }\r\n" + "    }\r\n" + "}");
+		
+		try {
+			JSONObject res = _makeElasticRequest(query, "POST", "/blogposts/_search");
+			Object aggregation = res.getJSONObject("aggregations").getJSONObject("groupby").getJSONArray("buckets");
+			JSONArray listofblogs = new JSONArray(aggregation.toString());
+			
+			for(Object x : listofblogs) {
+				JSONObject idd = new JSONObject(x.toString());
+				String blog_id = idd.getJSONObject("key").get("dat").toString();
+				result += blog_id + ",";
+//				System.out.println("x---"+x.toString());
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println(result);
+		return result;
+	}
+
 	public ArrayList _search(String term, String from, String sortby) throws Exception {
 
 		int size = 100;
@@ -1154,7 +1188,7 @@ public class Blogposts {
 					+ "\",\r\n" + "			\"gte\":\"" + 0 + "\"\r\n" + "			}\r\n" + "		}\r\n" + "}");
 		}
 		String url = base_url + "_search?size=" + size + "&from=" + fr;
-		//System.out.println("object-----" + jsonObj);
+		// System.out.println("object-----" + jsonObj);
 		return this._getResult(url, jsonObj);
 	}
 
@@ -2101,8 +2135,8 @@ public class Blogposts {
 
 	public String _getBlogPostById(String blog_ids) {
 		String count = "";
-		blog_ids = blog_ids.replaceAll(",$", "");
-		blog_ids = blog_ids.replaceAll(", $", "");
+//		blog_ids = blog_ids.replaceAll(",$", "");
+//		blog_ids = blog_ids.replaceAll(", $", "");
 //		blog_ids = "(" + blog_ids + ")";
 
 		JSONObject query = new JSONObject(
@@ -2110,8 +2144,8 @@ public class Blogposts {
 						+ blog_ids + "],\r\n" + "            \"boost\": 1\r\n" + "        }\r\n" + "    }\r\n" + "}");
 
 		try {
-//			ArrayList response = DbConnection
-//					.query("select sum(blogpost_count) from blogger where blogsite_id in  " + blog_ids + " ");
+//			System.out.println("select blogpost_num from trackers where tid =  " + tid + " ");
+//			ArrayList response = DbConnection.query("select blogpost_num from trackers where tid =  " + tid + " ");
 //			if (response.size() > 0) {
 //				ArrayList hd = (ArrayList<?>) response.get(0);
 //				count = hd.get(0).toString();
@@ -2120,7 +2154,40 @@ public class Blogposts {
 		} catch (Exception e) {
 			System.out.print("Error in getBlogPostById");
 		}
-		//System.out.println("query for elastic _getBlogPostById --> " + query);
+		// System.out.println("query for elastic _getBlogPostById --> " + query);
+		return count;
+	}
+
+//	_getBlogBloggerById
+
+	public String _getBlogBloggerById(String blog_ids) {
+		String count = "";
+		JSONObject result = new JSONObject();
+		JSONObject query = new JSONObject("{\r\n" + "    \"size\": 0,\r\n" + "    \"query\": {\r\n"
+				+ "        \"terms\": {\r\n" + "            \"blogsite_id\": [" + blog_ids + "],\r\n"
+				+ "            \"boost\": 1.0\r\n" + "        }\r\n" + "    },\r\n" + "    \"_source\": false,\r\n"
+				+ "    \"stored_fields\": \"_none_\",\r\n" + "    \"aggregations\": {\r\n"
+				+ "        \"groupby\": {\r\n" + "            \"filters\": {\r\n" + "                \"filters\": [\r\n"
+				+ "                    {\r\n" + "                        \"match_all\": {\r\n"
+				+ "                            \"boost\": 1.0\r\n" + "                        }\r\n"
+				+ "                    }\r\n" + "                ],\r\n"
+				+ "                \"other_bucket\": false,\r\n"
+				+ "                \"other_bucket_key\": \"_other_\"\r\n" + "            },\r\n"
+				+ "            \"aggregations\": {\r\n" + "                \"dat\": {\r\n"
+				+ "                    \"cardinality\": {\r\n"
+				+ "                        \"field\": \"blogger.keyword\"\r\n" + "                    }\r\n"
+				+ "                }\r\n" + "            }\r\n" + "        }\r\n" + "    }\r\n" + "}");
+
+		try {
+			result = this._makeElasticRequest(query, "POST", "/blogposts/_search");
+			Object aggregation = result.getJSONObject("aggregations").getJSONObject("groupby").getJSONArray("buckets")
+					.getJSONObject(0).getJSONObject("dat").get("value");
+			count = aggregation.toString();
+
+		} catch (Exception e) {
+			System.out.print("Error in _getBlogBloggerById");
+		}
+
 		return count;
 	}
 
@@ -2158,7 +2225,8 @@ public class Blogposts {
 	 * Calendar.getInstance(); cal.setTime(date); cal.add(Calendar.YEAR, i); return
 	 * cal.getTime(); }
 	 */
-	public static JSONObject _makeElasticRequest(JSONObject query, String requestType, String endPoint) throws Exception {
+	public static JSONObject _makeElasticRequest(JSONObject query, String requestType, String endPoint)
+			throws Exception {
 
 		JSONObject myResponse = new JSONObject();
 		try {
@@ -2236,7 +2304,6 @@ public class Blogposts {
 			// jsonArray.put(new JSONArray(source));
 			System.out.println("DONE GETTING POSTS FOR BLOGGER");
 
-			
 //			MAKE SCROLL REQUEST
 //			scroll_id = (String) myResponse.get("_scroll_id");
 //
@@ -2244,13 +2311,11 @@ public class Blogposts {
 //			allhits = scrollResult.getJSONObject("hits").getJSONArray("hits");
 //			source = allhits.toString();
 //			jsonArray = merge(jsonArray, new JSONArray(source));
-			
-			
+
 			// jsonArray.put(new JSONArray(source));
 
-			
-			//RECURRINNG SCROLL TILL HITS ARRAY IS EMPTY
-			
+			// RECURRINNG SCROLL TILL HITS ARRAY IS EMPTY
+
 //			for (int i = 0; i < 1; i++) {
 //				if (allhits.length() <= 0) {
 //					break;
@@ -2707,7 +2772,7 @@ public class Blogposts {
 		String idx = null;
 		String language = null;
 		JSONArray jsonArray = new JSONArray();
-		//System.out.println("query for elastic _getMostLanguage --> " + query);
+		// System.out.println("query for elastic _getMostLanguage --> " + query);
 		if (null != myResponse.get("aggregations")) {
 			Object buckets = myResponse.getJSONObject("aggregations").getJSONObject("groupby").getJSONArray("buckets");
 			val = buckets.toString();
@@ -2791,12 +2856,13 @@ public class Blogposts {
 			Integer value = entry.getValue();
 			String highest = entry.getKey();
 
-			//System.out.println("HIGHEST TERM IS -- " + source + " OCCURING " + value + " TIMES");
+			// System.out.println("HIGHEST TERM IS -- " + source + " OCCURING " + value + "
+			// TIMES");
 
 			String da = hm1.toString();
 
 			d = new JSONObject(hm1);
-			//System.out.println(d);
+			// System.out.println(d);
 
 		} else {
 			source = "Null";
@@ -2809,7 +2875,7 @@ public class Blogposts {
 			throws Exception {
 		//
 //		BloggerName="Stephen Lendman,South Front";
-		//System.out.println("postingfreqbloggers" + BloggerName);
+		// System.out.println("postingfreqbloggers" + BloggerName);
 		ArrayList<String> list = new ArrayList<String>();
 		JSONObject query = new JSONObject();
 		String result = null;
@@ -2863,7 +2929,8 @@ public class Blogposts {
 					+ "            }\r\n" + "        }\r\n" + "    ]\r\n" + "}");
 
 		}
-		//System.out.println("query for elastic _getMostKeywordDashboard --> " + query);
+		// System.out.println("query for elastic _getMostKeywordDashboard --> " +
+		// query);
 		JSONArray jsonArray = (JSONArray) this._elastic(query).getJSONArray("hit_array");
 
 		System.out.println("DONE GETTING POSTS FOR BLOGGER");
@@ -2878,7 +2945,7 @@ public class Blogposts {
 				list.add(src);
 			}
 
-			//System.out.println("DONE and size of list is --" + list.size());
+			// System.out.println("DONE and size of list is --" + list.size());
 			result = String.join(" ", list);
 		}
 
@@ -2944,7 +3011,7 @@ public class Blogposts {
 		String result = null;
 		String source = null;
 		String source_ = null;
-		//System.out.println(data.length());
+		// System.out.println(data.length());
 //		data = escape2(data);
 		if (data.length() > 0) {
 //		JSONObject jsonObj = new JSONObject("{\r\n" + "  \"query\": {\r\n" + "    \"constant_score\":{\r\n"
@@ -2957,7 +3024,7 @@ public class Blogposts {
 					+ "      \"max_num_terms\" : 1,\r\n" + "      \"min_term_freq\" : 1,\r\n"
 					+ "      \"min_doc_freq\" : 1,\r\n" + "      \"min_word_length\":1\r\n" + "	\r\n" + "    }\r\n"
 					+ "}");
-			//System.out.println("INPROCESS");
+			// System.out.println("INPROCESS");
 //			System.out.println(" _termVectors --- "+ query);
 
 //			try (FileWriter file = new FileWriter("C:\\Users\\oljohnson\\Desktop\\SQL\\file2.json")) {
@@ -3002,16 +3069,17 @@ public class Blogposts {
 
 			}
 
-			//System.out.println("2--" + data.length());
+			// System.out.println("2--" + data.length());
 			Map<String, Integer> hm1 = this.sortHashMapByValues(hm2);
 			System.out.println("DONE SORTING OBJECT");
-			//System.out.println(" OCCURES-- " + hm1);
+			// System.out.println(" OCCURES-- " + hm1);
 
 			Map.Entry<String, Integer> entry = hm1.entrySet().iterator().next();
 			source = entry.getKey().toUpperCase();
 			Integer value = entry.getValue();
 
-			//System.out.println("HIGHEST TERM IS -- " + source + " OCCURING " + value + " TIMES");
+			// System.out.println("HIGHEST TERM IS -- " + source + " OCCURING " + value + "
+			// TIMES");
 
 		} else {
 			source = "Null";
@@ -3021,22 +3089,22 @@ public class Blogposts {
 	}
 
 	public int countOccurences(String str, String word) {
-		//System.out.println("str-"+str);
+		// System.out.println("str-"+str);
 		int count = 0;
 		word = word.toLowerCase();
 		word = word.replace("\"", "");
-		String [] word_split = word.split(",");
-	
-		for(String w: word_split) {
-			//System.out.println("terms--" + w);
+		String[] word_split = word.split(",");
+
+		for (String w : word_split) {
+			// System.out.println("terms--" + w);
 			String[] postsplit = str.split("\\W+");
 			for (String pst : postsplit) {
-				
+
 				pst = pst.toLowerCase();
 				if (w.trim().equals(pst.trim())) {
 //					System.out.println(pst + "--" + w);
 					count++;
-					//title = title_;
+					// title = title_;
 				}
 			}
 		}
@@ -3069,25 +3137,22 @@ public class Blogposts {
 		return result;
 	}
 
-	
-	//SparkConf conf2 = new SparkConf();
+	// SparkConf conf2 = new SparkConf();
 	public ArrayList _selectTest(String id, int index) throws Exception {
 
 		ArrayList result = null;
 
 		try {
-			System.out.println("select * from blogpost_terms where blogsite_id in "
-					+ id +  " ");
-			
-			ArrayList response = DbConnection.query("select * from blogpost_terms where blogsiteid in ("
-					+ id +  ") ");
-			
+			System.out.println("select * from blogpost_terms where blogsite_id in " + id + " ");
+
+			ArrayList response = DbConnection.query("select * from blogpost_terms where blogsiteid in (" + id + ") ");
+
 			if (response.size() > 0) {
-				
+
 				ArrayList hd = response;
-				//result = hd.get(index).toString();
+				// result = hd.get(index).toString();
 				result = hd;
-				//count = hd.get(0).toString();
+				// count = hd.get(0).toString();
 			}
 		} catch (Exception e) {
 			return result;
@@ -3095,35 +3160,36 @@ public class Blogposts {
 
 		return result;
 	}
-	
-	public String mapReduce(List<Tuple2<String,Integer>> data) throws Exception {
+
+	public String mapReduce(List<Tuple2<String, Integer>> data) throws Exception {
 		String result = null;
 		try {
 			SparkConf conf = new SparkConf().setMaster("local[*]").setAppName("Example");
-			
+
 			JavaSparkContext sc = new JavaSparkContext(conf);
 			JavaRDD rdd = sc.parallelize(data);
-			JavaPairRDD <String, Integer> pairRdd = JavaPairRDD.fromJavaRDD(rdd);
+			JavaPairRDD<String, Integer> pairRdd = JavaPairRDD.fromJavaRDD(rdd);
 			ArrayList<Tuple2<String, Integer>> test = new ArrayList<Tuple2<String, Integer>>();
 			/*
 			 * for(Tuple2<String, Integer> x: pairRdd.reduceByKey((a,b) -> (a+
 			 * b)).collect()) { //System.out.println(x); test.add(x); }
 			 */
-			//System.out.println(pairRdd.reduceByKey((a,b) -> (a+ b)).max(new DummyComparator()));
+			// System.out.println(pairRdd.reduceByKey((a,b) -> (a+ b)).max(new
+			// DummyComparator()));
 			sc.stop();
-			
+
 		} catch (Exception e) {
 			System.out.println(e);
 		}
 		return result;
-	}	
+	}
 
 	public String countTerms(String path) throws Exception {
 		String result = null;
-		
+
 		try {
 			SparkConf conf = new SparkConf().setMaster("local[10]").setAppName("Example");
-			
+
 //			SparkSession spark = SparkSession
 //				      .builder()
 //				      .appName("Example")
@@ -3141,7 +3207,7 @@ public class Blogposts {
 //		    .getOrCreate();
 			JavaSparkContext sc = new JavaSparkContext(conf);
 			//
-			//JavaSparkContext sc = new JavaSparkContext(conf);
+			// JavaSparkContext sc = new JavaSparkContext(conf);
 			JavaRDD<String> textFile = sc.textFile(path);
 			Tuple2<String, Integer> counts = textFile.flatMap(s -> Arrays.asList(s.split(" ")).iterator())
 					.mapToPair(word -> new Tuple2<>(word, 1)).reduceByKey((a, b) -> a + b).max(new DummyComparator());
@@ -3169,7 +3235,7 @@ public class Blogposts {
 		String source_ = null;
 		data = data.replaceAll("/[^A-Za-z0-9 ]/", "");
 		System.out.println(data.length());
-		//data = this.escape2(data);
+		// data = this.escape2(data);
 		// data = this.escape(data);
 		if (data.length() > 0) {
 //data ="seun seun seun seun";
@@ -3255,8 +3321,8 @@ public class Blogposts {
 //		return source.toUpperCase();
 //	}
 
-	public JSONObject _getBloggerPosts(String term, String bloggerName, String date_from, String date_to, String ids_, int limit)
-			throws Exception {
+	public JSONObject _getBloggerPosts(String term, String bloggerName, String date_from, String date_to, String ids_,
+			int limit) throws Exception {
 //	
 		ArrayList<String> list = new ArrayList<String>();
 		ArrayList<String> _idlist = new ArrayList<String>();
@@ -3329,7 +3395,7 @@ public class Blogposts {
 					+ "            \"_doc\": {\r\n" + "                \"order\": \"asc\"\r\n" + "            }\r\n"
 					+ "        }\r\n" + "    ]\r\n" + "}");
 		} else {
-			query = new JSONObject("{\r\n" + "    \"size\": "+limit+",\r\n" + "    \"query\": {\r\n"
+			query = new JSONObject("{\r\n" + "    \"size\": " + limit + ",\r\n" + "    \"query\": {\r\n"
 					+ "        \"bool\": {\r\n" + "            \"adjust_pure_negative\": true,\r\n"
 					+ "            \"must\": [\r\n" + "                {\r\n" + "                    \"terms\": {\r\n"
 					+ "                        \"post\": [" + term + "]\r\n" + "                    }\r\n"
@@ -3396,7 +3462,7 @@ public class Blogposts {
 				if (bloggerName == "NOBLOGGER" && term != "___NO__TERM___") {
 					if (j.get("title").toString() != null || j.get("title").toString() != "") {
 						occurence = this.countOccurences(src, term);
-						//System.out.println(term + "----------------------" + occurence);
+						// System.out.println(term + "----------------------" + occurence);
 						title = j.get("title").toString();
 						blogpost_id = j.get("blogpost_id").toString();
 						permalink = j.get("permalink").toString();
@@ -3424,7 +3490,7 @@ public class Blogposts {
 
 //			System.out.println("DONE and size of list is --" + list.size());
 
-			//result = String.join(" ", list);
+			// result = String.join(" ", list);
 		}
 
 		System.out.println("Done Escaped the necessary");
@@ -3596,14 +3662,16 @@ public class Blogposts {
 	 * 
 	 * return this._getrawquery(url, jsonObj); }
 	 */
-	public static void main(String [] args) {
+	public static void main(String[] args) {
 		try {
-			System.out.println(_getGetDateAggregate("Conscioslifenews","date","yyyy","post","1y","date_histogram", "2000-01-01", "2020-04-15", "808,62,88,239,641,182,148,109,750,193,1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276, 277, 278, 279, 280, 281, 282, 283, 284, 285, 286, 287, 288, 289, 290, 291, 292, 293, 294, 295, 296, 297, 298, 299, 300, 301, 302, 303, 304, 305, 306, 307, 308, 309, 310, 311, 312, 313, 314, 315, 316, 317, 318, 319, 320, 321, 322, 323, 324, 325, 326, 327, 328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 338, 339, 340, 341, 342, 343, 344, 345, 346, 347, 348, 349, 350, 351, 352, 353, 354, 355, 356, 357, 358, 359, 360, 361, 362, 363, 364, 365, 366, 367, 368, 369, 370, 371, 372, 373, 374, 375, 376, 377, 378, 379, 380, 381, 382, 383, 384, 385, 386, 387, 388, 389, 390, 391, 392, 393, 394, 395, 396, 397, 398, 399"));
+//			System.out.println(_getGetDateAggregate("Conscioslifenews","date","yyyy","post","1y","date_histogram", "2000-01-01", "2020-04-15", "808,62,88,239,641,182,148,109,750,193,1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276, 277, 278, 279, 280, 281, 282, 283, 284, 285, 286, 287, 288, 289, 290, 291, 292, 293, 294, 295, 296, 297, 298, 299, 300, 301, 302, 303, 304, 305, 306, 307, 308, 309, 310, 311, 312, 313, 314, 315, 316, 317, 318, 319, 320, 321, 322, 323, 324, 325, 326, 327, 328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 338, 339, 340, 341, 342, 343, 344, 345, 346, 347, 348, 349, 350, 351, 352, 353, 354, 355, 356, 357, 358, 359, 360, 361, 362, 363, 364, 365, 366, 367, 368, 369, 370, 371, 372, 373, 374, 375, 376, 377, 378, 379, 380, 381, 382, 383, 384, 385, 386, 387, 388, 389, 390, 391, 392, 393, 394, 395, 396, 397, 398, 399"));
+//			System.out.println(_getBlogPostById("7"));
+//			System.out.println();
+			getBlogIdsfromsearch("care");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
-	
+
 }
