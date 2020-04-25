@@ -12,7 +12,7 @@ pageEncoding="UTF-8"%>
   Object username = (null == session.getAttribute("username")) ? "" : session.getAttribute("username");
   String sort =  (null == request.getParameter("sortby")) ? "date" : request.getParameter("sortby");
   Object selected = (null == session.getAttribute("selected")) ? "" : session.getAttribute("selected");
-  
+  String selected_all = "";
   JSONObject jblog = new JSONObject();
   if(!selected.equals("")){
 	  jblog = new JSONObject(session.getAttribute("selected"));
@@ -30,6 +30,7 @@ pageEncoding="UTF-8"%>
 	        String viewtype = request.getParameter("viewtype");
 	        System.out.println("View Type: "+viewtype);
 	        String cpage = request.getParameter("from");
+	        selected_all = request.getParameter("selected_all");
 	        int from = Integer.parseInt(cpage);
 			Blogposts post  = new Blogposts();
 			String term =  request.getParameter("term");
@@ -87,9 +88,9 @@ pageEncoding="UTF-8"%>
 <% if (viewtype.equalsIgnoreCase("grid") || viewtype.equalsIgnoreCase("")){ %>					     
 <!-- Start of grid look  --> 
 		<div class="card noborder curved-card mb30" >
-			<div class="curved-card selectcontainer borders-white curve_<%=blogid%> <%=jblog.has(blogid)?"border-selected":""%>">
+			<div class="curved-card selectcontainer borders-white curve_all curve_<%=blogid%> <%=jblog.has(blogid)?"border-selected":""%>">
 			<% if(!username.equals("") || username.equals("")){ %>
-			 <div class="text-center"><i class="fas text-medium pt40 fa-check text-light-color icon-big2 cursor-pointer trackblog blog_id_<%=blogid%>" data-toggle="tooltip" data-placement="top"  title="<%=jblog.has(blogid)?"Remove Blog from Tracker":"Select to Track Blog"%>"></i></div>
+			 <div class="text-center"><i class="fa_tooltip_all fas text-medium pt40 fa-check text-light-color icon-big2 cursor-pointer blog_id_all trackblog blog_id_<%=blogid%>" data-toggle="tooltip" data-placement="top"  title="<%=jblog.has(blogid)?"Remove Blog from Tracker":"Select to Track Blog"%>"></i></div>
 			<% } %>
 			<h4 class="text-primary text-center p10 pt20 posttitle <%=jblog.has(blogid)?"text-selected":""%>"><a class="blogname-<%=blogid%>" href="<%=request.getContextPath()%>/blogpostpage.jsp?p=<%=obj.get("blogpost_id")%>"><%=blogtitle%></a></h4>
 			
@@ -140,7 +141,7 @@ for(int j=0; j<allblogarray.length; j++)
 <%}%>
 <% if (viewtype.equalsIgnoreCase("list")){ %>	
   <tr class="curve_<%=blogid%>">
-          <td class="noborderright borders-white <%=jblog.has(blogid)?"border-selected":""%>"><i class="fas text-medium fa-check text-light-color icon-big2 cursor-pointer trackblog blog_id_<%=blogid%>" data-toggle="tooltip" data-placement="top"  title="Select to Track Blog"></i></td>
+          <td class="noborderright borders-white <%=jblog.has(blogid)?"border-selected":""%>"><i class="fas text-medium fa-check text-light-color icon-big2 cursor-pointer trackblog  blog_id_<%=blogid%>" data-toggle="tooltip" data-placement="top"  title="Select to Track Blog"></i></td>
           <td class="noborderleft noborderright borders-white blogsitename <%=jblog.has(blogid)?"border-selected":""%>"><h6 class="text-primary myposttitle"><a class="blogname-<%=blogid%>" href="<%=request.getContextPath()%>/blogpostpage.jsp?p=<%=obj.get("blogpost_id")%>">
           <%=blogtitle%></a></h6></td>
           <td class="noborderleft noborderright borders-white <%=jblog.has(blogid)?"border-selected":""%>"><h6 class="text-primary"><a class="blogname-<%=blogid%>" href="<%=request.getContextPath()%>/blogpostpage.jsp?p=<%=obj.get("blogpost_id")%>">
@@ -153,12 +154,43 @@ for(int j=0; j<allblogarray.length; j++)
 			
 			
 		<%}
-		}else{ 
-			pww.write("empty");
-	  }
+		}
+		//else{ 
+		//	pww.write("empty");
+	//  }
 			
 			
 	}// end of check submitted 
 //} catch (Exception ex) {}		
 
 %>  
+<script type="text/javascript" src="assets/js/jquery-1.11.3.min.js"></script>
+<script type="text/javascript">
+// select a blog to track
+$(document).ready(function() {
+// check the status if the blog is tracked
+var select_all_checker = <%=selected_all %>
+if(select_all_checker == 1){
+	$(".curve_all td").addClass("border-selected");
+	$(".curve_all td .myposttitle a").addClass("text-selected");
+	$(".curve_all").addClass("border-selected");
+	$(".curve_all").find(".posttitle a").addClass("text-selected");
+	$(".curve_all").find(".trackingtracks").addClass("makeinvisible");
+	$(".blog_id_all").attr("data-original-title","Remove Blog from Tracker");
+	// add a class that make similar blog selected
+	$(".blog_id_all").addClass("text-selected");
+
+	$('.fa_tooltip_all').parent().parent().addClass("border-selected");
+	$('.fa_tooltip_all').parent().parent().find(".posttitle a").addClass("text-selected");
+	$('.fa_tooltip_all').parent().parent().find(".trackingtracks").addClass("makeinvisible");
+	$('.fa_tooltip_all').attr("data-original-title","Remove Blog from Tracker");
+	// adding blog to tracks
+	    
+	// add an ajax to add blog to tracker
+	$('#trackscount').html('all');
+	$('.tracksection').removeClass("hidden");
+	$('.tracksection').show();
+}
+
+});
+</script>

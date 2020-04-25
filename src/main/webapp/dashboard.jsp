@@ -459,6 +459,20 @@
 
 				}
 			}
+			
+			
+			ArrayList details = DbConnection.query("select status, status_percentage from tracker_keyword where tid = " + tid);
+			ArrayList res = (ArrayList)details.get(0);
+			
+			String status = res.get(0).toString();
+			String status_percentage = res.get(1).toString();
+			
+			JSONObject final_result = new JSONObject();
+			final_result.put("status_percentage",status_percentage);
+			final_result.put("status",status);
+			
+			
+			
 %>
 <!DOCTYPE html>
 <html>
@@ -998,34 +1012,26 @@ display: none;
 		</div>
 
 		<div class="row mb0">
+			
 			<div class="col-md-6 mt20 zoom">
-				<div class="card card-style mt20">
+				<div id="keyword_card_div" class="card card-style mt20 radial_f">
 					<div class="card-body  p30 pt5 pb5">
 						<div>
 							<p class="text-primary mt10">
 								Top Keywords
-								<!-- <select
-									class="text-primary filtersort sortbyblogblogger"><option
-										value="blogs">Blogs</option>
-									<option value="bloggers">Bloggers</option></select>  -->
-
-								<%-- for Past <select
-									class="text-primary filtersort sortbytimerange"><option
-										value="week" <%=(single.equals("week"))?"selected":"" %>>Week</option>
-									<option value="month" <%=(single.equals("month"))?"selected":"" %>>Month</option>
-									<option value="year" <%=(single.equals("year"))?"selected":"" %>>Year</option></select> --%>
-							</p>
+								</p>
 						</div>
-						<!-- <div class="tagcloudcontainer" style="min-height: 420px;"></div> -->
-
-
-
-						<div style="min-height: 420px;">
-							<div class="chart-container word-cld">
-								<div class="chart" id="tagcloudcontainer">
-									<div class="jvectormap-zoomin zoombutton" id="zoom_in">+</div>
-									<div class="jvectormap-zoomout zoombutton" id="zoom_out">−</div>
-								</div>
+						
+						<div align="center" class="" style="min-height: 420px;">
+							<div align="center" class="chart-container word-cld">
+							<div class="hidden" id="keyword_computing_loaader">
+								<div align="center" class=" word1">COMPUTING-TERMS...<span id="keyword_percentage">0%</span></div>
+								<div align="center" class=" overlay1"></div>
+							</div>
+							<div class="chart hidden" id="tagcloudcontainer99">
+								<div class="jvectormap-zoomin zoombutton" id="zoom_in">+</div>
+								<div class="jvectormap-zoomout zoombutton" id="zoom_out">−</div>
+							</div>
 							</div>
 						</div>
 					</div>
@@ -1570,6 +1576,110 @@ display: none;
 
 
 	<script type="text/javascript" src="assets/js/jquery-1.11.3.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/lettering.js/0.6.1/jquery.lettering.min.js"></script>
+		
+		<script>
+		
+		function matrix_loader(){
+			
+			
+			function Ticker( elem ) {
+				elem.lettering();
+				this.done = false;
+				this.cycleCount = 5;
+				this.cycleCurrent = 0;
+				this.chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()-_=+{}|[]\\;\':"<>?,./`~'.split('');
+				this.charsCount = this.chars.length;
+				this.letters = elem.find( 'span' );
+				this.letterCount = this.letters.length;
+				this.letterCurrent = 0;
+
+				this.letters.each( function() {
+					var $this = $( this );
+					$this.attr( 'data-orig', $this.text() );
+					$this.text( '-' );
+				});
+			}
+
+			Ticker.prototype.getChar = function() {
+				return this.chars[ Math.floor( Math.random() * this.charsCount ) ];
+			};
+
+			Ticker.prototype.reset = function() {
+				this.done = false;
+				this.cycleCurrent = 0;
+				this.letterCurrent = 0;
+				this.letters.each( function() {
+					var $this = $( this );
+					$this.text( $this.attr( 'data-orig' ) );
+					$this.removeClass( 'done' );
+				});
+				this.loop();
+			};
+
+			Ticker.prototype.loop = function() {
+				var self = this;
+
+				this.letters.each( function( index, elem ) {
+					var $elem = $( elem );
+					if( index >= self.letterCurrent ) {
+						if( $elem.text() !== ' ' ) {
+							$elem.text( self.getChar() );
+							$elem.css( 'opacity', Math.random() );
+						}
+					}
+				});
+
+				if( this.cycleCurrent < this.cycleCount ) {
+					this.cycleCurrent++;
+				} else if( this.letterCurrent < this.letterCount ) {
+					var currLetter = this.letters.eq( this.letterCurrent );
+					this.cycleCurrent = 0;
+					currLetter.text( currLetter.attr( 'data-orig' ) ).css( 'opacity', 1 ).addClass( 'done' );
+					this.letterCurrent++;
+				} else {
+					this.done = true;
+				}
+
+				if( !this.done ) {
+					requestAnimationFrame( function() {
+						self.loop();
+					});
+				} else {
+					setTimeout( function() {
+						self.reset();
+					}, 750 );
+				}
+			};
+
+			$words = $( '.word1' );
+
+			$words.each( function() {
+				var $this = $( this ),
+					ticker = new Ticker( $this ).reset();
+				$this.data( 'ticker', ticker  );
+			});
+			
+			
+			
+		}
+		//end matrix_loader
+		
+		//matrix_loader();
+		//call matrix_loader
+		</script>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 	<script src="assets/bootstrap/js/bootstrap.js">
 </script>
 	<script src="assets/js/generic.js">
@@ -1595,9 +1705,21 @@ display: none;
 	<script
 		src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.print.min.js"></script>
 		
-		
 		<!-- Start scatter plot js -->
 		<script src="https://d3js.org/d3.v4.js"></script>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		<script>
 		//set the dimensions and margins of the graph
 		var plot_width = $('#scatter-container').width();
@@ -3302,7 +3424,7 @@ var mymarker = [
 			  		<wordtagcloud("#tagcloudcontainer",450,<%=d%>);  
 			<%}%>  --%>
 			<%
-			if(date_set.toString().equals("1")){%>
+			if(status.equals("1") && date_set.toString().equals("1")){%>
 			
 			$(".word-cld").html("<img src='images/loading.gif' /> COMPUTING TERMS FOR <b style='color : blue;  font-size: 20px;'><%=NumberFormat.getNumberInstance(Locale.US).format(new Double(totalpost).intValue())%></b> POSTS PLEASE WAIT...."); 
 			 /* $('#keywordbtn').prop("disabled", true);
@@ -3323,7 +3445,7 @@ var mymarker = [
 				{		
 					$(".word-cld").html("FAILED TO COMPUTE TERMS.. RETRYING.. PLEASE WAIT.... <img src='images/loading.gif' />g");
 					$(".word-cld").html("<div style='min-height: 420px;'><div class='chart-container word-cld'><div class='chart' id='tagcloudcontainer'><div class='jvectormap-zoomin zoombutton' id='zoom_in'>+</div><div class='jvectormap-zoomout zoombutton' id='zoom_out'>−</div></div></div></div>");
-					wordtagcloud("#tagcloudcontainer",450,{"NO KEYWORD":1});
+					wordtagcloud("#tagcloudcontainer99",450,{"NO KEYWORD":1});
 					console.log("This is failure"+response);
 
 				},
@@ -3333,25 +3455,26 @@ var mymarker = [
 				console.log("this is the response"+data)
 				
 				    $(".word-cld").html("<div style='min-height: 420px;'><div class='chart-container word-cld'><div class='chart' id='tagcloudcontainer'><div class='jvectormap-zoomin zoombutton' id='zoom_in'>+</div><div class='jvectormap-zoomout zoombutton' id='zoom_out'>−</div></div></div></div>");
-				 $("#tagcloudcontainer").html("<img src='images/loading.gif' /> COMPUTING TERMS PLEASE WAIT....").html(response);
+				 $("#tagcloudcontainer99").html("<img src='images/loading.gif' /> COMPUTING TERMS PLEASE WAIT....").html(response);
 				}
 			});
 			
-			<%}else{
+			<%}else if (status.equals("1") && date_set.toString()!= "1" ){
 			
-			ArrayList response_terms = DbConnection.query("select terms from tracker_keyword where tid = " + tid);
-			ArrayList res = (ArrayList)response_terms.get(0);
+			//ArrayList response_terms = DbConnection.query("select terms from tracker_keyword where tid = " + tid);
+			//ArrayList resy = (ArrayList)response_terms.get(0);
 			//System.out.println("terms_result" + res.get(0));
 			
-			JSONObject finalres = new JSONObject(res.get(0).toString());
+			//JSONObject finalres = new JSONObject(resy.get(0).toString());
 			
 			%>
+			
 			//var response = {'seun':39, 'bola':100}
-			wordtagcloud("#tagcloudcontainer",450,<%=finalres%>); 
+			<%-- wordtagcloud("#tagcloudcontainer",450,<%=finalres%>); 
 			
 			console.log('dt',"<%=dt%>");
-			 console.log('dte',"<%=dte%>");
-			loadChordDashboard();
+			 console.log('dte',"<%=dte%>"); --%>
+			//loadChordDashboard();
 			
 			<%}%>
 		})
@@ -3511,6 +3634,183 @@ var mymarker = [
  </script>
 
 	<!-- End of Tag Cloud  -->
+	<script>
+		
+function matrix_loader1(){
+			
+			
+			function Ticker( elem ) {
+				elem.lettering();
+				this.done = false;
+				this.cycleCount = 5;
+				this.cycleCurrent = 0;
+				this.chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()-_=+{}|[]\\;\':"<>?,./`~'.split('');
+				this.charsCount = this.chars.length;
+				this.letters = elem.find( 'span' );
+				this.letterCount = this.letters.length;
+				this.letterCurrent = 0;
+
+				this.letters.each( function() {
+					var $this = $( this );
+					$this.attr( 'data-orig', $this.text() );
+					$this.text( '-' );
+				});
+			}
+
+			Ticker.prototype.getChar = function() {
+				return this.chars[ Math.floor( Math.random() * this.charsCount ) ];
+			};
+
+			Ticker.prototype.reset = function() {
+				this.done = false;
+				this.cycleCurrent = 0;
+				this.letterCurrent = 0;
+				this.letters.each( function() {
+					var $this = $( this );
+					$this.text( $this.attr( 'data-orig' ) );
+					$this.removeClass( 'done' );
+				});
+				this.loop();
+			};
+
+			Ticker.prototype.loop = function() {
+				var self = this;
+
+				this.letters.each( function( index, elem ) {
+					var $elem = $( elem );
+					if( index >= self.letterCurrent ) {
+						if( $elem.text() !== ' ' ) {
+							$elem.text( self.getChar() );
+							$elem.css( 'opacity', Math.random() );
+						}
+					}
+				});
+
+				if( this.cycleCurrent < this.cycleCount ) {
+					this.cycleCurrent++;
+				} else if( this.letterCurrent < this.letterCount ) {
+					var currLetter = this.letters.eq( this.letterCurrent );
+					this.cycleCurrent = 0;
+					currLetter.text( currLetter.attr( 'data-orig' ) ).css( 'opacity', 1 ).addClass( 'done' );
+					this.letterCurrent++;
+				} else {
+					this.done = true;
+				}
+
+				if( !this.done ) {
+					requestAnimationFrame( function() {
+						self.loop();
+					});
+				} else {
+					setTimeout( function() {
+						self.reset();
+					}, 750 );
+				}
+			};
+
+			$words = $( '.word1' );
+
+			$words.each( function() {
+				var $this = $( this ),
+					ticker = new Ticker( $this ).reset();
+				$this.data( 'ticker', ticker  );
+			});
+			
+			
+			
+		}
+		//end matrix_loader
+		
+		//java check
+		<% if(status.equals("1")){ 
+			
+			ArrayList response_terms = DbConnection.query("select terms from tracker_keyword where tid = " + tid);
+			ArrayList result = (ArrayList)response_terms.get(0);
+			//System.out.println("terms_result" + res.get(0));
+			JSONObject final_terms = new JSONObject(result.get(0).toString());
+			final_result.put("final_terms",final_terms);
+		%>	
+		console.log('it is 1')
+			$('#tagcloudcontainer99').removeClass('hidden');
+			$('#keyword_card_div').removeClass('radial_f')
+			wordtagcloud("#tagcloudcontainer99",450,<%=final_terms%>); 
+			loadChordDashboard();
+	<%	}else{
+			
+			final_result.put("final_terms","");
+			
+		 %>
+		 console.log('it is 0')
+		 $('#keyword_computing_loaader').removeClass('hidden');
+		 var refreshIntervalId = setInterval(function(){ refresh();    }, 10000);
+		 matrix_loader1();
+		<% }%>
+		//end java check
+		
+		//setInterval(function(){ refresh();    }, 10000);
+		//var refreshIntervalId = setInterval(function(){ refresh();    }, 10000);
+
+		//start refresh function
+		function refresh(){
+			
+			$.ajax({
+				url: app_url+"subpages/dashboardcards.jsp",
+				method: 'POST',
+	            /* dataType: 'json', */
+				data: {
+					action:"getkeywordstatus",
+					tid:"<%=tid%>"
+				},
+				error: function(response)
+				{	console.log("This is failure"+response);
+
+				},
+				success: function(response)
+				{   				  
+				 //console.log("This is success"+response)
+				 var data = JSON.parse(response);
+					//$(".char19").html(data.status_percentage);
+					//$(".status").html(data.status);
+					console.log(data.status_percentage)
+					console.log(data.status)
+					console.log(data.final_terms)
+					
+					if(parseInt(data.status) == 1){
+						//wordtagcloud("#tagcloudcontainer99",450,data.final_terms); 
+						//$('#keyword_computing_loaader').addClass('hidden');
+						//$('#tagcloudcontainer99').removeClass('hidden');
+						
+						var build = '<div align="center" class=" word1">COMPUTING-TERMS...<span id="keyword_percentage">'+data.status_percentage+'%</span></div>';
+						build += '<div align="center" class=" overlay1"></div>';
+						
+						$('#keyword_computing_loaader').html('');
+						
+						//matrix_loader1();
+						clearInterval(refreshIntervalId);
+						$('#keyword_card_div').removeClass('radial_f')
+						wordtagcloud("#tagcloudcontainer99",450,data.final_terms); 
+						
+					}else{
+						
+						var build = '<div align="center" class=" word1">COMPUTING-TERMS...<span id="keyword_percentage">'+data.status_percentage+'%</span></div>';
+						build += '<div align="center" class=" overlay1"></div>';
+						
+						$('#keyword_computing_loaader').html(build);
+						
+						matrix_loader1();
+						
+					}
+					
+					
+				}
+			});
+			//end ajax
+			
+			
+		}
+		//end refresh function
+		</script>
+	
 	<!-- Blogger Bubble Chart -->
 	<script>
 $(function () {

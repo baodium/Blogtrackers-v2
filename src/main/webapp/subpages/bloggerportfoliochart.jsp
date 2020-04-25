@@ -331,7 +331,6 @@ for(int z=0; z < all_blogger.length; z++){
 	System.out.println("negsentiment"+negsentiment);
 	int comb = Integer.parseInt(possentiment)+Integer.parseInt(negsentiment); 
 	
-	System.out.println("comb777"+comb);
 	String mostactiveterm = "";
 
 	int highestfrequency = 0; 

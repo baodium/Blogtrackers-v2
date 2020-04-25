@@ -452,7 +452,7 @@ $.ajax({
 
 
 // select a blog to track
-$(document).on("click",".trackblog",function(e){
+$(document).on("click",".trackblog99",function(e){
 // check the status if the blog is tracked
 var blog_id = "";
 classes = $(this).attr('class').split(/\s+/);
@@ -889,7 +889,7 @@ function updateTracker(element,type){
 	   	 
 	  
 	   		id = $(element).attr('id');	  
-	   		
+	   		all_blogs = $('#selected_blogs_').val();
 	   		/*
 			 * console.log(element) console.log(type) console.log(all_blogs)
 			 * console.log(blogs)

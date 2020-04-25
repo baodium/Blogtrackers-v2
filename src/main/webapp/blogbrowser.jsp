@@ -113,13 +113,16 @@ String term =  (null == request.getParameter("term")) ? "" : request.getParamete
 String sort =  (null == request.getParameter("sortby")) ? "date" : request.getParameter("sortby").toString();
 
 ArrayList results = null;
+String all_loaded_blogs = "";
 
 if(term.equals("")){
 	results = post._list("DESC","0",sort);
 }else{
 	results = post._search(term,"0",sort);
+	all_loaded_blogs = post.getBlogIdsfromsearch(term);
+	
 }
-System.out.println("result--"+results);
+
 
 String total = NumberFormat.getNumberInstance(Locale.US).format(Integer.parseInt(post._getTotal(term)));
 //NumberFormat.getNumberInstance(Locale.US).format(Integer.parseInt(post._getTotal()));
@@ -462,6 +465,7 @@ if(results.size()>0){
       </tbody>   
 </table>
 </div>
+<button type="button" class="btn btn-success homebutton p50 pt10 pb10" id="select_all">Select all</button> 
 
 <div class="card-columns pt0 pb10  mt20 mb50 gridlook hidden" id="appendee">
 
@@ -499,9 +503,9 @@ if(results.size()>0){
 		     String totaltrack  = trackers.getTotalTrack(blogid);		     
 %>
 <div class="card noborder curved-card mb30" >
-<div class="curved-card selectcontainer borders-white curve_<%=blogid%>">
+<div class="curved-card selectcontainer borders-white curve_all curve_<%=blogid%>">
 <% if(!username.equals("") || username.equals("")){ %>
- <div class="text-center"><i class="fas text-medium pt40 fa-check text-light-color icon-big2 cursor-pointer trackblog blog_id_<%=blogid%>" data-toggle="tooltip" data-placement="top"  title="Select to Track Blog"></i></div>
+ <div class="text-center"><i blog_identify="<%=blogid%>" class="fa_tooltip_all fas text-medium pt40 fa-check text-light-color icon-big2 cursor-pointer trackblog blog_all blog_id_<%=blogid%>" data-toggle="tooltip" data-placement="top"  title="Select to Track Blog"></i></div>
 <% } %>
 <h4 class="text-primary text-center p10 pt20 posttitle"><a class="blogname-<%=blogid%>" href="<%=request.getContextPath()%>/blogpostpage.jsp?p=<%=obj.get("blogpost_id")%>"><%=blogtitle%></a></h4>
 
@@ -628,6 +632,208 @@ src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.print.min.js"></script>
 </script>
 <!-- Added for interactivity for selecting tracker and favorites actions -->
 
+<script type="text/javascript">
+
+var all_loaded_blogs = [<%=all_loaded_blogs %>];
+var array_to_send = [];
+
+function remove_array_element(array, n)
+{
+  var index = array.indexOf(n);
+  if (index > -1) {
+   array.splice(index, 1);
+}
+  return array;
+}
+
+
+// select a blog to track
+$(document).on("click","#select_all",function(e){
+// check the status if the blog is tracked
+if($(this).hasClass('select_all_active')){
+	$(this).removeClass('select_all_active');
+	$(this).html('Select all')
+	selected_all = true;
+}else{
+	$(this).addClass('select_all_active');
+	$(this).html('Unselect all')
+	selected_all = false;
+}
+
+if(!selected_all)
+{
+
+
+$(".curve_all td").addClass("border-selected");
+$(".curve_all td .myposttitle a").addClass("text-selected");
+$(".curve_all").addClass("border-selected");
+$(".curve_all").find(".posttitle a").addClass("text-selected");
+$(".curve_all").find(".trackingtracks").addClass("makeinvisible");
+$(".blog_id_all").attr("data-original-title","Remove Blog from Tracker");
+// add a class that make similar blog selected
+$(".blog_id_all").addClass("text-selected");
+$('.fa_tooltip_all').addClass('active_selection');
+$('.fa_tooltip_all').parent().parent().addClass("border-selected");
+$('.fa_tooltip_all').parent().parent().find(".posttitle a").addClass("text-selected");
+$('.fa_tooltip_all').parent().parent().find(".trackingtracks").addClass("makeinvisible");
+$('.fa_tooltip_all').attr("data-original-title","Remove Blog from Tracker");
+// adding blog to tracks
+    
+// add an ajax to add blog to tracker
+$('#trackscount').html('all');
+$('.tracksection').removeClass("hidden");
+$('.tracksection').show();
+
+array_to_send = all_loaded_blogs;
+
+console.log('array to send',array_to_send)
+}
+else if(selected_all)
+{
+	$(".curve_all td").removeClass("border-selected");
+	$(".curve_all td .myposttitle a").removeClass("text-selected");
+	
+	$(".curve_all").removeClass("border-selected");
+	$(".curve_all").find(".posttitle a").removeClass("text-selected");
+	$(".curve_all").find(".trackingtracks").removeClass("makeinvisible");
+	$(".blog_id_all").attr("data-original-title","Add Blog from Tracker");
+	$(".blog_id_all").removeClass("text-selected");
+	$('.fa_tooltip_all').removeClass('active_selection');
+$('.fa_tooltip_all').parent().removeClass("border-selected");
+$('.fa_tooltip_all').parent().find(".posttitle a").removeClass("text-selected");
+$('.fa_tooltip_all').parent().find(".trackingtracks").removeClass("makeinvisible");
+$('.fa_tooltip_all').attr("data-original-title","Add Blog from Tracker");
+
+console.log("Removed all selected ");
+
+
+var blgs = $(".blogselection");
+
+$(".total_selected").text(blgs.length);
+$('#trackscount').html(trackscount);
+$('.tracksection').show();
+
+array_to_send = [];
+
+console.log('array to send',array_to_send)
+	}
+});
+
+
+
+
+///////start click check
+
+// select a blog to track
+$(document).on("click",".trackblog",function(e){
+// check the status if the blog is tracked
+
+if($(this).hasClass('active_selection')){
+	$(this).removeClass('active_selection');
+	blog_id = $(this).attr('blog_identify');
+	active_selected = false;
+	
+}else{
+	$(this).addClass('active_selection');
+	blog_id = $(this).attr('blog_identify');
+	active_selected = true;
+	
+}
+console.log(blog_id)
+if(!active_selected)
+{
+	 
+	
+	var b_count = array_to_send.length;
+$(".curve_"+blog_id+" td").addClass("border-selected");
+$(".curve_"+blog_id+" td .myposttitle a").addClass("text-selected");
+$(".curve_"+blog_id).addClass("border-selected");
+$(".curve_"+blog_id).find(".posttitle a").addClass("text-selected");
+$(".curve_"+blog_id).find(".trackingtracks").addClass("makeinvisible");
+$(".blog_id_"+blog_id).attr("data-original-title","Remove Blog from Tracker");
+// add a class that make similar blog selected
+$(".blog_id_"+blog_id).addClass("text-selected");
+
+$(this).parent().parent().addClass("border-selected");
+$(this).parent().parent().find(".posttitle a").addClass("text-selected");
+$(this).parent().parent().find(".trackingtracks").addClass("makeinvisible");
+$(this).attr("data-original-title","Remove Blog from Tracker");
+
+console.log('supposed to remove')
+array_to_send = remove_array_element(array_to_send, parseInt(blog_id));
+updateCurrentSelectedBlogs(array_to_send)
+console.log('array to send',array_to_send)
+// adding blog to tracks
+
+// add an ajax to add blog to tracker
+
+$('#trackscount').html(array_to_send.length);
+$('.tracksection').removeClass("hidden");
+$('.tracksection').show();
+}
+else if(active_selected)
+{
+// if the blog is being tracked
+
+	$(".curve_"+blog_id+" td").removeClass("border-selected");
+	$(".curve_"+blog_id+" td .myposttitle a").removeClass("text-selected");
+	
+	$(".curve_"+blog_id).removeClass("border-selected");
+	$(".curve_"+blog_id).find(".posttitle a").removeClass("text-selected");
+	$(".curve_"+blog_id).find(".trackingtracks").removeClass("makeinvisible");
+	$(".blog_id_"+blog_id).attr("data-original-title","Add Blog from Tracker");
+	$(".blog_id_"+blog_id).removeClass("text-selected");
+	
+$(this).parent().parent().removeClass("border-selected");
+$(this).parent().parent().find(".posttitle a").removeClass("text-selected");
+$(this).parent().parent().find(".trackingtracks").removeClass("makeinvisible");
+$(this).attr("data-original-title","Add Blog from Tracker");
+
+
+var blgs = $(".blogselection");
+
+var b_count = array_to_send.length;
+
+$(".total_selected").text(b_count);
+
+$('#trackscount').html(b_count);
+$('.tracksection').show();
+
+		var all_blogs = "";
+		
+		setSelected(all_blogs);
+		if(b_count == 0)
+		{
+			$('.tracksection').hide();
+		}
+		
+		console.log('supposed to add')
+		array_to_send.push(parseInt(blog_id));
+		updateCurrentSelectedBlogs(array_to_send)
+		console.log('array to send',array_to_send)
+	}
+});
+
+function updateCurrentSelectedBlogs(array_to_send){
+	var len = array_to_send.len
+	if(len == 0){
+		$('#trackscount').html("0");
+		$("#selected_blogs_").val("");
+		$(".total_selected").text("0");
+	}else{
+		var all_blogs = array_to_send.toString();
+		$('#trackscount').html(len);
+		$("#selected_blogs_").val(all_blogs);
+		$(".total_selected").text(len);
+	}
+	
+	
+	
+}
+
+///////end click check
+</script>
+
 <script src="assets/js/generic.js">
 
 </script>
@@ -638,7 +844,34 @@ src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.print.min.js"></script>
 <script>
 $(window).scroll(function() {
 	if($(window).scrollTop() + $(window).height() > $(document).height() - 200) {
+		
 		loadMoreResult();
+		if($('#select_all').hasClass('select_all_active')){
+	    	selected_all = 1;
+	    }else{
+	    	selected_all = 0;
+	    }
+		if(select_all_checker == 1){
+			$(".curve_all td").addClass("border-selected");
+			$(".curve_all td .myposttitle a").addClass("text-selected");
+			$(".curve_all").addClass("border-selected");
+			$(".curve_all").find(".posttitle a").addClass("text-selected");
+			$(".curve_all").find(".trackingtracks").addClass("makeinvisible");
+			$(".blog_id_all").attr("data-original-title","Remove Blog from Tracker");
+			// add a class that make similar blog selected
+			$(".blog_id_all").addClass("text-selected");
+
+			$('.fa_tooltip_all').parent().parent().addClass("border-selected");
+			$('.fa_tooltip_all').parent().parent().find(".posttitle a").addClass("text-selected");
+			$('.fa_tooltip_all').parent().parent().find(".trackingtracks").addClass("makeinvisible");
+			$('.fa_tooltip_all').attr("data-original-title","Remove Blog from Tracker");
+			// adding blog to tracks
+			    
+			// add an ajax to add blog to tracker
+			$('#trackscount').html('all');
+			$('.tracksection').removeClass("hidden");
+			$('.tracksection').show();
+		}
 	}
 });
 

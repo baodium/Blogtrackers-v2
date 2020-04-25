@@ -13,6 +13,13 @@ function loadMoreResult(){
       isRunning = true;	
 	//var url=back_url;
     var img = $('.post-image');
+    
+    if($('#select_all').hasClass('select_all_active')){
+    	selected_all = 1;
+    }else{
+    	selected_all = 0;
+    }
+    
       
 	var url = app_url+'subpages/blogpostloader.jsp'
 	var $form = $("#page_form"),
@@ -46,7 +53,7 @@ function loadMoreResult(){
 			requests[z] = $.ajax({ type: "POST",
 				url:url,
 				async: true,
-				data:{from:page_no,term:term,load:"yes",viewtype:viewtype},
+				data:{from:page_no,term:term,load:"yes",viewtype:viewtype,selected_all:selected_all},
 				async: true,
 				success : function(data){
 					//console.log(data);

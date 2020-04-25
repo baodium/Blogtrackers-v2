@@ -1126,6 +1126,43 @@ public class Blogposts {
 		}
 		return dt;
 	}
+	
+	public String getBlogIdsfromsearch(String term) {
+		String result = "";
+		JSONObject query = new JSONObject("{\r\n" + "	\r\n" + "    \"query\": {\r\n" + "        \"bool\": {\r\n"
+				+ "            \"must\": [\r\n" + "                {\r\n" + "                    \"terms\": {\r\n"
+				+ "                        \"post\": [\r\n" + "                            \""+term+"\"\r\n"
+				+ "                        ]\r\n" + "                    }\r\n" + "                }\r\n"
+				+ "            ]\r\n" + "        }\r\n" + "    },\r\n" + "    \"size\": 0,\r\n"
+				+ "    \"_source\": false,\r\n" + "    \"stored_fields\": \"_none_\",\r\n"
+				+ "    \"aggregations\": {\r\n" + "        \"groupby\": {\r\n" + "            \"composite\": {\r\n"
+				+ "                \"size\": 1000,\r\n" + "                \"sources\": [\r\n"
+				+ "                    {\r\n" + "                        \"dat\": {\r\n"
+				+ "                            \"terms\": {\r\n"
+				+ "                                \"field\": \"blogsite_id\",\r\n"
+				+ "                                \"missing_bucket\": true,\r\n"
+				+ "                                \"order\": \"asc\"\r\n" + "                            }\r\n"
+				+ "                        }\r\n" + "                    }\r\n" + "                ]\r\n"
+				+ "            }\r\n" + "        }\r\n" + "    }\r\n" + "}");
+		
+		try {
+			JSONObject res = _makeElasticRequest(query, "POST", "/blogposts/_search");
+			Object aggregation = res.getJSONObject("aggregations").getJSONObject("groupby").getJSONArray("buckets");
+			JSONArray listofblogs = new JSONArray(aggregation.toString());
+			
+			for(Object x : listofblogs) {
+				JSONObject idd = new JSONObject(x.toString());
+				String blog_id = idd.getJSONObject("key").get("dat").toString();
+				result += blog_id + ",";
+//				System.out.println("x---"+x.toString());
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println(result);
+		return result;
+	}
 
 	public ArrayList _search(String term, String from, String sortby) throws Exception {
 
