@@ -156,7 +156,7 @@ public class Tracker extends HttpServlet {
 			}
 		}
 		else if(action.equals("uploadTerms")) {
-			String url = " http://127.0.0.1:5000/";
+			String url = " http://144.167.35.138:5000/";
 			String str = "{\r\n" + 
 					"	\"tracker_id\":\""+tracker_id+"\",\r\n" + 
 					"	\"type\":\""+type+"\"\r\n" + 
@@ -178,6 +178,8 @@ String[] bloggs = blogs.replaceAll(", $", "").split(",");
 			
 			try {
 				ArrayList tracker =null;
+				ArrayList blogposts =null;
+				
 				
 				DbConnection db = new DbConnection();
 				String addendum="";
@@ -228,9 +230,18 @@ String[] bloggs = blogs.replaceAll(", $", "").split(",");
 							 String[] allblogs = mergedblogs.replaceAll(",$", "").split(",");
 							 int blognum = allblogs.length;
 							// System.out.println("Blog during update ajax request "+  mergedblogs);
-							 addendum = "blogsite_id in ("+mergedblogs+")";//"blogsite_id in ("+addendum+blog_id+")";
+							 addendum = "blogsite_id in ("+mergedblogs.replaceAll(",$", "")+")";//"blogsite_id in ("+addendum+blog_id+")";
 							 
 							 String modifiedDate= getDateTime();
+//							 Blogposts p = new Blogposts();
+//							 String blogpost_num = p._getBlogPostById(que = hd.get(0).toString());
+//							 System.out.println("here with bpnum1" + "SELECT count(*) FROM blogposts WHERE "+addendum);
+//							 blogposts = db.query("SELECT count(*) FROM blogposts WHERE "+addendum);
+//							 ArrayList hd_ = (ArrayList)blogposts.get(0);
+//							 String blogpost_num = hd_.get(0).toString();
+							 
+							 //System.out.println("here with bpnum" + "SELECT count(*) FROM blogposts WHERE "+addendum + blogpost_num);
+							 
 							db.updateTable("UPDATE trackers SET query='"+addendum+"', tracker_name='"+tracker_name+"', description='"+description+"', date_modified='"+modifiedDate+"', blogsites_num = '"+blognum+"' WHERE  tid='"+tracker_id+"'");	
 							pww.write("success");
 					 }else {
@@ -375,9 +386,15 @@ String[] bloggs = blogs.replaceAll(", $", "").split(",");
 //					 pww.write(file); 
 //					 mergedblogs += file;
 	
-					 que =  "blogsite_id in ("+mergers+")";	
+					 que =  "blogsite_id in ("+mergers.replaceAll(",$", "")+")";	
 
 					String modifiedDate= getDateTime();
+//					System.out.println();
+					
+					
+//					 blogposts = db.query("SELECT count(*) FROM blogposts WHERE "+addendum);
+//					 ArrayList hd_ = (ArrayList)blogposts.get(0);
+//					 String blogpost_num = hd_.get(0).toString();
 					
 					db.updateTable("UPDATE trackers SET query='"+que+"', blogsites_num = '"+blogcounter+"', date_modified='"+modifiedDate+"' WHERE  tid='"+tracker_id+"'");	
 					pww.write("success");
@@ -416,6 +433,7 @@ String[] bloggs = blogs.replaceAll(", $", "").split(",");
 			
 //			System.out.println();
 			ArrayList detail = new DbConnection().query("SELECT * FROM trackers WHERE tid='"+tracker_id+"' AND userid='"+userid+"'");
+			ArrayList blogposts = new ArrayList();
         	
 			 if(detail.size()>0){
 				 	ArrayList hd = (ArrayList)detail.get(0);
@@ -451,10 +469,14 @@ String[] bloggs = blogs.replaceAll(", $", "").split(",");
 						 }
 					 }
 					 	//System.out.println(mergedblogs);		
-					que =  "blogsite_id in ("+mergedblogs+")";	
+					que =  "blogsite_id in ("+mergedblogs.replaceAll(",$", "")+")";	
 					String modifiedDate= getDateTime();
+//					System.out.println("here with bpnum5" + "SELECT count(*) FROM blogposts WHERE "+que);
+//					blogposts = db.query("SELECT count(*) FROM blogposts WHERE "+que);
+//					 ArrayList hd_ = (ArrayList)blogposts.get(0);
+//					 String blogpost_num = hd_.get(0).toString();
 					
-					db.updateTable("UPDATE trackers SET query='"+que+"', blogsites_num = '"+blogcounter+"', date_modified='"+modifiedDate+"' WHERE  tid='"+tracker_id+"'");	
+					db.updateTable("UPDATE trackers SET query='"+que+"', blogsites_num = '"+blogcounter+"', date_modified='"+modifiedDate+"'  WHERE  tid='"+tracker_id+"'");	
 					pww.write("success");
 			 }else {
 				 pww.write("false");
