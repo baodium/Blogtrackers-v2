@@ -787,6 +787,8 @@ else
 	   // console.log("Allblogs here:"+all_blogs);return false;
 	   	$('.trackercreatebutton').val("creating tracker");
 	   	$('.trackercreatebutton').attr("disabled",true);
+	   	
+	   	all_blogs = $('#selected_blogs_').val();
    	 // If at least a tracker is selected, update tracker else create tracker
 		$.ajax({
 			url: app_url+'tracker',
@@ -967,7 +969,7 @@ function removeTracker(element,type){
 	   		 }
 	     });
 	   	 
-	 
+	   	all_blogs = $('#selected_blogs_').val();
 	   		id = $(element).attr('id');	   		 
 		    $.ajax({
 				url: app_url+'tracker',
@@ -985,7 +987,7 @@ function removeTracker(element,type){
 				{   
 					console.log(response);
 					if(response.indexOf("success")>-1){
-						alert(id)
+						//alert(id)
 						//uploadTerms(id,"update");
 						Cookies.set('selectedblogs', "", {path : '/'});
 						toastr.success('Blogs successfully removed!','Success');
