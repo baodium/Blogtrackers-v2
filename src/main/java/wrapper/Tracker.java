@@ -230,7 +230,7 @@ String[] bloggs = blogs.replaceAll(", $", "").split(",");
 							 String[] allblogs = mergedblogs.replaceAll(",$", "").split(",");
 							 int blognum = allblogs.length;
 							// System.out.println("Blog during update ajax request "+  mergedblogs);
-//							 addendum = "blogsite_id in ("+mergedblogs.replaceAll(",$", "")+")";//"blogsite_id in ("+addendum+blog_id+")";
+							 addendum = "blogsite_id in ("+mergedblogs.replaceAll(",$", "")+")";//"blogsite_id in ("+addendum+blog_id+")";
 							 
 							 String modifiedDate= getDateTime();
 //							 Blogposts p = new Blogposts();
