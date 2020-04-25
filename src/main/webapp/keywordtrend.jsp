@@ -105,6 +105,7 @@
 				profileimage = "images/default-avatar.png";
 				if (userpic.indexOf("http") > -1) {
 					profileimage = userpic;
+					
 				}
 
 				File f = new File(filename);
@@ -619,7 +620,7 @@
 				//System.out.println("terms" + terms);
 				//System.out.println("pair--" + post_id_pair.length());
 				String[] termsSplit = res.get(0).toString().replace("\'", "").replace("{", "").replace("}", "").split(",");
-
+				System.out.println("working on it"+Arrays.toString(termsSplit));
 				for (int i = 0; i < termsSplit.length; i++) {
 					if (i == 0) {
 						String[] split = termsSplit[i].split(":");
@@ -630,6 +631,10 @@
 					}
 					String[] split = termsSplit[i].split(":");
 					String term_ = split[0].replace("\"", "").trim();
+					
+					System.out.println(split[1]);
+					System.out.println(term_ );
+					
 					int termOccurence = Integer.parseInt(split[1].trim());
 					HashMap<String, Integer> map = new HashMap<String, Integer>();
 					map.put(term_, termOccurence);
