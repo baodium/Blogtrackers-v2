@@ -3745,7 +3745,7 @@ function matrix_loader1(){
 		 %>
 		 console.log('it is 0')
 		 $('#keyword_computing_loaader').removeClass('hidden');
-		 var refreshIntervalId = setInterval(function(){ refresh();    }, 10000);
+		 var refreshIntervalId = setInterval(function(){ refresh();    }, 15000);
 		 matrix_loader1();
 		<% }%>
 		//end java check
@@ -3769,24 +3769,23 @@ function matrix_loader1(){
 
 				},
 				success: function(response)
-				{   				  
+				{   
+				
+					$('#keyword_computing_loaader').html('');
 				 //console.log("This is success"+response)
 				 var data = JSON.parse(response);
 					//$(".char19").html(data.status_percentage);
 					//$(".status").html(data.status);
-					console.log(data.status_percentage)
-					console.log(data.status)
-					console.log(data.final_terms)
+					//console.log(data.status_percentage)
+					//console.log(data.status)
+					//console.log(data.final_terms)
 					
 					if(parseInt(data.status) == 1){
 						//wordtagcloud("#tagcloudcontainer99",450,data.final_terms); 
 						//$('#keyword_computing_loaader').addClass('hidden');
 						//$('#tagcloudcontainer99').removeClass('hidden');
-						
 						var build = '<div align="center" class=" word1">COMPUTING-TERMS...<span id="keyword_percentage">'+data.status_percentage+'%</span></div>';
 						build += '<div align="center" class=" overlay1"></div>';
-						
-						$('#keyword_computing_loaader').html('');
 						
 						//matrix_loader1();
 						clearInterval(refreshIntervalId);
