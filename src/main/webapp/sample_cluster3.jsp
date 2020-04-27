@@ -492,14 +492,11 @@ Instant start = Instant.now();
   width: 50%;
 }
 
-.container1:hover .overlay1 {
-  bottom: 0;
-  height: 100%;
-}
+
 
 .karat{
-	 bottom: 0;
-  height: 100%;
+	 bottom: 0 !important;
+  height: 100% !important;
 }
 
 .overlay1 {
@@ -543,6 +540,63 @@ Instant start = Instant.now();
 }
 
     </style>
+    
+    <style>
+    .after_modal_appended
+{  
+  position:relative;
+}
+
+.red
+{
+  background-color:red;
+}
+
+.blue
+{
+  background-color:blue;
+}
+
+.block 
+{
+  width:100%;
+  height:500px;
+}
+
+.modal, .modal-backdrop {
+    position: absolute !important;
+}
+
+    
+    </style>
+    
+    <style>
+    	.bubble-word {
+    width: 100%;
+    height: 100%;
+}
+.bubble-word > svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+.bubble-word .bubble text{
+    text-anchor: middle;
+    fill: #333;
+    font-size: 16px;
+}
+    </style>
+    
+    <style type="text/css">
+text {
+  font: 10px sans-serif;
+}
+circle {
+    stroke: #565352;
+    stroke-width: 1;
+}
+</style>
+    
 </head>
 <body>
 	<input type="hidden" id="tid" value="<%=tid.toString()%>" />
@@ -772,7 +826,7 @@ Instant start = Instant.now();
 								//JSONArray postData = new JSONArray();
 								ArrayList postData;
 
-								String[] colors = {"green", "red", "blue", "orange", "purple", "pink", "black", "grey", "brown", "yellow"};
+								String[] colors = {"green", "red", "blue", "orange", "purple", "pink", "gold", "grey", "brown", "yellow"};
 								int i = 0;
 								Pair<String, String> currentKey = new Pair<String, String>(null, null);
 
@@ -861,25 +915,49 @@ Instant start = Instant.now();
 			</div>
 
 			<div class="col-md-9">
-				<div class="card card-style mt20">
+				<div  class="card card-style mt20">
 					<div class="card-body   p30 pt5 pb5 container1">
 						<div style="min-height: 500px;">
 						
+						<!-- Modal -->
+						 <!-- <div class="blue block">
+						    <div id="myModal" class="modal fade" role="dialog">
+						      <div class="modal-dialog">
+						
+						        <div class="modal-content">
+						          <div class="modal-header">
+						            <button type="button" class="close" data-dismiss="modal">&times;</button>
+						            <h4 class="modal-title">Modal Header</h4>
+						          </div>
+						          <div class="modal-body">
+						            <p>Some text in the modal.</p>
+						          </div>
+						          <div class="modal-footer">
+						            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						          </div>
+						        </div>
+						
+						      </div>
+						    </div>
+						 </div> -->
+						 <!-- End Modal -->
 						<div id="parentdiv"></div>
-							<div id="overlay2" class="overlay1">
+						<div id="bubble-word" class="bubble-word"></div>
+							<div id="overlay2" class="overlay1 ">
 							    
 							    <div style="min-height: 450px; width: 1000px;" class="text1 card card-style ">
-					<div class="card-body  p30 pt5 pb5 container1">
-						<div id="clusterdiagram" ></div>
-						
-					</div>
-				</div>
+									<div class="card-body  p30 pt5 pb5 container1">
+										<div id="clusterdiagram" ></div>
+										
+									</div>
+								</div>
 				
 							  </div>
 							
 						</div>
 					</div>
 				</div>
+				 <button id="btn">Open Modal</button>
 				<button id="overlay1">click</button>
 				<div class="card card-style mt20">
 					<div class="card-body  p30 pt20 pb20">
@@ -1270,12 +1348,217 @@ Instant start = Instant.now();
 	<script
 		src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.print.min.js"></script>
 		
-		<script src="https://d3js.org/d3.v4.js"></script>
+		<script src="https://d3js.org/d3.v3.min.js"></script>
 <script>
-$('#overlay1').click(function(){
-	$('#overlay2').addClass('karat overlay1');
+
+
+
+
+var width = 960,
+    height = 500,
+    padding = 1.5, // separation between same-color nodes
+    clusterPadding = 6, // separation between different-color nodes
+    maxRadius = 12;
+
+var color = d3.scale.ordinal()
+      .range(["green", "red", "blue", "orange", "purple", "pink", "gold", "grey", "brown", "yellow"]);
+
+
+
+d3.text("word_groups.csv", function(error, text) {
+  if (error) throw error;
+  var colNames = "text,size,group\n" + text;
+  var data = d3.csv.parse(colNames);
+
+  data.forEach(function(d) {
+    d.size = +d.size;  });
+
+
+//unique cluster/group id's
+var cs = [];
+data.forEach(function(d){
+        if(!cs.contains(d.group)) {
+            cs.push(d.group);
+        }
+});
+
+var n = data.length, // total number of nodes
+    m = cs.length; // number of distinct clusters
+
+//create clusters and nodes
+var clusters = new Array(m);
+var nodes = [];
+for (var i = 0; i<n; i++){
+    nodes.push(create_nodes(data,i));
+}
+
+var force = d3.layout.force()
+    .nodes(nodes)
+    .size([width, height])
+    .gravity(.02)
+    .charge(0)
+    .on("tick", tick)
+    .start();
+
+var svg = d3.select("#parentdiv").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+
+var node = svg.selectAll("circle")
+    .data(nodes)
+    .enter().append("g").call(force.drag);
+
+
+node.append("circle")
+    .style("fill", function (d) {
+    return color(d.cluster);
+    })
+    .attr("r", function(d){return d.radius})
+    .attr("class", "cluster_visual")
+    .attr("loaded_color",function (d) {return color(d.cluster); })
+    .attr("cluster_id", function(d){return d.cluster + 1})
+    
+
+node.append("text")
+      .attr("dy", ".3em")
+      .style("text-anchor", "middle")
+      .text(function(d) { return d.text.substring(0, d.radius / 3); });
+
+
+
+
+function create_nodes(data,node_counter) {
+  var i = cs.indexOf(data[node_counter].group),
+      r = Math.sqrt((i + 1) / m * -Math.log(Math.random())) * maxRadius,
+      d = {
+        cluster: i,
+        radius: data[node_counter].size*1.5,
+        text: data[node_counter].text,
+        x: Math.cos(i / m * 2 * Math.PI) * 200 + width / 2 + Math.random(),
+        y: Math.sin(i / m * 2 * Math.PI) * 200 + height / 2 + Math.random()
+      };
+  if (!clusters[i] || (r > clusters[i].radius)) clusters[i] = d;
+  return d;
+};
+
+
+
+function tick(e) {
+    node.each(cluster(10 * e.alpha * e.alpha))
+        .each(collide(.5))
+    .attr("transform", function (d) {
+        var k = "translate(" + d.x + "," + d.y + ")";
+        return k;
+    })
+
+}
+
+// Move d to be adjacent to the cluster node.
+function cluster(alpha) {
+    return function (d) {
+        var cluster = clusters[d.cluster];
+        if (cluster === d) return;
+        var x = d.x - cluster.x,
+            y = d.y - cluster.y,
+            l = Math.sqrt(x * x + y * y),
+            r = d.radius + cluster.radius;
+        if (l != r) {
+            l = (l - r) / l * alpha;
+            d.x -= x *= l;
+            d.y -= y *= l;
+            cluster.x += x;
+            cluster.y += y;
+        }
+    };
+}
+
+// Resolves collisions between d and all other circles.
+function collide(alpha) {
+    var quadtree = d3.geom.quadtree(nodes);
+    return function (d) {
+        var r = d.radius + maxRadius + Math.max(padding, clusterPadding),
+            nx1 = d.x - r,
+            nx2 = d.x + r,
+            ny1 = d.y - r,
+            ny2 = d.y + r;
+        quadtree.visit(function (quad, x1, y1, x2, y2) {
+            if (quad.point && (quad.point !== d)) {
+                var x = d.x - quad.point.x,
+                    y = d.y - quad.point.y,
+                    l = Math.sqrt(x * x + y * y),
+                    r = d.radius + quad.point.radius + (d.cluster === quad.point.cluster ? padding : clusterPadding);
+                if (l < r) {
+                    l = (l - r) / l * alpha;
+                    d.x -= x *= l;
+                    d.y -= y *= l;
+                    quad.point.x += x;
+                    quad.point.y += y;
+                }
+            }
+            return x1 > nx2 || x2 < nx1 || y1 > ny2 || y2 < ny1;
+        });
+    };
+}
+});
+
+Array.prototype.contains = function(v) {
+    for(var i = 0; i < this.length; i++) {
+        if(this[i] === v) return true;
+    }
+    return false;
+};
+
+</script>		
+		
+		
+		
+		
+		
+		<script src="https://d3js.org/d3.v4.js"></script>
+		
+		
+<script>
+$(document).ready(function(){
+	
+ 	$("body").on("click","#btn",function(){
+  	  	
+    	$("#myModal").modal("show");
+        
+    	$(".blue").addClass("after_modal_appended");
+    
+    	//appending modal background inside the blue div
+    	$('.modal-backdrop').appendTo('.blue');   
+    
+    	//remove the padding right and modal-open class from the body tag which bootstrap adds when a modal is shown
+    
+    	$('body').removeClass("modal-open")
+   	 	$('body').css("padding-right","");     
+  });
+
+});
+
+////start cluster graph clicks
+$("body").delegate(".cluster_visual", "click", function() {
+
+	loaded_color = $(this).attr('loaded_color');
+	cluster_id = $(this).attr('cluster_id');
+		
+	
+	$('#overlay2').css("backgroundColor", loaded_color);
+	$('#overlay2').addClass('karat');
+	
 	
 })
+
+$("body").delegate("#overlay2", "click", function() {
+	
+	$('#overlay2').removeClass('karat');
+})
+
+////end cluster graph clicks
+
+
 
 		console.log('seun')
 
@@ -2405,72 +2688,7 @@ document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.
 </script>
 
 
-<script>
 
-var width = 960,
-    height = 500
-
-var svg = d3.select("#parentdiv").append("svg")
-    .attr("width", width)
-    .attr("height", height);
-
-var force = d3.layout.force()
-    .gravity(0.05)
-    .distance(100)
-    .charge(-100)
-    .size([width, height]);
-
-d3.json("graph.json", function(error, json) {
-  if (error) throw error;
-
-  force
-      .nodes(json.nodes)
-      .links(json.links)
-      .start();
-
-  var link = svg.selectAll(".link")
-      .data(json.links)
-    .enter().append("line")
-      .attr("class", "link");
-
-  var node = svg.selectAll(".node")
-      .data(json.nodes)
-    .enter().append("g")
-      .attr("class", "node")
-      .call(force.drag);
-  
-  
-	var tekken = '<rect width="40" height="80" style="fill:rgb(51, 167, 194);stroke-width:3;stroke:rgb(0,0,0)" />';
-	var tek = '<svg width="40" height="40" class="zoomTarget">';
-		  tek += '<circle cx="50" cy="50" r="40" stroke="black" stroke-width="3" fill="red" />'; 
-			tek += '</svg>';
-		
-			
-  node.append("svg")
-  	.html(tek)
-     // .attr("xlink:href", "https://github.com/favicon.ico")
-      .attr("x", -8)
-      .attr("y", -8)
-      .attr("width", 80)
-      .attr("class", "")
-      .attr("height", 80);
-
-  node.append("text")
-      .attr("dx", 12)
-      .attr("dy", ".35em")
-      .text(function(d) { return d.name });
-
-  force.on("tick", function() {
-    link.attr("x1", function(d) { return d.source.x; })
-        .attr("y1", function(d) { return d.source.y; })
-        .attr("x2", function(d) { return d.target.x; })
-        .attr("y2", function(d) { return d.target.y; });
-
-    node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
-  });
-});
-
-</script>
 
 	<script>
 	
@@ -2809,7 +3027,7 @@ d3.json("graph.json", function(error, json) {
 					.attr("x", 0).attr("y", 0);
 
 			var color = d3v4_.scaleOrdinal().domain(["1", "2","3","4","5","6","7","8","9","10" ]).range(
-					[ 'green', 'red', 'blue', 'orange', 'purple','pink', 'black', 'grey', 'brown','yellow'])
+					[ 'green', 'red', 'blue', 'orange', 'purple','pink', 'gold', 'grey', 'brown','yellow'])
 			/* .domain(["0", "1", "2","3","4","5","6","7","8","9" ]) */
 			/* .range([ 'red', 'green', 'blue', 'orange', 'purple','pink', 'black', 'grey', 'brown','yellow']) */
 
@@ -3058,7 +3276,7 @@ $('.blogpost_link').on("click", function(){
 	    d3 = d3version3 */
 	    var rotation = 0;
 	 	var names = ["Cluster 1", "Cluster 2", "Cluster 3", "Cluster 4", "Cluster 5", "Cluster 6", "Cluster 7", "Cluster 8", "Cluster 9", "Cluster 10"];
-	 	var colors = ["green", "red", "blue", "orange", "purple", "pink", "black", "grey", "brown", "yellow"];
+	 	var colors = ["green", "red", "blue", "orange", "purple", "pink", "gold", "grey", "brown", "yellow"];
 	    var chord_options = {
     		    "gnames": names,
     		    "rotation": rotation,
