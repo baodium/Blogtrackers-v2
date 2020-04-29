@@ -672,7 +672,7 @@ Instant start = Instant.now();
 		<div class="row mt20">
 			<div class="col-md-3">
 
-				<div class="card card-style mt50" style="height: 450px;">
+				<div class="card card-style mt50" style="height: 700px;">
 					<div class="card-body  p30 pt5 pb5 mb40">
 						<h5 class="mt20 mb20">Clusters</h5>
 						<!-- <div style="padding-right: 10px !important;">
@@ -680,7 +680,7 @@ Instant start = Instant.now();
 								placeholder="Search " />
 						</div> -->
 						<div class="scrolly"
-							style="height: 350px; padding-right: 10px !important;">
+							style="height: 600px; padding-right: 10px !important;">
 							<%
 								String bloggersMentioned = null;
 								String currentPostIdsCount = null;
