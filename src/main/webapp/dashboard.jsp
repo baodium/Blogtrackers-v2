@@ -3335,14 +3335,9 @@ var gdpData = {
 					location.put("UA", "48.379433, 31.165581");
 					location.put("RU", "61.524010, 105.318756");
 					location.put("PA", "8.967, -79.458");
-					location.put("BE", "50.503887, 4.469936");
 					
 					location.put("CA", "36.7783, -119.4179");
 					location.put("BG", "42.7339, 25.4858");
-					location.put("DK", "56.263920, 9.501785");
-					
-					location.put("SE", "50.503887, 4.469936");
-					
 					
 					location.put("TR", "38.9637, 35.2433");
 					location.put("FR", "46.2276, 2.2137");
@@ -3751,7 +3746,7 @@ function matrix_loader1(){
 		 %>
 		 console.log('it is 0')
 		 $('#keyword_computing_loaader').removeClass('hidden');
-		 var refreshIntervalId = setInterval(function(){ refresh();    }, 10000);
+		 var refreshIntervalId = setInterval(function(){ refresh();    }, 15000);
 		 matrix_loader1();
 		<% }%>
 		//end java check
@@ -3780,7 +3775,7 @@ function matrix_loader1(){
 				 var data = JSON.parse(response);
 					//$(".char19").html(data.status_percentage);
 					//$(".status").html(data.status);
-					console.log(data.status_percentage)
+					//console.log(data.status_percentage)
 					console.log(data.status)
 					console.log(data.final_terms)
 					
@@ -3788,11 +3783,10 @@ function matrix_loader1(){
 						//wordtagcloud("#tagcloudcontainer99",450,data.final_terms); 
 						//$('#keyword_computing_loaader').addClass('hidden');
 						//$('#tagcloudcontainer99').removeClass('hidden');
+						$('#tagcloudcontainer99').removeClass('hidden');
 						
-						var build = '<div align="center" class=" word1">COMPUTING-TERMS...<span id="keyword_percentage">'+data.status_percentage+'%</span></div>';
-						build += '<div align="center" class=" overlay1"></div>';
-						
-						$('#keyword_computing_loaader').html('');
+						//$('#keyword_computing_loaader').html('');
+						$('#keyword_computing_loaader').addClass('hidden');
 						
 						//matrix_loader1();
 						clearInterval(refreshIntervalId);
@@ -3806,6 +3800,8 @@ function matrix_loader1(){
 						
 						$('#keyword_computing_loaader').html(build);
 						
+						//wordtagcloud("#tagcloudcontainer99",450,data.final_terms); 
+						//clearInterval(refreshIntervalId);
 						matrix_loader1();
 						
 					}
