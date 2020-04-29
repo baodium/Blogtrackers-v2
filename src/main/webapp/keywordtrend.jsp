@@ -629,11 +629,12 @@
 						mostactiveterm = term_;
 						//System.out.println(term_ + mosttermOccurence);
 					}
+					
 					String[] split = termsSplit[i].split(":");
 					String term_ = split[0].replace("\"", "").trim();
 					
-					System.out.println(split[1]);
-					System.out.println(term_ );
+					//System.out.println(split[1]);
+					//System.out.println(term_ );
 					
 					int termOccurence = Integer.parseInt(split[1].trim());
 					HashMap<String, Integer> map = new HashMap<String, Integer>();
@@ -912,6 +913,7 @@
 					</div>
 
 				</div>
+				
 			</div>
 		</div>
 

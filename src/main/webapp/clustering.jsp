@@ -192,7 +192,8 @@ Instant start = Instant.now();
 	String find = "";
 	int [][] termsMatrix = new int[10][10];
 	//int count = 0;
-	
+	JSONArray links_centroids = new JSONArray();
+	JSONArray nodes_centroids = new JSONArray();
 	for (int i = 1; i < 11; i++) {
 
 		String cluster_ = "cluster_" + String.valueOf(i);
@@ -211,15 +212,56 @@ Instant start = Instant.now();
 		System.out.println("done with centroid --");
 		//System.out.println(centroid);
 		
-		ArrayList svd = cluster._getSvd(post_ids);
+		//ArrayList svd = cluster._getSvd(post_ids);
+		
+		JSONObject data_centroids_ = new JSONObject();
+		
+		data_centroids_.put("id","Cluster_" + i);
+	   	data_centroids_.put("group", i);
+	   	data_centroids_.put("label","CLUSTER_" + i);
+	   	data_centroids_.put("level",post_ids.split(",").length);
+	
+	   	nodes_centroids.put(data_centroids_);
+		
+		for(int k = 1; k < 11; k++){
+			if(k != i){
+				String centroids_ = "C" + String.valueOf(k) + "xy";
+				String centroid_ = source.get(centroids_).toString().replace("[", "").replace("]", "");
+				String centroid_x_ = centroid_.split(",")[0].trim();
+				String centroid_y_ = centroid_.split(",")[1].trim();
+				
+				JSONObject data_centroids = new JSONObject();
+				data_centroids.put("target","Cluster_" + i);
+				data_centroids.put("source","Cluster_" + k);
+				
+				double left_ = Math.pow((double)Double.parseDouble(centroid_x_) - (double)Double.parseDouble(centroid_x), 2);
+				double right_ = Math.pow((double)Double.parseDouble(centroid_y_) - (double)Double.parseDouble(centroid_y), 2);
+				String distance_ = String.valueOf(Math.pow((left_ + right_), 0.5));
+				 
+				data_centroids.put("strength", 50 - Double.parseDouble(distance_));
+				links_centroids.put(data_centroids);
+				
+			}
+			
+		}
+		
+		JSONObject svd_ = new JSONObject(source.get("svd").toString());
+		//System.out.println("svd---"+svd_);
 		int counter = 0;
-		for(int j = 0; j < svd.size(); j++){
+		String [] post_split = post_ids.split(",");
+		
+		for(int j = 0; j < post_split.length; j++){
+			
+			
 			
 			JSONObject scatter_plot = new JSONObject();
-			JSONObject source_ = new JSONObject(svd.get(j).toString());
-			Object x_y = source_.getJSONObject("_source").get("svd");
-			Object p_id = source_.getJSONObject("_source").get("post_id");
-			x_y = x_y.toString().replaceAll("\\s+", " ");
+			//JSONObject source_ = new JSONObject(svd.get(j).toString());
+			//Object x_y = source_.getJSONObject("_source").get("svd");
+			//Object p_id = source_.getJSONObject("_source").get("post_id");
+			String p_id = post_split[j];
+			Object x_y = svd_.get(p_id);
+					
+			x_y = x_y.toString().replace("[","").replace("]","").trim().replaceAll("\\s+", " ");
 			
 			String x = x_y.toString().split(" ")[0];
 			String y = x_y.toString().split(" ")[1];
@@ -229,11 +271,13 @@ Instant start = Instant.now();
 			
 			//System.out.println(svd);
 			String postid = p_id.toString();
-			/* if(p_id.toString().equals("62675")){
+			//System.out.println("found you"+postid);
+			 /* if(p_id.toString().equals("62626")){
 				find = x_y.toString() + "--" + x + "--" + y;
+				
 			
 				
-			} */
+			}  */
 			scatter_plot.put("cluster",String.valueOf(i));
 			
 			scatter_plot.put("",String.valueOf(counter));
@@ -244,6 +288,7 @@ Instant start = Instant.now();
 			counter++;
 			
 			//Double.parseDouble(s)
+			//System.out.println(x_y +  x + y);
 			double left = Math.pow((double)Double.parseDouble(x) - (double)Double.parseDouble(centroid_x), 2);
 			double right = Math.pow((double)Double.parseDouble(y) - (double)Double.parseDouble(centroid_y), 2);
 			String distance = String.valueOf(Math.pow((left + right), 0.5));
@@ -251,6 +296,7 @@ Instant start = Instant.now();
 			scatterplotfinaldata.add(scatter_plot);
 			
 		}
+		
 		System.out.println("done with svd --");
 		//scatterplotfinaldata.add(new JSONObject("{columns:['','new_x','new_y','cluster']}"));
 		//System.out.println(svd);
@@ -274,6 +320,7 @@ Instant start = Instant.now();
 		//System.out.println(terms);
 
 		//CREATING CHORD MATRIX
+		
 		
 		String str2 = null;
 		
@@ -311,7 +358,7 @@ Instant start = Instant.now();
 		//DONE CREATING CHORD MATRIX
 		
 		topterms.put(cluster_,terms);
-		System.out.println(terms);
+		//System.out.println(terms);
 		
 		key_val = new Pair<String, String>(cluster_, post_ids);
 		//key_val.put(cluster_,post_ids);
@@ -321,6 +368,7 @@ Instant start = Instant.now();
 			
 		} */
 		key_val_posts.put(cluster_, post_ids);
+		System.out.println("kv --"+ post_ids.split(",").length);
 		clusterResult.put(key_val, postDataAll);
 		
 		
@@ -331,7 +379,14 @@ Instant start = Instant.now();
 	/* for(int i = 0; i < termsMatrix.length; i++){
 		System.out.println("termsMatrix --" + Arrays.toString(termsMatrix[i]));
 	} */
-		
+	
+	
+	JSONObject final_centroids = new JSONObject();
+	final_centroids.put("nodes",nodes_centroids);
+	final_centroids.put("links",links_centroids);
+
+	System.out.println("final_centroids---"+final_centroids);
+	
 	session.setAttribute(tid.toString() + "cluster_terms", topterms);
 	session.setAttribute(tid.toString() + "cluster_distances", distances);
 	session.setAttribute(tid.toString() + "cluster_result", clusterResult);
@@ -379,6 +434,35 @@ Instant start = Instant.now();
 //console.log('scatter data');
 
 </script>
+
+<style>
+.karat{
+	 bottom: 0 !important;
+ height: 100% !important;
+}
+.overlay1 {
+ position: absolute;
+ bottom: 100%;
+ left: 0;
+ right: 0;
+ background-color: #008CBA;
+ overflow: hidden;
+ width: 100%;
+ height:0;
+ transition: .5s ease;
+}
+.text1 {
+ color: white;
+ font-size: 20px;
+ position: absolute;
+ top: 50%;
+ left: 50%;
+ -webkit-transform: translate(-50%, -50%);
+ -ms-transform: translate(-50%, -50%);
+ transform: translate(-50%, -50%);
+ text-align: center;
+}
+</style>
 
 </head>
 <body>
@@ -664,15 +748,15 @@ Instant start = Instant.now();
 										/* postData = cluster.getPosts(currentPostIds, "", "", "__ONLY__POST__ID__");
 										System.out.println(postData.length()); */
 							%>
-							<a data-toggle="tooltip" data-placement="top" title="<%=word_build%>" class="clusters_ btn  form-control stylebuttonactive mb20 "
+							<a cluster_number="<%=i + 1%>" loaded_color="<%=colors[i]%>"  cluster_id="CLUSTER_<%=i + 1%>"  data-toggle="tooltip" data-placement="top" title="<%=word_build%>" class="clusters_ btn  form-control stylebuttonactive mb20 cluster_visual"
 								id="cluster_<%=i + 1%>" counter_value="<%=i  +1%>"
 								style="background-color: <%=colors[i]%>;"> <b>Cluster <%=i + 1%></b>
 							</a>
 							<%
 								} else {
 							%>
-							<a data-toggle="tooltip" data-placement="top" title="<%=word_build%>"
-								class="clusters_ btn form-control stylebuttoninactive text-primary mb20 "
+							<a cluster_number="<%=i + 1%>" loaded_color="<%=colors[i]%>" cluster_id="CLUSTER_<%=i + 1%>" data-toggle="tooltip" data-placement="top" title="<%=word_build%>"
+								class="clusters_ btn form-control stylebuttoninactive text-primary mb20 cluster_visual"
 								id="cluster_<%=i + 1%>" counter_value="<%=i+1 %>"
 								style="background-color: <%=colors[i]%>;"> <b>Cluster <%=i + 1%></b>
 							</a>
@@ -714,10 +798,29 @@ Instant start = Instant.now();
 
 							<div id="chart-container" class="chart-container">
 								<div class="chart" id="clusterdiagram"></div>
+								<div id="parentdivy"></div>
+								
+								<% for(int c=1; c<=10; c++){ %>
+									
+									<div id="CLUSTER_<%=c %>" class="overlay1 ">
+									  <div style="min-height: 450px; width: 1000px;" class="text1 card card-style ">
+											<div class="clusterdiagram_<%=c %>" class="card-body p30 pt5 pb5 container1">
+												<div class="hidden" id="clusterdiagram_<%=c %>" load_status="0" ></div>
+												
+												<div id="clusterdiagram_loader_<%=c %>" class="">
+													<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />
+												</div>
+											</div>
+										</div>
+									 </div>
+									 
+								 <% } %>
+								
+								
 								
 								<div id="clusterdiagram_loader" class="hidden">
-								<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />
-							</div>
+									<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />
+								</div>
 							</div>
 							
 						</div>
@@ -1096,7 +1199,7 @@ Instant start = Instant.now();
 	<script src="assets/js/jquery.min.js"></script>
 
 
-
+ <script src="pagedependencies/baseurl.js?v=93"></script>
 	<script type="text/javascript" src="assets/js/jquery-1.11.3.min.js"></script>
 	<script src="assets/bootstrap/js/bootstrap.js">
  </script>
@@ -1328,6 +1431,470 @@ Instant start = Instant.now();
  });
  </script>
  <script type="text/javascript" src="assets/vendors/d3/d3.v4_new.min.js" ></script> 
+ 
+ <script>
+	////start cluster graph clicks
+		$("body").delegate(".cluster_visual", "click", function() {
+			loaded_color = $(this).attr('loaded_color');
+			cluster_id = $(this).attr('cluster_id');
+			cluster_number = $(this).attr('cluster_number');
+			
+			
+			
+			if( $('#clusterdiagram_'+cluster_number).attr('load_status') == 0  ){
+				getClusterPoints(cluster_number)
+			}
+			
+			$('#'+cluster_id).css("backgroundColor", loaded_color);
+			$('#'+cluster_id).addClass('karat');
+			
+		})
+		$("body").delegate(".overlay1", "click", function() {
+			
+			$(this).removeClass('karat');
+		})
+		////end cluster graph clicks
+		
+		
+		
+		////start get clusterPoint function
+		function getClusterPoints(cluster_id){
+		
+			 id = <%=tid %>
+			 cluster_number = cluster_id
+			 $.ajax({
+					url: app_url+"subpages/cluster_posts_chart.jsp",
+					method: 'POST',
+					/* dataType: 'json', */
+					data: {
+						action:"fetch_graph",
+						tid:id,
+						cluster_number:cluster_number
+					},
+					error: function(response)
+					{		console.log("errrrrrrrr")				
+						console.log(response);
+						//$("#blogpost_detail").html(response);
+					},
+					success: function(response)
+					{   
+						console.log("succcccccc")
+						//console.log(cluster_number);
+						//console.log(response);
+						var data = JSON.parse(response);
+						//$(".char19").html(data.status_percentage);
+						//$(".status").html(data.status);
+						console.log(data.cluster_id)
+						console.log(data.final_data)
+						clusterdiagram3('#clusterdiagram_'+data.cluster_id, 500,data.final_data, data.cluster_id);
+						//$(".clusterdiagram_"+).html(response).hide();
+						//$("#posts_details").fadeIn(700);
+					}
+				});
+		
+		}
+		///end get ClusterPoint function
+		
+		
+		
+		
+		//nodes = []
+ var d3v4 = window.d3;
+ // Chart setup
+ d3.json("data_cluster.json", function(dataset){
+	 clusterdiagram5('#parentdivy', 500,dataset);
+ })
+ var max_post_count = 0;
+ var min_post_count = 0
+ function clusterdiagram3(element, height, dataset, identify) {
+		// console.log("this is dataset1",dataset)
+		 
+		 	 //console.log("this is dataset2",dataset)
+		 	 
+		 	//console.log("normalized_value",normalized_radius )
+		 	//start get normalized array for radius values
+	  /* var nodes = [
+	   { id: "mammal", group: 0, label: "Mammals", level: 2 },
+	   { id: "dog"  , group: 0, label: "Dogs"  , level: 2 },
+	   { id: "cat"  , group: 0, label: "Cats"  , level: 2 },
+	   { id: "fox"  , group: 0, label: "Foxes" , level: 2 },
+	   { id: "elk"  , group: 0, label: "Elk"  , level: 2 },
+	   { id: "insect", group: 1, label: "Insects", level: 2 },
+	   { id: "ant"  , group: 1, label: "Ants"  , level: 2 },
+	   { id: "bee"  , group: 1, label: "Bees"  , level: 2 },
+	   { id: "fish" , group: 2, label: "Fish"  , level: 2 },
+	   { id: "carp" , group: 2, label: "Carp"  , level: 2 },
+	   { id: "pike" , group: 2, label: "Pikes" , level: 2 }
+	  ] */
+		 
+	var nodes = dataset.nodes
+	console.log('nodes', nodes)
+	//console.log('nodes',nodes)
+	  /* var links = [
+	  	{ target: "mammal", source: "dog" , strength: 3.0 },
+	  	{ target: "bee", source: "cat" , strength: 3.0 }
+	   /* { target: "mammal", source: "fox" , strength: 3.0 },
+	   { target: "insect", source: "ant" , strength: 0.7 },
+	   { target: "insect", source: "bee" , strength: 0.7 },
+	   { target: "fish" , source: "carp", strength: 0.7 },
+	   { target: "fish" , source: "pike", strength: 0.7 },
+	   { target: "cat"  , source: "elk" , strength: 0.1 },
+	   { target: "carp" , source: "ant" , strength: 0.1 },
+	   { target: "elk"  , source: "bee" , strength: 0.1 },
+	   { target: "dog"  , source: "cat" , strength: 0.1 },
+	   { target: "fox"  , source: "ant" , strength: 0.1 },
+	  	{ target: "pike" , source: "cat" , strength: 0.1 } */
+	  /* ] */
+	  var links = dataset.links
+	console.log('links', links)
+		  //console.log('links',links)
+		  //var width = $('#clusterdiagram').width();
+		//var height = $('#clusterdiagram').height();
+	   // Define main variables
+	   var d3Container = d3v4.select(element),
+	     margin = {top: 0, right: 50, bottom: 0, left: 50},
+	     width = 960,
+	     height = 550;
+				radius = 6;
+		
+	   var colors = d3v4.scaleOrdinal(d3v4.schemeCategory10);
+	   // Add SVG element
+	   var container = d3Container.append("svg");
+	   // Add SVG group
+	   var svg = container
+	     .attr("width", width + margin.left + margin.right)
+	     .attr("height", height + margin.top + margin.bottom)
+	   .attr("overflow", "visible");
+	     //.append("g")
+	    //  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+	    // simulation setup with all forces
+	  var linkForce = d3v4
+	  .forceLink()
+	  .id(function (link) { return link.id })
+	  .strength(function (link) { return link.strength })
+	    // simulation setup with all forces
+	     var simulation = d3v4
+	     .forceSimulation()
+	     .force('link', d3v4.forceLink().id(d =>d.id).distance(-20))
+	     .force('charge', d3v4.forceManyBody())
+	     /* .force('center', d3v4.forceCenter(width, height ))  */
+	     .force('center', d3v4.forceCenter())  
+	     .force("collide",d3v4.forceCollide().strength(-5)) 
+	     /* simulation.force("center")
+	    .x(width * forceProperties.center.x)
+	    .y(height * forceProperties.center.y); */
+	     /* var simulation = d3.forceSimulation()
+	       .force('x', d3.forceX().x(d => d.x))
+	       .force('y', d3.forceY().y(d => d.y))
+	       .force("charge",d3.forceManyBody().strength(-20))
+	       .force("link", d3.forceLink().id(d =>d.id).distance(20)) 
+	       .force("collide",d3.forceCollide().radius(d => d.r*10)) 
+	       .force('center', d3v4.forceCenter(width, height )) */
+				
+				simulation.force("center")
+			  .x(width / 2)
+			  .y(height / 2)
+			   
+			  	simulation.force("charge")
+	    .strength(-2000 * true)
+	    .distanceMin(1)
+	    .distanceMax(100);
+			  /* .x(width * 0.5) */
+				
+				simulation.alpha(1).restart(); 
+	     var linkElements = svg.append("g")
+	      .attr("class", "links")
+	      .selectAll("line")
+	      .data(links)
+	      .enter().append("line")
+	       .attr("stroke-width", 0)
+	     	 .attr("stroke", "rgba(50, 50, 50, 0.2)")
+	    function getNodeColor(node) {
+	     return node.level === 1 ? 'red' : 'gray'
+	    }
+	    var nodeElements = svg.append("g")
+	     .attr("class", "nodes")
+	     .selectAll("circle")
+	     .data(nodes)
+	     .enter().append("circle")
+	     /* .attr(circleAttrs) */
+	     // .attr("r", function (d, i) {return d.level})
+	      .attr("r", 5)
+	      .attr("fill", function (d, i) {return colors(d.group);})
+	      .attr("class", "cluster_visual")
+			  .attr("loaded_color",function (d) {return colors(d.group); })
+			  .attr("cluster_id", function(node){return node.label})
+	      //.attr("text",function (node) { return node.label })
+	      /* .on("mouseover", function (node) { return node.label }); */
+	    var textElements = svg.append("g")
+	     .attr("class", "texts")
+	     .selectAll("text")
+	     .data(nodes)
+	     .enter().append("text")
+	      //.text(function (node) { return node.label })
+	    	 .attr("font-size", 15)
+	    	 .attr("dx", 15)
+	      .attr("dy", 4) 
+	     simulation.nodes(nodes).on('tick', () => {
+	      nodeElements
+	       .attr('cx', function (node) { return node.x })
+	       .attr('cy', function (node) { return node.y })
+	       textElements  
+	       .attr('x', function (node) { return node.x })
+	       .attr('y', function (node) { return node.y })
+	       linkElements
+	   .attr('x1', function (link) { return link.source.x })
+	   .attr('y1', function (link) { return link.source.y })
+	   .attr('x2', function (link) { return link.target.x })
+	   .attr('y2', function (link) { return link.target.y })
+	     })
+	function handleMouseOver(d, i) { // Add interactivity
+	      // Use D3 to select element, change color and size
+	      d3.select(this).attr({
+	       fill: "orange",
+	       r: radius * 2
+	      });
+	      // Specify where to put label of text
+	      svg.append("text").attr({
+	        id: "t" + d.x + "-" + d.y + "-" + i, // Create an id for text so we can select it later for removing on mouseout
+	        x: function() { return xScale(d.x) - 30; },
+	        y: function() { return yScale(d.y) - 15; }
+	      })
+	      .text(function() {
+	       return [d.x, d.y]; // Value of the text
+	      });
+	     }
+	 simulation.force("link").links(links)
+	 
+	 ///view loaded chart and update loaad status
+	 
+	 $('#clusterdiagram_loader_'+identify).addClass('hidden')
+	 $('#clusterdiagram_'+identify).removeClass('hidden')
+	 $('#clusterdiagram_'+identify).attr('load_status', 1)
+	 ///end view loaded chart and update oad status
+	 
+	 
+	 }
+ ////end clustering3 function 
+ 
+ 
+ ///start clustering5 funtion
+ function clusterdiagram5(element, height, dataset) {
+	// console.log("this is dataset1",dataset)
+	 
+	 var final_centroids = {};
+	 dataset = <%=final_centroids %>
+	 	 //console.log("this is dataset2",dataset)
+	 	 
+	 	 //start getting max and min posts numbers
+	 	for(var i = 0; i < dataset.nodes.length; i++){
+	 		// console.log("this is dataset4",dataset.nodes[i].level)
+	 		 if(i == 0){
+	 			min_post_count = dataset.nodes[i].level
+	 			max_post_count = dataset.nodes[i].level
+	 		 }
+	 		 
+	 		 if(dataset.nodes[i].level < min_post_count){
+	 			min_post_count = dataset.nodes[i].level
+	 		 }
+	 		 
+	 		if(dataset.nodes[i].level > max_post_count){
+	 			max_post_count = dataset.nodes[i].level
+	 		 }
+	 		 
+	 	}
+	 	//end getting max and min posts numbers
+	 	
+	 	//start get normalized array for radius values
+	 	normalized_radius = [];
+	 	for(var i = 0; i < dataset.nodes.length; i++){
+	 		
+	 		normalized_value = ( (dataset.nodes[i].level - min_post_count)/(max_post_count - min_post_count));
+	 		
+	 		range = 2 - 1;
+	 		normalized_value = (normalized_value * range) + 1;
+	 		
+	 		temp = normalized_value * 25;
+	 		normalized_radius[i] = temp;
+	 		
+	 		 //console.log("normalized_value",dataset.nodes[i].level,normalized_value )
+	 		
+	 		 
+	 	}
+	 	//console.log("normalized_value",normalized_radius )
+	 	//start get normalized array for radius values
+  /* var nodes = [
+   { id: "mammal", group: 0, label: "Mammals", level: 2 },
+   { id: "dog"  , group: 0, label: "Dogs"  , level: 2 },
+   { id: "cat"  , group: 0, label: "Cats"  , level: 2 },
+   { id: "fox"  , group: 0, label: "Foxes" , level: 2 },
+   { id: "elk"  , group: 0, label: "Elk"  , level: 2 },
+   { id: "insect", group: 1, label: "Insects", level: 2 },
+   { id: "ant"  , group: 1, label: "Ants"  , level: 2 },
+   { id: "bee"  , group: 1, label: "Bees"  , level: 2 },
+   { id: "fish" , group: 2, label: "Fish"  , level: 2 },
+   { id: "carp" , group: 2, label: "Carp"  , level: 2 },
+   { id: "pike" , group: 2, label: "Pikes" , level: 2 }
+  ] */
+	 
+var nodes = dataset.nodes
+console.log('nodes', nodes)
+//console.log('nodes',nodes)
+  /* var links = [
+  	{ target: "mammal", source: "dog" , strength: 3.0 },
+  	{ target: "bee", source: "cat" , strength: 3.0 }
+   /* { target: "mammal", source: "fox" , strength: 3.0 },
+   { target: "insect", source: "ant" , strength: 0.7 },
+   { target: "insect", source: "bee" , strength: 0.7 },
+   { target: "fish" , source: "carp", strength: 0.7 },
+   { target: "fish" , source: "pike", strength: 0.7 },
+   { target: "cat"  , source: "elk" , strength: 0.1 },
+   { target: "carp" , source: "ant" , strength: 0.1 },
+   { target: "elk"  , source: "bee" , strength: 0.1 },
+   { target: "dog"  , source: "cat" , strength: 0.1 },
+   { target: "fox"  , source: "ant" , strength: 0.1 },
+  	{ target: "pike" , source: "cat" , strength: 0.1 } */
+  /* ] */
+  var links = dataset.links
+console.log('links', links)
+	  //console.log('links',links)
+	  //var width = $('#clusterdiagram').width();
+	//var height = $('#clusterdiagram').height();
+   // Define main variables
+   var d3Container = d3v4.select(element),
+     margin = {top: 0, right: 50, bottom: 0, left: 50},
+     width = 960,
+     height = 550;
+			radius = 6;
+			
+			
+	
+   var colors = d3v4.scaleOrdinal().range(["green", "red", "blue", "orange", "purple", "pink", "black", "grey", "brown", "yellow"]);;
+   // Add SVG element
+   var container = d3Container.append("svg");
+   // Add SVG group
+   var svg = container
+     .attr("width", width + margin.left + margin.right)
+     .attr("height", height + margin.top + margin.bottom)
+   .attr("overflow", "visible");
+     //.append("g")
+    //  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    // simulation setup with all forces
+  var linkForce = d3v4
+  .forceLink()
+  .id(function (link) { return link.id })
+  .strength(function (link) { return link.strength })
+    // simulation setup with all forces
+     var simulation = d3v4
+     .forceSimulation()
+     .force('link', d3v4.forceLink().id(d =>d.id).distance(-20))
+     .force('charge', d3v4.forceManyBody())
+     /* .force('center', d3v4.forceCenter(width, height ))  */
+     .force('center', d3v4.forceCenter())  
+     .force("collide",d3v4.forceCollide().strength(-5)) 
+     /* simulation.force("center")
+    .x(width * forceProperties.center.x)
+    .y(height * forceProperties.center.y); */
+     /* var simulation = d3.forceSimulation()
+       .force('x', d3.forceX().x(d => d.x))
+       .force('y', d3.forceY().y(d => d.y))
+       .force("charge",d3.forceManyBody().strength(-20))
+       .force("link", d3.forceLink().id(d =>d.id).distance(20)) 
+       .force("collide",d3.forceCollide().radius(d => d.r*10)) 
+       .force('center', d3v4.forceCenter(width, height )) */
+			
+			simulation.force("center")
+		  .x(width / 2)
+		  .y(height / 2)
+		   
+		  	simulation.force("charge")
+    .strength(-2000 * true)
+    .distanceMin(1)
+    .distanceMax(1000);
+		  /* .x(width * 0.5) */
+			
+			simulation.alpha(1).restart(); 
+     var linkElements = svg.append("g")
+      .attr("class", "links")
+      .selectAll("line")
+      .data(links)
+      .enter().append("line")
+       .attr("stroke-width", 0)
+     	 .attr("stroke", "rgba(50, 50, 50, 0.2)")
+    function getNodeColor(node) {
+     return node.level === 1 ? 'red' : 'gray'
+    }
+    var nodeElements = svg.append("g")
+     .attr("class", "nodes")
+     .selectAll("circle")
+     .data(nodes)
+     .enter().append("circle")
+     /* .attr(circleAttrs) */
+     // .attr("r", function (d, i) {return d.level})
+      .attr("r", function (d, i) {return normalized_radius[d.group-1]})
+      .attr("cluster_number", function (d, i) {return d.group})
+      .attr("fill", function (d, i) {return colors(d.group);})
+      .attr("class", "cluster_visual")
+		  .attr("loaded_color",function (d) {return colors(d.group); })
+		  .attr("cluster_id", function(node){return node.label})
+      //.attr("text",function (node) { return node.label })
+      /* .on("mouseover", function (node) { return node.label }); */
+    var textElements = svg.append("g")
+     .attr("class", "texts")
+     .selectAll("text")
+     .data(nodes)
+     .enter().append("text")
+      .text(function (node) { return node.label })
+    	 .attr("font-size", 15)
+    	 .attr("dx", 15)
+      .attr("dy", 4) 
+     simulation.nodes(nodes).on('tick', () => {
+      nodeElements
+       .attr('cx', function (node) { return node.x })
+       .attr('cy', function (node) { return node.y })
+       textElements  
+       .attr('x', function (node) { return node.x })
+       .attr('y', function (node) { return node.y })
+       linkElements
+   .attr('x1', function (link) { return link.source.x })
+   .attr('y1', function (link) { return link.source.y })
+   .attr('x2', function (link) { return link.target.x })
+   .attr('y2', function (link) { return link.target.y })
+     })
+function handleMouseOver(d, i) { // Add interactivity
+      // Use D3 to select element, change color and size
+      d3.select(this).attr({
+       fill: "orange",
+       r: radius * 2
+      });
+      // Specify where to put label of text
+      svg.append("text").attr({
+        id: "t" + d.x + "-" + d.y + "-" + i, // Create an id for text so we can select it later for removing on mouseout
+        x: function() { return xScale(d.x) - 30; },
+        y: function() { return yScale(d.y) - 15; }
+      })
+      .text(function() {
+       return [d.x, d.y]; // Value of the text
+      });
+     }
+ simulation.force("link").links(links)
+ }
+ ///end clustering5 function
+ 
+ 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+	</script>
  <script>
     var d3v4_ = window.d3;
     //console.log(d3v4_.version)
@@ -1511,7 +2078,7 @@ Instant start = Instant.now();
 	}
 </script>
 
-<script type="text/javascript" src="assets/vendors/d3/d3.min.js" ></script>
+ <script type="text/javascript" src="assets/vendors/d3/d3.min.js" ></script> 
  <script src="assets/vendors/wordcloud/d3.layout.cloud.js" ></script>
  <script type="text/javascript" src="assets/vendors/d3/d3_tooltip.js" ></script>
  <script type="text/javascript"
@@ -1696,7 +2263,7 @@ $('.blogpost_link').on("click", function(){
 }); --%>
 
  </script>
- <script src="pagedependencies/baseurl.js?v=93"></script>
+
  <!-- <script type="text/javascript"></script>
 	<script type="text/javascript" src="assets/vendors/d3/d3.min.js"></script>
 	<script src="assets/vendors/wordcloud/d3.layout.cloud.js"></script>

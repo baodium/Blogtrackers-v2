@@ -806,19 +806,23 @@ else
 			success: function(response)
 			{   
 				// alert(response)
+				//alert(reponse);
+				//alert(all_blogs);
 				
 				// console.log('first succcess',response);
 				// if(response.indexOf("success")>-1){
 				if(response!="error creating tracker" && response!="tracker already exist"){
+					//console.log('maya',response)
+					//console.log('maya2',all_blogs)
 					uploadTerms(response,"create")
-					toastr.success('Tracker successfully created and Updated!','Success');
+					toastr.success('Tracker2222 successfully created and Updated!','Success');
 					$('#newtracker_name').html('');
 					$('#newtracker_description').html('');
 					$('.trackcreationsection2').addClass("hidden");
 					$('.trackcreationsection1').removeClass('hidden');
 					$('.trackinitiated, .modalbackdrop').hide();
 					
-					window.location.href = 'edittracker.jsp?tid='+response;
+					//window.location.href = 'edittracker.jsp?tid='+response;
 					
 					console.log(app_url)
 					$.ajax({
