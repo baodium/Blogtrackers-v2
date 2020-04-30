@@ -3734,6 +3734,7 @@ function matrix_loader1(){
 			final_result.put("final_terms",final_terms);
 		%>	
 		console.log('it is 1')
+		$('#keywordbtn').prop("disabled", false);
 			$('#tagcloudcontainer99').removeClass('hidden');
 			$('#keyword_card_div').removeClass('radial_f')
 			wordtagcloud("#tagcloudcontainer99",450,<%=final_terms%>); 
@@ -3744,6 +3745,7 @@ function matrix_loader1(){
 			
 		 %>
 		 console.log('it is 0')
+		 $('#keywordbtn').prop("disabled", true);
 		 $('#keyword_computing_loaader').removeClass('hidden');
 		 var refreshIntervalId = setInterval(function(){ refresh();    }, 15000);
 		 matrix_loader1();
@@ -3786,7 +3788,7 @@ function matrix_loader1(){
 						
 						//$('#keyword_computing_loaader').html('');
 						$('#keyword_computing_loaader').addClass('hidden');
-						
+						$('#keywordbtn').prop("disabled", false);
 						//matrix_loader1();
 						clearInterval(refreshIntervalId);
 						$('#keyword_card_div').removeClass('radial_f')
