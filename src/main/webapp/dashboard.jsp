@@ -311,6 +311,7 @@
 			dispto = DATE_FORMAT.format(new SimpleDateFormat("yyyy-MM-dd").parse(dte));
 			//totalpost = post._searchRangeTotal("date", dt, dte, ids);
 
+			System.out.println("idsss"+ids);
 			totalpost = post._getBlogPostById(ids);
 
 			/* outlinks = outl._searchByRange("date", dt, dte, ids); */

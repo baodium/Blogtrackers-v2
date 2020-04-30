@@ -2355,7 +2355,7 @@ public class Blogposts {
 	}
 
 	public ArrayList _getPosts(String blog_ids, String from, String to) throws Exception {
-		JSONObject que = new JSONObject("{\r\n" + "    \"size\": 1000,\r\n" + "    \"query\": {\r\n"
+		JSONObject que = new JSONObject("{\r\n" + "    \"size\": 10000,\r\n" + "    \"query\": {\r\n"
 				+ "        \"bool\": {\r\n" + "            \"must\": [\r\n" + "                {\r\n"
 				+ "                    \"terms\": {\r\n" + "                        \"blogsite_id\": [" + blog_ids
 				+ "],\r\n" + "                        \"boost\": 1.0\r\n" + "                    }\r\n"
