@@ -941,7 +941,8 @@ circle {
 						    </div>
 						 </div> -->
 						 <!-- End Modal -->
-						<div id="parentdiv"></div>
+						<!-- <div id="parentdiv"></div> -->
+						<div  id="parentdivy"></div>
 						<div id="bubble-word" class="bubble-word"></div>
 							<div id="overlay2" class="overlay1 ">
 							    
@@ -1348,230 +1349,50 @@ circle {
 	<script
 		src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.print.min.js"></script>
 		
-		<script src="https://d3js.org/d3.v3.min.js"></script>
-<script>
-
-
-
-
-var width = 960,
-    height = 500,
-    padding = 1.5, // separation between same-color nodes
-    clusterPadding = 6, // separation between different-color nodes
-    maxRadius = 12;
-
-var color = d3.scale.ordinal()
-      .range(["green", "red", "blue", "orange", "purple", "pink", "gold", "grey", "brown", "yellow"]);
-
-
-
-d3.text("word_groups.csv", function(error, text) {
-  if (error) throw error;
-  var colNames = "text,size,group\n" + text;
-  var data = d3.csv.parse(colNames);
-
-  data.forEach(function(d) {
-    d.size = +d.size;  });
-
-
-//unique cluster/group id's
-var cs = [];
-data.forEach(function(d){
-        if(!cs.contains(d.group)) {
-            cs.push(d.group);
-        }
-});
-
-var n = data.length, // total number of nodes
-    m = cs.length; // number of distinct clusters
-
-//create clusters and nodes
-var clusters = new Array(m);
-var nodes = [];
-for (var i = 0; i<n; i++){
-    nodes.push(create_nodes(data,i));
-}
-
-var force = d3.layout.force()
-    .nodes(nodes)
-    .size([width, height])
-    .gravity(.02)
-    .charge(0)
-    .on("tick", tick)
-    .start();
-
-var svg = d3.select("#parentdiv").append("svg")
-    .attr("width", width)
-    .attr("height", height);
-
-
-var node = svg.selectAll("circle")
-    .data(nodes)
-    .enter().append("g").call(force.drag);
-
-
-node.append("circle")
-    .style("fill", function (d) {
-    return color(d.cluster);
-    })
-    .attr("r", function(d){return d.radius})
-    .attr("class", "cluster_visual")
-    .attr("loaded_color",function (d) {return color(d.cluster); })
-    .attr("cluster_id", function(d){return d.cluster + 1})
-    
-
-node.append("text")
-      .attr("dy", ".3em")
-      .style("text-anchor", "middle")
-      .text(function(d) { return d.text.substring(0, d.radius / 3); });
-
-
-
-
-function create_nodes(data,node_counter) {
-  var i = cs.indexOf(data[node_counter].group),
-      r = Math.sqrt((i + 1) / m * -Math.log(Math.random())) * maxRadius,
-      d = {
-        cluster: i,
-        radius: data[node_counter].size*1.5,
-        text: data[node_counter].text,
-        x: Math.cos(i / m * 2 * Math.PI) * 200 + width / 2 + Math.random(),
-        y: Math.sin(i / m * 2 * Math.PI) * 200 + height / 2 + Math.random()
-      };
-  if (!clusters[i] || (r > clusters[i].radius)) clusters[i] = d;
-  return d;
-};
-
-
-
-function tick(e) {
-    node.each(cluster(10 * e.alpha * e.alpha))
-        .each(collide(.5))
-    .attr("transform", function (d) {
-        var k = "translate(" + d.x + "," + d.y + ")";
-        return k;
-    })
-
-}
-
-// Move d to be adjacent to the cluster node.
-function cluster(alpha) {
-    return function (d) {
-        var cluster = clusters[d.cluster];
-        if (cluster === d) return;
-        var x = d.x - cluster.x,
-            y = d.y - cluster.y,
-            l = Math.sqrt(x * x + y * y),
-            r = d.radius + cluster.radius;
-        if (l != r) {
-            l = (l - r) / l * alpha;
-            d.x -= x *= l;
-            d.y -= y *= l;
-            cluster.x += x;
-            cluster.y += y;
-        }
-    };
-}
-
-// Resolves collisions between d and all other circles.
-function collide(alpha) {
-    var quadtree = d3.geom.quadtree(nodes);
-    return function (d) {
-        var r = d.radius + maxRadius + Math.max(padding, clusterPadding),
-            nx1 = d.x - r,
-            nx2 = d.x + r,
-            ny1 = d.y - r,
-            ny2 = d.y + r;
-        quadtree.visit(function (quad, x1, y1, x2, y2) {
-            if (quad.point && (quad.point !== d)) {
-                var x = d.x - quad.point.x,
-                    y = d.y - quad.point.y,
-                    l = Math.sqrt(x * x + y * y),
-                    r = d.radius + quad.point.radius + (d.cluster === quad.point.cluster ? padding : clusterPadding);
-                if (l < r) {
-                    l = (l - r) / l * alpha;
-                    d.x -= x *= l;
-                    d.y -= y *= l;
-                    quad.point.x += x;
-                    quad.point.y += y;
-                }
-            }
-            return x1 > nx2 || x2 < nx1 || y1 > ny2 || y2 < ny1;
-        });
-    };
-}
-});
-
-Array.prototype.contains = function(v) {
-    for(var i = 0; i < this.length; i++) {
-        if(this[i] === v) return true;
-    }
-    return false;
-};
-
-</script>		
 		
-		
+
 		
 		
 		
 		<script src="https://d3js.org/d3.v4.js"></script>
 		
 		
-<script>
-$(document).ready(function(){
-	
- 	$("body").on("click","#btn",function(){
-  	  	
-    	$("#myModal").modal("show");
-        
-    	$(".blue").addClass("after_modal_appended");
-    
-    	//appending modal background inside the blue div
-    	$('.modal-backdrop').appendTo('.blue');   
-    
-    	//remove the padding right and modal-open class from the body tag which bootstrap adds when a modal is shown
-    
-    	$('body').removeClass("modal-open")
-   	 	$('body').css("padding-right","");     
-  });
+		<script>
+	////start cluster graph clicks
+		$("body").delegate(".cluster_visual", "click", function() {
 
-});
+			loaded_color = $(this).attr('loaded_color');
+			cluster_id = $(this).attr('cluster_id');
+				
+			
+			$('#overlay2').css("backgroundColor", loaded_color);
+			$('#overlay2').addClass('karat');
+			
+			
+		})
 
-////start cluster graph clicks
-$("body").delegate(".cluster_visual", "click", function() {
+		$("body").delegate("#overlay2", "click", function() {
+			
+			$('#overlay2').removeClass('karat');
+		})
 
-	loaded_color = $(this).attr('loaded_color');
-	cluster_id = $(this).attr('cluster_id');
+		////end cluster graph clicks
 		
-	
-	$('#overlay2').css("backgroundColor", loaded_color);
-	$('#overlay2').addClass('karat');
-	
-	
-})
-
-$("body").delegate("#overlay2", "click", function() {
-	
-	$('#overlay2').removeClass('karat');
-})
-
-////end cluster graph clicks
-
-
-
-		console.log('seun')
-
+		//nodes = []
   
   var d3v4 = window.d3;
 
- clusterdiagram('#clusterdiagram', 400);
+ 
+ 
 
  // Chart setup
- function clusterdiagram(element, height) {
-	 
+ d3.json("data_cluster.json", function(dataset){
+	 clusterdiagram('#parentdivy', 500,dataset);
+ })
+ 
+ function clusterdiagram(element, height, dataset) {
 
-    var nodes = [
+   /* var nodes = [
      { id: "mammal", group: 0, label: "Mammals", level: 2 },
      { id: "dog"   , group: 0, label: "Dogs"   , level: 2 },
      { id: "cat"   , group: 0, label: "Cats"   , level: 2 },
@@ -1583,511 +1404,17 @@ $("body").delegate("#overlay2", "click", function() {
      { id: "fish"  , group: 2, label: "Fish"   , level: 2 },
      { id: "carp"  , group: 2, label: "Carp"   , level: 2 },
      { id: "pike"  , group: 2, label: "Pikes"  , level: 2 }
-   ] 
-// var nodes = [{'id': 'post_0', 'group': 4, 'label': 'Post_0', 'level': 1},
-// 	 {'id': 'post_1', 'group': 5, 'label': 'Post_1', 'level': 1},
-// 	 {'id': 'post_2', 'group': 2, 'label': 'Post_2', 'level': 1},
-// 	 {'id': 'post_3', 'group': 10, 'label': 'Post_3', 'level': 1},
-// 	 {'id': 'post_4', 'group': 1, 'label': 'Post_4', 'level': 1},
-// 	 {'id': 'post_5', 'group': 5, 'label': 'Post_5', 'level': 1},
-// 	 {'id': 'post_6', 'group': 5, 'label': 'Post_6', 'level': 1},
-// 	 {'id': 'post_7', 'group': 4, 'label': 'Post_7', 'level': 1},
-// 	 {'id': 'post_8', 'group': 4, 'label': 'Post_8', 'level': 1},
-// 	 {'id': 'post_9', 'group': 5, 'label': 'Post_9', 'level': 1},
-// 	 {'id': 'post_10', 'group': 1, 'label': 'Post_10', 'level': 1},
-// 	 {'id': 'post_11', 'group': 4, 'label': 'Post_11', 'level': 1},
-// 	 {'id': 'post_12', 'group': 8, 'label': 'Post_12', 'level': 1},
-// 	 {'id': 'post_13', 'group': 6, 'label': 'Post_13', 'level': 1},
-// 	 {'id': 'post_14', 'group': 6, 'label': 'Post_14', 'level': 1},
-// 	 {'id': 'post_15', 'group': 2, 'label': 'Post_15', 'level': 1},
-// 	 {'id': 'post_16', 'group': 3, 'label': 'Post_16', 'level': 1},
-// 	 {'id': 'post_17', 'group': 1, 'label': 'Post_17', 'level': 1},
-// 	 {'id': 'post_18', 'group': 8, 'label': 'Post_18', 'level': 1},
-// 	 {'id': 'post_19', 'group': 4, 'label': 'Post_19', 'level': 1},
-// 	 {'id': 'post_20', 'group': 4, 'label': 'Post_20', 'level': 1},
-// 	 {'id': 'post_21', 'group': 1, 'label': 'Post_21', 'level': 1},
-// 	 {'id': 'post_22', 'group': 1, 'label': 'Post_22', 'level': 1},
-// 	 {'id': 'post_23', 'group': 5, 'label': 'Post_23', 'level': 1},
-// 	 {'id': 'post_24', 'group': 1, 'label': 'Post_24', 'level': 1},
-// 	 {'id': 'post_25', 'group': 5, 'label': 'Post_25', 'level': 1},
-// 	 {'id': 'post_26', 'group': 7, 'label': 'Post_26', 'level': 1},
-// 	 {'id': 'post_27', 'group': 5, 'label': 'Post_27', 'level': 1},
-// 	 {'id': 'post_28', 'group': 4, 'label': 'Post_28', 'level': 1},
-// 	 {'id': 'post_29', 'group': 4, 'label': 'Post_29', 'level': 1},
-// 	 {'id': 'post_30', 'group': 9, 'label': 'Post_30', 'level': 1},
-// 	 {'id': 'post_31', 'group': 7, 'label': 'Post_31', 'level': 1},
-// 	 {'id': 'post_32', 'group': 7, 'label': 'Post_32', 'level': 1},
-// 	 {'id': 'post_33', 'group': 9, 'label': 'Post_33', 'level': 1},
-// 	 {'id': 'post_34', 'group': 2, 'label': 'Post_34', 'level': 1},
-// 	 {'id': 'post_35', 'group': 1, 'label': 'Post_35', 'level': 1},
-// 	 {'id': 'post_36', 'group': 4, 'label': 'Post_36', 'level': 1},
-// 	 {'id': 'post_37', 'group': 7, 'label': 'Post_37', 'level': 1},
-// 	 {'id': 'post_38', 'group': 1, 'label': 'Post_38', 'level': 1},
-// 	 {'id': 'post_39', 'group': 6, 'label': 'Post_39', 'level': 1},
-// 	 {'id': 'post_40', 'group': 2, 'label': 'Post_40', 'level': 1},
-// 	 {'id': 'post_41', 'group': 9, 'label': 'Post_41', 'level': 1},
-// 	 {'id': 'post_42', 'group': 2, 'label': 'Post_42', 'level': 1},
-// 	 {'id': 'post_43', 'group': 10, 'label': 'Post_43', 'level': 1},
-// 	 {'id': 'post_44', 'group': 10, 'label': 'Post_44', 'level': 1},
-// 	 {'id': 'post_45', 'group': 7, 'label': 'Post_45', 'level': 1},
-// 	 {'id': 'post_46', 'group': 6, 'label': 'Post_46', 'level': 1},
-// 	 {'id': 'post_47', 'group': 2, 'label': 'Post_47', 'level': 1},
-// 	 {'id': 'post_48', 'group': 7, 'label': 'Post_48', 'level': 1},
-// 	 {'id': 'post_49', 'group': 7, 'label': 'Post_49', 'level': 1},
-// 	 {'id': 'post_50', 'group': 6, 'label': 'Post_50', 'level': 1},
-// 	 {'id': 'post_51', 'group': 8, 'label': 'Post_51', 'level': 1},
-// 	 {'id': 'post_52', 'group': 1, 'label': 'Post_52', 'level': 1},
-// 	 {'id': 'post_53', 'group': 7, 'label': 'Post_53', 'level': 1},
-// 	 {'id': 'post_54', 'group': 10, 'label': 'Post_54', 'level': 1},
-// 	 {'id': 'post_55', 'group': 9, 'label': 'Post_55', 'level': 1},
-// 	 {'id': 'post_56', 'group': 10, 'label': 'Post_56', 'level': 1},
-// 	 {'id': 'post_57', 'group': 7, 'label': 'Post_57', 'level': 1},
-// 	 {'id': 'post_58', 'group': 8, 'label': 'Post_58', 'level': 1},
-// 	 {'id': 'post_59', 'group': 4, 'label': 'Post_59', 'level': 1},
-// 	 {'id': 'post_60', 'group': 1, 'label': 'Post_60', 'level': 1},
-// 	 {'id': 'post_61', 'group': 10, 'label': 'Post_61', 'level': 1},
-// 	 {'id': 'post_62', 'group': 3, 'label': 'Post_62', 'level': 1},
-// 	 {'id': 'post_63', 'group': 3, 'label': 'Post_63', 'level': 1},
-// 	 {'id': 'post_64', 'group': 6, 'label': 'Post_64', 'level': 1},
-// 	 {'id': 'post_65', 'group': 5, 'label': 'Post_65', 'level': 1},
-// 	 {'id': 'post_66', 'group': 3, 'label': 'Post_66', 'level': 1},
-// 	 {'id': 'post_67', 'group': 7, 'label': 'Post_67', 'level': 1},
-// 	 {'id': 'post_68', 'group': 6, 'label': 'Post_68', 'level': 1},
-// 	 {'id': 'post_69', 'group': 5, 'label': 'Post_69', 'level': 1},
-// 	 {'id': 'post_70', 'group': 8, 'label': 'Post_70', 'level': 1},
-// 	 {'id': 'post_71', 'group': 4, 'label': 'Post_71', 'level': 1},
-// 	 {'id': 'post_72', 'group': 7, 'label': 'Post_72', 'level': 1},
-// 	 {'id': 'post_73', 'group': 5, 'label': 'Post_73', 'level': 1},
-// 	 {'id': 'post_74', 'group': 1, 'label': 'Post_74', 'level': 1},
-// 	 {'id': 'post_75', 'group': 6, 'label': 'Post_75', 'level': 1},
-// 	 {'id': 'post_76', 'group': 3, 'label': 'Post_76', 'level': 1},
-// 	 {'id': 'post_77', 'group': 8, 'label': 'Post_77', 'level': 1},
-// 	 {'id': 'post_78', 'group': 8, 'label': 'Post_78', 'level': 1},
-// 	 {'id': 'post_79', 'group': 4, 'label': 'Post_79', 'level': 1},
-// 	 {'id': 'post_80', 'group': 8, 'label': 'Post_80', 'level': 1},
-// 	 {'id': 'post_81', 'group': 5, 'label': 'Post_81', 'level': 1},
-// 	 {'id': 'post_82', 'group': 7, 'label': 'Post_82', 'level': 1},
-// 	 {'id': 'post_83', 'group': 3, 'label': 'Post_83', 'level': 1},
-// 	 {'id': 'post_84', 'group': 7, 'label': 'Post_84', 'level': 1},
-// 	 {'id': 'post_85', 'group': 3, 'label': 'Post_85', 'level': 1},
-// 	 {'id': 'post_86', 'group': 10, 'label': 'Post_86', 'level': 1},
-// 	 {'id': 'post_87', 'group': 4, 'label': 'Post_87', 'level': 1},
-// 	 {'id': 'post_88', 'group': 7, 'label': 'Post_88', 'level': 1},
-// 	 {'id': 'post_89', 'group': 9, 'label': 'Post_89', 'level': 1},
-// 	 {'id': 'post_90', 'group': 4, 'label': 'Post_90', 'level': 1},
-// 	 {'id': 'post_91', 'group': 10, 'label': 'Post_91', 'level': 1},
-// 	 {'id': 'post_92', 'group': 6, 'label': 'Post_92', 'level': 1},
-// 	 {'id': 'post_93', 'group': 8, 'label': 'Post_93', 'level': 1},
-// 	 {'id': 'post_94', 'group': 6, 'label': 'Post_94', 'level': 1},
-// 	 {'id': 'post_95', 'group': 1, 'label': 'Post_95', 'level': 1},
-// 	 {'id': 'post_96', 'group': 5, 'label': 'Post_96', 'level': 1},
-// 	 {'id': 'post_97', 'group': 8, 'label': 'Post_97', 'level': 1},
-// 	 {'id': 'post_98', 'group': 8, 'label': 'Post_98', 'level': 1},
-// 	 {'id': 'post_99', 'group': 8, 'label': 'Post_99', 'level': 1},
-// 	 {'id': 'post_100', 'group': 7, 'label': 'Post_100', 'level': 1},
-// 	 {'id': 'post_101', 'group': 7, 'label': 'Post_101', 'level': 1},
-// 	 {'id': 'post_102', 'group': 10, 'label': 'Post_102', 'level': 1},
-// 	 {'id': 'post_103', 'group': 1, 'label': 'Post_103', 'level': 1},
-// 	 {'id': 'post_104', 'group': 1, 'label': 'Post_104', 'level': 1},
-// 	 {'id': 'post_105', 'group': 10, 'label': 'Post_105', 'level': 1},
-// 	 {'id': 'post_106', 'group': 2, 'label': 'Post_106', 'level': 1},
-// 	 {'id': 'post_107', 'group': 5, 'label': 'Post_107', 'level': 1},
-// 	 {'id': 'post_108', 'group': 6, 'label': 'Post_108', 'level': 1},
-// 	 {'id': 'post_109', 'group': 6, 'label': 'Post_109', 'level': 1},
-// 	 {'id': 'post_110', 'group': 6, 'label': 'Post_110', 'level': 1},
-// 	 {'id': 'post_111', 'group': 4, 'label': 'Post_111', 'level': 1},
-// 	 {'id': 'post_112', 'group': 7, 'label': 'Post_112', 'level': 1},
-// 	 {'id': 'post_113', 'group': 9, 'label': 'Post_113', 'level': 1},
-// 	 {'id': 'post_114', 'group': 5, 'label': 'Post_114', 'level': 1},
-// 	 {'id': 'post_115', 'group': 10, 'label': 'Post_115', 'level': 1},
-// 	 {'id': 'post_116', 'group': 6, 'label': 'Post_116', 'level': 1},
-// 	 {'id': 'post_117', 'group': 4, 'label': 'Post_117', 'level': 1},
-// 	 {'id': 'post_118', 'group': 6, 'label': 'Post_118', 'level': 1},
-// 	 {'id': 'post_119', 'group': 1, 'label': 'Post_119', 'level': 1},
-// 	 {'id': 'post_120', 'group': 1, 'label': 'Post_120', 'level': 1},
-// 	 {'id': 'post_121', 'group': 6, 'label': 'Post_121', 'level': 1},
-// 	 {'id': 'post_122', 'group': 6, 'label': 'Post_122', 'level': 1},
-// 	 {'id': 'post_123', 'group': 6, 'label': 'Post_123', 'level': 1},
-// 	 {'id': 'post_124', 'group': 4, 'label': 'Post_124', 'level': 1},
-// 	 {'id': 'post_125', 'group': 6, 'label': 'Post_125', 'level': 1},
-// 	 {'id': 'post_126', 'group': 6, 'label': 'Post_126', 'level': 1},
-// 	 {'id': 'post_127', 'group': 2, 'label': 'Post_127', 'level': 1},
-// 	 {'id': 'post_128', 'group': 3, 'label': 'Post_128', 'level': 1},
-// 	 {'id': 'post_129', 'group': 8, 'label': 'Post_129', 'level': 1},
-// 	 {'id': 'post_130', 'group': 7, 'label': 'Post_130', 'level': 1},
-// 	 {'id': 'post_131', 'group': 1, 'label': 'Post_131', 'level': 1},
-// 	 {'id': 'post_132', 'group': 8, 'label': 'Post_132', 'level': 1},
-// 	 {'id': 'post_133', 'group': 5, 'label': 'Post_133', 'level': 1},
-// 	 {'id': 'post_134', 'group': 3, 'label': 'Post_134', 'level': 1},
-// 	 {'id': 'post_135', 'group': 1, 'label': 'Post_135', 'level': 1},
-// 	 {'id': 'post_136', 'group': 7, 'label': 'Post_136', 'level': 1},
-// 	 {'id': 'post_137', 'group': 9, 'label': 'Post_137', 'level': 1},
-// 	 {'id': 'post_138', 'group': 4, 'label': 'Post_138', 'level': 1},
-// 	 {'id': 'post_139', 'group': 10, 'label': 'Post_139', 'level': 1},
-// 	 {'id': 'post_140', 'group': 5, 'label': 'Post_140', 'level': 1},
-// 	 {'id': 'post_141', 'group': 1, 'label': 'Post_141', 'level': 1},
-// 	 {'id': 'post_142', 'group': 7, 'label': 'Post_142', 'level': 1},
-// 	 {'id': 'post_143', 'group': 5, 'label': 'Post_143', 'level': 1},
-// 	 {'id': 'post_144', 'group': 9, 'label': 'Post_144', 'level': 1},
-// 	 {'id': 'post_145', 'group': 1, 'label': 'Post_145', 'level': 1},
-// 	 {'id': 'post_146', 'group': 5, 'label': 'Post_146', 'level': 1},
-// 	 {'id': 'post_147', 'group': 6, 'label': 'Post_147', 'level': 1},
-// 	 {'id': 'post_148', 'group': 5, 'label': 'Post_148', 'level': 1},
-// 	 {'id': 'post_149', 'group': 2, 'label': 'Post_149', 'level': 1},
-// 	 {'id': 'post_150', 'group': 9, 'label': 'Post_150', 'level': 1},
-// 	 {'id': 'post_151', 'group': 1, 'label': 'Post_151', 'level': 1},
-// 	 {'id': 'post_152', 'group': 8, 'label': 'Post_152', 'level': 1},
-// 	 {'id': 'post_153', 'group': 7, 'label': 'Post_153', 'level': 1},
-// 	 {'id': 'post_154', 'group': 4, 'label': 'Post_154', 'level': 1},
-// 	 {'id': 'post_155', 'group': 4, 'label': 'Post_155', 'level': 1},
-// 	 {'id': 'post_156', 'group': 5, 'label': 'Post_156', 'level': 1},
-// 	 {'id': 'post_157', 'group': 3, 'label': 'Post_157', 'level': 1},
-// 	 {'id': 'post_158', 'group': 8, 'label': 'Post_158', 'level': 1},
-// 	 {'id': 'post_159', 'group': 6, 'label': 'Post_159', 'level': 1},
-// 	 {'id': 'post_160', 'group': 5, 'label': 'Post_160', 'level': 1},
-// 	 {'id': 'post_161', 'group': 5, 'label': 'Post_161', 'level': 1},
-// 	 {'id': 'post_162', 'group': 1, 'label': 'Post_162', 'level': 1},
-// 	 {'id': 'post_163', 'group': 7, 'label': 'Post_163', 'level': 1},
-// 	 {'id': 'post_164', 'group': 7, 'label': 'Post_164', 'level': 1},
-// 	 {'id': 'post_165', 'group': 5, 'label': 'Post_165', 'level': 1},
-// 	 {'id': 'post_166', 'group': 5, 'label': 'Post_166', 'level': 1},
-// 	 {'id': 'post_167', 'group': 10, 'label': 'Post_167', 'level': 1},
-// 	 {'id': 'post_168', 'group': 10, 'label': 'Post_168', 'level': 1},
-// 	 {'id': 'post_169', 'group': 10, 'label': 'Post_169', 'level': 1},
-// 	 {'id': 'post_170', 'group': 9, 'label': 'Post_170', 'level': 1},
-// 	 {'id': 'post_171', 'group': 4, 'label': 'Post_171', 'level': 1},
-// 	 {'id': 'post_172', 'group': 8, 'label': 'Post_172', 'level': 1},
-// 	 {'id': 'post_173', 'group': 6, 'label': 'Post_173', 'level': 1},
-// 	 {'id': 'post_174', 'group': 4, 'label': 'Post_174', 'level': 1},
-// 	 {'id': 'post_175', 'group': 3, 'label': 'Post_175', 'level': 1},
-// 	 {'id': 'post_176', 'group': 2, 'label': 'Post_176', 'level': 1},
-// 	 {'id': 'post_177', 'group': 6, 'label': 'Post_177', 'level': 1},
-// 	 {'id': 'post_178', 'group': 3, 'label': 'Post_178', 'level': 1},
-// 	 {'id': 'post_179', 'group': 5, 'label': 'Post_179', 'level': 1},
-// 	 {'id': 'post_180', 'group': 2, 'label': 'Post_180', 'level': 1},
-// 	 {'id': 'post_181', 'group': 9, 'label': 'Post_181', 'level': 1},
-// 	 {'id': 'post_182', 'group': 9, 'label': 'Post_182', 'level': 1},
-// 	 {'id': 'post_183', 'group': 3, 'label': 'Post_183', 'level': 1},
-// 	 {'id': 'post_184', 'group': 2, 'label': 'Post_184', 'level': 1},
-// 	 {'id': 'post_185', 'group': 4, 'label': 'Post_185', 'level': 1},
-// 	 {'id': 'post_186', 'group': 7, 'label': 'Post_186', 'level': 1},
-// 	 {'id': 'post_187', 'group': 4, 'label': 'Post_187', 'level': 1},
-// 	 {'id': 'post_188', 'group': 4, 'label': 'Post_188', 'level': 1},
-// 	 {'id': 'post_189', 'group': 9, 'label': 'Post_189', 'level': 1},
-// 	 {'id': 'post_190', 'group': 4, 'label': 'Post_190', 'level': 1},
-// 	 {'id': 'post_191', 'group': 10, 'label': 'Post_191', 'level': 1},
-// 	 {'id': 'post_192', 'group': 10, 'label': 'Post_192', 'level': 1},
-// 	 {'id': 'post_193', 'group': 4, 'label': 'Post_193', 'level': 1},
-// 	 {'id': 'post_194', 'group': 5, 'label': 'Post_194', 'level': 1},
-// 	 {'id': 'post_195', 'group': 6, 'label': 'Post_195', 'level': 1},
-// 	 {'id': 'post_196', 'group': 2, 'label': 'Post_196', 'level': 1},
-// 	 {'id': 'post_197', 'group': 10, 'label': 'Post_197', 'level': 1},
-// 	 {'id': 'post_198', 'group': 4, 'label': 'Post_198', 'level': 1},
-// 	 {'id': 'post_199', 'group': 9, 'label': 'Post_199', 'level': 1},
-// 	 {'id': 'post_200', 'group': 4, 'label': 'Post_200', 'level': 1},
-// 	 {'id': 'post_201', 'group': 8, 'label': 'Post_201', 'level': 1},
-// 	 {'id': 'post_202', 'group': 10, 'label': 'Post_202', 'level': 1},
-// 	 {'id': 'post_203', 'group': 9, 'label': 'Post_203', 'level': 1},
-// 	 {'id': 'post_204', 'group': 10, 'label': 'Post_204', 'level': 1},
-// 	 {'id': 'post_205', 'group': 9, 'label': 'Post_205', 'level': 1},
-// 	 {'id': 'post_206', 'group': 4, 'label': 'Post_206', 'level': 1},
-// 	 {'id': 'post_207', 'group': 10, 'label': 'Post_207', 'level': 1},
-// 	 {'id': 'post_208', 'group': 4, 'label': 'Post_208', 'level': 1},
-// 	 {'id': 'post_209', 'group': 1, 'label': 'Post_209', 'level': 1},
-// 	 {'id': 'post_210', 'group': 8, 'label': 'Post_210', 'level': 1},
-// 	 {'id': 'post_211', 'group': 8, 'label': 'Post_211', 'level': 1},
-// 	 {'id': 'post_212', 'group': 7, 'label': 'Post_212', 'level': 1},
-// 	 {'id': 'post_213', 'group': 1, 'label': 'Post_213', 'level': 1},
-// 	 {'id': 'post_214', 'group': 1, 'label': 'Post_214', 'level': 1},
-// 	 {'id': 'post_215', 'group': 4, 'label': 'Post_215', 'level': 1},
-// 	 {'id': 'post_216', 'group': 8, 'label': 'Post_216', 'level': 1},
-// 	 {'id': 'post_217', 'group': 9, 'label': 'Post_217', 'level': 1},
-// 	 {'id': 'post_218', 'group': 3, 'label': 'Post_218', 'level': 1},
-// 	 {'id': 'post_219', 'group': 10, 'label': 'Post_219', 'level': 1},
-// 	 {'id': 'post_220', 'group': 6, 'label': 'Post_220', 'level': 1},
-// 	 {'id': 'post_221', 'group': 7, 'label': 'Post_221', 'level': 1},
-// 	 {'id': 'post_222', 'group': 2, 'label': 'Post_222', 'level': 1},
-// 	 {'id': 'post_223', 'group': 4, 'label': 'Post_223', 'level': 1},
-// 	 {'id': 'post_224', 'group': 4, 'label': 'Post_224', 'level': 1},
-// 	 {'id': 'post_225', 'group': 6, 'label': 'Post_225', 'level': 1},
-// 	 {'id': 'post_226', 'group': 7, 'label': 'Post_226', 'level': 1},
-// 	 {'id': 'post_227', 'group': 1, 'label': 'Post_227', 'level': 1},
-// 	 {'id': 'post_228', 'group': 5, 'label': 'Post_228', 'level': 1},
-// 	 {'id': 'post_229', 'group': 1, 'label': 'Post_229', 'level': 1},
-// 	 {'id': 'post_230', 'group': 5, 'label': 'Post_230', 'level': 1},
-// 	 {'id': 'post_231', 'group': 2, 'label': 'Post_231', 'level': 1},
-// 	 {'id': 'post_232', 'group': 5, 'label': 'Post_232', 'level': 1},
-// 	 {'id': 'post_233', 'group': 3, 'label': 'Post_233', 'level': 1},
-// 	 {'id': 'post_234', 'group': 2, 'label': 'Post_234', 'level': 1},
-// 	 {'id': 'post_235', 'group': 10, 'label': 'Post_235', 'level': 1},
-// 	 {'id': 'post_236', 'group': 8, 'label': 'Post_236', 'level': 1},
-// 	 {'id': 'post_237', 'group': 7, 'label': 'Post_237', 'level': 1},
-// 	 {'id': 'post_238', 'group': 6, 'label': 'Post_238', 'level': 1},
-// 	 {'id': 'post_239', 'group': 9, 'label': 'Post_239', 'level': 1},
-// 	 {'id': 'post_240', 'group': 3, 'label': 'Post_240', 'level': 1},
-// 	 {'id': 'post_241', 'group': 10, 'label': 'Post_241', 'level': 1},
-// 	 {'id': 'post_242', 'group': 2, 'label': 'Post_242', 'level': 1},
-// 	 {'id': 'post_243', 'group': 5, 'label': 'Post_243', 'level': 1},
-// 	 {'id': 'post_244', 'group': 5, 'label': 'Post_244', 'level': 1},
-// 	 {'id': 'post_245', 'group': 8, 'label': 'Post_245', 'level': 1},
-// 	 {'id': 'post_246', 'group': 7, 'label': 'Post_246', 'level': 1},
-// 	 {'id': 'post_247', 'group': 1, 'label': 'Post_247', 'level': 1},
-// 	 {'id': 'post_248', 'group': 3, 'label': 'Post_248', 'level': 1},
-// 	 {'id': 'post_249', 'group': 5, 'label': 'Post_249', 'level': 1},
-// 	 {'id': 'post_250', 'group': 6, 'label': 'Post_250', 'level': 1},
-// 	 {'id': 'post_251', 'group': 6, 'label': 'Post_251', 'level': 1},
-// 	 {'id': 'post_252', 'group': 8, 'label': 'Post_252', 'level': 1},
-// 	 {'id': 'post_253', 'group': 5, 'label': 'Post_253', 'level': 1},
-// 	 {'id': 'post_254', 'group': 5, 'label': 'Post_254', 'level': 1},
-// 	 {'id': 'post_255', 'group': 2, 'label': 'Post_255', 'level': 1},
-// 	 {'id': 'post_256', 'group': 7, 'label': 'Post_256', 'level': 1},
-// 	 {'id': 'post_257', 'group': 3, 'label': 'Post_257', 'level': 1},
-// 	 {'id': 'post_258', 'group': 6, 'label': 'Post_258', 'level': 1},
-// 	 {'id': 'post_259', 'group': 10, 'label': 'Post_259', 'level': 1},
-// 	 {'id': 'post_260', 'group': 1, 'label': 'Post_260', 'level': 1},
-// 	 {'id': 'post_261', 'group': 5, 'label': 'Post_261', 'level': 1},
-// 	 {'id': 'post_262', 'group': 8, 'label': 'Post_262', 'level': 1},
-// 	 {'id': 'post_263', 'group': 1, 'label': 'Post_263', 'level': 1},
-// 	 {'id': 'post_264', 'group': 1, 'label': 'Post_264', 'level': 1},
-// 	 {'id': 'post_265', 'group': 8, 'label': 'Post_265', 'level': 1},
-// 	 {'id': 'post_266', 'group': 5, 'label': 'Post_266', 'level': 1},
-// 	 {'id': 'post_267', 'group': 4, 'label': 'Post_267', 'level': 1},
-// 	 {'id': 'post_268', 'group': 10, 'label': 'Post_268', 'level': 1},
-// 	 {'id': 'post_269', 'group': 2, 'label': 'Post_269', 'level': 1},
-// 	 {'id': 'post_270', 'group': 6, 'label': 'Post_270', 'level': 1},
-// 	 {'id': 'post_271', 'group': 3, 'label': 'Post_271', 'level': 1},
-// 	 {'id': 'post_272', 'group': 6, 'label': 'Post_272', 'level': 1},
-// 	 {'id': 'post_273', 'group': 6, 'label': 'Post_273', 'level': 1},
-// 	 {'id': 'post_274', 'group': 5, 'label': 'Post_274', 'level': 1},
-// 	 {'id': 'post_275', 'group': 4, 'label': 'Post_275', 'level': 1},
-// 	 {'id': 'post_276', 'group': 4, 'label': 'Post_276', 'level': 1},
-// 	 {'id': 'post_277', 'group': 8, 'label': 'Post_277', 'level': 1},
-// 	 {'id': 'post_278', 'group': 7, 'label': 'Post_278', 'level': 1},
-// 	 {'id': 'post_279', 'group': 7, 'label': 'Post_279', 'level': 1},
-// 	 {'id': 'post_280', 'group': 1, 'label': 'Post_280', 'level': 1},
-// 	 {'id': 'post_281', 'group': 7, 'label': 'Post_281', 'level': 1},
-// 	 {'id': 'post_282', 'group': 5, 'label': 'Post_282', 'level': 1},
-// 	 {'id': 'post_283', 'group': 4, 'label': 'Post_283', 'level': 1},
-// 	 {'id': 'post_284', 'group': 5, 'label': 'Post_284', 'level': 1},
-// 	 {'id': 'post_285', 'group': 5, 'label': 'Post_285', 'level': 1},
-// 	 {'id': 'post_286', 'group': 7, 'label': 'Post_286', 'level': 1},
-// 	 {'id': 'post_287', 'group': 7, 'label': 'Post_287', 'level': 1},
-// 	 {'id': 'post_288', 'group': 10, 'label': 'Post_288', 'level': 1},
-// 	 {'id': 'post_289', 'group': 3, 'label': 'Post_289', 'level': 1},
-// 	 {'id': 'post_290', 'group': 7, 'label': 'Post_290', 'level': 1},
-// 	 {'id': 'post_291', 'group': 1, 'label': 'Post_291', 'level': 1},
-// 	 {'id': 'post_292', 'group': 2, 'label': 'Post_292', 'level': 1},
-// 	 {'id': 'post_293', 'group': 7, 'label': 'Post_293', 'level': 1},
-// 	 {'id': 'post_294', 'group': 6, 'label': 'Post_294', 'level': 1},
-// 	 {'id': 'post_295', 'group': 8, 'label': 'Post_295', 'level': 1},
-// 	 {'id': 'post_296', 'group': 5, 'label': 'Post_296', 'level': 1},
-// 	 {'id': 'post_297', 'group': 3, 'label': 'Post_297', 'level': 1},
-// 	 {'id': 'post_298', 'group': 6, 'label': 'Post_298', 'level': 1},
-// 	 {'id': 'post_299', 'group': 5, 'label': 'Post_299', 'level': 1},
-// 	 {'id': 'post_300', 'group': 4, 'label': 'Post_300', 'level': 1},
-// 	 {'id': 'post_301', 'group': 3, 'label': 'Post_301', 'level': 1},
-// 	 {'id': 'post_302', 'group': 6, 'label': 'Post_302', 'level': 1},
-// 	 {'id': 'post_303', 'group': 5, 'label': 'Post_303', 'level': 1},
-// 	 {'id': 'post_304', 'group': 2, 'label': 'Post_304', 'level': 1},
-// 	 {'id': 'post_305', 'group': 4, 'label': 'Post_305', 'level': 1},
-// 	 {'id': 'post_306', 'group': 6, 'label': 'Post_306', 'level': 1},
-// 	 {'id': 'post_307', 'group': 6, 'label': 'Post_307', 'level': 1},
-// 	 {'id': 'post_308', 'group': 1, 'label': 'Post_308', 'level': 1},
-// 	 {'id': 'post_309', 'group': 8, 'label': 'Post_309', 'level': 1},
-// 	 {'id': 'post_310', 'group': 1, 'label': 'Post_310', 'level': 1},
-// 	 {'id': 'post_311', 'group': 5, 'label': 'Post_311', 'level': 1},
-// 	 {'id': 'post_312', 'group': 2, 'label': 'Post_312', 'level': 1},
-// 	 {'id': 'post_313', 'group': 8, 'label': 'Post_313', 'level': 1},
-// 	 {'id': 'post_314', 'group': 9, 'label': 'Post_314', 'level': 1},
-// 	 {'id': 'post_315', 'group': 6, 'label': 'Post_315', 'level': 1},
-// 	 {'id': 'post_316', 'group': 9, 'label': 'Post_316', 'level': 1},
-// 	 {'id': 'post_317', 'group': 9, 'label': 'Post_317', 'level': 1},
-// 	 {'id': 'post_318', 'group': 9, 'label': 'Post_318', 'level': 1},
-// 	 {'id': 'post_319', 'group': 3, 'label': 'Post_319', 'level': 1},
-// 	 {'id': 'post_320', 'group': 2, 'label': 'Post_320', 'level': 1},
-// 	 {'id': 'post_321', 'group': 4, 'label': 'Post_321', 'level': 1},
-// 	 {'id': 'post_322', 'group': 9, 'label': 'Post_322', 'level': 1},
-// 	 {'id': 'post_323', 'group': 10, 'label': 'Post_323', 'level': 1},
-// 	 {'id': 'post_324', 'group': 9, 'label': 'Post_324', 'level': 1},
-// 	 {'id': 'post_325', 'group': 3, 'label': 'Post_325', 'level': 1},
-// 	 {'id': 'post_326', 'group': 4, 'label': 'Post_326', 'level': 1},
-// 	 {'id': 'post_327', 'group': 8, 'label': 'Post_327', 'level': 1},
-// 	 {'id': 'post_328', 'group': 10, 'label': 'Post_328', 'level': 1},
-// 	 {'id': 'post_329', 'group': 7, 'label': 'Post_329', 'level': 1},
-// 	 {'id': 'post_330', 'group': 8, 'label': 'Post_330', 'level': 1},
-// 	 {'id': 'post_331', 'group': 7, 'label': 'Post_331', 'level': 1},
-// 	 {'id': 'post_332', 'group': 2, 'label': 'Post_332', 'level': 1},
-// 	 {'id': 'post_333', 'group': 7, 'label': 'Post_333', 'level': 1},
-// 	 {'id': 'post_334', 'group': 5, 'label': 'Post_334', 'level': 1},
-// 	 {'id': 'post_335', 'group': 4, 'label': 'Post_335', 'level': 1},
-// 	 {'id': 'post_336', 'group': 10, 'label': 'Post_336', 'level': 1},
-// 	 {'id': 'post_337', 'group': 7, 'label': 'Post_337', 'level': 1},
-// 	 {'id': 'post_338', 'group': 5, 'label': 'Post_338', 'level': 1},
-// 	 {'id': 'post_339', 'group': 5, 'label': 'Post_339', 'level': 1},
-// 	 {'id': 'post_340', 'group': 2, 'label': 'Post_340', 'level': 1},
-// 	 {'id': 'post_341', 'group': 3, 'label': 'Post_341', 'level': 1},
-// 	 {'id': 'post_342', 'group': 7, 'label': 'Post_342', 'level': 1},
-// 	 {'id': 'post_343', 'group': 10, 'label': 'Post_343', 'level': 1},
-// 	 {'id': 'post_344', 'group': 5, 'label': 'Post_344', 'level': 1},
-// 	 {'id': 'post_345', 'group': 1, 'label': 'Post_345', 'level': 1},
-// 	 {'id': 'post_346', 'group': 3, 'label': 'Post_346', 'level': 1},
-// 	 {'id': 'post_347', 'group': 8, 'label': 'Post_347', 'level': 1},
-// 	 {'id': 'post_348', 'group': 9, 'label': 'Post_348', 'level': 1},
-// 	 {'id': 'post_349', 'group': 7, 'label': 'Post_349', 'level': 1},
-// 	 {'id': 'post_350', 'group': 4, 'label': 'Post_350', 'level': 1},
-// 	 {'id': 'post_351', 'group': 9, 'label': 'Post_351', 'level': 1},
-// 	 {'id': 'post_352', 'group': 1, 'label': 'Post_352', 'level': 1},
-// 	 {'id': 'post_353', 'group': 3, 'label': 'Post_353', 'level': 1},
-// 	 {'id': 'post_354', 'group': 3, 'label': 'Post_354', 'level': 1},
-// 	 {'id': 'post_355', 'group': 1, 'label': 'Post_355', 'level': 1},
-// 	 {'id': 'post_356', 'group': 9, 'label': 'Post_356', 'level': 1},
-// 	 {'id': 'post_357', 'group': 9, 'label': 'Post_357', 'level': 1},
-// 	 {'id': 'post_358', 'group': 1, 'label': 'Post_358', 'level': 1},
-// 	 {'id': 'post_359', 'group': 8, 'label': 'Post_359', 'level': 1},
-// 	 {'id': 'post_360', 'group': 4, 'label': 'Post_360', 'level': 1},
-// 	 {'id': 'post_361', 'group': 2, 'label': 'Post_361', 'level': 1},
-// 	 {'id': 'post_362', 'group': 10, 'label': 'Post_362', 'level': 1},
-// 	 {'id': 'post_363', 'group': 2, 'label': 'Post_363', 'level': 1},
-// 	 {'id': 'post_364', 'group': 8, 'label': 'Post_364', 'level': 1},
-// 	 {'id': 'post_365', 'group': 1, 'label': 'Post_365', 'level': 1},
-// 	 {'id': 'post_366', 'group': 6, 'label': 'Post_366', 'level': 1},
-// 	 {'id': 'post_367', 'group': 9, 'label': 'Post_367', 'level': 1},
-// 	 {'id': 'post_368', 'group': 9, 'label': 'Post_368', 'level': 1},
-// 	 {'id': 'post_369', 'group': 6, 'label': 'Post_369', 'level': 1},
-// 	 {'id': 'post_370', 'group': 7, 'label': 'Post_370', 'level': 1},
-// 	 {'id': 'post_371', 'group': 9, 'label': 'Post_371', 'level': 1},
-// 	 {'id': 'post_372', 'group': 9, 'label': 'Post_372', 'level': 1},
-// 	 {'id': 'post_373', 'group': 4, 'label': 'Post_373', 'level': 1},
-// 	 {'id': 'post_374', 'group': 1, 'label': 'Post_374', 'level': 1},
-// 	 {'id': 'post_375', 'group': 7, 'label': 'Post_375', 'level': 1},
-// 	 {'id': 'post_376', 'group': 9, 'label': 'Post_376', 'level': 1},
-// 	 {'id': 'post_377', 'group': 6, 'label': 'Post_377', 'level': 1},
-// 	 {'id': 'post_378', 'group': 3, 'label': 'Post_378', 'level': 1},
-// 	 {'id': 'post_379', 'group': 5, 'label': 'Post_379', 'level': 1},
-// 	 {'id': 'post_380', 'group': 5, 'label': 'Post_380', 'level': 1},
-// 	 {'id': 'post_381', 'group': 7, 'label': 'Post_381', 'level': 1},
-// 	 {'id': 'post_382', 'group': 1, 'label': 'Post_382', 'level': 1},
-// 	 {'id': 'post_383', 'group': 5, 'label': 'Post_383', 'level': 1},
-// 	 {'id': 'post_384', 'group': 8, 'label': 'Post_384', 'level': 1},
-// 	 {'id': 'post_385', 'group': 3, 'label': 'Post_385', 'level': 1},
-// 	 {'id': 'post_386', 'group': 1, 'label': 'Post_386', 'level': 1},
-// 	 {'id': 'post_387', 'group': 3, 'label': 'Post_387', 'level': 1},
-// 	 {'id': 'post_388', 'group': 7, 'label': 'Post_388', 'level': 1},
-// 	 {'id': 'post_389', 'group': 3, 'label': 'Post_389', 'level': 1},
-// 	 {'id': 'post_390', 'group': 2, 'label': 'Post_390', 'level': 1},
-// 	 {'id': 'post_391', 'group': 3, 'label': 'Post_391', 'level': 1},
-// 	 {'id': 'post_392', 'group': 10, 'label': 'Post_392', 'level': 1},
-// 	 {'id': 'post_393', 'group': 4, 'label': 'Post_393', 'level': 1},
-// 	 {'id': 'post_394', 'group': 10, 'label': 'Post_394', 'level': 1},
-// 	 {'id': 'post_395', 'group': 6, 'label': 'Post_395', 'level': 1},
-// 	 {'id': 'post_396', 'group': 4, 'label': 'Post_396', 'level': 1},
-// 	 {'id': 'post_397', 'group': 10, 'label': 'Post_397', 'level': 1},
-// 	 {'id': 'post_398', 'group': 8, 'label': 'Post_398', 'level': 1},
-// 	 {'id': 'post_399', 'group': 10, 'label': 'Post_399', 'level': 1},
-// 	 {'id': 'post_400', 'group': 6, 'label': 'Post_400', 'level': 1},
-// 	 {'id': 'post_401', 'group': 8, 'label': 'Post_401', 'level': 1},
-// 	 {'id': 'post_402', 'group': 6, 'label': 'Post_402', 'level': 1},
-// 	 {'id': 'post_403', 'group': 2, 'label': 'Post_403', 'level': 1},
-// 	 {'id': 'post_404', 'group': 5, 'label': 'Post_404', 'level': 1},
-// 	 {'id': 'post_405', 'group': 7, 'label': 'Post_405', 'level': 1},
-// 	 {'id': 'post_406', 'group': 3, 'label': 'Post_406', 'level': 1},
-// 	 {'id': 'post_407', 'group': 2, 'label': 'Post_407', 'level': 1},
-// 	 {'id': 'post_408', 'group': 8, 'label': 'Post_408', 'level': 1},
-// 	 {'id': 'post_409', 'group': 7, 'label': 'Post_409', 'level': 1},
-// 	 {'id': 'post_410', 'group': 5, 'label': 'Post_410', 'level': 1},
-// 	 {'id': 'post_411', 'group': 5, 'label': 'Post_411', 'level': 1},
-// 	 {'id': 'post_412', 'group': 7, 'label': 'Post_412', 'level': 1},
-// 	 {'id': 'post_413', 'group': 7, 'label': 'Post_413', 'level': 1},
-// 	 {'id': 'post_414', 'group': 4, 'label': 'Post_414', 'level': 1},
-// 	 {'id': 'post_415', 'group': 7, 'label': 'Post_415', 'level': 1},
-// 	 {'id': 'post_416', 'group': 1, 'label': 'Post_416', 'level': 1},
-// 	 {'id': 'post_417', 'group': 4, 'label': 'Post_417', 'level': 1},
-// 	 {'id': 'post_418', 'group': 3, 'label': 'Post_418', 'level': 1},
-// 	 {'id': 'post_419', 'group': 1, 'label': 'Post_419', 'level': 1},
-// 	 {'id': 'post_420', 'group': 3, 'label': 'Post_420', 'level': 1},
-// 	 {'id': 'post_421', 'group': 7, 'label': 'Post_421', 'level': 1},
-// 	 {'id': 'post_422', 'group': 2, 'label': 'Post_422', 'level': 1},
-// 	 {'id': 'post_423', 'group': 7, 'label': 'Post_423', 'level': 1},
-// 	 {'id': 'post_424', 'group': 8, 'label': 'Post_424', 'level': 1},
-// 	 {'id': 'post_425', 'group': 4, 'label': 'Post_425', 'level': 1},
-// 	 {'id': 'post_426', 'group': 10, 'label': 'Post_426', 'level': 1},
-// 	 {'id': 'post_427', 'group': 10, 'label': 'Post_427', 'level': 1},
-// 	 {'id': 'post_428', 'group': 8, 'label': 'Post_428', 'level': 1},
-// 	 {'id': 'post_429', 'group': 3, 'label': 'Post_429', 'level': 1},
-// 	 {'id': 'post_430', 'group': 3, 'label': 'Post_430', 'level': 1},
-// 	 {'id': 'post_431', 'group': 7, 'label': 'Post_431', 'level': 1},
-// 	 {'id': 'post_432', 'group': 6, 'label': 'Post_432', 'level': 1},
-// 	 {'id': 'post_433', 'group': 4, 'label': 'Post_433', 'level': 1},
-// 	 {'id': 'post_434', 'group': 1, 'label': 'Post_434', 'level': 1},
-// 	 {'id': 'post_435', 'group': 8, 'label': 'Post_435', 'level': 1},
-// 	 {'id': 'post_436', 'group': 9, 'label': 'Post_436', 'level': 1},
-// 	 {'id': 'post_437', 'group': 10, 'label': 'Post_437', 'level': 1},
-// 	 {'id': 'post_438', 'group': 3, 'label': 'Post_438', 'level': 1},
-// 	 {'id': 'post_439', 'group': 9, 'label': 'Post_439', 'level': 1},
-// 	 {'id': 'post_440', 'group': 2, 'label': 'Post_440', 'level': 1},
-// 	 {'id': 'post_441', 'group': 7, 'label': 'Post_441', 'level': 1},
-// 	 {'id': 'post_442', 'group': 5, 'label': 'Post_442', 'level': 1},
-// 	 {'id': 'post_443', 'group': 9, 'label': 'Post_443', 'level': 1},
-// 	 {'id': 'post_444', 'group': 10, 'label': 'Post_444', 'level': 1},
-// 	 {'id': 'post_445', 'group': 10, 'label': 'Post_445', 'level': 1},
-// 	 {'id': 'post_446', 'group': 3, 'label': 'Post_446', 'level': 1},
-// 	 {'id': 'post_447', 'group': 3, 'label': 'Post_447', 'level': 1},
-// 	 {'id': 'post_448', 'group': 3, 'label': 'Post_448', 'level': 1},
-// 	 {'id': 'post_449', 'group': 2, 'label': 'Post_449', 'level': 1},
-// 	 {'id': 'post_450', 'group': 5, 'label': 'Post_450', 'level': 1},
-// 	 {'id': 'post_451', 'group': 9, 'label': 'Post_451', 'level': 1},
-// 	 {'id': 'post_452', 'group': 1, 'label': 'Post_452', 'level': 1},
-// 	 {'id': 'post_453', 'group': 8, 'label': 'Post_453', 'level': 1},
-// 	 {'id': 'post_454', 'group': 4, 'label': 'Post_454', 'level': 1},
-// 	 {'id': 'post_455', 'group': 1, 'label': 'Post_455', 'level': 1},
-// 	 {'id': 'post_456', 'group': 1, 'label': 'Post_456', 'level': 1},
-// 	 {'id': 'post_457', 'group': 2, 'label': 'Post_457', 'level': 1},
-// 	 {'id': 'post_458', 'group': 3, 'label': 'Post_458', 'level': 1},
-// 	 {'id': 'post_459', 'group': 9, 'label': 'Post_459', 'level': 1},
-// 	 {'id': 'post_460', 'group': 3, 'label': 'Post_460', 'level': 1},
-// 	 {'id': 'post_461', 'group': 5, 'label': 'Post_461', 'level': 1},
-// 	 {'id': 'post_462', 'group': 8, 'label': 'Post_462', 'level': 1},
-// 	 {'id': 'post_463', 'group': 1, 'label': 'Post_463', 'level': 1},
-// 	 {'id': 'post_464', 'group': 1, 'label': 'Post_464', 'level': 1},
-// 	 {'id': 'post_465', 'group': 7, 'label': 'Post_465', 'level': 1},
-// 	 {'id': 'post_466', 'group': 4, 'label': 'Post_466', 'level': 1},
-// 	 {'id': 'post_467', 'group': 1, 'label': 'Post_467', 'level': 1},
-// 	 {'id': 'post_468', 'group': 4, 'label': 'Post_468', 'level': 1},
-// 	 {'id': 'post_469', 'group': 4, 'label': 'Post_469', 'level': 1},
-// 	 {'id': 'post_470', 'group': 9, 'label': 'Post_470', 'level': 1},
-// 	 {'id': 'post_471', 'group': 2, 'label': 'Post_471', 'level': 1},
-// 	 {'id': 'post_472', 'group': 7, 'label': 'Post_472', 'level': 1},
-// 	 {'id': 'post_473', 'group': 4, 'label': 'Post_473', 'level': 1},
-// 	 {'id': 'post_474', 'group': 2, 'label': 'Post_474', 'level': 1},
-// 	 {'id': 'post_475', 'group': 1, 'label': 'Post_475', 'level': 1},
-// 	 {'id': 'post_476', 'group': 1, 'label': 'Post_476', 'level': 1},
-// 	 {'id': 'post_477', 'group': 9, 'label': 'Post_477', 'level': 1},
-// 	 {'id': 'post_478', 'group': 3, 'label': 'Post_478', 'level': 1},
-// 	 {'id': 'post_479', 'group': 5, 'label': 'Post_479', 'level': 1},
-// 	 {'id': 'post_480', 'group': 5, 'label': 'Post_480', 'level': 1},
-// 	 {'id': 'post_481', 'group': 9, 'label': 'Post_481', 'level': 1},
-// 	 {'id': 'post_482', 'group': 8, 'label': 'Post_482', 'level': 1},
-// 	 {'id': 'post_483', 'group': 3, 'label': 'Post_483', 'level': 1},
-// 	 {'id': 'post_484', 'group': 7, 'label': 'Post_484', 'level': 1},
-// 	 {'id': 'post_485', 'group': 4, 'label': 'Post_485', 'level': 1},
-// 	 {'id': 'post_486', 'group': 6, 'label': 'Post_486', 'level': 1},
-// 	 {'id': 'post_487', 'group': 5, 'label': 'Post_487', 'level': 1},
-// 	 {'id': 'post_488', 'group': 2, 'label': 'Post_488', 'level': 1},
-// 	 {'id': 'post_489', 'group': 2, 'label': 'Post_489', 'level': 1},
-// 	 {'id': 'post_490', 'group': 3, 'label': 'Post_490', 'level': 1},
-// 	 {'id': 'post_491', 'group': 4, 'label': 'Post_491', 'level': 1},
-// 	 {'id': 'post_492', 'group': 2, 'label': 'Post_492', 'level': 1},
-// 	 {'id': 'post_493', 'group': 2, 'label': 'Post_493', 'level': 1},
-// 	 {'id': 'post_494', 'group': 5, 'label': 'Post_494', 'level': 1},
-// 	 {'id': 'post_495', 'group': 4, 'label': 'Post_495', 'level': 1},
-// 	 {'id': 'post_496', 'group': 5, 'label': 'Post_496', 'level': 1},
-// 	 {'id': 'post_497', 'group': 5, 'label': 'Post_497', 'level': 1},
-// 	 {'id': 'post_498', 'group': 8, 'label': 'Post_498', 'level': 1},
-// 	 {'id': 'post_499', 'group': 3, 'label': 'Post_499', 'level': 1}]
-    var links = [
-   	{ target: "mammal", source: "dog" , strength: 0.9 },
-   	{ target: "bee", source: "cat" , strength: 0.4 },
-      { target: "mammal", source: "fox" , strength: 0.3 },
+   ] */
+   
+   
+	 
+var nodes = dataset.nodes
+console.log('nodes', nodes)
+//console.log('nodes',nodes)
+   /* var links = [
+   	{ target: "mammal", source: "dog" , strength: 3.0 },
+   	{ target: "bee", source: "cat" , strength: 3.0 }
+     /* { target: "mammal", source: "fox" , strength: 3.0 },
   
      { target: "insect", source: "ant" , strength: 0.7 },
      { target: "insect", source: "bee" , strength: 0.7 },
@@ -2098,517 +1425,26 @@ $("body").delegate("#overlay2", "click", function() {
      { target: "elk"   , source: "bee" , strength: 0.1 },
      { target: "dog"   , source: "cat" , strength: 0.1 },
      { target: "fox"   , source: "ant" , strength: 0.1 },
-   	{ target: "pike"  , source: "cat" , strength: 0.1 } 
-    ]  
+   	{ target: "pike"  , source: "cat" , strength: 0.1 } */
+   /* ]  */
 
-   // var links = [{'target': 'post_290', 'source': 'post_430', 'strength': 0.5},
-	  //  {'target': 'post_148', 'source': 'post_131', 'strength': 0.5},
-	  //  {'target': 'post_121', 'source': 'post_221', 'strength': 0.5},
-	  //  {'target': 'post_374', 'source': 'post_433', 'strength': 0.5},
-	  //  {'target': 'post_314', 'source': 'post_409', 'strength': 0.5},
-	  //  {'target': 'post_272', 'source': 'post_150', 'strength': 0.5},
-	  //  {'target': 'post_147', 'source': 'post_303', 'strength': 0.5},
-	  //  {'target': 'post_318', 'source': 'post_387', 'strength': 0.5},
-	  //  {'target': 'post_71', 'source': 'post_30', 'strength': 0.5},
-	  //  {'target': 'post_240', 'source': 'post_127', 'strength': 0.5},
-	  //  {'target': 'post_370', 'source': 'post_41', 'strength': 0.5},
-	  //  {'target': 'post_464', 'source': 'post_51', 'strength': 0.5},
-	  //  {'target': 'post_8', 'source': 'post_220', 'strength': 0.5},
-	  //  {'target': 'post_423', 'source': 'post_47', 'strength': 0.5},
-	  //  {'target': 'post_141', 'source': 'post_277', 'strength': 0.5},
-	  //  {'target': 'post_259', 'source': 'post_157', 'strength': 0.5},
-	  //  {'target': 'post_426', 'source': 'post_391', 'strength': 0.5},
-	  //  {'target': 'post_251', 'source': 'post_37', 'strength': 0.5},
-	  //  {'target': 'post_78', 'source': 'post_387', 'strength': 0.5},
-	  //  {'target': 'post_69', 'source': 'post_305', 'strength': 0.5},
-	  //  {'target': 'post_128', 'source': 'post_23', 'strength': 0.5},
-	  //  {'target': 'post_488', 'source': 'post_199', 'strength': 0.5},
-	  //  {'target': 'post_175', 'source': 'post_118', 'strength': 0.5},
-	  //  {'target': 'post_186', 'source': 'post_373', 'strength': 0.5},
-	  //  {'target': 'post_59', 'source': 'post_423', 'strength': 0.5},
-	  //  {'target': 'post_207', 'source': 'post_17', 'strength': 0.5},
-	  //  {'target': 'post_343', 'source': 'post_495', 'strength': 0.5},
-	  //  {'target': 'post_297', 'source': 'post_10', 'strength': 0.5},
-	  //  {'target': 'post_314', 'source': 'post_219', 'strength': 0.5},
-	  //  {'target': 'post_100', 'source': 'post_271', 'strength': 0.5},
-	  //  {'target': 'post_274', 'source': 'post_310', 'strength': 0.5},
-	  //  {'target': 'post_152', 'source': 'post_235', 'strength': 0.5},
-	  //  {'target': 'post_244', 'source': 'post_379', 'strength': 0.5},
-	  //  {'target': 'post_23', 'source': 'post_239', 'strength': 0.5},
-	  //  {'target': 'post_151', 'source': 'post_298', 'strength': 0.5},
-	  //  {'target': 'post_247', 'source': 'post_159', 'strength': 0.5},
-	  //  {'target': 'post_454', 'source': 'post_496', 'strength': 0.5},
-	  //  {'target': 'post_16', 'source': 'post_208', 'strength': 0.5},
-	  //  {'target': 'post_357', 'source': 'post_123', 'strength': 0.5},
-	  //  {'target': 'post_458', 'source': 'post_491', 'strength': 0.5},
-	  //  {'target': 'post_24', 'source': 'post_237', 'strength': 0.5},
-	  //  {'target': 'post_482', 'source': 'post_178', 'strength': 0.5},
-	  //  {'target': 'post_265', 'source': 'post_92', 'strength': 0.5},
-	  //  {'target': 'post_407', 'source': 'post_349', 'strength': 0.5},
-	  //  {'target': 'post_319', 'source': 'post_237', 'strength': 0.5},
-	  //  {'target': 'post_371', 'source': 'post_460', 'strength': 0.5},
-	  //  {'target': 'post_158', 'source': 'post_114', 'strength': 0.5},
-	  //  {'target': 'post_421', 'source': 'post_215', 'strength': 0.5},
-	  //  {'target': 'post_207', 'source': 'post_299', 'strength': 0.5},
-	  //  {'target': 'post_432', 'source': 'post_66', 'strength': 0.5},
-	  //  {'target': 'post_98', 'source': 'post_33', 'strength': 0.5},
-	  //  {'target': 'post_436', 'source': 'post_126', 'strength': 0.5},
-	  //  {'target': 'post_484', 'source': 'post_457', 'strength': 0.5},
-	  //  {'target': 'post_12', 'source': 'post_435', 'strength': 0.5},
-	  //  {'target': 'post_139', 'source': 'post_222', 'strength': 0.5},
-	  //  {'target': 'post_222', 'source': 'post_427', 'strength': 0.5},
-	  //  {'target': 'post_442', 'source': 'post_237', 'strength': 0.5},
-	  //  {'target': 'post_10', 'source': 'post_159', 'strength': 0.5},
-	  //  {'target': 'post_298', 'source': 'post_123', 'strength': 0.5},
-	  //  {'target': 'post_279', 'source': 'post_65', 'strength': 0.5},
-	  //  {'target': 'post_271', 'source': 'post_151', 'strength': 0.5},
-	  //  {'target': 'post_9', 'source': 'post_63', 'strength': 0.5},
-	  //  {'target': 'post_499', 'source': 'post_44', 'strength': 0.5},
-	  //  // {'target': 'post_51', 'source': 'post_438', 'strength': 0.5},
-	  //  // {'target': 'post_393', 'source': 'post_441', 'strength': 0.5},
-	  //  // {'target': 'post_431', 'source': 'post_471', 'strength': 0.5},
-	  //  // {'target': 'post_125', 'source': 'post_119', 'strength': 0.5},
-	  //  // {'target': 'post_482', 'source': 'post_342', 'strength': 0.5},
-	  //  // {'target': 'post_187', 'source': 'post_89', 'strength': 0.5},
-	  //  // {'target': 'post_288', 'source': 'post_272', 'strength': 0.5},
-	  //  // {'target': 'post_87', 'source': 'post_189', 'strength': 0.5},
-	  //  // {'target': 'post_441', 'source': 'post_261', 'strength': 0.5},
-	  //  // {'target': 'post_90', 'source': 'post_338', 'strength': 0.5},
-	  //  // {'target': 'post_406', 'source': 'post_384', 'strength': 0.5},
-	  //  // {'target': 'post_180', 'source': 'post_77', 'strength': 0.5},
-	  //  // {'target': 'post_300', 'source': 'post_376', 'strength': 0.5},
-	  //  // {'target': 'post_436', 'source': 'post_226', 'strength': 0.5},
-	  //  // {'target': 'post_405', 'source': 'post_357', 'strength': 0.5},
-	  //  // {'target': 'post_269', 'source': 'post_387', 'strength': 0.5},
-	  //  // {'target': 'post_467', 'source': 'post_461', 'strength': 0.5},
-	  //  // {'target': 'post_278', 'source': 'post_254', 'strength': 0.5},
-	  //  // {'target': 'post_410', 'source': 'post_147', 'strength': 0.5},
-	  //  // {'target': 'post_444', 'source': 'post_193', 'strength': 0.5},
-	  //  // {'target': 'post_104', 'source': 'post_225', 'strength': 0.5},
-	  //  // {'target': 'post_169', 'source': 'post_374', 'strength': 0.5},
-	  //  // {'target': 'post_213', 'source': 'post_349', 'strength': 0.5},
-	  //  // {'target': 'post_29', 'source': 'post_190', 'strength': 0.5},
-	  //  // {'target': 'post_479', 'source': 'post_2', 'strength': 0.5},
-	  //  // {'target': 'post_373', 'source': 'post_156', 'strength': 0.5},
-	  //  // {'target': 'post_4', 'source': 'post_97', 'strength': 0.5},
-	  //  // {'target': 'post_346', 'source': 'post_239', 'strength': 0.5},
-	  //  // {'target': 'post_292', 'source': 'post_395', 'strength': 0.5},
-	  //  // {'target': 'post_256', 'source': 'post_178', 'strength': 0.5},
-	  //  // {'target': 'post_464', 'source': 'post_17', 'strength': 0.5},
-	  //  // {'target': 'post_206', 'source': 'post_120', 'strength': 0.5},
-	  //  // {'target': 'post_236', 'source': 'post_488', 'strength': 0.5},
-	  //  // {'target': 'post_122', 'source': 'post_250', 'strength': 0.5},
-	  //  // {'target': 'post_109', 'source': 'post_7', 'strength': 0.5},
-	  //  // {'target': 'post_268', 'source': 'post_432', 'strength': 0.5},
-	  //  // {'target': 'post_473', 'source': 'post_283', 'strength': 0.5},
-	  //  // {'target': 'post_154', 'source': 'post_234', 'strength': 0.5},
-	  //  // {'target': 'post_250', 'source': 'post_243', 'strength': 0.5},
-	  //  // {'target': 'post_77', 'source': 'post_190', 'strength': 0.5},
-	  //  // {'target': 'post_352', 'source': 'post_217', 'strength': 0.5},
-	  //  // {'target': 'post_120', 'source': 'post_376', 'strength': 0.5},
-	  //  // {'target': 'post_148', 'source': 'post_136', 'strength': 0.5},
-	  //  // {'target': 'post_442', 'source': 'post_35', 'strength': 0.5},
-	  //  // {'target': 'post_445', 'source': 'post_141', 'strength': 0.5},
-	  //  // {'target': 'post_230', 'source': 'post_386', 'strength': 0.5},
-	  //  // {'target': 'post_377', 'source': 'post_285', 'strength': 0.5},
-	  //  // {'target': 'post_227', 'source': 'post_382', 'strength': 0.5},
-	  //  // {'target': 'post_373', 'source': 'post_344', 'strength': 0.5},
-	  //  // {'target': 'post_391', 'source': 'post_415', 'strength': 0.5},
-	  //  // {'target': 'post_476', 'source': 'post_299', 'strength': 0.5},
-	  //  // {'target': 'post_491', 'source': 'post_336', 'strength': 0.5},
-	  //  // {'target': 'post_85', 'source': 'post_69', 'strength': 0.5},
-	  //  // {'target': 'post_369', 'source': 'post_332', 'strength': 0.5},
-	  //  // {'target': 'post_204', 'source': 'post_219', 'strength': 0.5},
-	  //  // {'target': 'post_214', 'source': 'post_476', 'strength': 0.5},
-	  //  // {'target': 'post_411', 'source': 'post_382', 'strength': 0.5},
-	  //  // {'target': 'post_249', 'source': 'post_432', 'strength': 0.5},
-	  //  // {'target': 'post_300', 'source': 'post_215', 'strength': 0.5},
-	  //  // {'target': 'post_115', 'source': 'post_253', 'strength': 0.5},
-	  //  // {'target': 'post_468', 'source': 'post_266', 'strength': 0.5},
-	  //  // {'target': 'post_399', 'source': 'post_490', 'strength': 0.5},
-	  //  // {'target': 'post_143', 'source': 'post_106', 'strength': 0.5},
-	  //  // {'target': 'post_19', 'source': 'post_239', 'strength': 0.5},
-	  //  // {'target': 'post_309', 'source': 'post_289', 'strength': 0.5},
-	  //  // {'target': 'post_207', 'source': 'post_261', 'strength': 0.5},
-	  //  // {'target': 'post_488', 'source': 'post_46', 'strength': 0.5},
-	  //  // {'target': 'post_493', 'source': 'post_190', 'strength': 0.5},
-	  //  // {'target': 'post_404', 'source': 'post_309', 'strength': 0.5},
-	  //  // {'target': 'post_132', 'source': 'post_217', 'strength': 0.5},
-	  //  // {'target': 'post_480', 'source': 'post_171', 'strength': 0.5},
-	  //  // {'target': 'post_197', 'source': 'post_260', 'strength': 0.5},
-	  //  // {'target': 'post_357', 'source': 'post_397', 'strength': 0.5},
-	  //  // {'target': 'post_355', 'source': 'post_288', 'strength': 0.5},
-	  //  // {'target': 'post_440', 'source': 'post_16', 'strength': 0.5},
-	  //  // {'target': 'post_176', 'source': 'post_16', 'strength': 0.5},
-	  //  // {'target': 'post_360', 'source': 'post_111', 'strength': 0.5},
-	  //  // {'target': 'post_97', 'source': 'post_65', 'strength': 0.5},
-	  //  // {'target': 'post_475', 'source': 'post_67', 'strength': 0.5},
-	  //  // {'target': 'post_284', 'source': 'post_29', 'strength': 0.5},
-	  //  // {'target': 'post_191', 'source': 'post_289', 'strength': 0.5},
-	  //  // {'target': 'post_417', 'source': 'post_157', 'strength': 0.5},
-	  //  // {'target': 'post_63', 'source': 'post_499', 'strength': 0.5},
-	  //  // {'target': 'post_211', 'source': 'post_63', 'strength': 0.5},
-	  //  // {'target': 'post_272', 'source': 'post_2', 'strength': 0.5},
-	  //  // {'target': 'post_415', 'source': 'post_153', 'strength': 0.5},
-	  //  // {'target': 'post_66', 'source': 'post_130', 'strength': 0.5},
-	  //  // {'target': 'post_385', 'source': 'post_270', 'strength': 0.5},
-	  //  // {'target': 'post_19', 'source': 'post_174', 'strength': 0.5},
-	  //  // {'target': 'post_101', 'source': 'post_219', 'strength': 0.5},
-	  //  // {'target': 'post_155', 'source': 'post_97', 'strength': 0.5},
-	  //  // {'target': 'post_384', 'source': 'post_329', 'strength': 0.5},
-	  //  // {'target': 'post_220', 'source': 'post_192', 'strength': 0.5},
-	  //  // {'target': 'post_233', 'source': 'post_258', 'strength': 0.5},
-	  //  // {'target': 'post_157', 'source': 'post_27', 'strength': 0.5},
-	  //  // {'target': 'post_54', 'source': 'post_178', 'strength': 0.5},
-	  //  // {'target': 'post_17', 'source': 'post_478', 'strength': 0.5},
-	  //  // {'target': 'post_495', 'source': 'post_290', 'strength': 0.5},
-	  //  // {'target': 'post_386', 'source': 'post_134', 'strength': 0.5},
-	  //  // {'target': 'post_173', 'source': 'post_65', 'strength': 0.5},
-	  //  // {'target': 'post_160', 'source': 'post_417', 'strength': 0.5},
-	  //  // {'target': 'post_327', 'source': 'post_450', 'strength': 0.5},
-	  //  // {'target': 'post_280', 'source': 'post_380', 'strength': 0.5},
-	  //  // {'target': 'post_464', 'source': 'post_375', 'strength': 0.5},
-	  //  // {'target': 'post_330', 'source': 'post_446', 'strength': 0.5},
-	  //  // {'target': 'post_463', 'source': 'post_452', 'strength': 0.5},
-	  //  // {'target': 'post_268', 'source': 'post_339', 'strength': 0.5},
-	  //  // {'target': 'post_101', 'source': 'post_195', 'strength': 0.5},
-	  //  // {'target': 'post_387', 'source': 'post_148', 'strength': 0.5},
-	  //  // {'target': 'post_16', 'source': 'post_85', 'strength': 0.5},
-	  //  // {'target': 'post_175', 'source': 'post_173', 'strength': 0.5},
-	  //  // {'target': 'post_420', 'source': 'post_325', 'strength': 0.5},
-	  //  // {'target': 'post_41', 'source': 'post_468', 'strength': 0.5},
-	  //  // {'target': 'post_292', 'source': 'post_140', 'strength': 0.5},
-	  //  // {'target': 'post_286', 'source': 'post_151', 'strength': 0.5},
-	  //  // {'target': 'post_105', 'source': 'post_77', 'strength': 0.5},
-	  //  // {'target': 'post_335', 'source': 'post_415', 'strength': 0.5},
-	  //  // {'target': 'post_381', 'source': 'post_440', 'strength': 0.5},
-	  //  // {'target': 'post_80', 'source': 'post_288', 'strength': 0.5},
-	  //  // {'target': 'post_308', 'source': 'post_167', 'strength': 0.5},
-	  //  // {'target': 'post_127', 'source': 'post_186', 'strength': 0.5},
-	  //  // {'target': 'post_227', 'source': 'post_92', 'strength': 0.5},
-	  //  // {'target': 'post_421', 'source': 'post_444', 'strength': 0.5},
-	  //  // {'target': 'post_198', 'source': 'post_113', 'strength': 0.5},
-	  //  // {'target': 'post_193', 'source': 'post_416', 'strength': 0.5},
-	  //  // {'target': 'post_176', 'source': 'post_72', 'strength': 0.5},
-	  //  // {'target': 'post_498', 'source': 'post_166', 'strength': 0.5},
-	  //  // {'target': 'post_208', 'source': 'post_412', 'strength': 0.5},
-	  //  // {'target': 'post_275', 'source': 'post_462', 'strength': 0.5},
-	  //  // {'target': 'post_221', 'source': 'post_372', 'strength': 0.5},
-	  //  // {'target': 'post_275', 'source': 'post_219', 'strength': 0.5},
-	  //  // {'target': 'post_239', 'source': 'post_420', 'strength': 0.5},
-	  //  // {'target': 'post_459', 'source': 'post_230', 'strength': 0.5},
-	  //  // {'target': 'post_459', 'source': 'post_124', 'strength': 0.5},
-	  //  // {'target': 'post_294', 'source': 'post_349', 'strength': 0.5},
-	  //  // {'target': 'post_220', 'source': 'post_172', 'strength': 0.5},
-	  //  // {'target': 'post_49', 'source': 'post_69', 'strength': 0.5},
-	  //  // {'target': 'post_443', 'source': 'post_437', 'strength': 0.5},
-	  //  // {'target': 'post_493', 'source': 'post_331', 'strength': 0.5},
-	  //  // {'target': 'post_363', 'source': 'post_462', 'strength': 0.5},
-	  //  // {'target': 'post_282', 'source': 'post_33', 'strength': 0.5},
-	  //  // {'target': 'post_36', 'source': 'post_394', 'strength': 0.5},
-	  //  // {'target': 'post_249', 'source': 'post_201', 'strength': 0.5},
-	  //  // {'target': 'post_349', 'source': 'post_21', 'strength': 0.5},
-	  //  // {'target': 'post_160', 'source': 'post_308', 'strength': 0.5},
-	  //  // {'target': 'post_494', 'source': 'post_80', 'strength': 0.5},
-	  //  // {'target': 'post_256', 'source': 'post_203', 'strength': 0.5},
-	  //  // {'target': 'post_64', 'source': 'post_310', 'strength': 0.5},
-	  //  // {'target': 'post_208', 'source': 'post_286', 'strength': 0.5},
-	  //  // {'target': 'post_19', 'source': 'post_362', 'strength': 0.5},
-	  //  // {'target': 'post_239', 'source': 'post_66', 'strength': 0.5},
-	  //  // {'target': 'post_59', 'source': 'post_184', 'strength': 0.5},
-	  //  // {'target': 'post_49', 'source': 'post_179', 'strength': 0.5},
-	  //  // {'target': 'post_149', 'source': 'post_496', 'strength': 0.5},
-	  //  // {'target': 'post_145', 'source': 'post_124', 'strength': 0.5},
-	  //  // {'target': 'post_50', 'source': 'post_402', 'strength': 0.5},
-	  //  // {'target': 'post_5', 'source': 'post_118', 'strength': 0.5},
-	  //  // {'target': 'post_222', 'source': 'post_409', 'strength': 0.5},
-	  //  // {'target': 'post_47', 'source': 'post_132', 'strength': 0.5},
-	  //  // {'target': 'post_404', 'source': 'post_197', 'strength': 0.5},
-	  //  // {'target': 'post_104', 'source': 'post_153', 'strength': 0.5},
-	  //  // {'target': 'post_207', 'source': 'post_108', 'strength': 0.5},
-	  //  // {'target': 'post_194', 'source': 'post_478', 'strength': 0.5},
-	  //  // {'target': 'post_15', 'source': 'post_79', 'strength': 0.5},
-	  //  // {'target': 'post_264', 'source': 'post_408', 'strength': 0.5},
-	  //  // {'target': 'post_455', 'source': 'post_390', 'strength': 0.5},
-	  //  // {'target': 'post_460', 'source': 'post_283', 'strength': 0.5},
-	  //  // {'target': 'post_350', 'source': 'post_250', 'strength': 0.5},
-	  //  // {'target': 'post_302', 'source': 'post_485', 'strength': 0.5},
-	  //  // {'target': 'post_28', 'source': 'post_104', 'strength': 0.5},
-	  //  // {'target': 'post_421', 'source': 'post_298', 'strength': 0.5},
-	  //  // {'target': 'post_250', 'source': 'post_430', 'strength': 0.5},
-	  //  // {'target': 'post_341', 'source': 'post_70', 'strength': 0.5},
-	  //  // {'target': 'post_443', 'source': 'post_78', 'strength': 0.5},
-	  //  // {'target': 'post_392', 'source': 'post_452', 'strength': 0.5},
-	  //  // {'target': 'post_232', 'source': 'post_406', 'strength': 0.5},
-	  //  // {'target': 'post_427', 'source': 'post_169', 'strength': 0.5},
-	  //  // {'target': 'post_419', 'source': 'post_399', 'strength': 0.5},
-	  //  // {'target': 'post_14', 'source': 'post_297', 'strength': 0.5},
-	  //  // {'target': 'post_61', 'source': 'post_388', 'strength': 0.5},
-	  //  // {'target': 'post_488', 'source': 'post_373', 'strength': 0.5},
-	  //  // {'target': 'post_151', 'source': 'post_417', 'strength': 0.5},
-	  //  // {'target': 'post_477', 'source': 'post_170', 'strength': 0.5},
-	  //  // {'target': 'post_336', 'source': 'post_82', 'strength': 0.5},
-	  //  // {'target': 'post_94', 'source': 'post_245', 'strength': 0.5},
-	  //  // {'target': 'post_281', 'source': 'post_367', 'strength': 0.5},
-	  //  // {'target': 'post_371', 'source': 'post_395', 'strength': 0.5},
-	  //  // {'target': 'post_426', 'source': 'post_224', 'strength': 0.5},
-	  //  // {'target': 'post_498', 'source': 'post_435', 'strength': 0.5},
-	  //  // {'target': 'post_109', 'source': 'post_472', 'strength': 0.5},
-	  //  // {'target': 'post_240', 'source': 'post_242', 'strength': 0.5},
-	  //  // {'target': 'post_364', 'source': 'post_202', 'strength': 0.5},
-	  //  // {'target': 'post_336', 'source': 'post_219', 'strength': 0.5},
-	  //  // {'target': 'post_428', 'source': 'post_7', 'strength': 0.5},
-	  //  // {'target': 'post_50', 'source': 'post_426', 'strength': 0.5},
-	  //  // {'target': 'post_376', 'source': 'post_174', 'strength': 0.5},
-	  //  // {'target': 'post_204', 'source': 'post_338', 'strength': 0.5},
-	  //  // {'target': 'post_439', 'source': 'post_3', 'strength': 0.5},
-	  //  // {'target': 'post_342', 'source': 'post_115', 'strength': 0.5},
-	  //  // {'target': 'post_297', 'source': 'post_461', 'strength': 0.5},
-	  //  // {'target': 'post_171', 'source': 'post_432', 'strength': 0.5},
-	  //  // {'target': 'post_9', 'source': 'post_140', 'strength': 0.5},
-	  //  // {'target': 'post_78', 'source': 'post_370', 'strength': 0.5},
-	  //  // {'target': 'post_435', 'source': 'post_122', 'strength': 0.5},
-	  //  // {'target': 'post_93', 'source': 'post_335', 'strength': 0.5},
-	  //  // {'target': 'post_477', 'source': 'post_3', 'strength': 0.5},
-	  //  // {'target': 'post_216', 'source': 'post_254', 'strength': 0.5},
-	  //  // {'target': 'post_134', 'source': 'post_263', 'strength': 0.5},
-	  //  // {'target': 'post_120', 'source': 'post_187', 'strength': 0.5},
-	  //  // {'target': 'post_494', 'source': 'post_35', 'strength': 0.5},
-	  //  // {'target': 'post_432', 'source': 'post_129', 'strength': 0.5},
-	  //  // {'target': 'post_268', 'source': 'post_156', 'strength': 0.5},
-	  //  // {'target': 'post_99', 'source': 'post_138', 'strength': 0.5},
-	  //  // {'target': 'post_401', 'source': 'post_40', 'strength': 0.5},
-	  //  // {'target': 'post_164', 'source': 'post_60', 'strength': 0.5},
-	  //  // {'target': 'post_37', 'source': 'post_457', 'strength': 0.5},
-	  //  // {'target': 'post_38', 'source': 'post_32', 'strength': 0.5},
-	  //  // {'target': 'post_303', 'source': 'post_255', 'strength': 0.5},
-	  //  // {'target': 'post_150', 'source': 'post_204', 'strength': 0.5},
-	  //  // {'target': 'post_231', 'source': 'post_66', 'strength': 0.5},
-	  //  // {'target': 'post_240', 'source': 'post_496', 'strength': 0.5},
-	  //  // {'target': 'post_415', 'source': 'post_47', 'strength': 0.5},
-	  //  // {'target': 'post_465', 'source': 'post_429', 'strength': 0.5},
-	  //  // {'target': 'post_358', 'source': 'post_466', 'strength': 0.5},
-	  //  // {'target': 'post_180', 'source': 'post_5', 'strength': 0.5},
-	  //  // {'target': 'post_252', 'source': 'post_1', 'strength': 0.5},
-	  //  // {'target': 'post_311', 'source': 'post_377', 'strength': 0.5},
-	  //  // {'target': 'post_110', 'source': 'post_230', 'strength': 0.5},
-	  //  // {'target': 'post_359', 'source': 'post_302', 'strength': 0.5},
-	  //  // {'target': 'post_418', 'source': 'post_215', 'strength': 0.5},
-	  //  // {'target': 'post_431', 'source': 'post_298', 'strength': 0.5},
-	  //  // {'target': 'post_457', 'source': 'post_182', 'strength': 0.5},
-	  //  // {'target': 'post_183', 'source': 'post_447', 'strength': 0.5},
-	  //  // {'target': 'post_190', 'source': 'post_491', 'strength': 0.5},
-	  //  // {'target': 'post_399', 'source': 'post_401', 'strength': 0.5},
-	  //  // {'target': 'post_113', 'source': 'post_242', 'strength': 0.5},
-	  //  // {'target': 'post_336', 'source': 'post_401', 'strength': 0.5},
-	  //  // {'target': 'post_423', 'source': 'post_173', 'strength': 0.5},
-	  //  // {'target': 'post_45', 'source': 'post_40', 'strength': 0.5},
-	  //  // {'target': 'post_28', 'source': 'post_261', 'strength': 0.5},
-	  //  // {'target': 'post_361', 'source': 'post_326', 'strength': 0.5},
-	  //  // {'target': 'post_292', 'source': 'post_416', 'strength': 0.5},
-	  //  // {'target': 'post_207', 'source': 'post_429', 'strength': 0.5},
-	  //  // {'target': 'post_368', 'source': 'post_353', 'strength': 0.5},
-	  //  // {'target': 'post_420', 'source': 'post_479', 'strength': 0.5},
-	  //  // {'target': 'post_24', 'source': 'post_449', 'strength': 0.5},
-	  //  // {'target': 'post_242', 'source': 'post_268', 'strength': 0.5},
-	  //  // {'target': 'post_427', 'source': 'post_460', 'strength': 0.5},
-	  //  // {'target': 'post_384', 'source': 'post_217', 'strength': 0.5},
-	  //  // {'target': 'post_368', 'source': 'post_108', 'strength': 0.5},
-	  //  // {'target': 'post_198', 'source': 'post_7', 'strength': 0.5},
-	  //  // {'target': 'post_396', 'source': 'post_401', 'strength': 0.5},
-	  //  // {'target': 'post_233', 'source': 'post_244', 'strength': 0.5},
-	  //  // {'target': 'post_322', 'source': 'post_317', 'strength': 0.5},
-	  //  // {'target': 'post_431', 'source': 'post_16', 'strength': 0.5},
-	  //  // {'target': 'post_165', 'source': 'post_29', 'strength': 0.5},
-	  //  // {'target': 'post_149', 'source': 'post_125', 'strength': 0.5},
-	  //  // {'target': 'post_453', 'source': 'post_395', 'strength': 0.5},
-	  //  // {'target': 'post_245', 'source': 'post_219', 'strength': 0.5},
-	  //  // {'target': 'post_437', 'source': 'post_10', 'strength': 0.5},
-	  //  // {'target': 'post_315', 'source': 'post_417', 'strength': 0.5},
-	  //  // {'target': 'post_124', 'source': 'post_383', 'strength': 0.5},
-	  //  // {'target': 'post_402', 'source': 'post_141', 'strength': 0.5},
-	  //  // {'target': 'post_465', 'source': 'post_192', 'strength': 0.5},
-	  //  // {'target': 'post_499', 'source': 'post_169', 'strength': 0.5},
-	  //  // {'target': 'post_328', 'source': 'post_280', 'strength': 0.5},
-	  //  // {'target': 'post_408', 'source': 'post_376', 'strength': 0.5},
-	  //  // {'target': 'post_171', 'source': 'post_195', 'strength': 0.5},
-	  //  // {'target': 'post_160', 'source': 'post_17', 'strength': 0.5},
-	  //  // {'target': 'post_359', 'source': 'post_74', 'strength': 0.5},
-	  //  // {'target': 'post_316', 'source': 'post_24', 'strength': 0.5},
-	  //  // {'target': 'post_57', 'source': 'post_216', 'strength': 0.5},
-	  //  // {'target': 'post_64', 'source': 'post_280', 'strength': 0.5},
-	  //  // {'target': 'post_264', 'source': 'post_361', 'strength': 0.5},
-	  //  // {'target': 'post_186', 'source': 'post_85', 'strength': 0.5},
-	  //  // {'target': 'post_87', 'source': 'post_265', 'strength': 0.5},
-	  //  // {'target': 'post_425', 'source': 'post_262', 'strength': 0.5},
-	  //  // {'target': 'post_230', 'source': 'post_14', 'strength': 0.5},
-	  //  // {'target': 'post_457', 'source': 'post_327', 'strength': 0.5},
-	  //  // {'target': 'post_190', 'source': 'post_308', 'strength': 0.5},
-	  //  // {'target': 'post_434', 'source': 'post_264', 'strength': 0.5},
-	  //  // {'target': 'post_168', 'source': 'post_322', 'strength': 0.5},
-	  //  // {'target': 'post_260', 'source': 'post_252', 'strength': 0.5},
-	  //  // {'target': 'post_267', 'source': 'post_487', 'strength': 0.5},
-	  //  // {'target': 'post_448', 'source': 'post_240', 'strength': 0.5},
-	  //  // {'target': 'post_385', 'source': 'post_97', 'strength': 0.5},
-	  //  // {'target': 'post_212', 'source': 'post_38', 'strength': 0.5},
-	  //  // {'target': 'post_474', 'source': 'post_380', 'strength': 0.5},
-	  //  // {'target': 'post_357', 'source': 'post_350', 'strength': 0.5},
-	  //  // {'target': 'post_369', 'source': 'post_312', 'strength': 0.5},
-	  //  // {'target': 'post_75', 'source': 'post_438', 'strength': 0.5},
-	  //  // {'target': 'post_17', 'source': 'post_123', 'strength': 0.5},
-	  //  // {'target': 'post_426', 'source': 'post_382', 'strength': 0.5},
-	  //  // {'target': 'post_52', 'source': 'post_498', 'strength': 0.5},
-	  //  // {'target': 'post_280', 'source': 'post_396', 'strength': 0.5},
-	  //  // {'target': 'post_481', 'source': 'post_2', 'strength': 0.5},
-	  //  // {'target': 'post_178', 'source': 'post_290', 'strength': 0.5},
-	  //  // {'target': 'post_487', 'source': 'post_52', 'strength': 0.5},
-	  //  // {'target': 'post_492', 'source': 'post_443', 'strength': 0.5},
-	  //  // {'target': 'post_435', 'source': 'post_232', 'strength': 0.5},
-	  //  // {'target': 'post_149', 'source': 'post_59', 'strength': 0.5},
-	  //  // {'target': 'post_194', 'source': 'post_321', 'strength': 0.5},
-	  //  // {'target': 'post_137', 'source': 'post_318', 'strength': 0.5},
-	  //  // {'target': 'post_190', 'source': 'post_349', 'strength': 0.5},
-	  //  // {'target': 'post_471', 'source': 'post_149', 'strength': 0.5},
-	  //  // {'target': 'post_418', 'source': 'post_292', 'strength': 0.5},
-	  //  // {'target': 'post_414', 'source': 'post_397', 'strength': 0.5},
-	  //  // {'target': 'post_484', 'source': 'post_157', 'strength': 0.5},
-	  //  // {'target': 'post_258', 'source': 'post_339', 'strength': 0.5},
-	  //  // {'target': 'post_333', 'source': 'post_319', 'strength': 0.5},
-	  //  // {'target': 'post_46', 'source': 'post_42', 'strength': 0.5},
-	  //  // {'target': 'post_168', 'source': 'post_397', 'strength': 0.5},
-	  //  // {'target': 'post_36', 'source': 'post_344', 'strength': 0.5},
-	  //  // {'target': 'post_86', 'source': 'post_158', 'strength': 0.5},
-	  //  // {'target': 'post_37', 'source': 'post_390', 'strength': 0.5},
-	  //  // {'target': 'post_269', 'source': 'post_195', 'strength': 0.5},
-	  //  // {'target': 'post_178', 'source': 'post_473', 'strength': 0.5},
-	  //  // {'target': 'post_9', 'source': 'post_127', 'strength': 0.5},
-	  //  // {'target': 'post_243', 'source': 'post_157', 'strength': 0.5},
-	  //  // {'target': 'post_371', 'source': 'post_42', 'strength': 0.5},
-	  //  // {'target': 'post_188', 'source': 'post_74', 'strength': 0.5},
-	  //  // {'target': 'post_193', 'source': 'post_195', 'strength': 0.5},
-	  //  // {'target': 'post_291', 'source': 'post_217', 'strength': 0.5},
-	  //  // {'target': 'post_215', 'source': 'post_185', 'strength': 0.5},
-	  //  // {'target': 'post_211', 'source': 'post_327', 'strength': 0.5},
-	  //  // {'target': 'post_284', 'source': 'post_68', 'strength': 0.5},
-	  //  // {'target': 'post_406', 'source': 'post_303', 'strength': 0.5},
-	  //  // {'target': 'post_208', 'source': 'post_191', 'strength': 0.5},
-	  //  // {'target': 'post_469', 'source': 'post_288', 'strength': 0.5},
-	  //  // {'target': 'post_158', 'source': 'post_35', 'strength': 0.5},
-	  //  // {'target': 'post_335', 'source': 'post_210', 'strength': 0.5},
-	  //  // {'target': 'post_437', 'source': 'post_483', 'strength': 0.5},
-	  //  // {'target': 'post_142', 'source': 'post_435', 'strength': 0.5},
-	  //  // {'target': 'post_123', 'source': 'post_336', 'strength': 0.5},
-	  //  // {'target': 'post_447', 'source': 'post_113', 'strength': 0.5},
-	  //  // {'target': 'post_458', 'source': 'post_215', 'strength': 0.5},
-	  //  // {'target': 'post_85', 'source': 'post_220', 'strength': 0.5},
-	  //  // {'target': 'post_76', 'source': 'post_286', 'strength': 0.5},
-	  //  // {'target': 'post_423', 'source': 'post_293', 'strength': 0.5},
-	  //  // {'target': 'post_382', 'source': 'post_102', 'strength': 0.5},
-	  //  // {'target': 'post_342', 'source': 'post_396', 'strength': 0.5},
-	  //  // {'target': 'post_415', 'source': 'post_357', 'strength': 0.5},
-	  //  // {'target': 'post_90', 'source': 'post_486', 'strength': 0.5},
-	  //  // {'target': 'post_406', 'source': 'post_67', 'strength': 0.5},
-	  //  // {'target': 'post_470', 'source': 'post_43', 'strength': 0.5},
-	  //  // {'target': 'post_17', 'source': 'post_150', 'strength': 0.5},
-	  //  // {'target': 'post_171', 'source': 'post_299', 'strength': 0.5},
-	  //  // {'target': 'post_416', 'source': 'post_170', 'strength': 0.5},
-	  //  // {'target': 'post_228', 'source': 'post_472', 'strength': 0.5},
-	  //  // {'target': 'post_155', 'source': 'post_210', 'strength': 0.5},
-	  //  // {'target': 'post_386', 'source': 'post_300', 'strength': 0.5},
-	  //  // {'target': 'post_325', 'source': 'post_189', 'strength': 0.5},
-	  //  // {'target': 'post_446', 'source': 'post_468', 'strength': 0.5},
-	  //  // {'target': 'post_227', 'source': 'post_36', 'strength': 0.5},
-	  //  // {'target': 'post_373', 'source': 'post_312', 'strength': 0.5},
-	  //  // {'target': 'post_281', 'source': 'post_79', 'strength': 0.5},
-	  //  // {'target': 'post_53', 'source': 'post_262', 'strength': 0.5},
-	  //  // {'target': 'post_464', 'source': 'post_4', 'strength': 0.5},
-	  //  // {'target': 'post_123', 'source': 'post_386', 'strength': 0.5},
-	  //  // {'target': 'post_213', 'source': 'post_497', 'strength': 0.5},
-	  //  // {'target': 'post_53', 'source': 'post_380', 'strength': 0.5},
-	  //  // {'target': 'post_424', 'source': 'post_117', 'strength': 0.5},
-	  //  // {'target': 'post_419', 'source': 'post_239', 'strength': 0.5},
-	  //  // {'target': 'post_284', 'source': 'post_36', 'strength': 0.5},
-	  //  // {'target': 'post_393', 'source': 'post_289', 'strength': 0.5},
-	  //  // {'target': 'post_375', 'source': 'post_353', 'strength': 0.5},
-	  //  // {'target': 'post_143', 'source': 'post_355', 'strength': 0.5},
-	  //  // {'target': 'post_304', 'source': 'post_109', 'strength': 0.5},
-	  //  // {'target': 'post_402', 'source': 'post_398', 'strength': 0.5},
-	  //  // {'target': 'post_479', 'source': 'post_254', 'strength': 0.5},
-	  //  // {'target': 'post_499', 'source': 'post_313', 'strength': 0.5},
-	  //  // {'target': 'post_110', 'source': 'post_446', 'strength': 0.5},
-	  //  // {'target': 'post_496', 'source': 'post_346', 'strength': 0.5},
-	  //  // {'target': 'post_1', 'source': 'post_6', 'strength': 0.5},
-	  //  // {'target': 'post_290', 'source': 'post_471', 'strength': 0.5},
-	  //  // {'target': 'post_396', 'source': 'post_92', 'strength': 0.5},
-	  //  // {'target': 'post_375', 'source': 'post_126', 'strength': 0.5},
-	  //  // {'target': 'post_30', 'source': 'post_209', 'strength': 0.5},
-	  //  // {'target': 'post_159', 'source': 'post_457', 'strength': 0.5},
-	  //  // {'target': 'post_133', 'source': 'post_341', 'strength': 0.5},
-	  //  // {'target': 'post_428', 'source': 'post_160', 'strength': 0.5},
-	  //  // {'target': 'post_24', 'source': 'post_112', 'strength': 0.5},
-	  //  // {'target': 'post_458', 'source': 'post_275', 'strength': 0.5},
-	  //  // {'target': 'post_258', 'source': 'post_352', 'strength': 0.5},
-	  //  // {'target': 'post_196', 'source': 'post_319', 'strength': 0.5},
-	  //  // {'target': 'post_7', 'source': 'post_113', 'strength': 0.5},
-	  //  // {'target': 'post_107', 'source': 'post_320', 'strength': 0.5},
-	  //  // {'target': 'post_393', 'source': 'post_423', 'strength': 0.5},
-	  //  // {'target': 'post_494', 'source': 'post_438', 'strength': 0.5},
-	  //  // {'target': 'post_206', 'source': 'post_277', 'strength': 0.5},
-	  //  // {'target': 'post_16', 'source': 'post_191', 'strength': 0.5},
-	  //  // {'target': 'post_75', 'source': 'post_413', 'strength': 0.5},
-	  //  // {'target': 'post_369', 'source': 'post_327', 'strength': 0.5},
-	  //  // {'target': 'post_222', 'source': 'post_251', 'strength': 0.5},
-	  //  // {'target': 'post_29', 'source': 'post_94', 'strength': 0.5},
-	  //  // {'target': 'post_475', 'source': 'post_489', 'strength': 0.5},
-	  //  // {'target': 'post_315', 'source': 'post_348', 'strength': 0.5},
-	  //  // {'target': 'post_406', 'source': 'post_460', 'strength': 0.5},
-	  //  // {'target': 'post_135', 'source': 'post_352', 'strength': 0.5},
-	  //  // {'target': 'post_336', 'source': 'post_248', 'strength': 0.5},
-	  //  // {'target': 'post_199', 'source': 'post_171', 'strength': 0.5},
-	  //  // {'target': 'post_109', 'source': 'post_318', 'strength': 0.5},
-	  //  // {'target': 'post_248', 'source': 'post_211', 'strength': 0.5},
-	  //  // {'target': 'post_313', 'source': 'post_436', 'strength': 0.5},
-	  //  // {'target': 'post_88', 'source': 'post_317', 'strength': 0.5},
-	  //  // {'target': 'post_68', 'source': 'post_424', 'strength': 0.5},
-	  //  // {'target': 'post_311', 'source': 'post_177', 'strength': 0.5},
-	  //  // {'target': 'post_403', 'source': 'post_70', 'strength': 0.5},
-	  //  // {'target': 'post_302', 'source': 'post_45', 'strength': 0.5},
-	  //  // {'target': 'post_259', 'source': 'post_21', 'strength': 0.5},
-	  //  // {'target': 'post_311', 'source': 'post_447', 'strength': 0.5},
-	  //  // {'target': 'post_380', 'source': 'post_177', 'strength': 0.5},
-	  //  // {'target': 'post_94', 'source': 'post_453', 'strength': 0.5},
-	  //  // {'target': 'post_308', 'source': 'post_295', 'strength': 0.5},
-	  //  // {'target': 'post_102', 'source': 'post_130', 'strength': 0.5},
-	  //  // {'target': 'post_65', 'source': 'post_449', 'strength': 0.5},
-	  //  // {'target': 'post_483', 'source': 'post_360', 'strength': 0.5},
-	  //  // {'target': 'post_26', 'source': 'post_35', 'strength': 0.5},
-	  //  // {'target': 'post_497', 'source': 'post_428', 'strength': 0.5},
-	  //  // {'target': 'post_47', 'source': 'post_198', 'strength': 0.5},
-	  //  // {'target': 'post_329', 'source': 'post_24', 'strength': 0.5},
-	  //  // {'target': 'post_315', 'source': 'post_461', 'strength': 0.5},
-	  //  // {'target': 'post_157', 'source': 'post_86', 'strength': 0.5},
-	  //  // {'target': 'post_201', 'source': 'post_354', 'strength': 0.5},
-	  //  // {'target': 'post_22', 'source': 'post_12', 'strength': 0.5},
-	  //  {'target': 'post_46', 'source': 'post_84', 'strength': 0.5},
-	  //  {'target': 'post_435', 'source': 'post_307', 'strength': 0.5},
-	  //  {'target': 'post_425', 'source': 'post_125', 'strength': 0.5},
-	  //  {'target': 'post_352', 'source': 'post_270', 'strength': 0.5},
-	  //  {'target': 'post_498', 'source': 'post_452', 'strength': 0.5},
-	  //  {'target': 'post_23', 'source': 'post_70', 'strength': 0.5},
-	  //  {'target': 'post_151', 'source': 'post_105', 'strength': 0.5},
-	  //  {'target': 'post_179', 'source': 'post_292', 'strength': 0.5},
-	  //  {'target': 'post_440', 'source': 'post_118', 'strength': 0.5},
-	  //  {'target': 'post_498', 'source': 'post_366', 'strength': 0.5},
-	  //  {'target': 'post_390', 'source': 'post_149', 'strength': 0.5},
-	  //  {'target': 'post_113', 'source': 'post_365', 'strength': 0.5}]
+   var links = dataset.links
+console.log('links', links)
+	   //console.log('links',links)
+	   //var width = $('#clusterdiagram').width();
+	//var height = $('#clusterdiagram').height();
+   
+   
       // Define main variables
       var d3Container = d3v4.select(element),
-          margin = {top: 10, right: 10, bottom: 20, left: 20},
-          width = d3Container.node().getBoundingClientRect().width - margin.left - margin.right,
-          height = height - margin.top - margin.bottom;
-
+          margin = {top: 0, right: 50, bottom: 0, left: 50},
+          width = 960,
+          height = 550;
+			radius = 6;
+	
      var colors = d3v4.scaleOrdinal(d3v4.schemeCategory10);
-
+     
+     
       // Add SVG element
       var container = d3Container.append("svg");
 
@@ -2616,8 +1452,9 @@ $("body").delegate("#overlay2", "click", function() {
       var svg = container
           .attr("width", width + margin.left + margin.right)
           .attr("height", height + margin.top + margin.bottom)
-         .append("g")
-         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+      .attr("overflow", "visible");
+         //.append("g")
+       //   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
        // simulation setup with all forces
     var linkForce = d3v4
@@ -2626,11 +1463,39 @@ $("body").delegate("#overlay2", "click", function() {
    .strength(function (link) { return link.strength })
 
        // simulation setup with all forces
-       var simulation = d3v4
+          var simulation = d3v4
          .forceSimulation()
-         .force('link', linkForce)
-         .force('charge', d3v4.forceManyBody().strength(-50))
-         .force('center', d3v4.forceCenter(width / 2, height / 2))
+         .force('link', d3.forceLink().id(d =>d.id).distance(-20))
+         .force('charge', d3v4.forceManyBody())
+         /* .force('center', d3v4.forceCenter(width, height ))   */
+         .force('center', d3v4.forceCenter())  
+         .force("collide",d3.forceCollide().strength(-5)) 
+         
+          /* simulation.force("center")
+        .x(width * forceProperties.center.x)
+        .y(height * forceProperties.center.y); */
+         
+         
+          /*  var simulation = d3.forceSimulation()
+             .force('x', d3.forceX().x(d => d.x))
+             .force('y', d3.forceY().y(d => d.y))
+             .force("charge",d3.forceManyBody().strength(-20))
+              .force("link", d3.forceLink().id(d =>d.id).distance(20)) 
+              .force("collide",d3.forceCollide().radius(d => d.r*10)) 
+             .force('center', d3v4.forceCenter(width, height ))  */
+            
+			
+			simulation.force("center")
+		    .x(width / 2)
+		    .y(height / 2)
+		    
+		   	simulation.force("charge")
+        .strength(-2000 * true)
+        .distanceMin(1)
+        .distanceMax(1000);
+		    /* .x(width * 0.5) */
+			
+			simulation.alpha(1).restart(); 
 
          var linkElements = svg.append("g")
            .attr("class", "links")
@@ -2644,13 +1509,23 @@ $("body").delegate("#overlay2", "click", function() {
          return node.level === 1 ? 'red' : 'gray'
        }
 
+         
+         
        var nodeElements = svg.append("g")
-         .attr("class", "nodes ")
+         .attr("class", "nodes")
          .selectAll("circle")
          .data(nodes)
          .enter().append("circle")
-           .attr("r", 5)
+         
+         /* .attr(circleAttrs) */
+         
+           .attr("r", function (d, i) {return d.level})
            .attr("fill", function (d, i) {return colors(d.group);})
+            .attr("class", "cluster_visual")
+		    .attr("loaded_color",function (d) {return colors(d.group); })
+		    .attr("cluster_id", function(node){return node.label})
+           //.attr("text",function (node) { return  node.label })
+           /* .on("mouseover", function (node) { return  node.label }); */
 
         var textElements = svg.append("g")
          .attr("class", "texts")
@@ -2666,7 +1541,7 @@ $("body").delegate("#overlay2", "click", function() {
            nodeElements
              .attr('cx', function (node) { return node.x })
              .attr('cy', function (node) { return node.y })
-           textElements
+             textElements  
              .attr('x', function (node) { return node.x })
              .attr('y', function (node) { return node.y })
              linkElements
@@ -2676,12 +1551,34 @@ $("body").delegate("#overlay2", "click", function() {
      .attr('y2', function (link) { return link.target.y })
          })
 
+function handleMouseOver(d, i) {  // Add interactivity
 
+            // Use D3 to select element, change color and size
+            d3.select(this).attr({
+              fill: "orange",
+              r: radius * 2
+            });
+
+            // Specify where to put label of text
+            svg.append("text").attr({
+               id: "t" + d.x + "-" + d.y + "-" + i,  // Create an id for text so we can select it later for removing on mouseout
+                x: function() { return xScale(d.x) - 30; },
+                y: function() { return yScale(d.y) - 15; }
+            })
+            .text(function() {
+              return [d.x, d.y];  // Value of the text
+            });
+          }
+        
  simulation.force("link").links(links)
  }
-	</script>
 
- <script src="https://d3js.org/d3.v3.js"></script>
+	</script>
+		
+		
+
+
+<!--  <script src="https://d3js.org/d3.v3.js"></script> -->
 <script type="text/javascript">
 var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
 document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));

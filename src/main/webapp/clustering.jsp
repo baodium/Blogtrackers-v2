@@ -190,6 +190,7 @@
 	//int count = 0;
 	JSONArray links_centroids = new JSONArray();
 	JSONArray nodes_centroids = new JSONArray();
+	//start main foor loop
 	for (int i = 1; i < 11; i++) {
 
 		String cluster_ = "cluster_" + String.valueOf(i);
@@ -251,9 +252,6 @@
 		for (int j = 0; j < post_split.length; j++) {
 
 			JSONObject scatter_plot = new JSONObject();
-			//JSONObject source_ = new JSONObject(svd.get(j).toString());
-			//Object x_y = source_.getJSONObject("_source").get("svd");
-			//Object p_id = source_.getJSONObject("_source").get("post_id");
 			String p_id = post_split[j];
 			Object x_y = svd_.get(p_id);
 
@@ -261,6 +259,7 @@
 
 			String x = x_y.toString().split(" ")[0];
 			String y = x_y.toString().split(" ")[1];
+<<<<<<< HEAD
 
 			//System.out.println(x_y.toString());
 			//System.out.println(x +"--"+ y);
@@ -288,11 +287,26 @@
 			double left = Math.pow((double) Double.parseDouble(x) - (double) Double.parseDouble(centroid_x), 2);
 			double right = Math.pow((double) Double.parseDouble(y) - (double) Double.parseDouble(centroid_y),
 					2);
+=======
+			
+			String postid = p_id.toString();
+			
+			scatter_plot.put("cluster",String.valueOf(i));
+			
+			scatter_plot.put("",String.valueOf(counter));
+			scatter_plot.put("new_x",x);
+			scatter_plot.put("new_y",y);
+			counter++;
+			
+			double left = Math.pow((double)Double.parseDouble(x) - (double)Double.parseDouble(centroid_x), 2);
+			double right = Math.pow((double)Double.parseDouble(y) - (double)Double.parseDouble(centroid_y), 2);
+>>>>>>> dec36f3c6b74a8a79c36f065abfc0148b8cf5d0a
 			String distance = String.valueOf(Math.pow((left + right), 0.5));
 			distances.put(postid, distance);
 			scatterplotfinaldata.add(scatter_plot);
 
 		}
+<<<<<<< HEAD
 
 		System.out.println("done with svd --");
 		//scatterplotfinaldata.add(new JSONObject("{columns:['','new_x','new_y','cluster']}"));
@@ -352,30 +366,84 @@
 		topterms.put(cluster_, terms);
 		//System.out.println(terms);
 //System.out.println("matrix --" + Arrays.toString(termsMatrix));
+=======
+		
+		ArrayList<JSONObject> postDataAll = DbConnection.queryJSON("select date,post,num_comments, blogger,permalink, title, blogpost_id, location, blogsite_id from blogposts where blogpost_id in ("+post_ids+") limit 500" );
+		System.out.println("done with query --");
+		
+		String terms = cluster_data.get("topterms").toString();
+		String str1 = null;
+		str1 = terms.replace("),", "-").replace("(", "").replace(")", "").replaceAll("[0-9]","").replace("-", "");
+		List<String> t1 = Arrays.asList(str1.replace("[","").replace("]","").split(","));
+		termsMatrix[i - 1][i - 1] = t1.size();
+		
+		//CREATING CHORD MATRIX
+		
+		String str2 = null;
+		
+		for(int k = (i + 1); k < 11; k++)
+		{
+		String cluster_matrix  = "cluster_" + String.valueOf(k);
+		JSONObject cluster_data_matrix = new JSONObject(source.get(cluster_matrix).toString());
+		String terms_matrix = cluster_data_matrix.get("topterms").toString();
+		
+		str2 = terms_matrix.replace("),", "-").replace("(", "").replace(")", "").replaceAll("[0-9]","").replace("-", "");
+	
+		List<String> t2 = Arrays.asList(str2.replace("[","").replace("]","").split(","));
+	
+		int count = 0;
+		for (int i_ = 0; i_ < t1.size(); i_++)
+        {
+            for (int j_ = 0; j_ < t2.size(); j_++)
+            {
+                if(t1.get(i_).contentEquals(t2.get(j_)))
+                {
+                 
+                 count ++;
+                 }
+            }
+        }
+		
+		termsMatrix[i-1][k-1] = count;
+		termsMatrix[k-1][i-1] = count;
+		 }
+		//DONE CREATING CHORD MATRIX
+		
+		topterms.put(cluster_,terms);
+		
+>>>>>>> dec36f3c6b74a8a79c36f065abfc0148b8cf5d0a
 		key_val = new Pair<String, String>(cluster_, post_ids);
-		//key_val.put(cluster_,post_ids);
-		System.out.println("clusters --" + cluster_);
-
-		/* for(int j = 0; j < postDataAll.length(); j++){
-			
-		} */
+		
 		key_val_posts.put(cluster_, post_ids);
+<<<<<<< HEAD
 		System.out.println("kv --" + post_ids.split(",").length);
+=======
+		
+>>>>>>> dec36f3c6b74a8a79c36f065abfc0148b8cf5d0a
 		clusterResult.put(key_val, postDataAll);
 
 	}
+//end main for loop
 
+<<<<<<< HEAD
 	//System.out.println(topterms.size());
 	/* for(int i = 0; i < termsMatrix.length; i++){
 		System.out.println("termsMatrix --" + Arrays.toString(termsMatrix[i]));
 	} */
 
+=======
+	
+>>>>>>> dec36f3c6b74a8a79c36f065abfc0148b8cf5d0a
 	JSONObject final_centroids = new JSONObject();
 	final_centroids.put("nodes", nodes_centroids);
 	final_centroids.put("links", links_centroids);
 
 	System.out.println("final_centroids---" + final_centroids);
 
+<<<<<<< HEAD
+=======
+	
+>>>>>>> dec36f3c6b74a8a79c36f065abfc0148b8cf5d0a
 	session.setAttribute(tid.toString() + "cluster_terms", topterms);
 	session.setAttribute(tid.toString() + "cluster_distances", distances);
 	session.setAttribute(tid.toString() + "cluster_result", clusterResult);
@@ -662,7 +730,7 @@
 		<div class="row mt20">
 			<div class="col-md-3">
 
-				<div class="card card-style mt50" style="height: 700px;">
+				<div class="card card-style mt25" style="height: 700px; margin-top: 20px">
 					<div class="card-body  p30 pt5 pb5 mb40">
 						<h5 class="mt20 mb20">Clusters</h5>
 						<!-- <div style="padding-right: 10px !important;">
@@ -784,16 +852,17 @@
 			</div>
 
 			<div class="col-md-9">
-				<div class="card card-style mt20">
+				<div class="card card-style mt20" style="height: 570px;">
 					<div class="card-body  p30 pt5 pb5">
 						<div style="min-height: 250px;">
 							<div>
 								<p class="text-primary mt10">Cluster Map</p>
 							</div>
 
-							<div id="chart-container" class="chart-container">
+							<div id="chart-container1" class="chart-container" style="min-height: 500px;">
 								<div class="chart" id="clusterdiagram"></div>
 								<div id="parentdivy"></div>
+<<<<<<< HEAD
 
 								<%
 									for (int c = 1; c <= 10; c++) {
@@ -810,6 +879,19 @@
 											<div id="clusterdiagram_loader_<%=c%>" class="">
 												<img style='position: absolute; top: 50%; left: 50%;'
 													src='images/loading.gif' />
+=======
+								
+								<% for(int c=1; c<=10; c++){ %>
+									
+									<div id="CLUSTER_<%=c %>" class="overlay1 ">
+									  <div style="min-height: 400px; width: 1000px;" class="text1 card card-style ">
+											<div class="clusterdiagram_<%=c %>" class="card-body p30 pt5 pb5 container1">
+												<div class="hidden" id="clusterdiagram_<%=c %>" load_status="0" ></div>
+												
+												<div id="clusterdiagram_loader_<%=c %>" class="">
+													<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />
+												</div>
+>>>>>>> dec36f3c6b74a8a79c36f065abfc0148b8cf5d0a
 											</div>
 										</div>
 									</div>
@@ -904,7 +986,12 @@
 					<div class="card-body p20 pt0 pb20" style="min-height: 300px;">
 						<div>
 							<p class="text-primary mt10">
+<<<<<<< HEAD
 								<b class="text-blue activeblog">Cluster 1</b> Common Terms 
+=======
+								<b class="text-blue activeblog">Cluster 1</b><b
+									class="text-success"> Common Terms</b>
+>>>>>>> dec36f3c6b74a8a79c36f065abfc0148b8cf5d0a
 							</p>
 						</div>
 						<div class="chart-container">
@@ -1443,11 +1530,10 @@
 	<script>
 	////start cluster graph clicks
 		$("body").delegate(".cluster_visual", "click", function() {
+			$('.overlay1').removeClass('karat');
 			loaded_color = $(this).attr('loaded_color');
 			cluster_id = $(this).attr('cluster_id');
 			cluster_number = $(this).attr('cluster_number');
-			
-			
 			
 			if( $('#clusterdiagram_'+cluster_number).attr('load_status') == 0  ){
 				getClusterPoints(cluster_number)
@@ -1458,7 +1544,6 @@
 			
 		})
 		$("body").delegate(".overlay1", "click", function() {
-			
 			$(this).removeClass('karat');
 		})
 		////end cluster graph clicks
@@ -1508,10 +1593,12 @@
 		
 		//nodes = []
  var d3v4 = window.d3;
+ var plot_width = $('#chart-container1').width();
+var plot_height = $('#chart-container1').outerHeight() - 25;
+console.log("plot_height",plot_height)
+ console.log("plot_width",plot_width)
  // Chart setup
- d3.json("data_cluster.json", function(dataset){
-	 clusterdiagram5('#parentdivy', 500,dataset);
- })
+clusterdiagram5('#parentdivy', plot_height, plot_width);
  var max_post_count = 0;
  var min_post_count = 0
  function clusterdiagram3(element, height, dataset, identify) {
@@ -1687,7 +1774,7 @@
  
  
  ///start clustering5 funtion
- function clusterdiagram5(element, height, dataset) {
+ function clusterdiagram5(element, height, plot_width) {
 	// console.log("this is dataset1",dataset)
 	 
 	 var final_centroids = {};
@@ -1769,10 +1856,12 @@ console.log('links', links)
 	  //var width = $('#clusterdiagram').width();
 	//var height = $('#clusterdiagram').height();
    // Define main variables
+   console.log(plot_width, "plot w")
+   console.log(height, "plot h")
    var d3Container = d3v4.select(element),
      margin = {top: 0, right: 50, bottom: 0, left: 50},
-     width = 960,
-     height = 550;
+     width = plot_width,
+     height = height;
 			radius = 6;
 			
 			
