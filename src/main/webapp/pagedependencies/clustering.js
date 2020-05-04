@@ -440,7 +440,7 @@ function drawChord(container, options, matrix, array) {
 	var elem = container;
     var config = {
         width: 500,
-        height: 450,
+        height: 470,
         rotation: 0,
         textgap: 40,
         colors: ["#C4C4C4", "#69B40F", "#EC1D25", "#C8125C", "#008FC8", "#10218B", "#134B24", "#737373", "#ffff00", "#ff79c5"]
@@ -577,13 +577,13 @@ var svg = container
         
       .append("svg:title")
         .text(function(d) { 
-            return  d.source.value + " posts from " + gnames[d.source.index] + " in " + gnames[d.target.index]; 
+            return  d.source.value + " terms from " + gnames[d.source.index] + " in " + gnames[d.target.index]; 
         });
     
 ////////////////////////////////////////////////////////////
 //////////////////Append Ticks ////////////////////////////
 ////////////////////////////////////////////////////////////
-    
+    //console.log('chord', chord.chords.source.value)
     var ticks = svg.append("svg:g").selectAll("g.ticks")
      .data(chord.groups)
      .enter().append("svg:g").selectAll("g.ticks")
@@ -607,7 +607,7 @@ ticks.append("svg:text")
 .attr("dy", ".35em")
 .attr("transform", function(d) { return d.angle > Math.PI ? "rotate(180)translate(-16)" : null; })
 .style("text-anchor", function(d) { return d.angle > Math.PI ? "end" : null; })
-.text(function(d) { return d.label; });
+.text(function(d) { console.log('ddd',d); return d.label; });
 
 
     

@@ -3338,6 +3338,9 @@ var gdpData = {
 					
 					location.put("CA", "36.7783, -119.4179");
 					location.put("BG", "42.7339, 25.4858");
+					location.put("BE", "50.503887, 4.469936");
+					location.put("DK", "56.263920, 9.501785");
+					location.put("SE", "60.128162, 18.643501");
 					
 					location.put("TR", "38.9637, 35.2433");
 					location.put("FR", "46.2276, 2.2137");
