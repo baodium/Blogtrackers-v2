@@ -1,4 +1,5 @@
 <%@page import="java.util.stream.Collectors"%>
+<%@page import="com.fasterxml.jackson.databind.ObjectMapper"%>
 <%@page import="authentication.*"%>
 <%@page import="java.util.*"%>
 <%@page import="util.*"%>
@@ -11,6 +12,8 @@
 <%@page import="java.util.Date"%>
 <%@page import="java.io.*"%>
 <%@page import="java.util.logging.Logger"%>
+
+<%@page import="javafx.util.Pair"%>
 <%-- <%@ page buffer="none" %> --%>
 
 <%@ page language="java" contentType="text/html; charset=UTF-8"
@@ -473,6 +476,172 @@
 			JSONObject final_result = new JSONObject();
 			final_result.put("status_percentage",status_percentage);
 			final_result.put("status",status);
+			
+			//start clustering data gathering
+			Clustering cluster = new Clustering();
+				String tracker_id = tid.toString();
+	//get postids from each cluster in tracker and save in JSONObject
+	ArrayList result = cluster._getClusters(tracker_id);
+	System.out.println("done with clusters");
+
+	JSONObject ress = new JSONObject(result.get(0).toString());
+	System.out.println("done with res");
+	
+	JSONObject source = new JSONObject(ress.get("_source").toString());
+	
+	HashMap<Pair<String, String>, ArrayList<JSONObject>> clusterResult = new HashMap<Pair<String, String>, ArrayList<JSONObject>>();
+
+	Pair<String, String> key_val = new Pair<String, String>(null, null);
+
+	HashMap<String, String> key_val_posts = new HashMap<String, String>();
+	ArrayList<JSONObject> scatterplotfinaldata = new ArrayList<JSONObject>();
+	
+	JSONObject distances = new JSONObject();
+	HashMap<String, String> topterms = new HashMap<String, String>();
+			String find = "";
+	int [][] termsMatrix = new int[10][10];
+	//int count = 0;
+	JSONArray links_centroids = new JSONArray();
+	JSONArray nodes_centroids = new JSONArray();
+	//start main foor loop
+	for (int i = 1; i < 11; i++) {
+
+		String cluster_ = "cluster_" + String.valueOf(i);
+		String centroids = "C" + String.valueOf(i) + "xy";
+		JSONObject cluster_data = new JSONObject(source.get(cluster_).toString());
+		
+		String post_ids = cluster_data.get("post_ids").toString();
+	
+		String centroid = source.get(centroids).toString().replace("[", "").replace("]", "");
+		String centroid_x = centroid.split(",")[0].trim();
+		String centroid_y = centroid.split(",")[1].trim();
+		
+		JSONObject data_centroids_ = new JSONObject();
+		
+		data_centroids_.put("id","Cluster_" + i);
+	   	data_centroids_.put("group", i);
+	   	data_centroids_.put("label","CLUSTER_" + i);
+	   	data_centroids_.put("level",post_ids.split(",").length);
+	
+	   	nodes_centroids.put(data_centroids_);
+		
+		for(int k = 1; k < 11; k++){
+			if(k != i){
+				String centroids_ = "C" + String.valueOf(k) + "xy";
+				String centroid_ = source.get(centroids_).toString().replace("[", "").replace("]", "");
+				String centroid_x_ = centroid_.split(",")[0].trim();
+				String centroid_y_ = centroid_.split(",")[1].trim();
+				
+				JSONObject data_centroids = new JSONObject();
+				data_centroids.put("target","Cluster_" + i);
+				data_centroids.put("source","Cluster_" + k);
+				
+				double left_ = Math.pow((double)Double.parseDouble(centroid_x_) - (double)Double.parseDouble(centroid_x), 2);
+				double right_ = Math.pow((double)Double.parseDouble(centroid_y_) - (double)Double.parseDouble(centroid_y), 2);
+				String distance_ = String.valueOf(Math.pow((left_ + right_), 0.5));
+				 
+				data_centroids.put("strength", 50 - Double.parseDouble(distance_));
+				links_centroids.put(data_centroids);
+				
+			}
+			
+		}
+		
+		JSONObject svd_ = new JSONObject(source.get("svd").toString());
+		
+		int counter = 0;
+		String [] post_split = post_ids.split(",");
+		
+		for(int j = 0; j < post_split.length; j++){
+			
+			
+			
+			JSONObject scatter_plot = new JSONObject();
+			String p_id = post_split[j];
+			Object x_y = svd_.get(p_id);
+					
+			x_y = x_y.toString().replace("[","").replace("]","").trim().replaceAll("\\s+", " ");
+			
+			String x = x_y.toString().split(" ")[0];
+			String y = x_y.toString().split(" ")[1];
+			
+			String postid = p_id.toString();
+			
+			scatter_plot.put("cluster",String.valueOf(i));
+			
+			scatter_plot.put("",String.valueOf(counter));
+			scatter_plot.put("new_x",x);
+			scatter_plot.put("new_y",y);
+			counter++;
+			
+			double left = Math.pow((double)Double.parseDouble(x) - (double)Double.parseDouble(centroid_x), 2);
+			double right = Math.pow((double)Double.parseDouble(y) - (double)Double.parseDouble(centroid_y), 2);
+			String distance = String.valueOf(Math.pow((left + right), 0.5));
+			distances.put(postid, distance); 
+			scatterplotfinaldata.add(scatter_plot);
+			
+		}
+		
+		ArrayList<JSONObject> postDataAll = DbConnection.queryJSON("select date,post,num_comments, blogger,permalink, title, blogpost_id, location, blogsite_id from blogposts where blogpost_id in ("+post_ids+") limit 500" );
+		System.out.println("done with query --");
+		
+		String terms = cluster_data.get("topterms").toString();
+		String str1 = null;
+		str1 = terms.replace("),", "-").replace("(", "").replace(")", "").replaceAll("[0-9]","").replace("-", "");
+		List<String> t1 = Arrays.asList(str1.replace("[","").replace("]","").split(","));
+		termsMatrix[i - 1][i - 1] = t1.size();
+		
+		//CREATING CHORD MATRIX
+		
+		String str2 = null;
+		
+		for(int k = (i + 1); k < 11; k++)
+		{
+		String cluster_matrix  = "cluster_" + String.valueOf(k);
+		JSONObject cluster_data_matrix = new JSONObject(source.get(cluster_matrix).toString());
+		String terms_matrix = cluster_data_matrix.get("topterms").toString();
+		
+		str2 = terms_matrix.replace("),", "-").replace("(", "").replace(")", "").replaceAll("[0-9]","").replace("-", "");
+	
+		List<String> t2 = Arrays.asList(str2.replace("[","").replace("]","").split(","));
+	
+		int count = 0;
+		for (int i_ = 0; i_ < t1.size(); i_++)
+        {
+            for (int j_ = 0; j_ < t2.size(); j_++)
+            {
+                if(t1.get(i_).contentEquals(t2.get(j_)))
+                {
+                 
+                 count ++;
+                 }
+            }
+        }
+		
+		termsMatrix[i-1][k-1] = count;
+		termsMatrix[k-1][i-1] = count;
+		 }
+		//DONE CREATING CHORD MATRIX
+		
+		topterms.put(cluster_,terms);
+		
+		key_val = new Pair<String, String>(cluster_, post_ids);
+		
+		key_val_posts.put(cluster_, post_ids);
+		
+		clusterResult.put(key_val, postDataAll);
+		
+		
+
+	}
+//end main for loop
+
+	
+	JSONObject final_centroids = new JSONObject();
+	final_centroids.put("nodes",nodes_centroids);
+	final_centroids.put("links",links_centroids);
+			
+			//end clustering data ghathering
 			
 			
 			
@@ -1028,7 +1197,7 @@ display: none;
 						<div align="center" class="" style="min-height: 420px;">
 							<div align="center" class="chart-container word-cld">
 							<div class="hidden" id="keyword_computing_loaader">
-								<div align="center" class=" word1">COMPUTING-TERMS...<span id="keyword_percentage">0%</span></div>
+								<div align="center" class=" word1">COMPUTING-TERMS...<span id="keyword_percentage"><%=status_percentage %>%</span></div>
 								<div align="center" class=" overlay1"></div>
 							</div>
 							<div class="chart hidden" id="tagcloudcontainer99">
@@ -1674,7 +1843,212 @@ display: none;
 		
 		
 		
+		<!-- Start scatter plot js -->
+		 <script type="text/javascript" src="assets/vendors/d3/d3.v4_new.min.js" ></script> 
 		
+		<script>
+		 var d3v4 = window.d3;
+		var plot_width = $('#scatter-container').width();
+		var plot_height = $('#scatter-container1').height() - 25;
+		
+		var margin = {
+			top : 10,
+			right : 30,
+			bottom : 30,
+			left : 60
+		}, width = plot_width - margin.left - margin.right, height = plot_height - margin.top
+				- margin.bottom;
+		clusterdiagram5('#dataviz_axisZoom', plot_height, plot_width);
+		///start clustering5 funtion
+		 function clusterdiagram5(element, height, plot_width) {
+			 var final_centroids = {};
+			 dataset = <%=final_centroids %>
+			 trending_words = [];
+				
+				<% 
+				String word_build = "";
+			 	for(int k = 0; k < 10; k++){
+			 		 word_build = "";
+					String [] splitted = source.get("cluster_" + (k + 1)).toString().split("\'topterms\':");
+							
+					List<String> termlist = Arrays.asList(splitted[1].replace("{","").replace("}","").split(","));
+					
+					for(int m = 0; m < 4; m++){
+						if(m > 0){
+							word_build += ", ";
+						}
+						word_build += termlist.get(m).split(":")[0].replace("\'","");
+					}
+					%>
+					trending_words[<%=k %>] = "<%=word_build %>";
+			 	<% } %>
+			 	 
+			 	 //start getting max and min posts numbers
+			 	for(var i = 0; i < dataset.nodes.length; i++){
+			 		 if(i == 0){
+			 			min_post_count = dataset.nodes[i].level
+			 			max_post_count = dataset.nodes[i].level
+			 		 }
+			 		 
+			 		 if(dataset.nodes[i].level < min_post_count){
+			 			min_post_count = dataset.nodes[i].level
+			 		 }
+			 		 
+			 		if(dataset.nodes[i].level > max_post_count){
+			 			max_post_count = dataset.nodes[i].level
+			 		 }
+			 		 
+			 	}
+			 	//end getting max and min posts numbers
+			 	
+			 	//start get normalized array for radius values
+			 	normalized_radius = [];
+			 	for(var i = 0; i < dataset.nodes.length; i++){
+			 		
+			 		normalized_value = ( (dataset.nodes[i].level - min_post_count)/(max_post_count - min_post_count));
+			 		
+			 		range = 2 - 1;
+			 		normalized_value = (normalized_value * range) + 1;
+			 		
+			 		temp = normalized_value * 20;
+			 		normalized_radius[i] = temp;
+			 		
+			 	}
+			 	
+			 	//start get normalized array for radius values
+		  
+			 
+		var nodes = dataset.nodes
+		 var links = dataset.links
+		
+		   // Define main variables
+		   var d3Container = d3v4.select(element),
+		     margin = {top: 0, right: 50, bottom: 0, left: 50},
+		     width = plot_width,
+		     height = height;
+					radius = 6;
+					
+					
+			
+		   var colors = d3v4.scaleOrdinal().range(["green", "red", "blue", "orange", "purple", "pink", "black", "grey", "brown", "yellow"]);;
+		   // Add SVG element
+		   var container = d3Container.append("svg");
+		   // Add SVG group
+		   var svg = container
+		     .attr("width", width + margin.left + margin.right)
+		     .attr("height", height + margin.top + margin.bottom)
+		   .attr("overflow", "visible");
+		     //.append("g")
+		    //  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+		    // simulation setup with all forces
+		  var linkForce = d3v4
+		  .forceLink()
+		  .id(function (link) { return link.id })
+		  .strength(function (link) { return link.strength })
+		    // simulation setup with all forces
+		     var simulation = d3v4
+		     .forceSimulation()
+		     .force('link', d3v4.forceLink().id(d =>d.id).distance(-20))
+		     .force('charge', d3v4.forceManyBody())
+		     /* .force('center', d3v4.forceCenter(width, height ))  */
+		     .force('center', d3v4.forceCenter())  
+		     .force("collide",d3v4.forceCollide().strength(-5)) 
+		     /* simulation.force("center")
+		    .x(width * forceProperties.center.x)
+		    .y(height * forceProperties.center.y); */
+		     /* var simulation = d3.forceSimulation()
+		       .force('x', d3.forceX().x(d => d.x))
+		       .force('y', d3.forceY().y(d => d.y))
+		       .force("charge",d3.forceManyBody().strength(-20))
+		       .force("link", d3.forceLink().id(d =>d.id).distance(20)) 
+		       .force("collide",d3.forceCollide().radius(d => d.r*10)) 
+		       .force('center', d3v4.forceCenter(width, height )) */
+					
+					simulation.force("center")
+				  .x(width / 2)
+				  .y(height / 2)
+				   
+				  	simulation.force("charge")
+		    .strength(-2000 * true)
+		    .distanceMin(1)
+		    .distanceMax(1000);
+				  /* .x(width * 0.5) */
+					
+					simulation.alpha(1).restart(); 
+		     var linkElements = svg.append("g")
+		      .attr("class", "links")
+		      .selectAll("line")
+		      .data(links)
+		      .enter().append("line")
+		       .attr("stroke-width", 0)
+		     	 .attr("stroke", "rgba(50, 50, 50, 0.2)")
+		    function getNodeColor(node) {
+		     return node.level === 1 ? 'red' : 'gray'
+		    }
+		    var nodeElements = svg.append("g")
+		     .attr("class", "nodes")
+		     .selectAll("circle")
+		     .data(nodes)
+		     .enter().append("circle")
+		     /* .attr(circleAttrs) */
+		     // .attr("r", function (d, i) {return d.level})
+		      .attr("r", function (d, i) {return normalized_radius[d.group-1]})
+		      .attr("cluster_number", function (d, i) {return d.group})
+		      .attr("data-toggle", "tooltip")
+		      .attr("data-placement", "top")
+		      .attr("title", function (d, i) {return trending_words[d.group-1]})
+		      .attr("fill", function (d, i) {return colors(d.group);})
+		      .attr("class", "cluster_visual")
+				  .attr("loaded_color",function (d) {return colors(d.group); })
+				  .attr("cluster_id", function(node){return node.label})
+		      //.attr("text",function (node) { return node.label })
+		      /* .on("mouseover", function (node) { return node.label }); */
+		    var textElements = svg.append("g")
+		     .attr("class", "texts")
+		     .selectAll("text")
+		     .data(nodes)
+		     .enter().append("text")
+		      .text(function (node) { return node.label })
+		    	 .attr("font-size", 15)
+		    	 .attr("dx", 15)
+		      .attr("dy", 4) 
+		     simulation.nodes(nodes).on('tick', () => {
+		      nodeElements
+		       .attr('cx', function (node) { return node.x })
+		       .attr('cy', function (node) { return node.y })
+		       textElements  
+		       .attr('x', function (node) { return node.x })
+		       .attr('y', function (node) { return node.y })
+		       linkElements
+		   .attr('x1', function (link) { return link.source.x })
+		   .attr('y1', function (link) { return link.source.y })
+		   .attr('x2', function (link) { return link.target.x })
+		   .attr('y2', function (link) { return link.target.y })
+		     })
+		function handleMouseOver(d, i) { // Add interactivity
+		      // Use D3 to select element, change color and size
+		      d3.select(this).attr({
+		       fill: "orange",
+		       r: radius * 2
+		      });
+		      // Specify where to put label of text
+		      svg.append("text").attr({
+		        id: "t" + d.x + "-" + d.y + "-" + i, // Create an id for text so we can select it later for removing on mouseout
+		        x: function() { return xScale(d.x) - 30; },
+		        y: function() { return yScale(d.y) - 15; }
+		      })
+		      .text(function() {
+		       return [d.x, d.y]; // Value of the text
+		      });
+		     }
+		 simulation.force("link").links(links)
+		 }
+		 ///end clustering5 function
+		 
+	</script>
+		
+		
+		<!-- End Scatter plot JS -->
 		
 		
 		
@@ -1707,182 +2081,6 @@ display: none;
 		src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.html5.min.js"></script>
 	<script
 		src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.print.min.js"></script>
-		
-		<!-- Start scatter plot js -->
-		<script src="https://d3js.org/d3.v4.js"></script>
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		<script>
-		//set the dimensions and margins of the graph
-		var plot_width = $('#scatter-container').width();
-		var plot_height = $('#scatter-container1').height() - 25;
-		
-		var margin = {
-			top : 10,
-			right : 30,
-			bottom : 30,
-			left : 60
-		}, width = plot_width - margin.left - margin.right, height = plot_height - margin.top
-				- margin.bottom;
-
-		//append the SVG object to the body of the page
-		var SVG = d3.select("#dataviz_axisZoom").append("svg").attr("width",
-				width + margin.left + margin.right).attr("height",
-				height + margin.top + margin.bottom).append("g").attr(
-				"transform",
-				"translate(" + margin.left + "," + margin.top + ")");
-
-		//Read the data
-		d3.csv("test_data2.csv", function(data) {
-			console.log(data)
-		})
-
-		/* var data2 = []; */
-		var data = [ 
-			 {
-				"cluster" : "0",
-				"new_x" : "1",
-				"new_y" : "3"
-
-			
-		}, {
-			
-				"cluster" : "1",
-				"new_x" : "4",
-				"new_y" : "5"
-			
-		}, {
-			
-				"cluster" : "2",
-				"new_x" : "6",
-				"new_y" : "7"
-		
-
-		}, {
-			
-			"cluster" : "2",
-			"new_x" : "4",
-			"new_y" : "1"
-	
-
-		} , {
-			
-			"cluster" : "2",
-			"new_x" : "6",
-			"new_y" : "7"
-	
-
-		}, {
-			
-			"cluster" : "8",
-			"new_x" : "9",
-			"new_y" : "3"
-	
-
-		}, {
-				
-				"cluster" : "1",
-				"new_x" : "7",
-				"new_y" : "5"
-		
-
-		}, {
-			
-			"cluster" : "2",
-			"new_x" : "2",
-			"new_y" : "3"
-	
-
-			}, {
-				
-			"cluster" : "8",
-			"new_x" : "1",
-			"new_y" : "3"
-	
-	
-			}];
-		/* var data_final = data2.push(data);
-		console.log(data_final) */
-		// Add X axis
-		
-		var x = d3.scaleLinear().domain([ 1, 10 ]).range([ 0, width ]);
-		var xAxis = SVG.append("g").attr("transform",
-				"translate(0," + height + ")").call(d3.axisBottom(x));
-
-		// Add Y axis
-		var y = d3.scaleLinear().domain([ 1, 10 ]).range([ height, 0 ]);
-		var yAxis = SVG.append("g").call(d3.axisLeft(y));
-
-		// Add a clipPath: everything out of this area won't be drawn.
-		var clip = SVG.append("defs").append("SVG:clipPath").attr("id", "clip")
-				.append("SVG:rect").attr("width", width).attr("height", height)
-				.attr("x", 0).attr("y", 0);
-
-		var color = d3.scaleOrdinal().domain([ "0", "1", "2" ]).range(
-				[ 'red', 'green', 'blue' ])
-		/* .domain(["0", "1", "2","3","4","5","6","7","8","9" ]) */
-		/* .range([ 'red', 'green', 'blue', 'orange', 'purple','pink', 'black', 'grey', 'brown','yellow']) */
-
-		// Create the scatter variable: where both the circles and the brush take place
-		var scatter = SVG.append('g').attr("clip-path", "url(#clip)")
-
-		// Add circles
-		scatter.selectAll("circle").data(data).enter().append("circle").attr(
-				"cx", function(d) {
-					return x(d.new_x);
-				}).attr("cy", function(d) {
-			return y(d.new_y);
-		}).attr("r", 8).style("fill", function(d) {
-			return color(d.cluster)
-		}).style("opacity", 0.5)
-
-		// Set the zoom and Pan features: how much you can zoom, on which part, and what to do when there is a zoom
-		var zoom = d3.zoom().scaleExtent([ .5, 20 ]) // This control how much you can unzoom (x0.5) and zoom (x20)
-		.extent([ [ 0, 0 ], [ width, height ] ]).on("zoom", updateChart);
-
-		// This add an invisible rect on top of the chart area. This rect can recover pointer events: necessary to understand when the user zoom
-		SVG.append("rect").attr("width", width).attr("height", height).style(
-				"fill", "none").style("pointer-events", "all").attr(
-				'transform',
-				'translate(' + margin.left + ',' + margin.top + ')').call(zoom);
-		// now the user can zoom and it will trigger the function called updateChart
-
-		// A function that updates the chart when the user zoom and thus new boundaries are available
-		function updateChart() {
-
-			// recover the new scale
-			var newX = d3.event.transform.rescaleX(x);
-			var newY = d3.event.transform.rescaleY(y);
-
-			// update axes with these new boundaries
-			xAxis.call(d3.axisBottom(newX))
-			yAxis.call(d3.axisLeft(newY))
-
-			// update circle position
-			scatter.selectAll("circle").attr('cx', function(d) {
-				return newX(d.new_x)
-			}).attr('cy', function(d) {
-				return newY(d.new_y)
-			});
-		}
-
-		/* }) */
-	</script>
-		
-		
-		<!-- End Scatter plot JS -->
-		
 		
 	
 
@@ -3729,9 +3927,9 @@ function matrix_loader1(){
 		<% if(status.equals("1")){ 
 			
 			ArrayList response_terms = DbConnection.query("select terms from tracker_keyword where tid = " + tid);
-			ArrayList result = (ArrayList)response_terms.get(0);
+			ArrayList terms_result = (ArrayList)response_terms.get(0);
 			//System.out.println("terms_result" + res.get(0));
-			JSONObject final_terms = new JSONObject(result.get(0).toString());
+			JSONObject final_terms = new JSONObject(terms_result.get(0).toString());
 			final_result.put("final_terms",final_terms);
 		%>	
 		console.log('it is 1')
