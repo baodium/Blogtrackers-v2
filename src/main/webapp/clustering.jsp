@@ -259,35 +259,7 @@
 
 			String x = x_y.toString().split(" ")[0];
 			String y = x_y.toString().split(" ")[1];
-<<<<<<< HEAD
 
-			//System.out.println(x_y.toString());
-			//System.out.println(x +"--"+ y);
-
-			//System.out.println(svd);
-			String postid = p_id.toString();
-			//System.out.println("found you"+postid);
-			/* if(p_id.toString().equals("62626")){
-			find = x_y.toString() + "--" + x + "--" + y;
-			
-			
-			
-			}  */
-			scatter_plot.put("cluster", String.valueOf(i));
-
-			scatter_plot.put("", String.valueOf(counter));
-			scatter_plot.put("new_x", x);
-			scatter_plot.put("new_y", y);
-			//scatter_plot.put("post_id",postid);
-
-			counter++;
-
-			//Double.parseDouble(s)
-			//System.out.println(x_y +  x + y);
-			double left = Math.pow((double) Double.parseDouble(x) - (double) Double.parseDouble(centroid_x), 2);
-			double right = Math.pow((double) Double.parseDouble(y) - (double) Double.parseDouble(centroid_y),
-					2);
-=======
 			
 			String postid = p_id.toString();
 			
@@ -300,73 +272,13 @@
 			
 			double left = Math.pow((double)Double.parseDouble(x) - (double)Double.parseDouble(centroid_x), 2);
 			double right = Math.pow((double)Double.parseDouble(y) - (double)Double.parseDouble(centroid_y), 2);
->>>>>>> dec36f3c6b74a8a79c36f065abfc0148b8cf5d0a
+
 			String distance = String.valueOf(Math.pow((left + right), 0.5));
 			distances.put(postid, distance);
 			scatterplotfinaldata.add(scatter_plot);
 
 		}
-<<<<<<< HEAD
 
-		System.out.println("done with svd --");
-		//scatterplotfinaldata.add(new JSONObject("{columns:['','new_x','new_y','cluster']}"));
-		//System.out.println(svd);
-
-		//List<JSONObject>  postDataAll = cluster.getPosts(post_ids, "", "", "__ONLY__POST__ID__","blogposts");
-
-		ArrayList<JSONObject> postDataAll = DbConnection.queryJSON(
-				"select date,post,num_comments, blogger,permalink, title, blogpost_id, location, blogsite_id from blogposts where blogpost_id in ("
-						+ post_ids + ") limit 500");
-		System.out.println("done with query --");
-		//String terms = cluster.getTopTerms(post_ids);
-		//System.out.println(terms);
-		//System.out.println("done");
-
-		String terms = cluster_data.get("topterms").toString();
-
-		//String terms = cluster.getTopTerms(post_ids);
-		//System.out.println(terms);
-
-		//CREATING CHORD MATRIX
-
-		String str2 = null;
-
-		for (int k = (i + 1); k < 11; k++) {
-			String cluster_matrix = "cluster_" + String.valueOf(k);
-			JSONObject cluster_data_matrix = new JSONObject(source.get(cluster_matrix).toString());
-			String terms_matrix = cluster_data_matrix.get("topterms").toString();
-
-			String str1 = null;
-			str1 = terms.replace("),", "-").replace("(", "").replace(")", "").replaceAll("[0-9]", "")
-					.replace("-", "");
-			str2 = terms_matrix.replace("),", "-").replace("(", "").replace(")", "").replaceAll("[0-9]", "")
-					.replace("-", "");
-
-			List<String> t1 = Arrays.asList(str1.replace("[", "").replace("]", "").split(","));
-			List<String> t2 = Arrays.asList(str2.replace("[", "").replace("]", "").split(","));
-
-			termsMatrix[i - 1][i - 1] = t1.size();
-
-			int count = 0;
-			for (int i__ = 0; i__ < t1.size(); i__++) {
-				for (int j__ = 0; j__< t2.size(); j__++) {
-					if (t1.get(i__).contentEquals(t2.get(j__))) {
-
-						count++;
-					}
-				}
-			}
-
-			termsMatrix[i - 1][k - 1] = count;
-			termsMatrix[k - 1][i - 1] = count;
-
-		}
-		//DONE CREATING CHORD MATRIX
-
-		topterms.put(cluster_, terms);
-		//System.out.println(terms);
-//System.out.println("matrix --" + Arrays.toString(termsMatrix));
-=======
 		
 		ArrayList<JSONObject> postDataAll = DbConnection.queryJSON("select date,post,num_comments, blogger,permalink, title, blogpost_id, location, blogsite_id from blogposts where blogpost_id in ("+post_ids+") limit 500" );
 		System.out.println("done with query --");
@@ -411,39 +323,26 @@
 		
 		topterms.put(cluster_,terms);
 		
->>>>>>> dec36f3c6b74a8a79c36f065abfc0148b8cf5d0a
+
 		key_val = new Pair<String, String>(cluster_, post_ids);
 		
 		key_val_posts.put(cluster_, post_ids);
-<<<<<<< HEAD
-		System.out.println("kv --" + post_ids.split(",").length);
-=======
+
 		
->>>>>>> dec36f3c6b74a8a79c36f065abfc0148b8cf5d0a
+
 		clusterResult.put(key_val, postDataAll);
 
 	}
 //end main for loop
 
-<<<<<<< HEAD
-	//System.out.println(topterms.size());
-	/* for(int i = 0; i < termsMatrix.length; i++){
-		System.out.println("termsMatrix --" + Arrays.toString(termsMatrix[i]));
-	} */
 
-=======
-	
->>>>>>> dec36f3c6b74a8a79c36f065abfc0148b8cf5d0a
 	JSONObject final_centroids = new JSONObject();
 	final_centroids.put("nodes", nodes_centroids);
 	final_centroids.put("links", links_centroids);
 
 	System.out.println("final_centroids---" + final_centroids);
 
-<<<<<<< HEAD
-=======
-	
->>>>>>> dec36f3c6b74a8a79c36f065abfc0148b8cf5d0a
+
 	session.setAttribute(tid.toString() + "cluster_terms", topterms);
 	session.setAttribute(tid.toString() + "cluster_distances", distances);
 	session.setAttribute(tid.toString() + "cluster_result", clusterResult);
@@ -862,24 +761,7 @@
 							<div id="chart-container1" class="chart-container" style="min-height: 500px;">
 								<div class="chart" id="clusterdiagram"></div>
 								<div id="parentdivy"></div>
-<<<<<<< HEAD
 
-								<%
-									for (int c = 1; c <= 10; c++) {
-								%>
-
-								<div id="CLUSTER_<%=c%>" class="overlay1 ">
-									<div style="min-height: 450px; width: 1000px;"
-										class="text1 card card-style ">
-										<div class="clusterdiagram_<%=c%>"
-											class="card-body p30 pt5 pb5 container1">
-											<div class="hidden" id="clusterdiagram_<%=c%>"
-												load_status="0"></div>
-
-											<div id="clusterdiagram_loader_<%=c%>" class="">
-												<img style='position: absolute; top: 50%; left: 50%;'
-													src='images/loading.gif' />
-=======
 								
 								<% for(int c=1; c<=10; c++){ %>
 									
@@ -891,7 +773,7 @@
 												<div id="clusterdiagram_loader_<%=c %>" class="">
 													<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />
 												</div>
->>>>>>> dec36f3c6b74a8a79c36f065abfc0148b8cf5d0a
+
 											</div>
 										</div>
 									</div>
@@ -986,12 +868,10 @@
 					<div class="card-body p20 pt0 pb20" style="min-height: 300px;">
 						<div>
 							<p class="text-primary mt10">
-<<<<<<< HEAD
-								<b class="text-blue activeblog">Cluster 1</b> Common Terms 
-=======
+
 								<b class="text-blue activeblog">Cluster 1</b><b
 									class="text-success"> Common Terms</b>
->>>>>>> dec36f3c6b74a8a79c36f065abfc0148b8cf5d0a
+
 							</p>
 						</div>
 						<div class="chart-container">
