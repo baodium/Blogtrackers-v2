@@ -483,11 +483,13 @@
 	//get postids from each cluster in tracker and save in JSONObject
 	ArrayList result = cluster._getClusters(tracker_id);
 	System.out.println("done with clusters");
-
+	JSONObject final_centroids = new JSONObject();
+	JSONObject source = new JSONObject();
+try{
 	JSONObject ress = new JSONObject(result.get(0).toString());
 	System.out.println("done with res");
 	
-	JSONObject source = new JSONObject(ress.get("_source").toString());
+	source = new JSONObject(ress.get("_source").toString());
 	
 	HashMap<Pair<String, String>, ArrayList<JSONObject>> clusterResult = new HashMap<Pair<String, String>, ArrayList<JSONObject>>();
 
@@ -637,13 +639,15 @@
 //end main for loop
 
 	
-	JSONObject final_centroids = new JSONObject();
+	
 	final_centroids.put("nodes",nodes_centroids);
 	final_centroids.put("links",links_centroids);
 			
 			//end clustering data ghathering
 			
-			
+}catch (Exception e){
+	
+}
 			
 %>
 <!DOCTYPE html>
@@ -1869,6 +1873,7 @@ display: none;
 				String word_build = "";
 			 	for(int k = 0; k < 10; k++){
 			 		 word_build = "";
+			 		 if(source.length() > 0){ 
 					String [] splitted = source.get("cluster_" + (k + 1)).toString().split("\'topterms\':");
 							
 					List<String> termlist = Arrays.asList(splitted[1].replace("{","").replace("}","").split(","));
@@ -1881,7 +1886,7 @@ display: none;
 					}
 					%>
 					trending_words[<%=k %>] = "<%=word_build %>";
-			 	<% } %>
+			 	<% } }%>
 			 	 
 			 	 //start getting max and min posts numbers
 			 	for(var i = 0; i < dataset.nodes.length; i++){
