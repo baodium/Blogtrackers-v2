@@ -856,9 +856,11 @@ Instant start = Instant.now();
 							</p>
 						</div>
 						<div class="chart-container">
-							<div class="chart svg-center" id="chorddiagram"></div>
+							<div class="chart svg-center " id="chorddiagram"></div>
 
-
+							<div id="chorddiagram_loader" class="">
+								<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />
+							</div>
 						</div>
 					</div>
 
@@ -1423,20 +1425,20 @@ Instant start = Instant.now();
 						cluster_number:cluster_number
 					},
 					error: function(response)
-					{		console.log("errrrrrrrr")				
+					{		console.log("error")				
 						console.log(response);
 						//$("#blogpost_detail").html(response);
 					},
 					success: function(response)
 					{   
-						console.log("succcccccc")
+						//console.log("succcccccc")
 						//console.log(cluster_number);
 						//console.log(response);
 						var data = JSON.parse(response);
 						//$(".char19").html(data.status_percentage);
 						//$(".status").html(data.status);
-						console.log(data.cluster_id)
-						console.log(data.final_data)
+						///console.log(data.cluster_id)
+						//console.log(data.final_data)
 						clusterdiagram3('#clusterdiagram_'+data.cluster_id, 500,data.final_data, data.cluster_id);
 						//$(".clusterdiagram_"+).html(response).hide();
 						//$("#posts_details").fadeIn(700);
@@ -1453,8 +1455,8 @@ Instant start = Instant.now();
  var d3v4 = window.d3;
  var plot_width = $('#chart-container1').width();
 var plot_height = $('#chart-container1').outerHeight() - 25;
-console.log("plot_height",plot_height)
- console.log("plot_width",plot_width)
+//console.log("plot_height",plot_height)
+ //console.log("plot_width",plot_width)
  // Chart setup
 clusterdiagram5('#parentdivy', plot_height, plot_width);
  var max_post_count = 0;
@@ -1481,7 +1483,7 @@ clusterdiagram5('#parentdivy', plot_height, plot_width);
 	  ] */
 		 
 	var nodes = dataset.nodes
-	console.log('nodes', nodes)
+	//console.log('nodes', nodes)
 	//console.log('nodes',nodes)
 	  /* var links = [
 	  	{ target: "mammal", source: "dog" , strength: 3.0 },
@@ -1499,7 +1501,7 @@ clusterdiagram5('#parentdivy', plot_height, plot_width);
 	  	{ target: "pike" , source: "cat" , strength: 0.1 } */
 	  /* ] */
 	  var links = dataset.links
-	console.log('links', links)
+	//console.log('links', links)
 		  //console.log('links',links)
 		  //var width = $('#clusterdiagram').width();
 		//var height = $('#clusterdiagram').height();
@@ -1691,7 +1693,7 @@ clusterdiagram5('#parentdivy', plot_height, plot_width);
   ] */
 	 
 var nodes = dataset.nodes
-console.log('nodes', nodes)
+//console.log('nodes', nodes)
 //console.log('nodes',nodes)
   /* var links = [
   	{ target: "mammal", source: "dog" , strength: 3.0 },
@@ -1709,13 +1711,12 @@ console.log('nodes', nodes)
   	{ target: "pike" , source: "cat" , strength: 0.1 } */
   /* ] */
   var links = dataset.links
-console.log('links', links)
+
 	  //console.log('links',links)
 	  //var width = $('#clusterdiagram').width();
 	//var height = $('#clusterdiagram').height();
    // Define main variables
-   console.log(plot_width, "plot w")
-   console.log(height, "plot h")
+  
    var d3Container = d3v4.select(element),
      margin = {top: 0, right: 50, bottom: 0, left: 50},
      width = plot_width,
@@ -1857,7 +1858,7 @@ function handleMouseOver(d, i) { // Add interactivity
 </script>
 <script>
 	//var d3 = d3v4_;
-	console.log("cluster",d3.version)
+	//console.log("cluster",d3.version)
 	
 	
 	$(document).ready(function() {
@@ -1883,7 +1884,6 @@ function handleMouseOver(d, i) { // Add interactivity
 		 counter_value = $(this).attr("counter_value");
 		//alert(counter_value)
 		//loadscatter(counter_value);
-		
 		//loadtitletable(counter_value+1);
 		
 		$('#clusterdiagram').removeClass('hidden');
@@ -1926,7 +1926,7 @@ function handleMouseOver(d, i) { // Add interactivity
 
 			//Read the data
 			d3v4_.csv("test_data2.csv", function(data) {
-				console.log(data)
+				//console.log(data)
 			})
 
 			/* var data2 = []; */
@@ -2107,8 +2107,8 @@ $('.blogpost_link').on("click", function(){
 	
 	/* data = [];
 	for (var key in jsondata) {var dic = {}; dic["text"] = key; dic["size"] = jsondata[key]; data.push(dic);} */
-	console.log('weeweweweewewewewewewew')
-	console.log(jsondata)
+	//console.log('weeweweweewewewewewewew')
+	//console.log(jsondata)
 	elem = '#tagcloudcontainer';
 	
 	
@@ -2225,64 +2225,87 @@ $('.blogpost_link').on("click", function(){
 	<script type="text/javascript" src="assets/vendors/d3/d3_tooltip.js"></script> -->
 	<script src="pagedependencies/clustering.js"></script>
 	<script >
-	 /* d3version3 = d3
-	   // window.d3 = null
-	    // test it worked
-	    console.log('v3', d3version3.version)
-	    d3 = d3version3 */
-	    var rotation = 0;
-	 	var names = ["Cluster 1", "Cluster 2", "Cluster 3", "Cluster 4", "Cluster 5", "Cluster 6", "Cluster 7", "Cluster 8", "Cluster 9", "Cluster 10"];
-	 	var colors = ["green", "red", "blue", "orange", "purple", "pink", "black", "grey", "brown", "yellow"];
-	    var chord_options = {
-    		    "gnames": names,
-    		    "rotation": rotation,
-    		    "colors": colors
-    		};
-	    /* clusterMatrix = [
-	    	[0 , 3, 4, 0, 2 , 4 ,5 , 6, 0, 7],
-	    	[0 , 0, 4, 0, 2 , 4 ,5 , 6, 0, 0],
-	    	[1 , 3, 0, 0, 2 , 4 ,5 , 6, 0, 6],
-	    	[0 , 3, 4, 0, 2 , 4 ,0 , 6, 0, 0],
-	    	[0 , 3, 4, 7, 0 , 4 ,5 , 6, 0, 9],
-	    	[0 , 3, 4, 0, 2 , 0 ,5 , 0, 0, 7],
-	    	[0 , 0, 4, 0, 2 , 4 ,0 , 6, 0, 8],
-	    	[0 , 3, 4, 8, 2 , 4 ,5 , 0, 0, 4],
-	    	[0 , 3, 4, 3, 2 , 4 ,5 , 6, 0, 7],
-	    	[0 , 5, 4, 0, 2 , 4 ,5 , 6, 0, 0]
-	    ] */
-	    
-	    var cluster = 0
-	    var clusterMatrix = []
-	     <%
-	     int cluster_num = 0;
-	     for (int j = 0; j < termsMatrix.length; j++) {%>
-	    	var temparr = []
-	    	<%for (int k = 0; k < termsMatrix.length; k++) {
-	    	if( k == cluster_num){
-	    	%>
-	    		
-	    		temparr.push(<%=termsMatrix[j][k]%>);
-	    	<%}
-	    	else{%>
-	    	temparr.push(0);
-	    	<%
-	    	}}%>
-	    	clusterMatrix.push(temparr);
-		<%}%> 
+	buildAndDisplayChord(0);
+	
+	///Onclick Handling
+	$("body").delegate(".clusters_", "click", function() {
 		
-		console.log('matirx', clusterMatrix)
-		<%-- <%for(int j = 0; j < termsMatrix.length; j++){%>
-    	var temparr = []
-    	<%System.out.println("items--"+termsMatrix[0][j]);%>
-    	<%for(int k = 0; k < termsMatrix.length; k++){%>
-    		
-    		
-    	<%}%>
-    	clusterMatrix.push(temparr);
-    	temparr.push(<%=termsMatrix[0][j]%>);
-	<%}%>  --%>
-	    drawChord("#chorddiagram", chord_options, clusterMatrix, names); 
- 
+		$('#chorddiagram').html('');
+		$('#chorddiagram').empty();
+		
+		 counter_value = $(this).attr("counter_value");
+		 
+		 cluster_index = counter_value-1;
+		console.log(cluster_index, 'cluster_index')
+		buildAndDisplayChord(cluster_index)
+		
+		
+	});
+	
+	//end onCliocik handling
+	
+	//start buildAndDisplayChord function
+	function buildAndDisplayChord(cluster_number){
+		console.log(cluster_number, 'cluster_number')
+		$('#chorddiagram_loader').removeClass('hidden');
+		/* d3version3 = d3
+		   // window.d3 = null
+		    // test it worked
+		    console.log('v3', d3version3.version)
+		    d3 = d3version3 */
+		    var rotation = 0;
+		 	var names = ["Cluster 1", "Cluster 2", "Cluster 3", "Cluster 4", "Cluster 5", "Cluster 6", "Cluster 7", "Cluster 8", "Cluster 9", "Cluster 10"];
+		 	var colors = ["green", "red", "blue", "orange", "purple", "pink", "black", "grey", "brown", "yellow"];
+		    var chord_options = {
+	    		    "gnames": names,
+	    		    "rotation": rotation,
+	    		    "colors": colors
+	    		};
+		    /* clusterMatrix = [
+		    	[0 , 3, 4, 0, 2 , 4 ,5 , 6, 0, 7],
+		    	[0 , 0, 4, 0, 2 , 4 ,5 , 6, 0, 0],
+		    	[1 , 3, 0, 0, 2 , 4 ,5 , 6, 0, 6],
+		    	[0 , 3, 4, 0, 2 , 4 ,0 , 6, 0, 0],
+		    	[0 , 3, 4, 7, 0 , 4 ,5 , 6, 0, 9],
+		    	[0 , 3, 4, 0, 2 , 0 ,5 , 0, 0, 7],
+		    	[0 , 0, 4, 0, 2 , 4 ,0 , 6, 0, 8],
+		    	[0 , 3, 4, 8, 2 , 4 ,5 , 0, 0, 4],
+		    	[0 , 3, 4, 3, 2 , 4 ,5 , 6, 0, 7],
+		    	[0 , 5, 4, 0, 2 , 4 ,5 , 6, 0, 0]
+		    ] */
+		    
+		    var cluster_numy = cluster_number
+		    var clusterMatrix = []
+		     <%
+		     int cluster_num = 4;
+		     for (int j = 0; j < termsMatrix.length; j++) {%>
+		    	var temparr = []
+		    	<%for (int k = 0; k < termsMatrix.length; k++) {%>
+		    		temp = <%=k %>
+		    	if( temp == cluster_numy){ temparr.push(<%=termsMatrix[j][k]%>);}
+		    	else{temparr.push(0);}
+		    	
+		    	<%}%>
+		    	clusterMatrix.push(temparr);
+			<%}%> 
+			
+			//console.log('matirx', clusterMatrix)
+			<%-- <%for(int j = 0; j < termsMatrix.length; j++){%>
+	    	var temparr = []
+	    	<%System.out.println("items--"+termsMatrix[0][j]);%>
+	    	<%for(int k = 0; k < termsMatrix.length; k++){%>
+	    		
+	    		
+	    	<%}%>
+	    	clusterMatrix.push(temparr);
+	    	temparr.push(<%=termsMatrix[0][j]%>);
+		<%}%>  --%>
+		    drawChord("#chorddiagram", chord_options, clusterMatrix, names); 
+		    $('#chorddiagram').removeClass('hidden');
+			$('#chorddiagram_loader').addClass('hidden');
+		
+	}
+	 ///end buildAndDisplayChord function
  </script>
 
 
