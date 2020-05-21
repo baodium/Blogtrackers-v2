@@ -2,10 +2,6 @@
 package wrapper;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -36,7 +32,13 @@ import java.util.*;
 @WebServlet("/tracker")
 public class Tracker extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	
+	static HashMap<String, String> hm = DbConnection.loadConstant();
 
+//	String base_url = hm.get("elasticIndex") + "blogposts/"; // - For testing server
+
+	static String apiUrl = hm.get("apiUrl");
+	
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
@@ -156,12 +158,28 @@ public class Tracker extends HttpServlet {
 			}
 		}
 		else if(action.equals("uploadTerms")) {
-			String url = " http://144.167.35.138:5000/";
+			String url = apiUrl;
 			String str = "{\r\n" + 
 					"	\"tracker_id\":\""+tracker_id+"\",\r\n" + 
 					"	\"type\":\""+type+"\"\r\n" + 
 					"}";
-			System.out.println(str);
+			System.out.println(str + "--API--" +url);
+			JSONObject js = new JSONObject(str);
+			Clustering c = new Clustering();
+			try {
+				System.out.println(c._getResult(url, js));
+				pww.write(c._getResult(url, js).toString());
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		else if(action.equals("uploadClusters")) {
+			String url = apiUrl + "clusterings";
+			String str = "{\r\n" + 
+					"	\"tracker_id\":\""+tracker_id+"\"\r\n" + 
+					"}";
+			System.out.println(str + "--API--" +url);
 			JSONObject js = new JSONObject(str);
 			Clustering c = new Clustering();
 			try {

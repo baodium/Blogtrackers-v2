@@ -815,6 +815,8 @@ else
 					//console.log('maya',response)
 					//console.log('maya2',all_blogs)
 					uploadTerms(response,"create")
+					uploadClusters(response)
+					
 					toastr.success('Tracker2222 successfully created and Updated!','Success');
 					$('#newtracker_name').html('');
 					$('#newtracker_description').html('');
@@ -917,6 +919,8 @@ function updateTracker(element,type){
 				{   
 					console.log(response);
 					uploadTerms(id+"******"+all_blogs,"update");
+					uploadClusters(id)
+					
 					if(response.indexOf("success")>-1){
 						
 						console.log('passing', id+"******"+all_blogs)
@@ -1035,6 +1039,26 @@ function uploadTerms(tid, type){
 		success: function(response)
 		{
 			console.log('term response',response);
+		}
+	});
+}
+
+function uploadClusters(tid){
+	$.ajax({
+		url: app_url+'tracker',
+		method: 'POST',
+		data: {
+			action:"uploadClusters",
+			tracker_id:tid,		
+		},
+		error: function(response)
+		{
+			//alert('could not compute terms')
+			console.log('could not compute terms')
+		},
+		success: function(response)
+		{
+			console.log('cluster response',response);
 		}
 	});
 }

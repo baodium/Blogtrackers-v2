@@ -70,6 +70,8 @@ Instant start = Instant.now();
 			
 			username = (null == userinfo.get(0)) ? "" : userinfo.get(0).toString();
 
+			
+			
 			name = (null == userinfo.get(4)) ? "" : (userinfo.get(4).toString());
 
 			email = (null == userinfo.get(2)) ? "" : userinfo.get(2).toString();
@@ -673,7 +675,9 @@ Instant start = Instant.now();
 										if(m > 0){
 											word_build += ", ";
 										}
+										if(m < termlist.size()){
 										word_build += termlist.get(m).split(":")[0].replace("\'","");
+										}
 										//System.out.println("original--" + termlist.get(m));
 										//System.out.println("building--" + termlist.get(m).split(":")[0]);
 									
@@ -1110,7 +1114,10 @@ Instant start = Instant.now();
 											//String [] splitted2 = splitted[1].replace("{","").replace("}","").split(",");
 											//List<String> termlist = Arrays.asList(terms.split(","));
 											List<String> termlist = Arrays.asList(splitted[1].replace("{","").replace("}","").split(","));
+											
+											if(k < termlist.size()){
 											max = Integer.parseInt(termlist.get(k).split(":")[1].trim());
+											
 											
 										%>
 										
@@ -1118,7 +1125,7 @@ Instant start = Instant.now();
 											<%=termlist.get(k).split(":")[0].replace("\'","")%>
 										</td>
 
-										<%} %>
+										<%}} %>
 									</tr>
 									
 								<%} %>
