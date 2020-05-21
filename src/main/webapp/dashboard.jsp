@@ -477,17 +477,37 @@
 			final_result.put("status_percentage",status_percentage);
 			final_result.put("status",status);
 			
+			
+			
+			///start clusering check
+			ArrayList cluster_details = DbConnection.query("select status, status_percentage from clusters where tid = " + tid);
+			ArrayList cluster_res = (ArrayList)cluster_details.get(0);
+			
+			String cluster_status = cluster_res.get(0).toString();
+			String cluster_status_percentage = cluster_res.get(1).toString();
+			
+			JSONObject cluster_final_result = new JSONObject();
+			cluster_final_result.put("status_percentage",status_percentage);
+			cluster_final_result.put("status",status);
+			
+			JSONObject final_centroids = new JSONObject();
+			JSONObject source = new JSONObject();
+			
+			if(cluster_status.equals("1")){
+				
+				System.out.println("IT IS ONE!!!!!!");
 			//start clustering data gathering
 			Clustering cluster = new Clustering();
 				String tracker_id = tid.toString();
 	//get postids from each cluster in tracker and save in JSONObject
 	ArrayList result = cluster._getClusters(tracker_id);
 	System.out.println("done with clusters");
-	JSONObject final_centroids = new JSONObject();
-	JSONObject source = new JSONObject();
+	
+	
 try{
 	JSONObject ress = new JSONObject(result.get(0).toString());
 	System.out.println("done with res");
+	
 	
 	source = new JSONObject(ress.get("_source").toString());
 	
@@ -644,10 +664,24 @@ try{
 	final_centroids.put("links",links_centroids);
 			
 			//end clustering data ghathering
-			
+
 }catch (Exception e){
 	
 }
+//end try catch
+
+			
+}else if(cluster_status.equals("0")){
+	System.out.println("IT IS zERO!!!!!!");
+	
+	
+}
+
+
+///end clustering check
+
+			
+
 			
 %>
 <!DOCTYPE html>
@@ -1429,7 +1463,7 @@ display: none;
 			
 
 			<div class="col-md-6 mt20 zoom">
-				<div class="card card-style mt20">
+				<div id="cluster_card_div" class="card card-style mt20 radial_f">
 					<div class="card-body p30 pt5 pb5">
 						<div>
 							<p class="text-primary mt10 float-left">
@@ -1444,6 +1478,10 @@ display: none;
 							</p>
 						</div>
 						<div id="scatter-container1" class="min-height-table" style="min-height: 500px;">
+							<div class="hidden" id="cluster_computing_loaader">
+								<div align="center" class=" word1">COMPUTING-CLUSTERS...<span id="cluster_percentage"><%=cluster_status_percentage %>%</span></div>
+								<div align="center" class=" overlay1"></div>
+							</div>
 							<div class="chart-container" id="scatter-container">
 								<div class="chart" id="dataviz_axisZoom"></div>
 							</div>
@@ -1451,7 +1489,7 @@ display: none;
 					</div>
 				</div>
 				<div class="float-right">
-					<a href="clustering.jsp?tid=<%=tid%>"><button
+					<a href="clustering.jsp?tid=<%=tid%>"><button id = "clusterbtn"
 							class="btn buttonportfolio2 mt10">
 							<b class="float-left semi-bold-text">Clustering Analysis </b> <b
 								class="fas fa-exchange-alt float-right icondash2"></b>
@@ -1849,11 +1887,10 @@ display: none;
 		
 		<!-- Start scatter plot js -->
 		 <script type="text/javascript" src="assets/vendors/d3/d3.v4_new.min.js" ></script> 
-		
-		<script>
+		 
+		 <script>
 		 var d3v4 = window.d3;
-		var plot_width = $('#scatter-container').width();
-		var plot_height = $('#scatter-container1').height() - 25;
+		
 		
 		var margin = {
 			top : 10,
@@ -1862,11 +1899,13 @@ display: none;
 			left : 60
 		}, width = plot_width - margin.left - margin.right, height = plot_height - margin.top
 				- margin.bottom;
-		clusterdiagram5('#dataviz_axisZoom', plot_height, plot_width);
+		
+		
 		///start clustering5 funtion
-		 function clusterdiagram5(element, height, plot_width) {
+		 function clusterdiagram5(element, dataset) {
 			 var final_centroids = {};
-			 dataset = <%=final_centroids %>
+			 var plot_width = $('#scatter-container').width();
+			var height = $('#scatter-container1').height() - 25;
 			 trending_words = [];
 				
 				<% 
@@ -2054,6 +2093,193 @@ display: none;
 		
 		
 		<!-- End Scatter plot JS -->
+		 
+		 	<script>
+		
+function cluster_matrix_loader(){
+			
+			
+			function Ticker( elem ) {
+				elem.lettering();
+				this.done = false;
+				this.cycleCount = 5;
+				this.cycleCurrent = 0;
+				this.chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()-_=+{}|[]\\;\':"<>?,./`~'.split('');
+				this.charsCount = this.chars.length;
+				this.letters = elem.find( 'span' );
+				this.letterCount = this.letters.length;
+				this.letterCurrent = 0;
+
+				this.letters.each( function() {
+					var $this = $( this );
+					$this.attr( 'data-orig', $this.text() );
+					$this.text( '-' );
+				});
+			}
+
+			Ticker.prototype.getChar = function() {
+				return this.chars[ Math.floor( Math.random() * this.charsCount ) ];
+			};
+
+			Ticker.prototype.reset = function() {
+				this.done = false;
+				this.cycleCurrent = 0;
+				this.letterCurrent = 0;
+				this.letters.each( function() {
+					var $this = $( this );
+					$this.text( $this.attr( 'data-orig' ) );
+					$this.removeClass( 'done' );
+				});
+				this.loop();
+			};
+
+			Ticker.prototype.loop = function() {
+				var self = this;
+
+				this.letters.each( function( index, elem ) {
+					var $elem = $( elem );
+					if( index >= self.letterCurrent ) {
+						if( $elem.text() !== ' ' ) {
+							$elem.text( self.getChar() );
+							$elem.css( 'opacity', Math.random() );
+						}
+					}
+				});
+
+				if( this.cycleCurrent < this.cycleCount ) {
+					this.cycleCurrent++;
+				} else if( this.letterCurrent < this.letterCount ) {
+					var currLetter = this.letters.eq( this.letterCurrent );
+					this.cycleCurrent = 0;
+					currLetter.text( currLetter.attr( 'data-orig' ) ).css( 'opacity', 1 ).addClass( 'done' );
+					this.letterCurrent++;
+				} else {
+					this.done = true;
+				}
+
+				if( !this.done ) {
+					requestAnimationFrame( function() {
+						self.loop();
+					});
+				} else {
+					setTimeout( function() {
+						self.reset();
+					}, 750 );
+				}
+			};
+
+			$words = $( '.word1' );
+
+			$words.each( function() {
+				var $this = $( this ),
+					ticker = new Ticker( $this ).reset();
+				$this.data( 'ticker', ticker  );
+			});
+			
+			
+			
+		}
+		//end matrix_loader
+		
+		//java check
+		<% if(cluster_status.equals("1")){ 
+			
+			//ArrayList response_terms = DbConnection.query("select terms from tracker_keyword where tid = " + tid);
+			//ArrayList terms_result = (ArrayList)response_terms.get(0);
+			//System.out.println("terms_result" + res.get(0));
+			//JSONObject final_terms = new JSONObject(terms_result.get(0).toString());
+			//final_result.put("final_terms",final_terms);
+		%>	
+		console.log('cluster is 1')
+			$('#clusterbtn').prop("disabled", false);
+			$('#scatter-container').removeClass('hidden');
+			$('#cluster_card_div').removeClass('radial_f')
+			
+			
+			dataset = <%=final_centroids %>
+			clusterdiagram5('#dataviz_axisZoom', dataset);
+			
+			
+			
+	<%	}else{
+			
+			final_result.put("final_terms","");
+			
+		 %>
+		 console.log('cluster is 0')
+		 $('#clusterbtn').prop("disabled", true);
+		 $('#cluster_computing_loaader').removeClass('hidden');
+		 var cluster_refreshIntervalId = setInterval(function(){ cluster_refresh();    }, 15000);
+		 cluster_matrix_loader();
+		<% }%>
+		//end java check
+		
+		//setInterval(function(){ refresh();    }, 10000);
+		//var refreshIntervalId = setInterval(function(){ refresh();    }, 10000);
+
+		//start refresh function
+		function cluster_refresh(){
+			
+			$.ajax({
+				url: app_url+"subpages/cluster_dashboardcard.jsp",
+				method: 'POST',
+	            /* dataType: 'json', */
+				data: {
+					action:"getkeywordstatus",
+					tid:"<%=tid%>"
+				},
+				error: function(response)
+				{	console.log("This is failure"+response);
+
+				},
+				success: function(response)
+				{   				  
+				 //console.log("This is success"+response)
+				 var data = JSON.parse(response);
+					//$(".char19").html(data.status_percentage);
+					//$(".status").html(data.status);
+					//console.log(data.status_percentage)
+					console.log(data.status)
+					console.log(data.final_terms)
+					
+					if(parseInt(data.status) == 1){
+						//wordtagcloud("#tagcloudcontainer99",450,data.final_terms); 
+						//$('#keyword_computing_loaader').addClass('hidden');
+						//$('#tagcloudcontainer99').removeClass('hidden');
+						$('#scatter-container').removeClass('hidden');
+						
+						//$('#keyword_computing_loaader').html('');
+						$('#cluster_computing_loaader').addClass('hidden');
+						$('#clusterbtn').prop("disabled", false);
+						//matrix_loader1();
+						clearInterval(cluster_refreshIntervalId);
+						$('#cluster_card_div').removeClass('radial_f')
+						//wordtagcloud("#tagcloudcontainer99",450,data.final_terms); 
+						clusterdiagram5('#dataviz_axisZoom', data.final_terms);
+					}else{
+						
+						var build = '<div align="center" class=" word1">COMPUTING-CLUSTERS...<span id="cluster_percentage">'+data.status_percentage+'%</span></div>';
+						build += '<div align="center" class=" overlay1"></div>';
+						
+						$('#cluster_computing_loaader').html(build);
+						
+						//wordtagcloud("#tagcloudcontainer99",450,data.final_terms); 
+						//clearInterval(refreshIntervalId);
+						cluster_matrix_loader();
+						
+					}
+					
+					
+				}
+			});
+			//end ajax
+			
+			
+		}
+		//end refresh function
+		</script>
+		
+		
 		
 		
 		
