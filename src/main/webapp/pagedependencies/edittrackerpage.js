@@ -269,8 +269,8 @@ $('.deleteblog').on('click', function(){
 				
 				if(response.indexOf("success")>-1){					
 						eachblogdelete.parent().parent().remove();
-						alert(id)
-						alert(allid)
+						//alert(id)
+						//alert(allid)
 						
 					// should kick in the automated crawler or something 	
 						toastr.success("Blog Deleted from Tracker","Success");
@@ -552,6 +552,7 @@ if(confirmdeletetracker)
 			console.log(response);
 			if(response.indexOf("success")>-1){
 				//uploadTerms($("#teeid").val(), 'delete')
+				uploadTerms($("#teeid").val(), 'delete')
 				toastr.success('Tracker successfully deleted!','Success');
 				//location.href=app_url+"trackerlist.jsp";
 				

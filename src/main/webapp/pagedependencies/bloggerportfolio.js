@@ -309,6 +309,7 @@ function loadYearlyChart(blogger,ids){
 	});
 }
 
+
 function loadDailyChart(blogger,ids){
 	$("#day-chart").html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />");
 	$.ajax({
@@ -335,6 +336,7 @@ function loadDailyChart(blogger,ids){
 		}
 	});
 }
+
 
 
 

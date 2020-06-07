@@ -51,10 +51,10 @@ if(confirmdeletetracker)
 			console.log(response);
 			//alert(tracker_id)
 			if(response.indexOf("true")>-1){
-				alert(tracker_id)
+				//alert(tracker_id)
 				toastr.success('Tracker successfully deleted!','Success');
 				//location.href=app_url+"trackerlist.jsp";
-				//uploadTerms(tid, type)
+				uploadTerms(tid, "delete")
 				console.log("tracker deleted")	
 				// add an ajax to deleted tracker 
 				// on success go back to tracker list

@@ -42,6 +42,8 @@
 		
 			JSONObject outerlinks = new JSONObject();
 			ArrayList outlinklooper = new ArrayList();
+			
+			
 			if (outlinks.size() > 0) {
 				int mm=0;
 				for (int p = 0; p < outlinks.size(); p++) {
@@ -112,7 +114,7 @@
 									
 									<% if(listtype.equals("urls") && resu.get("link").toString() != null ){ %>
 									<tr>
-										<td class=""><a href="<%=resu.get("link")%>" target="_blank">1<%=resu.get("link")%></a></td>
+										<td class=""><a href="<%=resu.get("link")%>" target="_blank"><%=resu.get("link")%></a></td>
 										<td><%=resu.get("value")%></td>
 										</tr>
 									<% }else{ temp_domain = resu.get("domain").toString().trim(); if( temp_domain.trim().length() > 0){%>

@@ -1115,6 +1115,7 @@ Instant start = Instant.now();
 											//List<String> termlist = Arrays.asList(terms.split(","));
 											List<String> termlist = Arrays.asList(splitted[1].replace("{","").replace("}","").split(","));
 											
+											
 											if(k < termlist.size()){
 											max = Integer.parseInt(termlist.get(k).split(":")[1].trim());
 											
