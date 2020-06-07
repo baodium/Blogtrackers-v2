@@ -614,7 +614,7 @@ userinfo = (ArrayList<?>)userinfo.get(0);
 											}
 											%>
 											<input type="hidden" id="postby<%=bloggerInf.replaceAll(" ","__")%>" value="<%=postids%>" />
-<a href="javascript:void(0);" name="<%=bloggerInf%>" class="topics topics1 blogger-select btn btn-primary form-control bloggerinactive mb20 <%=dselected%> <%=activew%>"  id="<%=blogsiteid%>" ><b><%=bloggerInf%></b></a>
+<a href="javascript:void(0);" name="<%=bloggerInf%>" data-toggle="tooltip" data-placement="top" title="okurrrr" class="topics topics1 blogger-select btn btn-primary form-control bloggerinactive mb20 <%=dselected%> <%=activew%>"  id="<%=blogsiteid%>" ><b><%=bloggerInf%></b></a>
 					    			
 											<%
 											k++;
@@ -1082,16 +1082,18 @@ authoryears.put(mostactiveblogger,postyear);
 	<script
 		src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.print.min.js"></script>
 		
-		
-		
+	
+
+	<script src="assets/js/generic.js"></script>
+	
 		
 		
 		
 		
  <!--   <script src="https://d3js.org/d3.v5.min.js"></script> -->
- 
+
  <script type="text/javascript" src="assets/vendors/d3/d3.min.js"></script>
- 
+   <script type="text/javascript" src="assets/vendors/d3/d3_tooltip.js" ></script>
   <!--  <script type="text/javascript" src="assets/vendors/d3/d3.v5.min.js"></script> -->
 		
 		<script>
@@ -2004,8 +2006,12 @@ function color1(i, id, name){
                 }
                 else if(d !== null) {
                 	var ky = d.x+""+d.y;
+                	console.log('////////////////');
+                	console.log('Influence'+d.x+', Activity='+d.y+'.Blogger:'+labels[ky]);
                 	console.log(ky);
-                 return " ( Influence="+d.x+", Activity="+d.y+".Blogger:"+labels[ky]+" )<br/> Click for more information";
+                	return "No Information Available1";
+                	
+                 //return " ( Influence="+d.x+", Activity="+d.y+".Blogger:"+labels[ky]+" )<br/> Click for more information";
                 }
 
                 });
@@ -2171,15 +2177,21 @@ function color1(i, id, name){
                               .attr("class","circle-point")
                               .attr("r",3.4)
                               // .style("stroke", "#4CAF50")
+                              
+                            .attr("data-toggle", "tooltip")
+					      .attr("data-placement", "top")
+					      .attr("title", function(d) { return 'Influence'+d.x+', Activity='+d.y+'.Blogger:'+labels[d.x+''+d.y]; })
                               .style("fill",function(e,i){return color(i)})
                               .attr("cx",function(d) { return x(d.x); })
                               .attr("cy", function(d){return y(d.y)})
-
+								
+    	    				 		       
                               .attr("transform", "translate("+margin.left/4.7+",0)");
 
                               svg.selectAll(".circle-point").data(data[0])
-                              .on("mouseover",tip.show)
-                              .on("mouseout",tip.hide)
+                              
+                              //.on("mouseover",tip.show)
+                              //.on("mouseout",tip.hide)
                               .on("click",function(d){
                                 // console.log(d.date)
                                 // sconsole.log(d.y);
@@ -2213,8 +2225,8 @@ function color1(i, id, name){
 
                                        .attr("transform", "translate("+margin.left/4.7+",0)");
                                       //  svg.selectAll(".circle-point").data(mergedarray)
-                                      // .on("mouseover",tip.show)
-                                      // .on("mouseout",tip.hide)
+                                       //.on("mouseover",tip.show)
+                                       //.on("mouseout",tip.hide);
                                       // .on("click",function(d){
                                       //   console.log(d.y)});
                                  //                         svg.call(tip)
