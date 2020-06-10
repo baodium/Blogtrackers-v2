@@ -46,8 +46,8 @@ $('#blogger-changed').on("change", function(){
 
 	loadStat(blg[1], all_bloggers,all_ids);
 	loadChart(blg[1],all_ids);
-	loadYearlyChart(blg[1],all_ids);
-	loadDailyChart(blg[1],all_ids);
+	loadYearlyChart(blg[1],all_ids, date_start, date_end);
+	loadDailyChart(blg[1],all_ids, date_start, date_end);
 	loadUrls(date_start,date_end,all_ids, blog_id);
 	
 	loadInfluence(blg[1],date_start,date_end);
@@ -282,7 +282,7 @@ function loadChart(blogger,ids){
 	});
 }
 
-function loadYearlyChart(blogger,ids){
+function loadYearlyChart(blogger,ids, date_start, date_end){
 	$("#year-chart").html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />");
 	$.ajax({
 		url: app_url+"subpages/bloggerportfoliochart.jsp",
@@ -291,8 +291,8 @@ function loadYearlyChart(blogger,ids){
 			action:"getdailychart",
 			blogger:blogger,
 			ids:ids,
-			date_start:$("#date_start").val(),
-			date_end:$("#date_end").val(),
+			date_start:date_start,
+			date_end:date_end,
 		},
 		error: function(response)
 		{						
@@ -310,7 +310,8 @@ function loadYearlyChart(blogger,ids){
 }
 
 
-function loadDailyChart(blogger,ids){
+function loadDailyChart(blogger,ids, date_start, date_end){
+	console.log(blogger,'/////////',ids)
 	$("#day-chart").html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />");
 	$.ajax({
 		url: app_url+"subpages/bloggerportfoliochart.jsp",
@@ -319,8 +320,8 @@ function loadDailyChart(blogger,ids){
 			action:"getdayonlychart",
 			blogger:blogger,
 			ids:ids,
-			date_start:$("#date_start").val(),
-			date_end:$("#date_end").val(),
+			date_start:date_start,
+			date_end:date_end,
 		},
 		error: function(response)
 		{						
