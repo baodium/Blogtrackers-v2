@@ -2462,7 +2462,7 @@ JSONObject o = new JSONObject(res); */
 <%-- wordtagcloud("#tagcloudcontainer",450,<%=d%>);  --%>
 $(document).ready(function(){
 	var blogger = "<%=mostactiveblogger%>"
-	loadTerms(blogger,$("#blogid").val(),"<%=dt%>","<%=dte%>");
+	loadTerms("\"" + blogger + "\"",$("#blogid").val(),"<%=dt%>","<%=dte%>");
 })
  </script>
 <script src="pagedependencies/baseurl.js"></script>
