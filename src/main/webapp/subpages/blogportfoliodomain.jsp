@@ -42,6 +42,8 @@
 		
 			JSONObject outerlinks = new JSONObject();
 			ArrayList outlinklooper = new ArrayList();
+			
+			
 			if (outlinks.size() > 0) {
 				int mm=0;
 				for (int p = 0; p < outlinks.size(); p++) {

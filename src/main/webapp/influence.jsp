@@ -1564,7 +1564,20 @@ function color1(i, id, name){
     	    				 		              .transition()
     	    				 		              .duration(duration)
     	    				 		              .attr("r", circleRadius);  
-    	    				 		          });
+    	    				 		          }).on("click",function(d){
+    	    		                                // console.log(d.date)
+    	    		                                // sconsole.log(d.y);
+    	    		                                var date_split = JSON.stringify(d.date).split('-')
+    	    		                                var yr = date_split[0]
+    	    		                                yr = yr.replace("\"","").replace(" ","")
+    	    		                               var d1 = 	  yr+ "-01-01";
+    	    		                           	   var d2 = 	  yr + "-12-31";
+    	    		                           	   
+    	    		                           	var va = $('.selectionactive').attr('name');
+    	    		                           	   alert(va);
+    	    		                           	loadTerms(va,$("#blogid").val(),d1,d2);
+    	    		                                
+    	    		                              });
 
 
     	    				 		   /* Add Axis into SVG */
@@ -2449,7 +2462,7 @@ JSONObject o = new JSONObject(res); */
 <%-- wordtagcloud("#tagcloudcontainer",450,<%=d%>);  --%>
 $(document).ready(function(){
 	var blogger = "<%=mostactiveblogger%>"
-	loadTerms("\'"+blogger+"\'",$("#blogid").val(),"<%=dt%>","<%=dte%>");
+	loadTerms(blogger,$("#blogid").val(),"<%=dt%>","<%=dte%>");
 })
  </script>
 <script src="pagedependencies/baseurl.js"></script>

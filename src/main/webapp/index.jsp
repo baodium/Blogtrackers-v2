@@ -682,7 +682,7 @@ Design is not just what it looks like and feels like. Design is how it works.
 </div>
 </div> -->
 <div class="bgwhite">
-<a href="http://cosmos.ualr.edu/">
+<a target="_blank" href="http://cosmos.ualr.edu/">
 <div class="container-fluid pb50 pt50" id="testimonials">
 <p class="text-center mb0 copyrighttext">Developed By</p>
 

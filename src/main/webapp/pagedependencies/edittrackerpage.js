@@ -21,6 +21,29 @@ $(document).ready(function(){
 			}
 		});
 	}
+	
+	function uploadClusters(tid){
+		$.ajax({
+			url: app_url+'tracker',
+			method: 'POST',
+			data: {
+				action:"uploadClusters",
+				tracker_id:tid,
+				
+				
+			},
+			error: function(response)
+			{
+				//alert('could not compute terms')
+				console.log('could not compute terms')
+			},
+			success: function(response)
+			{
+				console.log('cluster response',response);
+			}
+		});
+	}
+	
 var numberofblogs = $('.edittrackerblogindividual').length;
 //console.log(numberofblogs);
 $('#totalblogcount').html(numberofblogs);
@@ -246,12 +269,14 @@ $('.deleteblog').on('click', function(){
 				
 				if(response.indexOf("success")>-1){					
 						eachblogdelete.parent().parent().remove();
-						alert(id)
-						alert(allid)
+						//alert(id)
+						//alert(allid)
 						
 					// should kick in the automated crawler or something 	
 						toastr.success("Blog Deleted from Tracker","Success");
 						uploadTerms($("#teeid").val() + "------" +allid, "update")
+						uploadClusters($("#teeid").val())
+						
 						$('.tooltip').hide();
 						
 						numberofblogs = $('.edittrackerblogindividual').length;
@@ -527,6 +552,7 @@ if(confirmdeletetracker)
 			console.log(response);
 			if(response.indexOf("success")>-1){
 				//uploadTerms($("#teeid").val(), 'delete')
+				uploadTerms($("#teeid").val(), 'delete')
 				toastr.success('Tracker successfully deleted!','Success');
 				//location.href=app_url+"trackerlist.jsp";
 				

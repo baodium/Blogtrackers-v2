@@ -51,10 +51,10 @@ if(confirmdeletetracker)
 			console.log(response);
 			//alert(tracker_id)
 			if(response.indexOf("true")>-1){
-				alert(tracker_id)
+				//alert(tracker_id)
 				toastr.success('Tracker successfully deleted!','Success');
 				//location.href=app_url+"trackerlist.jsp";
-				//uploadTerms(tid, type)
+				uploadTerms(tid, "delete")
 				console.log("tracker deleted")	
 				// add an ajax to deleted tracker 
 				// on success go back to tracker list
@@ -93,6 +93,28 @@ function uploadTerms(tid, type){
 		success: function(response)
 		{
 			console.log('term response',response);
+		}
+	});
+}
+
+function uploadClusters(tid){
+	$.ajax({
+		url: app_url+'tracker',
+		method: 'POST',
+		data: {
+			action:"uploadClusters",
+			tracker_id:tid,
+			
+			
+		},
+		error: function(response)
+		{
+			//alert('could not compute terms')
+			console.log('could not compute terms')
+		},
+		success: function(response)
+		{
+			console.log('cluster response',response);
 		}
 	});
 }

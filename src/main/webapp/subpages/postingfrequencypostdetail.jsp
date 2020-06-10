@@ -107,6 +107,7 @@ if(action.toString().equals("gettotal")){
 				
 				
 	}
+	 toplocation = (null == toplocation || toplocation == "") ? "N/A" : toplocation;
 %>
 <%=toplocation%>	
 <% }else{

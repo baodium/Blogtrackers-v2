@@ -735,7 +735,7 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
 
      <div class="col-md-3 mt5 mb5">
        <h6 class="card-title mb0">Top Post Location</h6>
-       <h3 class="mb0 bold-text top-location"><%=toplocation%></h3>
+       <h3 class="mb0 bold-text top-location"><%=(null == toplocation || toplocation == "") ? "N/A" : toplocation%></h3> 
        <!-- <small class="text-success">+5% from <b>Last Week</b></small> -->
      </div>
 
@@ -1220,6 +1220,7 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
     		    ////start ajax
     		    	
     		    	$.ajax({
+    		    		
     		  			url: app_url + "PostingFrequencyTest",
     		  			method: 'POST',
     		  			dataType: 'json',
@@ -1439,6 +1440,7 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
                         	   $('.activeblogger').html(bloog);
                         	
                         	   getTopLocation(bloog,$("#all_blog_ids").val(),d1,d2);
+                        	   
                         	   loadTerms(bloog,$("#all_blog_ids").val(),d1,d2);	
                         		loadSentiments(bloog,$("#all_blog_ids").val(),d1,d2);
                         		getTotalPost(bloog,"",d1,d2);
@@ -1799,7 +1801,7 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
  
 $(document).ready(function(){
 	var blogger = "<%=mostactiveblogger%>"
-	loadTerms("\'"+blogger+"\'",$("#blogid").val(),"<%=dt%>","<%=dte%>");
+	loadTerms(blogger,$("#blogid").val(),"<%=dt%>","<%=dte%>");
 })
 	
 	//console.log(word_count2);
