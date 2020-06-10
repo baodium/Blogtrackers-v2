@@ -63,7 +63,7 @@
 	$("#blogid").val(blg[1]);
 	
 
-	
+	//alert(all_selected_names)
 	loadTerms(all_selected_names,$("#all_blog_ids").val(),date_start,date_end, all_selected_names1);
 	console.log(blogger+$("#all_blog_ids").val()+date_start+date_end)
 	loadInfluence(all_selected_names,date_start,date_end);

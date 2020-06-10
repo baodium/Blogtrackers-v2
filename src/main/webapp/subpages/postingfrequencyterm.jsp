@@ -69,7 +69,7 @@ String bloggerterms = null;
 <%
 	} else {
 		
-		bloggerterms = Clustering.getTopTermsFromBlogger("\""+ blogger.toString()+"\"", dt,dte , "100");
+		bloggerterms = Clustering.getTopTermsFromBlogger( blogger.toString(), dt,dte , "100");
 		System.out.println("terms --"+bloggerterms);
 %>
 <!-- <div class="tagcloudcontainer" style="min-height: 420px;">

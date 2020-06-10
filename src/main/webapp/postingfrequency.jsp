@@ -550,7 +550,13 @@ userinfo = (ArrayList<?>)userinfo.get(0);
 												pids = post._getPostIdsByBloggerName("date",dt, dte,"'"+bloggerName+"'","date","DESC");
 												//allterms = term._searchByRange("blogsiteid", dt, dte, blogsiteId);//_searchByRange("blogpostid",dt, dte,postids);
 												System.out.println("Most active blogger:"+mostactiveblogger);
-												allentitysentiments = blogpostsentiment._searchByRange("date", dt, dte, pids);
+												try{
+													allentitysentiments = blogpostsentiment._searchByRange("date", dt, dte, pids);
+													
+												}catch(Exception e){
+													
+												}
+												
 												System.out.println("entity--" + allentitysentiments.size());
 												System.out.println("pids--" + pids);
 												selectedid=blogsiteId; 
@@ -1430,6 +1436,7 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
   				 		      
   				 		      
   				 		      .on("click",function(d){
+  				 		    	  
   				 		    	 
   				 		       var tempYear = convertTime(d.date);
                         	   var d1 = 	  tempYear + "-01-01";
