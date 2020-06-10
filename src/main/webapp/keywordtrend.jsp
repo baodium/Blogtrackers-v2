@@ -1807,7 +1807,7 @@ $(document).ready(function() {
 		
 	<% pj++; } %>
 	
-	console.log(overal_holder)
+	//console.log(overal_holder)
  //////start time converting function
  	
  function convertTime(str) {
@@ -1966,7 +1966,7 @@ $(document).ready(function() {
 ///////////////start collecting names
     		 var county = $('.thanks').length;
     		 
-    		 console.log("oga county",county)
+    		 //console.log("oga county",county)
     		 
     		 if(county > 0){
     			 
@@ -2090,7 +2090,7 @@ $(document).ready(function() {
     		    			
     		    			data1.forEach((arrayItem) => {data.push(arrayItem) });
     		  				  
-    		  				 console.log(data);
+    		  				// console.log(data);
 		  					
 		  					beginBuilder(data)
 		  				}
@@ -2107,19 +2107,13 @@ $(document).ready(function() {
   	    	    	var longt = 0;
   	    	    	 	
     				  //data1.forEach((arrayItem) => {data.push(arrayItem) });
-    				  console.log('pp')
-    				  console.log(data);
+    				
     				  
     			/////////start graph stuff
     			$('#chart').html('');
     			$('#chart').empty();
     				indexy = data.findIndex(x => x.name === highest_date_name);
-    				console.log('iiii');
-    				console.log(indexy);
-    				console.log(highest_date_name);
-				    console.log(highest_price);
-				    console.log(highest_date);
-				    console.log(lowest_date);
+    				
 	 			//var width = 750;
 	 			var width = $('#chart-container').width();
 	 		    var height = 200;
@@ -2158,8 +2152,7 @@ $(document).ready(function() {
 	 		     .domain([mindate, maxdate]) 
 	 		     // .domain(d3.extent(data[indexy].values, d => d.date))
 	 		      .range([0, width-margin]);
-		console.log('sss')
-	 		    console.log(xScale);
+		
 	 		   //var yScale = d3.scaleLinear()
 		      //.domain([0, d3.max(data[highest_price_index].values, d => d.price)])
 		     // .range([height-margin, 0]);
@@ -2255,10 +2248,49 @@ $(document).ready(function() {
                    	   bloog = d.name.replaceAll("__"," ");
                    		
                    	   $('.activeblogger').html(bloog);
-                   	
-                   	   getTopLocation(bloog,$("#all_blog_ids").val(),d1,d2);
-                   	   loadTerms(bloog,$("#all_blog_ids").val(),d1,d2);	
-                   		loadSentiments(bloog,$("#all_blog_ids").val(),d1,d2);
+                   	   
+                   	   
+                   	 ///////////////start collecting names
+	                	 var count = $('.thanks').length;
+	                	 
+	                	 if(count > 0){
+	                		 
+	                		 var all_selected_names = '';
+	                		 var all_selected_names1 = '';
+	                		 var all_selected_id = '';
+	                		 var i = 1;
+	                		 $( ".thanks" ).each(function( index ) {
+	                			 
+	                			 
+	                			 if(i > 1){
+	                				 all_selected_names += ' , ';
+	                				 all_selected_names1 += ' , ';
+	                				 all_selected_id += ' , ';
+	                			 }
+	                			 
+	                	    	blog_name = 	$(this).attr('name');
+	                	    	
+	                	    	blog_id = 	this.id;
+	                	    	
+	                	    	all_selected_names += '"'+blog_name+'"';
+	                	    	all_selected_names1 += blog_name;
+	                	    	
+	                	    	all_selected_id += blog_id;
+	                	    		
+	                	    	i++;
+	                		    		
+	                		});
+	                		 
+	                		 
+	                	 }
+	                	////////////end collecting names
+	                	loadBlogMentioned(d1, d2);
+						loadMostLocation(d1, d2);
+						loadMostPost(d1, d2);
+						loadTable(d1, d2, all_selected_names1);
+                   	   getTopLocation(all_selected_names,$("#all_blog_ids").val(),d1,d2);
+                   	   loadTerms(all_selected_names,$("#all_blog_ids").val(),d1,d2);	
+                   		loadSentiments(all_selected_names,$("#all_blog_ids").val(),d1,d2);
                    		
                    	  // loadInfluence(d1,d2); 
                    	   

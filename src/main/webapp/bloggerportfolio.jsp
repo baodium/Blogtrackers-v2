@@ -647,7 +647,7 @@ JSONObject allposts = new JSONObject();
 
 <link rel="stylesheet" href="assets/css/daterangepicker.css" />
   <link rel="stylesheet" href="assets/css/style.css" />
-
+<
   <!--end of bootsrap -->
   <script src="assets/js/jquery-3.2.1.slim.min.js" ></script>
 <script src="assets/js/popper.min.js"></script>
@@ -1252,7 +1252,7 @@ JSONObject allposts = new JSONObject();
  $(document).ready(function() {
 	 
 	 $('#printdoc').on('click',function(){
-			print();
+			window.print();
 		}) ;
    // datatable setup
      $('#DataTables_Table_1_wrapper').DataTable( {

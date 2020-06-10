@@ -614,7 +614,7 @@ userinfo = (ArrayList<?>)userinfo.get(0);
 											}
 											%>
 											<input type="hidden" id="postby<%=bloggerInf.replaceAll(" ","__")%>" value="<%=postids%>" />
-<a href="javascript:void(0);" name="<%=bloggerInf%>" data-toggle="tooltip" data-placement="top" title="okurrrr" class="topics topics1 blogger-select btn btn-primary form-control bloggerinactive mb20 <%=dselected%> <%=activew%>"  id="<%=blogsiteid%>" ><b><%=bloggerInf%></b></a>
+<a href="javascript:void(0);" name="<%=bloggerInf%>"  class="topics topics1 blogger-select btn btn-primary form-control bloggerinactive mb20 <%=dselected%> <%=activew%>"  id="<%=blogsiteid%>" ><b><%=bloggerInf%></b></a>
 					    			
 											<%
 											k++;
@@ -1473,8 +1473,54 @@ function color1(i, id, name){
 			                        	   bloog = d.name.replaceAll("__"," ");
 			                        	   
 			                        	   $('.activeblogger').html(bloog);
+			                        	  console.log("pppppp",d1,bloog,d2)
 			                        	  
-			                        	   loadInfluence(d1,d2) 
+			                        		
+			                ///////////////start collecting names
+			                	 var count = $('.thanks').length;
+			                	 
+			                	 if(count > 0){
+			                		 
+			                		 var all_selected_names = '';
+			                		 var all_selected_names1 = '';
+			                		 var all_selected_id = '';
+			                		 var i = 1;
+			                		 $( ".thanks" ).each(function( index ) {
+			                			 
+			                			 
+			                			 if(i > 1){
+			                				 all_selected_names += ' , ';
+			                				 all_selected_names1 += ' , ';
+			                				 all_selected_id += ' , ';
+			                			 }
+			                			 
+			                	    	blog_name = 	$(this).attr('name');
+			                	    	
+			                	    	blog_id = 	this.id;
+			                	    	
+			                	    	all_selected_names += '"'+blog_name+'"';
+			                	    	all_selected_names1 += blog_name;
+			                	    	
+			                	    	all_selected_id += blog_id;
+			                	    		
+			                	    	i++;
+			                		    		
+			                		});
+			                		 
+			                		 
+			                	 }
+			                	////////////end collecting names
+			                        	  
+			                        	  
+			                        	   //loadInfluence(d1,d2) 
+			                        	 loadTerms(all_selected_names,$("#all_blog_ids").val(),d1,d2, all_selected_names1);
+			                        	loadInfluence(all_selected_names,d1,d2);
+			                        	   
+			                        	   
+			                        	   
+			                        	   
+			                        	   
+			                        	   
     	    				 		     })
     	    				 		      .attr("class", "circle")  
     	    				 		      .on("mouseover", function(d) {

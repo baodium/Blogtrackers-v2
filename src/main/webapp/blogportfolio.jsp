@@ -1841,8 +1841,18 @@ import java.io.OutputStreamWriter; -->
                     	  console.log(d.date);
                     	  var d1 = 	  d.date + "-01-01";
                    	      var d2 = 	  d.date + "-12-31";
+                   	      
+                   	   var blogger = $('#blogger-changed').val();
+                   	
+	                   	var blg = blogger.split("_");
+	                   	
+	                   	var blog_id = blg[0];
+	                   	
+	                   	console.log(blog_id, d1,d2)
           				
-                   	      loadUrls(d1,d2);
+                   	    loadUrls(d1,d2);
+                   	   loadYearlyChart(blog_id, d1, d2);
+                   		loadDailyChart(blog_id, d1, d2);
                     	  
                       });
                                          svg.call(tip)
