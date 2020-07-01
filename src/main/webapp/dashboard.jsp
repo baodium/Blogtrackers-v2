@@ -4017,6 +4017,7 @@ var mymarker = [
 	<%-- wordtagcloud("#tagcloudcontainer",450,<%=res%>); --%>
 
 	function loadChordDashboard(){
+		
 		 $(".chord_body").html("<img src='images/loading.gif' /> LOADING CHORD GRAPH FOR <b style='color : blue;  font-size: 20px;'><%=NumberFormat.getNumberInstance(Locale.US).format(new Double(totalpost).intValue())%></b> POSTS PLEASE WAIT...."); 
 		 $('.buttonTopicModelling').prop("disabled", true);
 		 $("#hreftopicmodels").attr("href", "");
