@@ -758,6 +758,7 @@ if($(this).hasClass('active_selection')){
 	
 }
 console.log(blog_id)
+
 if(!active_selected)
 {
 	 
