@@ -108,7 +108,7 @@ if (path_new.exists()) {
 
 
 Blogposts post  = new Blogposts();
-String term =  (null == request.getParameter("term")) ? "" : request.getParameter("term").toString();//.replaceAll("[^a-zA-Z]", " ");
+String term =  (null == request.getParameter("term")) ? "" : request.getParameter("term").toString().toLowerCase();//.replaceAll("[^a-zA-Z]", " ");
 
 String sort =  (null == request.getParameter("sortby")) ? "date" : request.getParameter("sortby").toString();
 
@@ -636,7 +636,7 @@ src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.print.min.js"></script>
 
 var all_loaded_blogs = [<%=all_loaded_blogs %>];
 var array_to_send = [];
-console.log('all_loaded_blogs',all_loaded_blogs)
+console.log('all_loaded_blogs1',all_loaded_blogs)
 function remove_array_element(array, n)
 {
   var index = array.indexOf(n);
@@ -667,7 +667,7 @@ if(!selected_all)
 	
 	var all_loaded_blogs = [<%=all_loaded_blogs %>];
 	array_to_send = all_loaded_blogs;
-	console.log('all_loaded_blogs',all_loaded_blogs)
+	console.log('all_loaded_blogs2',all_loaded_blogs)
 	
 $(".curve_all td").addClass("border-selected");
 $(".curve_all td .myposttitle a").addClass("text-selected");
@@ -791,7 +791,7 @@ console.log('supposed to add')
 
 $(".total_selected").text(array_to_send.length);
 updateCurrentSelectedBlogs(array_to_send)
-console.log('array to send',array_to_send)
+console.log('array to send2',array_to_send)
 // adding blog to tracks
 
 // add an ajax to add blog to tracker
@@ -886,6 +886,9 @@ function updateCurrentSelectedBlogs(array_to_send){
 <script src="pagedependencies/imageloader.js?v=09"></script>
 
 <script src="js/functions.js"></script>
+<script>
+
+</script>
 <script>
 $(window).scroll(function() {
 	if($(window).scrollTop() + $(window).height() > $(document).height() - 200) {

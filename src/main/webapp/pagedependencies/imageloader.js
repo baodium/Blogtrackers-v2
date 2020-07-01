@@ -1,3 +1,9 @@
+$(window).bind("pageshow", function(event) {
+    if (event.originalEvent.persisted) {
+        window.location.reload(); 
+    }
+});
+
 var baseurl = app_url;
 var requests = new Array();
 var z=0;

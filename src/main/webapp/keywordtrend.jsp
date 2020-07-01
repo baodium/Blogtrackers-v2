@@ -931,7 +931,7 @@
 		<div class="row mt20">
 			<div class="col-md-3">
 
-				<div class="card card-style mt20">
+				<div class="card card-style mt20" style="height: 430px;">
 					<div class="card-body p20 pt5 pb5 mb20">
 
 						<h6 class="mt20 mb20">Top Keywords</h6>
@@ -948,14 +948,14 @@
 						<!-- <small class="text-success pb10 ">+5% from <b>Last Week</b>
 
     </small> -->
-						<div style="height: 250px; padding-right: 10px !important;"
+						<div style="height: 270px; padding-right: 10px !important;"
 							id="scroll_list_loader" class="hidden">
 							 <img style='position: absolute; top: 50%; left: 50%;'
 								src='images/loading.gif' /> 
 
 						</div>
 						<div id="scroll_list" class=" scrolly"
-							style="height: 250px; padding-right: 10px !important;">
+							style="height: 270px; padding-right: 10px !important;">
 
 
 							<%
@@ -988,33 +988,8 @@
 
 							<%
 								} /* else {
-																																																																																																													json_type_2 = (null == session.getAttribute(tid.toString()))
-																																																																																																															? ""
-																																																																																																															: session.getAttribute(tid.toString());
-																																																																																																											
-																																																																																																													System.out.println("session obj" + json_type_2);
-																																																																																																											
-																																																																																																													Map<String, Integer> json = (HashMap<String, Integer>) json_type_2;
-																																																																																																											
-																																																																																																													Map.Entry<String, Integer> entry1 = json.entrySet().iterator().next();
-																																																																																																											
-																																																																																																													keyword_count = entry1.getValue();
-																																																																																																													mostactiveterm = entry1.getKey();
-																																																																																																													String dselected = "";
-																																																																																																													String selectedid="";
-																																																																																																													String activew = "";
-																																																																																																													int k = 1;
-																																																																																																															
-																																																																																																											
-																																																																																																													for (Map.Entry<String, Integer> entry : json.entrySet()) {
-																																																																																																														
-																																																																																																													if(k == 1){
-																																																																																																														dselected = "abloggerselected";
-																																																																																																														activew = "thanks";
-																																																																																																													}else{
-																																																																																																														dselected = "";
-																																																																																																														activew = "";
-																																																																																																													} */
+																																																																																																														String dselected = "";
+																																																																																																														} */
 
 											//System.out.println(termsJson);
 											//Iterator<String> kys = termsJson.keys();
@@ -2010,10 +1985,9 @@ $(document).ready(function() {
     				
     				temp_details = temp_dates_values.split(",");
     				//start for loop here
+    				flag = 0;
     				for (m = 0; m < temp_details.length; m++) {
     				    holder = temp_details[m];
-    				    
-    				    
     				    
     				    holder_details = holder.split(":");
     				    temp_year = holder_details[0].replace("'", "").trim();
@@ -2023,10 +1997,11 @@ $(document).ready(function() {
     				    temp_count = parseInt(temp_count);
     				    total_count = total_count + temp_count;
     				    let current_year = new Date().getFullYear();
+    				    let last_year_check = 1999;
     				    
-    				    if(temp_year <= current_year && temp_year >= 1999){
-    				    	
-    				    	if(m == 0 && t ==0){
+    				    if((temp_year <= current_year) && (temp_year >= last_year_check)){
+    				    	flag++;
+    				    	if((flag == 1) && (t == 0) ){
         				    	lowest_date = temp_year;
         				    	highest_date = temp_year;
         				    	highest_price = temp_count;
@@ -2060,6 +2035,7 @@ $(document).ready(function() {
     				    
     				    	
     				    }
+    				    
     				    //end year 2020 check
     				    
     				    
@@ -2145,7 +2121,8 @@ $(document).ready(function() {
 
 
 	 		    /* Scale */
-	 		    var mindate = new Date(lowest_date,0,1),
+	 		    var mindate = new Date(lowest_date,0,1);
+	 		   
             maxdate = new Date(highest_date,0,31);
 	 		    var xScale = d3.time.scale()
 	 		   // var xScale = d3.scaleTime()
