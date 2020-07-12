@@ -285,10 +285,13 @@ public class Blogs extends DbConnection{
 		blogids = blogids.replaceAll(",$", "");
 		blogids = blogids.replaceAll(", $", "");
 		blogids = "("+blogids+")";
-		
+		String kay = "SELECT (select distinct blogsite_name from blogsites bs where bl.blogsite_id = bs.blogsite_id) AS blogsiteName,  MAX(bl.influence_score), bl.blogsite_id FROM blogger bl where blogsite_id in "+
+				(blogids)+" group by blogsiteName order by influence_score desc";
+		System.out.println("garrrri"+kay);
 		try {
-		result = db.query("SELECT (select distinct blogsite_name from blogsites bs where bl.blogsite_id = bs.blogsite_id) AS blogsiteName,  MAX(bl.influence_score), bl.blogsite_id FROM blogger bl where blogsite_id in "+
-				(blogids)+" group by blogsiteName order by influence_score desc");		
+		result = db.query(kay);
+		
+		
 			
 		}catch(Exception e){
 		}

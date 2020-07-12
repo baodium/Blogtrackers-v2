@@ -1234,14 +1234,14 @@ display: none;
 						
 						<div align="center" class="" style="min-height: 420px;">
 							<div align="center" class="chart-container word-cld">
-							<div class="hidden" id="keyword_computing_loaader">
-								<div align="center" class=" word1">COMPUTING-TERMS...<span id="keyword_percentage"><%=status_percentage %>%</span></div>
-								<div align="center" class=" overlay1"></div>
-							</div>
-							<div class="chart hidden" id="tagcloudcontainer99">
-								<div class="jvectormap-zoomin zoombutton" id="zoom_in">+</div>
-								<div class="jvectormap-zoomout zoombutton" id="zoom_out">−</div>
-							</div>
+								<div class="hidden" id="keyword_computing_loaader">
+									<div align="center" class=" word1">COMPUTING-TERMS...<span id="keyword_percentage"><%=status_percentage %>%</span></div>
+									<div align="center" class=" overlay1"></div>
+								</div>
+								<div class="chart hidden" id="tagcloudcontainer99">
+									<div class="jvectormap-zoomin zoombutton" id="zoom_in">+</div>
+									<div class="jvectormap-zoomout zoombutton" id="zoom_out">−</div>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -1791,7 +1791,7 @@ display: none;
 
 	<script type="text/javascript" src="assets/js/jquery-1.11.3.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/lettering.js/0.6.1/jquery.lettering.min.js"></script>
-		
+		<script src="pagedependencies/imageloader.js?v=09"></script>
 		<script>
 		
 		function matrix_loader(){
@@ -1892,13 +1892,14 @@ display: none;
 		 var d3v4 = window.d3;
 		
 		
-		var margin = {
-			top : 10,
-			right : 30,
-			bottom : 30,
-			left : 60
-		}, width = plot_width - margin.left - margin.right, height = plot_height - margin.top
-				- margin.bottom;
+		//var margin = {
+		//	top : 10,
+		//	right : 30,
+		//	bottom : 30,
+		//	left : 60
+		//}, 
+		//width = plot_width - margin.left - margin.right, 
+		//height = plot_height - margin.top - margin.bottom;
 		
 		
 		///start clustering5 funtion
@@ -2096,6 +2097,7 @@ display: none;
 		 
 		 	<script>
 		
+		
 function cluster_matrix_loader(){
 			
 			
@@ -2198,7 +2200,6 @@ function cluster_matrix_loader(){
 			
 			dataset = <%=final_centroids %>
 			clusterdiagram5('#dataviz_axisZoom', dataset);
-			
 			
 			
 	<%	}else{
@@ -2881,11 +2882,13 @@ $(function () {
 						for (int y = 0; y < influenceBlog.size(); y++) {
 							ArrayList<?> blogInfluence = (ArrayList<?>) influenceBlog.get(y);
 							String blogInf = blogInfluence.get(0).toString();
-							String blogInfFreq = blogInfluence.get(1).toString();
+							String blogInfFreq = (null == blogInfluence.get(1).toString()) ? "0" : blogInfluence.get(1).toString();
 							if (p < 10) {
 								p++;%>
 		{letter:"<%=blogInf%>", frequency:<%=blogInfFreq%>, name:"<%=blogInf%>", type:"blogger"},
-		 <%}
+		 <%}else{
+			 break;
+		 }
 						}
 					}%>    
         ];
@@ -3885,11 +3888,9 @@ var mymarker = [
 
 				},
 				success: function(response)
-				{   				  
-				 console.log(response)
-				console.log("this is the response"+data)
-				
-				    $(".word-cld").html("<div style='min-height: 420px;'><div class='chart-container word-cld'><div class='chart' id='tagcloudcontainer'><div class='jvectormap-zoomin zoombutton' id='zoom_in'>+</div><div class='jvectormap-zoomout zoombutton' id='zoom_out'>−</div></div></div></div>");
+				{   	
+					
+				  $(".word-cld").html("<div id='dummy'></div><div style='min-height: 420px;'><div class='chart-container word-cld'><div class='chart' id='tagcloudcontainer99'><div class='jvectormap-zoomin zoombutton' id='zoom_in'>+</div><div class='jvectormap-zoomout zoombutton' id='zoom_out'>−</div></div></div></div>");
 				 $("#tagcloudcontainer99").html("<img src='images/loading.gif' /> COMPUTING TERMS PLEASE WAIT....").html(response);
 				}
 			});

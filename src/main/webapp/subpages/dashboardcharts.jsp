@@ -62,8 +62,8 @@ System.out.println("terms --"+dashboardterms);
 	%>
 	
 	<%-- //<%=result.toString()%> --%>
-	<!-- <div class="chart-container">
-	<div class="chart" id="tagcloudcontainer"></div>
+ <div class="chart-container">
+	<div class="chart" id="tagcloudcontainer" asertain="nerc"></div>
 	<div class="jvectormap-zoomin zoombutton" id="zoom_in">+</div>
 	<div class="jvectormap-zoomout zoombutton" id="zoom_out">−</div>
 </div>
@@ -75,7 +75,7 @@ word cloud
 <script src="assets/vendors/wordcloud/d3.layout.cloud.js"></script>
 <script type="text/javascript" src="assets/vendors/d3/d3_tooltip.js"></script>
 <script type="text/javascript" src="assets/js/jquery.inview.js"></script>
-<script type="text/javascript" src="chartdependencies/keywordtrendd3.js"></script> -->
+<script type="text/javascript" src="chartdependencies/keywordtrendd3.js"></script> 
 
 <script>
  /*
@@ -101,7 +101,7 @@ for(var i = 0; i < terms.length; i++){
 }
 
 //var new_dd = terms.replace('[','{').replace(']','}').replace(/\),/g,'-').replace(/\(/g,'').replace(/,/g,':').replace(/-/g,',').replace(/\)/g,'').replace(/'/g,'');
-
+//System.out.println("terms_result" + jsonresult);
 wordtagcloud("#tagcloudcontainer",450,jsonresult); 
 console.log('terms',jsonresult);
 </script>
