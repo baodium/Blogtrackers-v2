@@ -1,0 +1,323 @@
+/*
+
+
+
+	" Reimplement the wheel to either learn, or make it better. "
+
+    http://www.haydex.com/
+    https://www.youtube.com/watch?v=QOlTGA3RE8I
+    
+    Product Name: Btracker
+	Description: Tracking Blog's data.
+	Beneficiary: COSMOS
+	
+	Copyright © 1988 - 2020 HAYDEX, All Rights Reserved.
+	
+	
+	
+*/
+
+/** Global settings **/
+
+:root {
+    
+    /* theme */
+
+    --reddish: #fd4444;
+    --yellowish: #FFF474;
+    --whitish: white;
+    --blueishDark: #17394C;
+    --greyishLight: #F8F8F8;
+    --greenish: #5FAA78;
+    --yellow: yellow;
+
+    /* radius */
+
+    --radius5: 5px;
+    --radius13: 13px;
+    --radius15: 15px;
+    --radius25: 25px;
+    --radius1000: 1000px;
+
+    --interface: url(/assets/interface/interface.svg);
+    
+}
+
+html {
+
+    color: var(--blueishDark);
+    font-family: "Roboto", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    box-sizing: border-box; /* https://www.w3schools.com/css/css3_box-sizing.asp   https://www.youtube.com/watch?v=ADDvQlerEx4&list=PLu8EoSxDXHP5CIFvt9-ze3IngcdAc2xKG&index=2 */
+
+}
+
+body {
+
+	background-color:var(--whitish);
+    margin: 0px;
+    box-sizing: inherit;
+
+}
+
+a {
+
+    text-decoration: none;
+    color: inherit;
+
+}
+
+a:hover {
+
+    color: inherit;
+
+}
+
+::-webkit-scrollbar {
+    width: 0px;
+    background: transparent; /* make scrollbar transparent */
+}
+
+* {
+
+    margin: 0;
+    padding: 0;
+    box-sizing: inherit;
+
+}
+
+ul {
+
+    list-style: none;
+
+}
+
+/** Narrative Tree **/
+
+ul#narrativeTree {
+
+    max-width: 500px;
+    margin: 0px auto;
+    margin-top: 50px;
+    padding: 0px 10px;
+
+}
+
+ul#narrativeTree li.level {
+
+    margin-bottom: 50px;
+
+}
+
+ul#narrativeTree li.level div.keyword {
+
+    display: inline-block;
+    font-size: 18px;
+    font-weight: 500;
+    background-color: var(--yellowish);
+    padding: 10px 18px;
+    border-radius: var(--radius25);
+    cursor: pointer;
+
+}
+
+ul#narrativeTree li.level div.keyword p.text {
+
+    display: inline-block;
+
+}
+
+ul#narrativeTree li.level div.keyword div.collapseIcon {
+
+    display: inline-block;
+    margin-right: 2px;
+    width: 14px;
+    height: 20px;
+    background-image: var(--interface);
+    background-position: -10px -969px;
+
+}
+
+ul#narrativeTree li.level.uncollapse div.keyword div.collapseIcon {
+
+    background-position-x: -30px;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative {
+
+    display: none;
+
+}
+
+ul#narrativeTree li.level.uncollapse ul.narratives li.narrative {
+
+    display: block;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative div.topSection {
+
+    height: 30px;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative div.connectorBox {
+
+    position: relative;
+    width: 50px;
+    height: 100%;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative div.connectorBox div.connector {
+
+    width: 2px;
+    height: 100%;
+    background-color: var(--blueishDark);
+    margin: 0px auto;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative div.connectorBox div.dot {
+
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    top: 7px;
+    left: 50%;
+    margin-left: -5px;
+    background-color: var(--blueishDark);
+    border-radius: var(--radius1000);
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative div.middleSection {
+
+    display: flex;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative div.middleSection div.connectorBox {
+
+    flex: 0 0 50px;
+    height: auto;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative.last div.middleSection div.connectorBox {
+
+    height: 7px;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative div.middleSection p.narrativeText {
+
+    font-size: 18px;
+    transition: font-size .2s ease;
+    cursor: pointer;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative.open div.middleSection p.narrativeText {
+
+    font-size: 30px;
+    line-height: 30px;
+    font-weight: 600;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative.open div.bottomSection {
+
+    position: relative;
+    height: 320px;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative.last div.bottomSection div.connectorBox {
+
+    height: 0px;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative.open div.bottomSection div.posts {
+
+    display: block;
+    position: absolute;
+    top: 20px;
+    height: 300px;
+    overflow: auto;
+    white-space: nowrap;
+    width: calc(50vw + 220px);
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative div.bottomSection div.posts {
+
+    display: none;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative.open div.bottomSection div.posts div.post {
+
+    display: inline-block;
+    width: 210px;
+    height: 280px;
+    background-color: var(--greyishLight);
+    border-radius: var(--radius15);
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative.open div.bottomSection div.posts div.post img {
+
+    width: 100%;
+    height: 130px;
+    object-fit: cover;
+    border-radius: 15px 15px 0px 0px;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative.open div.bottomSection div.posts div.post h2.postTitle {
+
+    white-space: normal;
+    font-size: 18px;
+    line-height: 18px;
+    font-weight: 600;
+    padding: 0px 20px;
+    margin-top: 10px;
+    height: 70px;
+    overflow: hidden;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative.open div.bottomSection div.posts div.post p.postDate {
+
+    white-space: normal;
+    font-size: 12px;
+    line-height: 12px;
+    font-weight: 400;
+    padding: 0px 20px;
+    margin-top: 20px;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative.open div.bottomSection div.posts div.post p.postSource {
+
+    white-space: normal;
+    font-size: 12px;
+    line-height: 12px;
+    font-weight: 600;
+    padding: 0px 20px;
+
+}
+
+@media only screen and (max-width: 500px) {
+
+    ul#narrativeTree li.level ul.narratives li.narrative.open div.bottomSection div.posts {
+
+        width: 100%;
+    
+    }
+
+}

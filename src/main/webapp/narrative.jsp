@@ -580,7 +580,9 @@
 
 <link rel="stylesheet" href="assets/css/daterangepicker.css" />
 <link rel="stylesheet" href="assets/css/style.css" />
-
+<link rel="stylesheet" href="assets/presentation/narrative-analysis.css"/>
+        
+        <script src="assets/behavior/narrative-analysis.js"></script>
 <!--end of bootsrap -->
 <script src="assets/js/jquery-3.2.1.slim.min.js"></script>
 <script src="assets/js/popper.min.js"></script>
@@ -799,7 +801,1740 @@
 
 
 
-
+	<ul id="narrativeTree">
+            <li class="level">
+                <div class="keyword">
+                    <div class="collapseIcon"></div>
+                    <p class="text">COVID-19</p>
+                </div>
+                <ul class="narratives">
+                    <li class="narrative">
+                        <div class="topSection">
+                            <div class="connectorBox">
+                                <div class="connector"></div>
+                            </div>
+                        </div>
+                        <div class="middleSection">
+                            <div class="connectorBox">
+                                <div class="connector"></div>
+                                <div class="dot"></div>
+                            </div>
+                            <p class="narrativeText">The American Red Cross is closely monitoring the outbreak…</p>
+                        </div>
+                        <div class="bottomSection">
+                            <div class="connectorBox">
+                                <div class="connector"></div>
+                            </div>
+                            <div class="posts">
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/1.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/2.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/3.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/4.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/5.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/6.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/7.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/8.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/9.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/10.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/11.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/12.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/13.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/14.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/15.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="narrative last">
+                        <div class="topSection">
+                            <div class="connectorBox">
+                                <div class="connector"></div>
+                            </div>
+                        </div>
+                        <div class="middleSection">
+                            <div class="connectorBox">
+                                <div class="connector"></div>
+                                <div class="dot"></div>
+                            </div>
+                            <p class="narrativeText">Cautioned young people to heed the advice to socially distance and be wary of the…</p>
+                        </div>
+                        <div class="bottomSection">
+                            <div class="connectorBox">
+                                <div class="connector"></div>
+                            </div>
+                            <div class="posts">
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/1.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/2.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/3.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/4.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/5.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/6.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/7.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/8.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/9.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/10.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/11.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/12.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/13.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/14.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/15.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </li>
+            <li class="level uncollapse">
+                <div class="keyword">
+                    <div class="collapseIcon"></div>
+                    <p class="text">US Forces</p>
+                </div>
+                <ul class="narratives">
+                    <li class="narrative">
+                        <div class="topSection">
+                            <div class="connectorBox">
+                                <div class="connector"></div>
+                            </div>
+                        </div>
+                        <div class="middleSection">
+                            <div class="connectorBox">
+                                <div class="connector"></div>
+                                <div class="dot"></div>
+                            </div>
+                            <p class="narrativeText">The American Red Cross is closely monitoring the outbreak…</p>
+                        </div>
+                        <div class="bottomSection">
+                            <div class="connectorBox">
+                                <div class="connector"></div>
+                            </div>
+                            <div class="posts">
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/24.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/25.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/35.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/4.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/5.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/6.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/7.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/8.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/9.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/10.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/11.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/12.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/13.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/14.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/15.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="narrative open">
+                        <div class="topSection">
+                            <div class="connectorBox">
+                                <div class="connector"></div>
+                            </div>
+                        </div>
+                        <div class="middleSection">
+                            <div class="connectorBox">
+                                <div class="connector"></div>
+                                <div class="dot"></div>
+                            </div>
+                            <p class="narrativeText">President Donald Trump and a top US health official cautioned young people to heed the advice to socially distance and be wary of the…</p>
+                        </div>
+                        <div class="bottomSection">
+                            <div class="connectorBox">
+                                <div class="connector"></div>
+                            </div>
+                            <div class="posts">
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/1.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/2.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/3.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/4.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/5.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/6.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/7.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/8.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/9.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/10.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/11.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/12.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/13.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/14.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/15.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="narrative last">
+                        <div class="topSection">
+                            <div class="connectorBox">
+                                <div class="connector"></div>
+                            </div>
+                        </div>
+                        <div class="middleSection">
+                            <div class="connectorBox">
+                                <div class="connector"></div>
+                                <div class="dot"></div>
+                            </div>
+                            <p class="narrativeText">Cautioned young people to heed the advice to socially distance and be wary of the…</p>
+                        </div>
+                        <div class="bottomSection">
+                            <div class="connectorBox">
+                                <div class="connector"></div>
+                            </div>
+                            <div class="posts">
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/1.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/2.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/3.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/4.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/5.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/6.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/7.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/8.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/9.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/10.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/11.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/12.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/13.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/14.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/15.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </li>
+            <li class="level">
+                <div class="keyword">
+                    <div class="collapseIcon"></div>
+                    <p class="text">Hackers Trackers 2</p>
+                </div>
+                <ul class="narratives">
+                    <li class="narrative">
+                        <div class="topSection">
+                            <div class="connectorBox">
+                                <div class="connector"></div>
+                            </div>
+                        </div>
+                        <div class="middleSection">
+                            <div class="connectorBox">
+                                <div class="connector"></div>
+                                <div class="dot"></div>
+                            </div>
+                            <p class="narrativeText">The American Red Cross is closely monitoring the outbreak…</p>
+                        </div>
+                        <div class="bottomSection">
+                            <div class="connectorBox">
+                                <div class="connector"></div>
+                            </div>
+                            <div class="posts">
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/1.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/2.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/3.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/4.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/5.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/6.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/7.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/8.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/9.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/10.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/11.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/12.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/13.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/14.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/15.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="narrative">
+                        <div class="topSection">
+                            <div class="connectorBox">
+                                <div class="connector"></div>
+                            </div>
+                        </div>
+                        <div class="middleSection">
+                            <div class="connectorBox">
+                                <div class="connector"></div>
+                                <div class="dot"></div>
+                            </div>
+                            <p class="narrativeText">President Donald Trump and a top US health official cautioned young people to heed the advice to socially distance and be wary of the…</p>
+                        </div>
+                        <div class="bottomSection">
+                            <div class="connectorBox">
+                                <div class="connector"></div>
+                            </div>
+                            <div class="posts">
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/1.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/2.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/3.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/4.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/5.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/6.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/7.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/8.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/9.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/10.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/11.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/12.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/13.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/14.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/15.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="narrative">
+                        <div class="topSection">
+                            <div class="connectorBox">
+                                <div class="connector"></div>
+                            </div>
+                        </div>
+                        <div class="middleSection">
+                            <div class="connectorBox">
+                                <div class="connector"></div>
+                                <div class="dot"></div>
+                            </div>
+                            <p class="narrativeText">President Donald Trump and a top US health official cautioned young people to heed the advice to socially distance and be wary of the…</p>
+                        </div>
+                        <div class="bottomSection">
+                            <div class="connectorBox">
+                                <div class="connector"></div>
+                            </div>
+                            <div class="posts">
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/1.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/2.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/3.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/4.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/5.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/6.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/7.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/8.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/9.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/10.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/11.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/12.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/13.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/14.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/15.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="narrative last">
+                        <div class="topSection">
+                            <div class="connectorBox">
+                                <div class="connector"></div>
+                            </div>
+                        </div>
+                        <div class="middleSection">
+                            <div class="connectorBox">
+                                <div class="connector"></div>
+                                <div class="dot"></div>
+                            </div>
+                            <p class="narrativeText">Cautioned young people to heed the advice to socially distance and be wary of the…</p>
+                        </div>
+                        <div class="bottomSection">
+                            <div class="connectorBox">
+                                <div class="connector"></div>
+                            </div>
+                            <div class="posts">
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/1.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/2.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/3.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/4.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/5.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/6.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/7.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/8.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/9.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/10.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/11.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/12.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/13.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/14.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/15.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </li>
+            <li class="level">
+                <div class="keyword">
+                    <div class="collapseIcon"></div>
+                    <p class="text">Nato</p>
+                </div>
+                <ul class="narratives">
+                    <li class="narrative">
+                        <div class="topSection">
+                            <div class="connectorBox">
+                                <div class="connector"></div>
+                            </div>
+                        </div>
+                        <div class="middleSection">
+                            <div class="connectorBox">
+                                <div class="connector"></div>
+                                <div class="dot"></div>
+                            </div>
+                            <p class="narrativeText">The American Red Cross is closely monitoring the outbreak…</p>
+                        </div>
+                        <div class="bottomSection">
+                            <div class="connectorBox">
+                                <div class="connector"></div>
+                            </div>
+                            <div class="posts">
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/1.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/2.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/3.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/4.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/5.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/6.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/7.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/8.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/9.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/10.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/11.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/12.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/13.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/14.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/15.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="narrative last">
+                        <div class="topSection">
+                            <div class="connectorBox">
+                                <div class="connector"></div>
+                            </div>
+                        </div>
+                        <div class="middleSection">
+                            <div class="connectorBox">
+                                <div class="connector"></div>
+                                <div class="dot"></div>
+                            </div>
+                            <p class="narrativeText">Cautioned young people to heed the advice to socially distance and be wary of the…</p>
+                        </div>
+                        <div class="bottomSection">
+                            <div class="connectorBox">
+                                <div class="connector"></div>
+                            </div>
+                            <div class="posts">
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/1.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/2.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/3.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/4.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/5.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/6.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/7.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/8.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/9.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/10.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/11.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/12.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/13.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/14.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/15.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </li>
+            <li class="level uncollapse">
+                <div class="keyword">
+                    <div class="collapseIcon"></div>
+                    <p class="text">China</p>
+                </div>
+                <ul class="narratives">
+                    <li class="narrative last">
+                        <div class="topSection">
+                            <div class="connectorBox">
+                                <div class="connector"></div>
+                            </div>
+                        </div>
+                        <div class="middleSection">
+                            <div class="connectorBox">
+                                <div class="connector"></div>
+                                <div class="dot"></div>
+                            </div>
+                            <p class="narrativeText">Cautioned young people to heed the advice to socially distance and be wary of the…</p>
+                        </div>
+                        <div class="bottomSection">
+                            <div class="connectorBox">
+                                <div class="connector"></div>
+                            </div>
+                            <div class="posts">
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/1.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/2.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/3.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/4.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/5.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/6.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/7.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/8.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/9.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/10.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/11.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/12.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/13.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/14.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="/assets/images/posts/15.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </li>
+        </ul>
 
 
 

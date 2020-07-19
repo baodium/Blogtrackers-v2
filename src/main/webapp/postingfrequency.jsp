@@ -795,7 +795,7 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
                                         <th>Entity</th>
                                         <th>Type</th>
                                       <!--   <th>Frequency</th> -->
-                                        <th>Sentiment</th>
+                                       <!--   <th>Sentiment</th> -->
 
                                     </tr>
                                 </thead>
@@ -817,7 +817,7 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
                                         <td><%=tobj.get("entity").toString()%></td>
                                         <td><%=tobj.get("type").toString()%></td>
                                    <!--      <td></td> -->
-                                        <td><%=tobj.get("sentiment").toString() %></td>
+                                          <%-- <td><%=tobj.get("sentiment").toString() %></td>  --%>
                                     </tr>
                                     <% }} %>
                                 </tbody>
@@ -1445,10 +1445,11 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
                         	   bloog = d.name.replaceAll("__"," ");
                         		
                         	   $('.activeblogger').html(bloog);
-                        	
+                        	   
+                        	   var temp_blog = '"'+bloog+'"';
                         	   getTopLocation(bloog,$("#all_blog_ids").val(),d1,d2);
                         	   
-                        	   loadTerms(bloog,$("#all_blog_ids").val(),d1,d2);	
+                        	   loadTerms(temp_blog,$("#blogid").val(),d1,d2);	
                         		loadSentiments(bloog,$("#all_blog_ids").val(),d1,d2);
                         		getTotalPost(bloog,"",d1,d2);
                         	  // loadInfluence(d1,d2); 
@@ -1808,7 +1809,9 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
  
 $(document).ready(function(){
 	var blogger = "<%=mostactiveblogger%>"
-	loadTerms(blogger,$("#blogid").val(),"<%=dt%>","<%=dte%>");
+	var temp_blog = '"'+blogger+'"';
+	
+	loadTerms(temp_blog,$("#blogid").val(),"<%=dt%>","<%=dte%>");
 })
 	
 	//console.log(word_count2);

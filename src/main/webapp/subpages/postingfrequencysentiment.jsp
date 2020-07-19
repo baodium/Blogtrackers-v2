@@ -47,7 +47,7 @@ if(action.toString().equals("getsentimenttable")){
                                     <tr>
                                         <th>Entity</th>
                                         <th>Type</th>
-                                        <th>Sentiment</th>
+                                        <!-- <th>Sentiment</th> -->
 
                                     </tr>
                                 </thead>
@@ -71,7 +71,7 @@ if(action.toString().equals("getsentimenttable")){
                                         <td><%=tobj.get("entity").toString() %></td>
                                         <td><%=tobj.get("type").toString() %></td>
                                     
-                                        <td><%=tobj.get("sentiment").toString() %></td>
+                                        <%-- <td><%=tobj.get("sentiment").toString() %></td> --%>
                                     </tr>
                                     <% }} %>
                                 </tbody>

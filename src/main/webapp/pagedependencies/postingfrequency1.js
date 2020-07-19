@@ -231,6 +231,7 @@ function loadInfluence(blogger,start_date,end_date){
 
 
 function loadTerms(blogger,blog_id,start_date,end_date, activeTerms){
+	
 	/*$("#tagcloudbox").html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />");*/
 	$("#tagcloudbox").html("<img src='images/loading.gif' /> COMPUTING TERMS PLEASE WAIT....");
 	$(".most-used-keyword").html("<img src='images/loading.gif'/>");
@@ -339,7 +340,7 @@ function loadSinglePost(blogger,blog_id,start_date,end_date){
 		},
 		error: function(response)
 		{						
-			//console.log(response);
+			console.log(response);
 			$("#blogpost_detail").html(response);
 		},
 		success: function(response)

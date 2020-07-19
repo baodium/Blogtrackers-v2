@@ -143,6 +143,7 @@ public ArrayList _searchByRange(String field,String greater, String less, String
 	 
     String url = base_url+"_search";
     //System.out.println("url_out--"+url);
+    //System.out.println("111elasticquery_out--"+que);
 	//System.out.println("elasticquery_out--"+jsonObj);
     return this._getResult(url,jsonObj);
 }

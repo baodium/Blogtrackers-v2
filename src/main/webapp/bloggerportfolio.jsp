@@ -767,7 +767,7 @@ JSONObject allposts = new JSONObject();
 					<a class="breadcrumb-item active text-primary" href="<%=request.getContextPath()%>/dashboard.jsp?tid=<%=tid%>">Dashboard</a>
 					<a class="breadcrumb-item active text-primary" href="<%=request.getContextPath()%>/blogportfolio.jsp?tid=<%=tid%>">Blogger Portfolio</a>
 				</nav>
-<div><button class="btn btn-primary stylebutton1 " id="printdoc">SAVE AS PDF</button></div>
+<!-- <div><button class="btn btn-primary stylebutton1 " id="printdoc">SAVE AS PDF</button></div> -->
 </div>
 
 <div class="col-md-6 text-right mt10">

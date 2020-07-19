@@ -502,6 +502,13 @@
 			int anger = 0;
 			int anx = 0;
 			int sad = 0;
+			
+			int sexually_explicit = 0;
+			int threat = 0;
+			int insult = 0;
+			int profanity = 0;
+			int identity_attack = 0;
+			
 
 			//System.out.println(sentimentpost2);
 			ArrayList toxicity = new ToxicityBlogposts()._searchByRange("", "2018-03-30", "2015-01-30", sentimentpost2);
@@ -548,6 +555,12 @@
 					anger += Integer.parseInt(bj.get("anger").toString());
 					anx += Integer.parseInt(bj.get("anx").toString());
 					sad += Integer.parseInt(bj.get("sad").toString());
+					
+					sexually_explicit += Integer.parseInt(bj.get("sexually_explicit").toString());
+					threat += Integer.parseInt(bj.get("threat").toString());
+					insult += Integer.parseInt(bj.get("insult").toString());
+					profanity += Integer.parseInt(bj.get("profanity").toString());
+					identity_attack += Integer.parseInt(bj.get("identity_attack").toString());
 				}
 			}
 %>
@@ -1387,11 +1400,11 @@ $(function () {
                         
                         var toxicity = [
                             [//iPhone
-                            {axis:"Sexually Explicit",value:<%=posemo%>},
-                            {axis:"Identity Attack",value:<%=sad%>},
-                            {axis:"Profanity",value:<%=anger%>},
-                            {axis:"Insult",value:<%=anger%>},
-                            {axis:"Threat",value:<%=anx%>}
+                            {axis:"Sexually Explicit",value:<%=sexually_explicit%>},
+                            {axis:"Identity Attack",value:<%=identity_attack%>},
+                            {axis:"Profanity",value:<%=profanity%>},
+                            {axis:"Insult",value:<%=insult%>},
+                            {axis:"Threat",value:<%=threat%>}
                             ]
                           ];
     //////////////////////////////////////////////////////////////
