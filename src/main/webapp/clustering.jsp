@@ -1424,16 +1424,18 @@ Instant start = Instant.now();
 			 id = <%=tid %>
 			 cluster_number = cluster_id
 			 $.ajax({
-					url: app_url+"subpages/cluster_posts_chart.jsp",
+					//url: app_url+"subpages/cluster_posts_chart.jsp",
+					url: "CLUSTERING",
 					method: 'POST',
 					/* dataType: 'json', */
 					data: {
 						action:"fetch_graph",
 						tid:id,
-						cluster_number:cluster_number
+						cluster:"cluster_"+cluster_number
 					},
 					error: function(response)
-					{		console.log("error")				
+					{		
+						console.log("error")				
 						console.log(response);
 						//$("#blogpost_detail").html(response);
 					},
@@ -1445,8 +1447,11 @@ Instant start = Instant.now();
 						var data = JSON.parse(response);
 						//$(".char19").html(data.status_percentage);
 						//$(".status").html(data.status);
-						///console.log(data.cluster_id)
-						//console.log(data.final_data)
+						console.log("vj")
+						console.log(data.cluster_id)
+						
+						console.log("weds uche")
+						console.log(data.final_data)
 						clusterdiagram3('#clusterdiagram_'+data.cluster_id, 500,data.final_data, data.cluster_id);
 						//$(".clusterdiagram_"+).html(response).hide();
 						//$("#posts_details").fadeIn(700);

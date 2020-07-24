@@ -278,6 +278,28 @@ public class Blogposts {
 		 */
 	}
 
+	public static ArrayList _getBlogPostDetails(String field, String greater, String less, String blogpost_ids, int size)
+			throws Exception {
+		DbConnection db = new DbConnection();
+		String query = null;
+		if(field != null & field == "" & greater != null & less == "" & size != 0) {
+			query = "SELECT * FROM blogposts WHERE blogpost_id in( " + blogpost_ids + ") AND " + field
+					+ ">='" + greater + "' AND " + field + "<='" + less + "'  LIMIT "  + size ;
+		}else {
+			query = "SELECT * FROM blogposts WHERE blogpost_id in( " + blogpost_ids + ")";
+		}
+		//System.out.println(query);
+
+		ArrayList result = new ArrayList();
+		try {
+			result = db.queryJSON(query);
+
+		} catch (Exception e) {
+			return result;
+		}
+		return result;
+	}
+
 	public String _getPostIdsByBloggerName(String field, String greater, String less, String bloggers, String sort,
 			String order) throws Exception {
 		int size = 50;
@@ -1128,7 +1150,7 @@ public class Blogposts {
 		String result = "";
 		JSONObject query = new JSONObject("{\r\n" + "	\r\n" + "    \"query\": {\r\n" + "        \"bool\": {\r\n"
 				+ "            \"must\": [\r\n" + "                {\r\n" + "                    \"match\": {\r\n"
-				+ "                        \"post\": \r\n" + "                            \""+term+"\"\r\n"
+				+ "                        \"post\": \r\n" + "                            \"" + term + "\"\r\n"
 				+ "                        \r\n" + "                    }\r\n" + "                }\r\n"
 				+ "            ]\r\n" + "        }\r\n" + "    },\r\n" + "    \"size\": 0,\r\n"
 				+ "    \"_source\": false,\r\n" + "    \"stored_fields\": \"_none_\",\r\n"
@@ -1141,7 +1163,7 @@ public class Blogposts {
 				+ "                                \"order\": \"asc\"\r\n" + "                            }\r\n"
 				+ "                        }\r\n" + "                    }\r\n" + "                ]\r\n"
 				+ "            }\r\n" + "        }\r\n" + "    }\r\n" + "}");
-System.out.println("this is the query for _getTotal " + query);
+		System.out.println("this is the query for _getTotal " + query);
 		try {
 			JSONObject res = _makeElasticRequest(query, "POST", "/blogposts/_search");
 			Object aggregation = res.getJSONObject("aggregations").getJSONObject("groupby").getJSONArray("buckets");
@@ -3668,6 +3690,7 @@ System.out.println("this is the query for _getTotal " + query);
 //			System.out.println(_getBlogPostById("7"));
 //			System.out.println();
 			// getBlogIdsfromsearch("care");
+			_getBlogPostDetails("date", null, null, "1,2,3", 0);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

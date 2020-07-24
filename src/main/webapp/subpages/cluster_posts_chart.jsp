@@ -40,8 +40,33 @@
 	HashMap<Pair<String, String>, ArrayList<JSONObject>> clusterResult = (HashMap<Pair<String, String>, ArrayList<JSONObject>>) result;
 	
 	
-	postData = clusterResult.get(key_val);
+	//postData = clusterResult.get(key_val);
+	ArrayList<JSONObject> value = new ArrayList<JSONObject>();
 	
+	for (Map.Entry<Pair<String, String>, ArrayList<JSONObject>> entry : clusterResult.entrySet()) {
+		Pair<String, String> key = entry.getKey();
+		String cluster_name = key.getKey();
+		if(cluster_.equals(cluster_name)){
+			
+			value = entry.getValue();
+			//System.out.println("seun is here" +value);
+		}    
+	}
+	
+	/* HashMap<String, String> post_title = new HashMap<String, String>();
+	for(int i = 0; i < value.size(); i++){
+		JSONObject t = (JSONObject)value.get(i);
+		JSONObject source = new JSONObject();
+		System.out.println(source);
+		break;
+	}  */
+	//JSONObject json = (JSONObject) new simple.JSONParser().parse(s);
+	/* for(JSONObject x: (ArrayList<JSONObject>)value){
+		System.out.println(x);
+		break;
+	} */
+	//ArrayList<JSONObject> postData = clusterResult.get(key_val);
+	System.out.println(value.get(0).toMap());
 	JSONObject post_distances_all = new JSONObject();
 	//post_distances_all.put("distances", new JSONObject(distances.toString()));
 	//post_distances_all.put("post_data", new JSONArray(postData.toString()));
