@@ -533,6 +533,7 @@ userinfo = (ArrayList<?>)userinfo.get(0);
 					String dselected = "";
 					String selectedid="";
 					String activew = "";
+					String post_counter = "";
 					String pids = null;
 					if (bloggerPostFrequency.size() > 0) {
 						int p = 0;
@@ -542,7 +543,11 @@ userinfo = (ArrayList<?>)userinfo.get(0);
 							String bloggerPostFreq = bloggerFreq.get(1).toString();
 							String blogsiteId = bloggerFreq.get(2).toString();
 								if (p < 10) {
-									p++;		
+									p++;
+									
+									post_counter =  post._searchRangeTotalByBlogger("date", dt, dte, bloggerName);
+									String formatedtotalpost_counter = NumberFormat.getNumberInstance(Locale.US).format(Integer.parseInt(post_counter));
+									
 										if(m==0){
 												dselected = "abloggerselected";
 												activew = "thanks";
@@ -564,7 +569,9 @@ userinfo = (ArrayList<?>)userinfo.get(0);
 												
 												//allposts = post._getBloggerByBloggerName("date",dt, dte,bloggerName,"date","DESC");	
 												allposts = post._newGetBloggerByBloggerName("date", dt, dte, bloggerName, "DESC");
-												System.out.println("date---"+dt+ dte+bloggerName+"date"+"DESC"+blogsiteId);
+												System.out.println("date---"+allposts+ dte+bloggerName+"date"+"DESC"+blogsiteId);
+												
+												
 										}else{
 												dselected = "";
 												activew = "";
@@ -572,7 +579,7 @@ userinfo = (ArrayList<?>)userinfo.get(0);
 			    	%>
 					<input type="hidden" id="postby<%=bloggerName.replaceAll(" ","__")%>" value="" 
 					/>
-	    			<a name="<%=bloggerName%>"
+	    			<a name="<%=bloggerName%>" value="<%=post_counter %>"
 	    			data-toggle="tooltip" data-placement="top" data-original-title="<%=bloggerName%>"
 	    			 class="topics topics1 blogger-select btn btn-primary form-control bloggerinactive mb20 <%=activew %> <%=dselected%>" style="overflow:hidden;"  id="<%=blogsiteId%>" ><b><%=bloggerName%></b></a>
 	    			<% 

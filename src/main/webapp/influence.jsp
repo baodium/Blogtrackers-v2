@@ -535,7 +535,7 @@ userinfo = (ArrayList<?>)userinfo.get(0);
 					<div class="card-body  p30 pt5 pb5 mb20">
 						<h6 class="mt20 mb20">Top Bloggers</h6>
 						<div style="padding-right: 10px !important;">
-							<input type="search" class="form-control stylesearch mb20"
+							<input type="search" class="form-control stylesearch mb20 searchbloggers"
 								placeholder="Search Bloggers" />
 						</div>
 						
@@ -566,7 +566,7 @@ userinfo = (ArrayList<?>)userinfo.get(0);
 								String selectedid="";
 								
 								String postidss = "";
-							
+								String total_post_counter = "";
 							    if (influenceBlogger.size() > 0) {
 									int k = 0;
 									for (int y = 0; y < 10; y++) {
@@ -577,6 +577,7 @@ userinfo = (ArrayList<?>)userinfo.get(0);
 									String bloggerInfFreq = bloggerInfluence.get(1).toString();
 									String blogsiteid = bloggerInfluence.get(2).toString();
 								
+									total_post_counter = post._searchRangeTotalByBlogger("date",dt, dte, bloggerInf);
 									
 									String dselected = "";
 									String activew = "";
@@ -613,8 +614,8 @@ userinfo = (ArrayList<?>)userinfo.get(0);
 												
 											}
 											%>
-											<input type="hidden" id="postby<%=bloggerInf.replaceAll(" ","__")%>" value="<%=postids%>" />
-<a href="javascript:void(0);" name="<%=bloggerInf%>"  class="topics topics1 blogger-select btn btn-primary form-control bloggerinactive mb20 <%=dselected%> <%=activew%>"  id="<%=blogsiteid%>" ><b><%=bloggerInf%></b></a>
+											<input type="hidden" id="postby<%=bloggerInf.replaceAll(" ","__")%>" value="<%=postids%>"  />
+<a href="javascript:void(0);" name="<%=bloggerInf%>" total_post_counter="<%=total_post_counter %>"  class="topics topics1 blogger-select btn btn-primary form-control bloggerinactive mb20 <%=dselected%> <%=activew%>"  id="<%=blogsiteid%>" ><b><%=bloggerInf%></b></a>
 					    			
 											<%
 											k++;

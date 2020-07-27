@@ -31,7 +31,11 @@
 
 		<!-- Add this portion to fix the javax.servlet.http.Servlet error or Add 
 			apache tomcat to Targeted runtime -->
-
+    <dependency>  
+        <groupId>com.googlecode.json-simple</groupId>  
+        <artifactId>json-simple</artifactId>  
+        <version>1.1</version>  
+      </dependency>  
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>

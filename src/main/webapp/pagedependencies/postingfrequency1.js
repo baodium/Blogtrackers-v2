@@ -31,6 +31,7 @@
 		 var all_selected_names = '';
 		 var all_selected_names1 = '';
 		 var i = 1;
+		 var total_post_counter = 0;
 		 $( ".thanks" ).each(function( index ) {
 			 
 			 
@@ -47,14 +48,17 @@
 	    	all_selected_names1 += blog_name;
 	    		
 	    	i++;
-		    		
+	    	
+	    	//getting total post count from each blogger
+	    	total_post_counter+=parseInt($(this).attr('value'));
+	    	
 		});
 		 
 		 
 	 }
 	////////////end collecting names
 	 
-	
+	console.log('total_post_counter',total_post_counter)
 	
 	$(".activeblogger").html(all_selected_names1);
 	$(".activeblog").html(blg[2]);
@@ -68,7 +72,8 @@
 	console.log(blogger+$("#all_blog_ids").val()+date_start+date_end)
 	loadInfluence(all_selected_names,date_start,date_end);
 	
-	getTotalPost(bloog,id,date_start,date_end);
+	$(".total-post").html(total_post_counter.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+	//$(".total-post").html(parseInt(response).toLocaleString('en'));
 	//loadChart(bloog,id,date_start,date_end);
 	
 	getTopLocation(bloog,$("#all_blog_ids").val(),date_start,date_end);
@@ -357,6 +362,9 @@ function loadSinglePost(blogger,blog_id,start_date,end_date){
 }
 
 function getTotalPost(blogger,blog_id,start_date,end_date){
+	console.log(blogger)
+	console.log(blog_id)
+	console.log("/////")
 	var sel= $(".activeblog").html();
 	$(".total-post").html("");
 	$.ajax({
@@ -370,8 +378,7 @@ function getTotalPost(blogger,blog_id,start_date,end_date){
 			date_end:end_date,
 		},
 		error: function(response)
-		{						
-			//console.log(response);
+		{									//console.log(response);
 			$(".total-post").html(response);
 		},
 		success: function(response)
@@ -383,6 +390,8 @@ function getTotalPost(blogger,blog_id,start_date,end_date){
 		}
 	});	
 }
+
+
 
 
 function getTopLocation(blogger,blog_id,start_date,end_date){

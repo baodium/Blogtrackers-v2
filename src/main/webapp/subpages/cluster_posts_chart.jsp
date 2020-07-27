@@ -2,7 +2,8 @@
 <%@page import="java.util.*"%>
 <%@page import="util.*"%>
 <%@page import="java.io.File"%>
-<%@page import="org.json.JSONObject"%>
+<%-- <%@page import="org.json.*"%> --%>
+<%-- <%@page import="org.json.simple.*"%> --%>
 <%@page import="org.json.JSONArray"%>
 <%@page import="java.net.URI"%>
 <%@page import="java.text.SimpleDateFormat"%>
@@ -10,6 +11,7 @@
 <%@page import="javafx.util.Pair"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+	<%@page import="org.json.JSONObject"%>
 <%
 	Object action = (null == session.getAttribute("action")) ? "" : session.getAttribute("action");
 	Object cluster = (null == request.getParameter("cluster_number")) ? "" : request.getParameter("cluster_number");
@@ -23,13 +25,12 @@
 	
 	
 	
-	ArrayList<JSONObject> postData = new ArrayList<JSONObject>();
+	//ArrayList<JSONObject> postData = new ArrayList<JSONObject>();
 	Pair<String, String> key_val = new Pair<String, String>(null, null);
 	String cluster_ = "cluster_"+cluster.toString();
 	
 	HashMap<String, String> key_val_posts = (HashMap<String, String>) result_key_val;
 	String post_ids = key_val_posts.get(cluster_);
-	
 	
 
 	key_val = new Pair<String, String>(cluster_, post_ids);
@@ -38,9 +39,32 @@
 	Object result = (null == session.getAttribute(tid.toString() + "cluster_result")) ? ""
 			: session.getAttribute(tid.toString() + "cluster_result");
 	HashMap<Pair<String, String>, ArrayList<JSONObject>> clusterResult = (HashMap<Pair<String, String>, ArrayList<JSONObject>>) result;
+	ArrayList<JSONObject> value = new ArrayList<JSONObject>();
 	
+	for (Map.Entry<Pair<String, String>, ArrayList<JSONObject>> entry : clusterResult.entrySet()) {
+		Pair<String, String> key = entry.getKey();
+		String cluster_name = key.getKey();
+		if(cluster_.equals(cluster_name)){
+			
+			value = entry.getValue();
+			//System.out.println("seun is here" +value);
+		}    
+	}
 	
-	postData = clusterResult.get(key_val);
+	/* HashMap<String, String> post_title = new HashMap<String, String>();
+	for(int i = 0; i < value.size(); i++){
+		JSONObject t = (JSONObject)value.get(i);
+		JSONObject source = new JSONObject();
+		System.out.println(source);
+		break;
+	}  */
+	//JSONObject json = (JSONObject) new simple.JSONParser().parse(s);
+	/* for(JSONObject x: (ArrayList<JSONObject>)value){
+		System.out.println(x);
+		break;
+	} */
+	//ArrayList<JSONObject> postData = clusterResult.get(key_val);
+	System.out.println(value.get(0).toString());
 	
 	JSONObject post_distances_all = new JSONObject();
 	//post_distances_all.put("distances", new JSONObject(distances.toString()));
@@ -55,6 +79,7 @@
 	
 	JSONArray nodes = new JSONArray();
 	JSONArray links = new JSONArray();
+	
 	
 	JSONObject center = new JSONObject();
 	center.put("id", "center");

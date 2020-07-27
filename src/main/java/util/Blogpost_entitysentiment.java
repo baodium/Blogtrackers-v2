@@ -28,6 +28,27 @@ public class Blogpost_entitysentiment {
 		return this.totalpost;
 	}
 
+	/*
+	 * public ArrayList _searchByRange(String field,String greater, String less,
+	 * String blog_ids) throws Exception { String[] args = blog_ids.split(",");
+	 * JSONArray pars = new JSONArray(); ArrayList<String> ar = new
+	 * ArrayList<String>(); for(int i=0; i<args.length; i++){
+	 * pars.put(args[i].replaceAll(" ", "")); }
+	 * 
+	 * String arg2 = pars.toString(); JSONObject jsonObj = new JSONObject("{\r\n" +
+	 * "  \"query\": {\r\n" + "    \"bool\": {\r\n" + "      \"must\": [\r\n" +
+	 * "        {\r\n" + "		  \"constant_score\":{\r\n" +
+	 * "					\"filter\":{\r\n" +
+	 * "							\"terms\":{\r\n" +
+	 * "							\"blogpost_id\":"+arg2+"\r\n" +
+	 * "									}\r\n" +
+	 * "							}\r\n" + "						}\r\n" +
+	 * "		},\r\n" + "      ]\r\n" + "    }\r\n" + "  }\r\n" + "}");
+	 * 
+	 * 
+	 * System.out.println("blogpostentity--"+jsonObj); String url =
+	 * base_url+"_search?size=200"; return this._getResult(url,jsonObj); }
+	 */
 	public ArrayList _searchByRange(String field,String greater, String less, String blog_ids) throws Exception {
 		String[] args = blog_ids.split(","); 
 		JSONArray pars = new JSONArray(); 
@@ -35,32 +56,16 @@ public class Blogpost_entitysentiment {
 		for(int i=0; i<args.length; i++){
 			pars.put(args[i].replaceAll(" ", ""));
 		}
-
 		String arg2 = pars.toString();
-		JSONObject jsonObj = new JSONObject("{\r\n" + 
-				"  \"query\": {\r\n" + 
-				"    \"bool\": {\r\n" + 
-				"      \"must\": [\r\n" + 
-				"        {\r\n" + 
-				"		  \"constant_score\":{\r\n" + 
-				"					\"filter\":{\r\n" + 
-				"							\"terms\":{\r\n" + 
-				"							\"blogpost_id\":"+arg2+"\r\n" + 
-				"									}\r\n" + 
-				"							}\r\n" + 
-				"						}\r\n" + 
-				"		},\r\n" + 
-				"      ]\r\n" + 
-				"    }\r\n" + 
-				"  }\r\n" + 
-				"}");
-		
-		
-		System.out.println("blogpostentity--"+jsonObj);
-		String url = base_url+"_search?size=200";
-		return this._getResult(url,jsonObj);
+		if(blog_ids.endsWith(","))
+		{
+			blog_ids = blog_ids.substring(0,blog_ids.length() - 1);
+		}
+		String query = "select distinct(entity), type from blogpost_entitysentiment where blogpost_id in  (" + blog_ids.replace(" ", "") + ")" ;
+		System.out.println(query);
+		ArrayList postDataAll = DbConnection.queryJSON(query);
+		return postDataAll;
 	}
-	
 	
 	public ArrayList _fetch(String ids) throws Exception {
 		ArrayList result = new ArrayList();

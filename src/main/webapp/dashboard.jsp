@@ -268,6 +268,9 @@
 			//System.out.println("Total bloggers----" + totalbloggers);
 
 			ArrayList locations = blog._getLocation(ids);
+			
+			ArrayList locations_usage = blog._getLocationUsage(ids);
+			
 			//System.out.println("all blog location");
 			ArrayList languages = blog._getLanguage(ids);
 			//System.out.println(languages);
@@ -1052,25 +1055,100 @@ display: none;
 		<div class="row mb0">
 			<div class="col-md-6 mt20 zoom">
 				<div class="card card-style mt20">
-					<div class="card-body  p15 pt15 pb15">
-						<div>
-							<p class="text-primary mt0 float-left">
-								Most Active Location
-								<!-- <select
-									class="text-primary filtersort sortbyblogblogger"><option
-										value="blogs">Blogs</option>
-									<option value="bloggers">Bloggers</option></select>  -->
-								<%-- for Past <select
-									class="text-primary filtersort sortbytimerange">
-									<option value="" >All</option>
-									<option value="week" <%=(single.equals("week"))?"selected":"" %>>Week</option>
-									<option value="month" <%=(single.equals("month"))?"selected":"" %>>Month</option>
-									<option value="year" <%=(single.equals("year"))?"selected":"" %>>Year</option></select> --%>
-							</p>
+					<div class="card-body mt0 pt0 pl0" style="min-height: 520px;">
+					
+					<div class="location_mecard">
+					
+						<div class="front p30 pt5 pb5">
+				
+							<div>
+								<p class="text-primary mt0 float-left">
+									Most Active Location
+									<!-- <select
+										class="text-primary filtersort sortbyblogblogger"><option
+											value="blogs">Blogs</option>
+										<option value="bloggers">Bloggers</option></select>  -->
+									<%-- for Past <select
+										class="text-primary filtersort sortbytimerange">
+										<option value="" >All</option>
+										<option value="week" <%=(single.equals("week"))?"selected":"" %>>Week</option>
+										<option value="month" <%=(single.equals("month"))?"selected":"" %>>Month</option>
+										<option value="year" <%=(single.equals("year"))?"selected":"" %>>Year</option></select> --%>
+								</p>
+								<button style="right: 10px; position: absolute" id="flip"
+									type="button" onclick="location_flip()"
+									class="btn btn-sm btn-primary float-right"
+									data-toggle="tooltip" data-placement="top"
+									title="Flip to view location usage" aria-expanded="false">
+									<i class="fas fa-exchange-alt" aria-hidden="true"></i>
+								</button>
+							</div>
+							<div style="min-height: 490px;">
+								<div class="map-container map-choropleth"></div>
+							</div>
+						
+						
 						</div>
-						<div style="min-height: 490px;">
-							<div class="map-container map-choropleth"></div>
+						<!-- end front -->
+						<div class="back p30 pt5 pb5">
+
+							<div>
+								<p class="text-primary mt10 float-left">Location Usage</p>
+								<button style="right: 10px; position: absolute" id="flip"
+									type="button" onclick="location_flip()"
+									class="btn btn-sm btn-primary float-right"
+									data-toggle="tooltip" data-placement="top"
+									title="Flip to view location usage" aria-expanded="false">
+
+									<i class="fas fa-exchange-alt" aria-hidden="true"></i>
+								</button>
+							</div>
+
+							<div class="min-height-table">
+								<table id="DataTables_Table_19_wrapper" class="display"
+									style="width: 100%">
+									<thead>
+										<tr>
+											<th>Location</th>
+											<th>Frequency</th>
+
+										</tr>
+									</thead>
+									<tbody>
+	
+									<%if (locations_usage.size() > 0) {
+						for (int i = 0; i < locations_usage.size(); i++) {
+							ArrayList<?> loca = (ArrayList<?>) locations_usage.get(i);
+							String loc = loca.get(0).toString();
+							String size = loca.get(1).toString();
+							String blogsite_name = loca.get(2).toString();
+							
+							%>
+							
+							<tr>
+												<td class=""><%=blogsite_name%></td>
+												<td><%=loc%></td>
+												<!-- <td class="">j.get("letter")</td>
+												<td>j.get("frequency")</td> -->
+											</tr>
+							
+							<%}
+					}%>
+
+									</tbody>
+								</table>
+
+
+							</div>
+
 						</div>
+						<!-- end back -->
+						
+					</div>
+				<!--end location mecard -->
+						
+						
+						
 					</div>
 				</div>
 			</div>
@@ -1083,7 +1161,7 @@ display: none;
 							<div class="front p30 pt5 pb5">
 								<div>
 									<p class="text-primary mt10 float-left">Language Usage</p>
-									<button style="right: 10px; position: absolute" id="flip"
+									<button style="right: 10px; position: absolute" id="flip1"
 										type="button" onclick="flip()"
 										class="btn btn-sm btn-primary float-right"
 										data-toggle="tooltip" data-placement="top"
@@ -1111,7 +1189,7 @@ display: none;
 
 								<div>
 									<p class="text-primary mt10 float-left">Language Usage</p>
-									<button style="right: 10px; position: absolute" id="flip"
+									<button style="right: 10px; position: absolute" id="flip1"
 										type="button" onclick="flip()"
 										class="btn btn-sm btn-primary float-right"
 										data-toggle="tooltip" data-placement="top"
@@ -2885,7 +2963,24 @@ function cluster_matrix_loader(){
 	function flip() {
 	    $('.mecard').toggleClass('flipped');
 	}
+	
+	function location_flip() {
+	    $('.location_mecard').toggleClass('flipped');
+	}
 $(document).ready(function() {
+	
+	
+	 $('#DataTables_Table_19_wrapper').DataTable( {
+	        "scrollY": 380,
+	        "scrollX": true,
+	         "pagingType": "simple",
+	        	 "bLengthChange": false,
+	        	 "bFilter":false,
+	        	 "bPaginate":false,
+	        	 "bInfo":false,
+	        	 "order": [[ 1, "desc" ]]
+	  
+	    } );
 	
 	
   // datatable setup

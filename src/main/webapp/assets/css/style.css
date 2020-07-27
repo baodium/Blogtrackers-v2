@@ -176,6 +176,68 @@ table.dataTable thead .sorting:after, table.dataTable thead .sorting_asc:after, 
     transform: rotateY( 180deg );
 }
 
+
+.location_mecard {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    -webkit-transition: -webkit-transform 1s;
+    -moz-transition: -moz-transform 1s;
+    -o-transition: -o-transform 1s;
+    transition: transform 1s;
+    -webkit-transform-style: preserve-3d;
+    -moz-transform-style: preserve-3d;
+    -o-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+    -webkit-transform-origin: 50% 50%;
+}
+
+.jvectormap-zoomin{
+	 width: unset !important;
+}
+
+.jvectormap-zoomout{
+	 width: unset !important;
+}
+
+
+.location_mecard div {
+    display: block;
+   /*  height: 100%; */
+    width: 100%;
+    /* background:inherit; */
+   /*  line-height: 260px; */
+   /*  color: white; */
+   /*  text-align: center;
+    font-weight: bold;
+    font-size: 140px; */
+    /* position: absolute; */
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+    -o-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+.location_mecard .front {
+   background: white; 
+   position: absolute; 
+    border-radius:3px;
+}
+.location_mecard .back {
+	 position: absolute;
+	  background: white; 
+	  border-radius:3px;
+    /* background: blue; */
+    -webkit-transform: rotateY( 180deg );
+    -moz-transform: rotateY( 180deg );
+    -o-transform: rotateY( 180deg );
+    transform: rotateY( 180deg );
+}
+.location_mecard.flipped {
+    -webkit-transform: rotateY( 180deg );
+    -moz-transform: rotateY( 180deg );
+    -o-transform: rotateY( 180deg );
+    transform: rotateY( 180deg );
+}
 /* Flip effect end  */
 
 

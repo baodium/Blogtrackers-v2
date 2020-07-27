@@ -242,6 +242,24 @@ public class Blogs extends DbConnection{
 
 	}
 	
+	public ArrayList _getLocationUsage(String blogids) throws Exception {
+		ArrayList result = new ArrayList();
+
+		DbConnection db = new DbConnection();
+		String count = "0";
+		blogids = blogids.replaceAll(",$", "");
+		blogids = blogids.replaceAll(", $", "");
+		blogids = "("+blogids+")";
+		
+		try {
+			result = db.query("SELECT location, count(location), blogsite_name  FROM blogsites WHERE blogsite_id IN "+blogids+" and location is not null group by blogsite_id");		
+			
+		}catch(Exception e){
+		}
+		return result;
+
+	}
+	
 	public ArrayList _getLocation(String blogids) throws Exception {
 		ArrayList result = new ArrayList();
 
@@ -252,7 +270,7 @@ public class Blogs extends DbConnection{
 		blogids = "("+blogids+")";
 		
 		try {
-			result = db.query("SELECT DISTINCT(location), count(location) FROM blogsites WHERE blogsite_id IN "+blogids+" and location is not null group by location");		
+			result = db.query("SELECT DISTINCT(location), count(location), blogsite_name  FROM blogsites WHERE blogsite_id IN "+blogids+" and location is not null group by location");		
 			
 		}catch(Exception e){
 		}

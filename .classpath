@@ -63,10 +63,7 @@
 	<classpathentry kind="lib" path="C:/Users/Uche/Desktop/lib (1)/lib/tomcat-jdbc.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Uche/Desktop/lib (1)/lib/tomcat-util.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Uche/Desktop/lib (1)/lib/websocket-api.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre1.8.0_241">
-		<attributes>
-			<attribute name="owner.project.facets" value="java"/>
-		</attributes>
-	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="C:/Users/Uche/Downloads/json-20200518.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

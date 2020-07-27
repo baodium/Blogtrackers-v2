@@ -1423,14 +1423,17 @@ Instant start = Instant.now();
 		
 			 id = <%=tid %>
 			 cluster_number = cluster_id
+			 console.log("cluster_number",cluster_number)
 			 $.ajax({
-					url: app_url+"subpages/cluster_posts_chart.jsp",
+					//url: app_url+"subpages/cluster_posts_chart.jsp",
+					url: "CLUSTERING",
 					method: 'POST',
 					/* dataType: 'json', */
 					data: {
 						action:"fetch_graph",
 						tid:id,
-						cluster_number:cluster_number
+						cluster_number:cluster_number,
+						cluster:"cluster_"+cluster_number
 					},
 					error: function(response)
 					{		console.log("error")				
@@ -1445,8 +1448,10 @@ Instant start = Instant.now();
 						var data = JSON.parse(response);
 						//$(".char19").html(data.status_percentage);
 						//$(".status").html(data.status);
-						///console.log(data.cluster_id)
-						//console.log(data.final_data)
+						
+						console.log("BIG",data)
+						console.log(data.cluster_id)
+						console.log(data.final_data)
 						clusterdiagram3('#clusterdiagram_'+data.cluster_id, 500,data.final_data, data.cluster_id);
 						//$(".clusterdiagram_"+).html(response).hide();
 						//$("#posts_details").fadeIn(700);
@@ -1467,10 +1472,11 @@ var plot_height = $('#chart-container1').outerHeight() - 25;
  //console.log("plot_width",plot_width)
  // Chart setup
 clusterdiagram5('#parentdivy', plot_height, plot_width);
+
  var max_post_count = 0;
  var min_post_count = 0
  function clusterdiagram3(element, height, dataset, identify) {
-		// console.log("this is dataset1",dataset)
+		 console.log("this is dataset1",dataset)
 		 
 		 	 //console.log("this is dataset2",dataset)
 		 	 
@@ -1584,11 +1590,16 @@ clusterdiagram5('#parentdivy', plot_height, plot_width);
 	     // .attr("r", function (d, i) {return d.level})
 	      .attr("r", 5)
 	      .attr("fill", function (d, i) {return colors(d.group);})
-	      .attr("class", "cluster_visual")
-			  .attr("loaded_color",function (d) {return colors(d.group); })
-			  .attr("cluster_id", function(node){return node.label})
-	      //.attr("text",function (node) { return node.label })
-	      /* .on("mouseover", function (node) { return node.label }); */
+	      .attr("class", "cluster_visual cursor-pointer")
+		  .attr("loaded_color",function (d) {return colors(d.group); })
+		  .attr("cluster_id", function(node){return node.label})
+		  .attr("data-toggle", "tooltip")
+	      .attr("data-placement", "top")
+	      .attr("title", "Loading post details")
+	     // .attr("text",function (node) { return node.label })
+	      
+           
+	      //.on("mouseover", function (node) { return node.label });
 	    var textElements = svg.append("g")
 	     .attr("class", "texts")
 	     .selectAll("text")
@@ -1610,7 +1621,10 @@ clusterdiagram5('#parentdivy', plot_height, plot_width);
 	   .attr('y1', function (link) { return link.source.y })
 	   .attr('x2', function (link) { return link.target.x })
 	   .attr('y2', function (link) { return link.target.y })
+	   
+	   
 	     })
+	    $('[data-toggle="tooltip"]').tooltip();
 	function handleMouseOver(d, i) { // Add interactivity
 	      // Use D3 to select element, change color and size
 	      d3.select(this).attr({
@@ -1801,6 +1815,7 @@ var nodes = dataset.nodes
       .attr("class", "cluster_visual")
 		  .attr("loaded_color",function (d) {return colors(d.group); })
 		  .attr("cluster_id", function(node){return node.label})
+		  
       //.attr("text",function (node) { return node.label })
       /* .on("mouseover", function (node) { return node.label }); */
     var textElements = svg.append("g")
