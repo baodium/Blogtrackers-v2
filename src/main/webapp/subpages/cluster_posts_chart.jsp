@@ -2,8 +2,7 @@
 <%@page import="java.util.*"%>
 <%@page import="util.*"%>
 <%@page import="java.io.File"%>
-<%-- <%@page import="org.json.*"%> --%>
-<%-- <%@page import="org.json.simple.*"%> --%>
+<%@page import="org.json.JSONObject"%>
 <%@page import="org.json.JSONArray"%>
 <%@page import="java.net.URI"%>
 <%@page import="java.text.SimpleDateFormat"%>
@@ -11,7 +10,6 @@
 <%@page import="javafx.util.Pair"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-	<%@page import="org.json.JSONObject"%>
 <%
 	Object action = (null == session.getAttribute("action")) ? "" : session.getAttribute("action");
 	Object cluster = (null == request.getParameter("cluster_number")) ? "" : request.getParameter("cluster_number");
@@ -25,12 +23,13 @@
 	
 	
 	
-	//ArrayList<JSONObject> postData = new ArrayList<JSONObject>();
+	ArrayList<JSONObject> postData = new ArrayList<JSONObject>();
 	Pair<String, String> key_val = new Pair<String, String>(null, null);
 	String cluster_ = "cluster_"+cluster.toString();
 	
 	HashMap<String, String> key_val_posts = (HashMap<String, String>) result_key_val;
 	String post_ids = key_val_posts.get(cluster_);
+	
 	
 
 	key_val = new Pair<String, String>(cluster_, post_ids);
@@ -39,6 +38,9 @@
 	Object result = (null == session.getAttribute(tid.toString() + "cluster_result")) ? ""
 			: session.getAttribute(tid.toString() + "cluster_result");
 	HashMap<Pair<String, String>, ArrayList<JSONObject>> clusterResult = (HashMap<Pair<String, String>, ArrayList<JSONObject>>) result;
+	
+	
+	//postData = clusterResult.get(key_val);
 	ArrayList<JSONObject> value = new ArrayList<JSONObject>();
 	
 	for (Map.Entry<Pair<String, String>, ArrayList<JSONObject>> entry : clusterResult.entrySet()) {
@@ -64,8 +66,7 @@
 		break;
 	} */
 	//ArrayList<JSONObject> postData = clusterResult.get(key_val);
-	System.out.println(value.get(0).toString());
-	
+	System.out.println(value.get(0).toMap());
 	JSONObject post_distances_all = new JSONObject();
 	//post_distances_all.put("distances", new JSONObject(distances.toString()));
 	//post_distances_all.put("post_data", new JSONArray(postData.toString()));
@@ -79,7 +80,6 @@
 	
 	JSONArray nodes = new JSONArray();
 	JSONArray links = new JSONArray();
-	
 	
 	JSONObject center = new JSONObject();
 	center.put("id", "center");
