@@ -1152,6 +1152,7 @@ display: none;
 					</div>
 				</div>
 			</div>
+			
 
 			<div class="col-md-6 mt20 zoom">
 				<div class="card card-style mt20">
