@@ -216,7 +216,7 @@ public class Liwc {
 		blogids = blogids.replaceAll(",$", "");
 		blogids = blogids.replaceAll(", $", "");
 		blogids = "("+blogids+")";
-		System.out.println(blogids);
+		//System.out.println(blogids);
 		
 		try {
 		// bad query too slow takes like 10 to 20 second on larger blogs

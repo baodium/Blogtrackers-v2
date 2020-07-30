@@ -410,7 +410,7 @@ try{
 									String tot = post._searchRangeTotal("date", dst, dend, query);
 									totalpost = Integer.parseInt(tot);
 									*/
-								 System.out.println("quer--" + id);
+								 //System.out.println("quer--" + id);
 									if (post._getBlogPostById(query) != "") {
 										totalpost = Integer.parseInt(post._getBlogPostById(query));
 									} else {

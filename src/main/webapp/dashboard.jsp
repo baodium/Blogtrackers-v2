@@ -317,7 +317,7 @@
 			dispto = DATE_FORMAT.format(new SimpleDateFormat("yyyy-MM-dd").parse(dte));
 			//totalpost = post._searchRangeTotal("date", dt, dte, ids);
 
-			System.out.println("idsss"+ids);
+			//System.out.println("idsss"+ids);
 			totalpost = post._getBlogPostById(ids);
 
 			/* outlinks = outl._searchByRange("date", dt, dte, ids); */
@@ -498,7 +498,7 @@
 			
 			if(cluster_status.equals("1")){
 				
-				System.out.println("IT IS ONE!!!!!!");
+				//System.out.println("IT IS ONE!!!!!!");
 			//start clustering data gathering
 			Clustering cluster = new Clustering();
 				String tracker_id = tid.toString();
@@ -572,7 +572,7 @@ try{
 			
 		}
 		
-		JSONObject svd_ = new JSONObject(source.get("svd").toString());
+		/* JSONObject svd_ = new JSONObject(source.get("svd").toString());
 		
 		int counter = 0;
 		String [] post_split = post_ids.split(",");
@@ -608,7 +608,7 @@ try{
 		}
 		
 		ArrayList<JSONObject> postDataAll = DbConnection.queryJSON("select date,post,num_comments, blogger,permalink, title, blogpost_id, location, blogsite_id from blogposts where blogpost_id in ("+post_ids+") limit 500" );
-		System.out.println("done with query --");
+		System.out.println("done with query --"); */
 		
 		String terms = cluster_data.get("topterms").toString();
 		String str1 = null;
@@ -648,13 +648,13 @@ try{
 		 }
 		//DONE CREATING CHORD MATRIX
 		
-		topterms.put(cluster_,terms);
+		/* topterms.put(cluster_,terms);
 		
 		key_val = new Pair<String, String>(cluster_, post_ids);
 		
 		key_val_posts.put(cluster_, post_ids);
 		
-		clusterResult.put(key_val, postDataAll);
+		clusterResult.put(key_val, postDataAll); */
 		
 		
 
@@ -2526,6 +2526,7 @@ function update(source) {
         d._children = null;
       }
     update(d);
+    
   }
 }
 
@@ -4412,8 +4413,39 @@ var gdpData = {
     */ 
 <%JSONObject location = new JSONObject();
     
+    String csvFile = application.getRealPath("/").replace('/', '/') + "lat_long.csv";
+    BufferedReader br = null;
+    String line = "";
+    String cvsSplitBy = ",";
     
-					location.put("Vatican City", "41.90, 12.45");
+    try {
+
+        br = new BufferedReader(new FileReader(csvFile));
+        while ((line = br.readLine()) != null) {
+
+            // use comma as separator
+            String[] country = line.split(cvsSplitBy);
+
+            //System.out.println("Country [code= " + country[4] + " , name=" + country[5] + "]");
+           
+            location.put(country[1].substring(0,2) , country[3] + ","+ country[2]);
+
+        }
+
+    } catch (FileNotFoundException e) {
+        e.printStackTrace();
+    } catch (IOException e) {
+        e.printStackTrace();
+    } finally {
+        if (br != null) {
+            try {
+                br.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    } 
+					/* location.put("Vatican City", "41.90, 12.45");
 					location.put("Monaco", "43.73, 7.41");
 					location.put("Salt Lake City", "40.726, -111.778");
 					location.put("Kansas City", "39.092, -94.575");
@@ -4449,7 +4481,7 @@ var gdpData = {
 					location.put("IS", "64.147209,-21.942400");
 					location.put("NO", "59.913818,10.738740");
 					location.put("RO", "45.943161,24.966761");
-					location.put("RS", "44.815071,20.460480");
+					location.put("RS", "44.815071,20.460480"); */
 					
 					
 					%>
@@ -5985,3 +6017,5 @@ $(".option-lable").on("click",function(e){
 	}
 	}
 %>
+
+
