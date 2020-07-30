@@ -31,9 +31,9 @@
 	String sort = (null == request.getParameter("sortby"))
 			? "blog"
 			: request.getParameter("sortby").toString().replaceAll("[^a-zA-Z]", " ");
-	System.out.println("email--" + email);
+	//System.out.println("email--" + email);
 	
-	System.out.println("valueeeeee"+date_set);
+	//System.out.println("valueeeeee"+date_set);
 	
 	if (user == null || user == "") {
 		response.sendRedirect("index.jsp");
@@ -116,25 +116,25 @@
 				} else {
 					/* new File("/path/directory").mkdirs(); */
 					path_new.mkdirs();
-					System.out.println("pathhhhh1--" + path_new);
+					//System.out.println("pathhhhh1--" + path_new);
 				}
 
 				if (path_new.exists()) {
 
 					String t = "/images/profile_images";
 					int p = userpic.indexOf(t);
-					System.out.println(p);
+					//System.out.println(p);
 					if (p != -1) {
 
-						System.out.println("pic path---" + userpic);
-						System.out.println("path exists---" + userpic.substring(0, p));
+						//System.out.println("pic path---" + userpic);
+						//System.out.println("path exists---" + userpic.substring(0, p));
 						String path_update = userpic.substring(0, p);
 						if (!path_update.equals(path_new.toString())) {
 							profileimage = "images/profile_images/" + userinfo.get(2).toString() + ".jpg";
 							/* profileimage=userpic.replace(userpic.substring(0, p), path_new.toString()); */
 							String new_file_path = path_new.toString().replace("\\images\\profile_images", "")
 									+ "/" + profileimage;
-							System.out.println("ready to be updated--" + new_file_path);
+							//System.out.println("ready to be updated--" + new_file_path);
 							/*new DbConnection().updateTable("UPDATE usercredentials SET profile_picture  = '" + pass + "' WHERE Email = '" + email + "'"); */
 						}
 					} else {
@@ -143,15 +143,15 @@
 						/* profileimage=userpic.replace(userpic.substring(0, p), path_new.toString()); */
 						String new_file_path = path_new.toString().replace("\\images\\profile_images", "") + "/"
 								+ profileimage;
-						System.out.println("ready to be updated--" + new_file_path);
+						//System.out.println("ready to be updated--" + new_file_path);
 
 						new DbConnection().updateTable("UPDATE usercredentials SET profile_picture  = '"
 								+ "images/profile_images/" + userinfo.get(2).toString() + ".jpg"
 								+ "' WHERE Email = '" + email + "'");
-						System.out.println("updated");
+						//System.out.println("updated");
 					}
 				} else {
-					System.out.println("path doesnt exist");
+					//System.out.println("path doesnt exist");
 				}
 			} catch (Exception e) {
 
@@ -314,7 +314,7 @@
 			dispto = DATE_FORMAT.format(new SimpleDateFormat("yyyy-MM-dd").parse(dte));
 			//totalpost = post._searchRangeTotal("date", dt, dte, ids);
 
-			System.out.println("idsss"+ids);
+			//System.out.println("idsss"+ids);
 			totalpost = post._getBlogPostById(ids);
 
 			/* outlinks = outl._searchByRange("date", dt, dte, ids); */
@@ -495,10 +495,10 @@
 			
 			if(cluster_status.equals("1")){
 				
-				System.out.println("IT IS ONE!!!!!!");
+				//System.out.println("IT IS ONE!!!!!!");
 			//start clustering data gathering
 			Clustering cluster = new Clustering();
-				String tracker_id = tid.toString();
+			String tracker_id = tid.toString();
 	//get postids from each cluster in tracker and save in JSONObject
 	ArrayList result = cluster._getClusters(tracker_id);
 	System.out.println("done with clusters");
@@ -546,7 +546,7 @@ try{
 	   	data_centroids_.put("level",post_ids.split(",").length);
 	
 	   	nodes_centroids.put(data_centroids_);
-		
+	   	
 		for(int k = 1; k < 11; k++){
 			if(k != i){
 				String centroids_ = "C" + String.valueOf(k) + "xy";
@@ -568,7 +568,7 @@ try{
 			}
 			
 		}
-		
+		/* 
 		JSONObject svd_ = new JSONObject(source.get("svd").toString());
 		
 		int counter = 0;
@@ -605,13 +605,13 @@ try{
 		}
 		
 		ArrayList<JSONObject> postDataAll = DbConnection.queryJSON("select date,post,num_comments, blogger,permalink, title, blogpost_id, location, blogsite_id from blogposts where blogpost_id in ("+post_ids+") limit 500" );
-		System.out.println("done with query --");
+		System.out.println("done with query --");*/
 		
 		String terms = cluster_data.get("topterms").toString();
 		String str1 = null;
 		str1 = terms.replace("),", "-").replace("(", "").replace(")", "").replaceAll("[0-9]","").replace("-", "");
 		List<String> t1 = Arrays.asList(str1.replace("[","").replace("]","").split(","));
-		termsMatrix[i - 1][i - 1] = t1.size();
+		termsMatrix[i - 1][i - 1] = t1.size(); 
 		
 		//CREATING CHORD MATRIX
 		
@@ -643,15 +643,16 @@ try{
 		termsMatrix[i-1][k-1] = count;
 		termsMatrix[k-1][i-1] = count;
 		 }
+		
 		//DONE CREATING CHORD MATRIX
 		
-		topterms.put(cluster_,terms);
+		/* topterms.put(cluster_,terms);
 		
 		key_val = new Pair<String, String>(cluster_, post_ids);
 		
 		key_val_posts.put(cluster_, post_ids);
 		
-		clusterResult.put(key_val, postDataAll);
+		clusterResult.put(key_val, postDataAll); */
 		
 		
 
@@ -4317,8 +4318,40 @@ var gdpData = {
     */ 
 <%JSONObject location = new JSONObject();
     
+    String csvFile = application.getRealPath("/").replace('/', '/') + "lat_long.csv";
+    BufferedReader br = null;
+    String line = "";
+    String cvsSplitBy = ",";
     
-					location.put("Vatican City", "41.90, 12.45");
+    try {
+
+        br = new BufferedReader(new FileReader(csvFile));
+        while ((line = br.readLine()) != null) {
+
+            // use comma as separator
+            String[] country = line.split(cvsSplitBy);
+
+            //System.out.println("Country [code= " + country[4] + " , name=" + country[5] + "]");
+           
+            location.put(country[1].substring(0,2) , country[3] + ","+ country[2]);
+
+        }
+
+    } catch (FileNotFoundException e) {
+        e.printStackTrace();
+    } catch (IOException e) {
+        e.printStackTrace();
+    } finally {
+        if (br != null) {
+            try {
+                br.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    
+					/* location.put("Vatican City", "41.90, 12.45");
 					location.put("Monaco", "43.73, 7.41");
 					location.put("Salt Lake City", "40.726, -111.778");
 					location.put("Kansas City", "39.092, -94.575");
@@ -4354,7 +4387,7 @@ var gdpData = {
 					location.put("IS", "64.147209,-21.942400");
 					location.put("NO", "59.913818,10.738740");
 					location.put("RO", "45.943161,24.966761");
-					location.put("RS", "44.815071,20.460480");
+					location.put("RS", "44.815071,20.460480"); */
 					
 					
 					%>

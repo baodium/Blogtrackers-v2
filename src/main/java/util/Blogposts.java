@@ -85,7 +85,7 @@ public class Blogposts {
 		}
 
 		String url = base_url + "_search?size=" + size + "&from=" + fr;
-		System.out.println("ress--" + jsonObj);
+		//System.out.println("ress--" + jsonObj);
 		return this._getResult(url, jsonObj);
 
 	}
@@ -222,8 +222,8 @@ public class Blogposts {
 		int size = 50;
 		DbConnection db = new DbConnection();
 		String count = "0";
-		System.out.println("SELECT *  FROM blogposts WHERE blogger = '" + bloggers + "' AND " + field + ">='" + greater
-				+ "' AND " + field + "<='" + less + "' ORDER BY date ASC LIMIT " + size + "");
+		//System.out.println("SELECT *  FROM blogposts WHERE blogger = '" + bloggers + "' AND " + field + ">='" + greater
+				//+ "' AND " + field + "<='" + less + "' ORDER BY date ASC LIMIT " + size + "");
 
 		ArrayList result = new ArrayList();
 		try {
@@ -314,9 +314,9 @@ public class Blogposts {
 			// result = db.queryJSON("SELECT * FROM blogposts WHERE blogger = '"+bloggers+"'
 			// AND "+field+">="+greater+" AND "+field+"<="+less+" ORDER BY date ASC LIMIT
 			// "+size+"");
-			System.out.println("SELECT1 blogpost_id FROM blogposts WHERE blogger in( " + bloggers + ") AND " + field
-					+ ">='" + greater + "' AND " + field + "<='" + less + "' ORDER BY " + sort + " " + order + " LIMIT "
-					+ size + "");
+//			System.out.println("SELECT1 blogpost_id FROM blogposts WHERE blogger in( " + bloggers + ") AND " + field
+//					+ ">='" + greater + "' AND " + field + "<='" + less + "' ORDER BY " + sort + " " + order + " LIMIT "
+//					+ size + "");
 		} catch (Exception e) {
 
 		}
@@ -711,9 +711,9 @@ public class Blogposts {
 			ArrayList response = DbConnection
 					.query("SELECT max(influence_score) as total, blogger_name,date FROM blogger WHERE blogger_name = '"
 							+ bloggers + "'  ORDER BY influence_score DESC LIMIT 1");
-			System.out.println("query for _searchRangeMaxTotalByBloggers"
-					+ "SELECT max(influence_score) as total, blogger_name,date FROM blogger WHERE blogger_name = '"
-					+ bloggers + "'  ORDER BY influence_score DESC LIMIT 1");
+//			System.out.println("query for _searchRangeMaxTotalByBloggers"
+//					+ "SELECT max(influence_score) as total, blogger_name,date FROM blogger WHERE blogger_name = '"
+//					+ bloggers + "'  ORDER BY influence_score DESC LIMIT 1");
 			if (response.size() > 0) {
 				ArrayList hd = (ArrayList) response.get(0);
 				count = hd.get(0).toString();
@@ -733,7 +733,7 @@ public class Blogposts {
 			ArrayList response = DbConnection
 					.query("SELECT MAX(influence_score) as total FROM blogposts WHERE blogger='" + bloggers + "' AND "
 							+ field + ">='" + greater + "' AND " + field + " <='" + less + "' ");
-			System.out.println("response--" + response);
+			//System.out.println("response--" + response);
 			if (response.size() > 0) {
 				ArrayList hd = (ArrayList) response.get(0);
 				count = hd.get(0).toString();
@@ -808,7 +808,7 @@ public class Blogposts {
 			val = buckets.toString();
 			JSONObject bucket_ = new JSONObject(val);
 			freq = bucket_.getJSONObject("dat").get("value").toString();
-			System.out.println("DONE GETTING POSTS--" + freq);
+			//System.out.println("DONE GETTING POSTS--" + freq);
 
 		}
 		return freq;
@@ -1163,7 +1163,7 @@ public class Blogposts {
 				+ "                                \"order\": \"asc\"\r\n" + "                            }\r\n"
 				+ "                        }\r\n" + "                    }\r\n" + "                ]\r\n"
 				+ "            }\r\n" + "        }\r\n" + "    }\r\n" + "}");
-		System.out.println("this is the query for _getTotal " + query);
+		//System.out.println("this is the query for _getTotal " + query);
 		try {
 			JSONObject res = _makeElasticRequest(query, "POST", "/blogposts/_search");
 			Object aggregation = res.getJSONObject("aggregations").getJSONObject("groupby").getJSONArray("buckets");
@@ -2161,18 +2161,19 @@ public class Blogposts {
 //		blog_ids = blog_ids.replaceAll(", $", "");
 //		blog_ids = "(" + blog_ids + ")";
 
-		JSONObject query = new JSONObject(
-				"{\r\n" + "    \"query\": {\r\n" + "        \"terms\": {\r\n" + "            \"blogsite_id\": ["
-						+ blog_ids + "],\r\n" + "            \"boost\": 1\r\n" + "        }\r\n" + "    }\r\n" + "}");
+//		JSONObject query = new JSONObject(
+//				"{\r\n" + "    \"query\": {\r\n" + "        \"terms\": {\r\n" + "            \"blogsite_id\": ["
+//						+ blog_ids + "],\r\n" + "            \"boost\": 1\r\n" + "        }\r\n" + "    }\r\n" + "}");
 
 		try {
-//			System.out.println("select blogpost_num from trackers where tid =  " + tid + " ");
-//			ArrayList response = DbConnection.query("select blogpost_num from trackers where tid =  " + tid + " ");
-//			if (response.size() > 0) {
-//				ArrayList hd = (ArrayList<?>) response.get(0);
-//				count = hd.get(0).toString();
-//			}
-			count = this._count(query);
+//			ArrayList response = DbConnection.query("select count(*) as count from blogposts where blogsite_id in ("+blog_ids+")");
+			ArrayList response = DbConnection.query("select sum(totalposts) as count from blogsites where blogsite_id in ("+blog_ids+")");
+			if (response.size() > 0) {
+				ArrayList hd = (ArrayList<?>) response.get(0);
+				count = hd.get(0).toString();
+			}
+			
+//			count = this._count(query);
 		} catch (Exception e) {
 			System.out.print("Error in getBlogPostById");
 		}
@@ -2184,27 +2185,36 @@ public class Blogposts {
 
 	public String _getBlogBloggerById(String blog_ids) {
 		String count = "";
-		JSONObject result = new JSONObject();
-		JSONObject query = new JSONObject("{\r\n" + "    \"size\": 0,\r\n" + "    \"query\": {\r\n"
-				+ "        \"terms\": {\r\n" + "            \"blogsite_id\": [" + blog_ids + "],\r\n"
-				+ "            \"boost\": 1.0\r\n" + "        }\r\n" + "    },\r\n" + "    \"_source\": false,\r\n"
-				+ "    \"stored_fields\": \"_none_\",\r\n" + "    \"aggregations\": {\r\n"
-				+ "        \"groupby\": {\r\n" + "            \"filters\": {\r\n" + "                \"filters\": [\r\n"
-				+ "                    {\r\n" + "                        \"match_all\": {\r\n"
-				+ "                            \"boost\": 1.0\r\n" + "                        }\r\n"
-				+ "                    }\r\n" + "                ],\r\n"
-				+ "                \"other_bucket\": false,\r\n"
-				+ "                \"other_bucket_key\": \"_other_\"\r\n" + "            },\r\n"
-				+ "            \"aggregations\": {\r\n" + "                \"dat\": {\r\n"
-				+ "                    \"cardinality\": {\r\n"
-				+ "                        \"field\": \"blogger.keyword\"\r\n" + "                    }\r\n"
-				+ "                }\r\n" + "            }\r\n" + "        }\r\n" + "    }\r\n" + "}");
-
+//		JSONObject result = new JSONObject();
+//		JSONObject query = new JSONObject("{\r\n" + "    \"size\": 0,\r\n" + "    \"query\": {\r\n"
+//				+ "        \"terms\": {\r\n" + "            \"blogsite_id\": [" + blog_ids + "],\r\n"
+//				+ "            \"boost\": 1.0\r\n" + "        }\r\n" + "    },\r\n" + "    \"_source\": false,\r\n"
+//				+ "    \"stored_fields\": \"_none_\",\r\n" + "    \"aggregations\": {\r\n"
+//				+ "        \"groupby\": {\r\n" + "            \"filters\": {\r\n" + "                \"filters\": [\r\n"
+//				+ "                    {\r\n" + "                        \"match_all\": {\r\n"
+//				+ "                            \"boost\": 1.0\r\n" + "                        }\r\n"
+//				+ "                    }\r\n" + "                ],\r\n"
+//				+ "                \"other_bucket\": false,\r\n"
+//				+ "                \"other_bucket_key\": \"_other_\"\r\n" + "            },\r\n"
+//				+ "            \"aggregations\": {\r\n" + "                \"dat\": {\r\n"
+//				+ "                    \"cardinality\": {\r\n"
+//				+ "                        \"field\": \"blogger.keyword\"\r\n" + "                    }\r\n"
+//				+ "                }\r\n" + "            }\r\n" + "        }\r\n" + "    }\r\n" + "}");
+		
+		
 		try {
-			result = this._makeElasticRequest(query, "POST", "/blogposts/_search");
-			Object aggregation = result.getJSONObject("aggregations").getJSONObject("groupby").getJSONArray("buckets")
-					.getJSONObject(0).getJSONObject("dat").get("value");
-			count = aggregation.toString();
+//			result = this._makeElasticRequest(query, "POST", "/blogposts/_search");
+//			Object aggregation = result.getJSONObject("aggregations").getJSONObject("groupby").getJSONArray("buckets")
+//					.getJSONObject(0).getJSONObject("dat").get("value");
+//			count = aggregation.toString();
+//			String q = "select count(distinct blogger) as count from blogposts where blogsite_id in ("+blog_ids+")";
+			String q = "select count(blogger_name) as count from blogger where blogsite_id in ("+blog_ids+")";
+
+			ArrayList response = DbConnection.query(q);
+			if (response.size() > 0) {
+				ArrayList hd = (ArrayList<?>) response.get(0);
+				count = hd.get(0).toString();
+			}
 
 		} catch (Exception e) {
 			System.out.print("Error in _getBlogBloggerById");
@@ -2226,7 +2236,6 @@ public class Blogposts {
 					res = hd.get(0).toString();
 					result.add(res);
 				}
-
 			}
 		} catch (Exception e) {
 			System.out.print("Error in getBlogPostById");
@@ -3690,7 +3699,9 @@ public class Blogposts {
 //			System.out.println(_getBlogPostById("7"));
 //			System.out.println();
 			// getBlogIdsfromsearch("care");
-			_getBlogPostDetails("date", null, null, "1,2,3", 0);
+//			_getBlogPostDetails("date", null, null, "1,2,3", 0);
+//String ans = _getBlogPostById("63,127,223,224,611,615,617,641,673,720,817,872,874,949,954,957,961,1030,1033,1034,1035,1036,1038,1040,1041,1042,1049,1051,1052,1054,1055,1056,1058,1063,1064,1065,1066,1067,1068,1069,1083,1084,1088,1089,1092,1095,1100,1101,1105,1121,1122,1124,1126,1127,1128,1134,1137,1139,1141,1148,1163,1164,1166,1169,1172,1173,1184,1185,1188,1195,1196,1204,1207,1210,1211,1213,1218,1220,1221,1222,1233,1235,1238,1239,1240,1242,1244,1250,1251,1256,1258,1262,1279,1280,1282,1288,1290,1293,1295,1297,1303,1306,1307,1315,1319,1324,1330,1333,1339,1341,1346,1350,1352,1360,1376,1379,1380,1381,1385,1387,1392,1394,1397,1399,1409,1417,1421,1424,1426,1429,1438,1439,1440,1446,1447,1448,1451,1455,1456,1457,1458,1459,1460,1461,1472,1474,1475,1478,1486,1487,1489,1490,1492,1493,1497,1501,1503,1504,1506,1507,1509,1516,1523,1525,1526,1531,1533,1543,1561,1563,1567,1568,1569,1574,1575,1582,1583,1595,1601,1602,1604,1608,1611,1614,1615,1623,1627,1628,1630,1637,1638,1639,1642,1651,1655,1659,1660,1661,1662,1663,1668,1669,1676,1681,1682,1684,1685,1686,1688,1689,1690,1691,1692,1693,1694,1697,1698,1699,1700,1701,1703,1704,1705,1706,1707,1708,1709,1710,1711,1712,1713,1714,1715,1716,1717,1718,1719,1720,1721,1722,1723,1724,1725,1726,1727,1728,1729,1730,1731,1732,1733,1734,1735,1736,1737,1738,1739,1740,1742,1743,1744,1745,1746,1747,1749,1750,1751,1752,1753,1754,1755,1756,1757,1759,1761,1762,1763,1764,1765,1766,1767,1768,1769,1770,1771,1772,1773,1774,1775,1776,1777,1778,1779,1780,1781,1782,1783,1784,1786,1787,1788,1790,1791,1792,1793,1794,1795,1796,1797,1798,1799,1800,1801,1802,1803,1804,1806,1807,1808,1809,1810,1811,1812,1813,1814,1815,1816,1817,1818,1822,1823,1824,1825,1826,1827,1829,1830,1831,1833,1834,1835,1836,1837,1838,1839,1840,1841,1842,1843,1844,1845,1846,1848,1849,1850,1851,1852,1853,1854,1856,1857,1858,1859,1860,1861,1862,1863,1864,1865,1866,1867,1868,1869,1870,1871,1872,1873,1874,1875,1876,1878,1886,1907,1927,1929,1934,1940,1943,1944,1952,1957,1961,1963,1964,1965,1966,1968,1971,1973,1974,1977,1978,2050");
+//		System.out.println(ans);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
