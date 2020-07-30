@@ -1093,6 +1093,7 @@ public class Clustering extends HttpServlet {
 		HttpSession session = request.getSession();
 		Object action = (null == request.getParameter("action")) ? "" : request.getParameter("action");
 		Object cluster = (null == request.getParameter("cluster")) ? "" : request.getParameter("cluster");
+		Object cluster_number = (null == request.getParameter("cluster")) ? "" : request.getParameter("cluster_number");
 		Object tid = (null == request.getParameter("tid")) ? "" : request.getParameter("tid");
 
 		Object result = (null == session.getAttribute(tid.toString() + "cluster_result")) ? ""
@@ -1237,6 +1238,7 @@ public class Clustering extends HttpServlet {
 			JSONObject final_result = new JSONObject();
 			final_result.put("final_data", final_data);
 			final_result.put("cluster_id", cluster);
+			final_result.put("cluster_number", cluster_number.toString());
 			
 			out.write(final_result.toString());
 		}

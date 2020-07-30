@@ -760,7 +760,7 @@ Instant start = Instant.now();
 								
 								<% for(int c=1; c<=10; c++){ %>
 									
-									<div id="CLUSTER_<%=c %>" class="overlay1 ">
+									<div id="CLUSTER_<%=c %>" class="overlay1 "> CLUSTER_<%=c %>
 									  <div style="min-height: 400px; width: 1000px;" class="text1 card card-style ">
 											<div class="clusterdiagram_<%=c %>" class="card-body p30 pt5 pb5 container1">
 												<div class="hidden" id="clusterdiagram_<%=c %>" load_status="0" ></div>
@@ -873,7 +873,7 @@ Instant start = Instant.now();
 
 		</div>
 
-		<div class="row m0 mt20 mb20 d-flex align-items-stretch">
+		<div class="row m0 mt20 mb20 d-flex align-items-stretch" id="post_detail_row">
 			<div
 				class="col-md-6 mt20 card card-style nobordertopright noborderbottomright">
 				<div class="card-body p0 pt20 pb20" style="min-height: 420px;">
@@ -1412,7 +1412,7 @@ Instant start = Instant.now();
 			
 		})
 		$("body").delegate(".overlay1", "click", function() {
-			$(this).removeClass('karat');
+			//$(this).removeClass('karat');
 		})
 		////end cluster graph clicks
 		
@@ -1431,11 +1431,11 @@ Instant start = Instant.now();
 					data: {
 						action:"fetch_graph",
 						tid:id,
+						cluster_number:cluster_number,
 						cluster:"cluster_"+cluster_number
 					},
 					error: function(response)
-					{		
-						console.log("error")				
+					{		console.log("error")				
 						console.log(response);
 						//$("#blogpost_detail").html(response);
 					},
@@ -1447,12 +1447,10 @@ Instant start = Instant.now();
 						var data = JSON.parse(response);
 						//$(".char19").html(data.status_percentage);
 						//$(".status").html(data.status);
-						console.log("vj")
-						console.log(data.cluster_id)
-						
-						console.log("weds uche")
-						console.log(data.final_data)
-						clusterdiagram3('#clusterdiagram_'+data.cluster_id, 500,data.final_data, data.cluster_id);
+						///console.log(data.cluster_id)
+						console.log("BIG",data)
+						//console.log(data.final_data)
+						clusterdiagram3('#clusterdiagram_'+data.cluster_number, 500,data.final_data, data.cluster_number);
 						//$(".clusterdiagram_"+).html(response).hide();
 						//$("#posts_details").fadeIn(700);
 					}
@@ -1472,10 +1470,11 @@ var plot_height = $('#chart-container1').outerHeight() - 25;
  //console.log("plot_width",plot_width)
  // Chart setup
 clusterdiagram5('#parentdivy', plot_height, plot_width);
+
  var max_post_count = 0;
  var min_post_count = 0
  function clusterdiagram3(element, height, dataset, identify) {
-		// console.log("this is dataset1",dataset)
+		 console.log("this is dataset1",dataset)
 		 
 		 	 //console.log("this is dataset2",dataset)
 		 	 
@@ -1589,11 +1588,17 @@ clusterdiagram5('#parentdivy', plot_height, plot_width);
 	     // .attr("r", function (d, i) {return d.level})
 	      .attr("r", 5)
 	      .attr("fill", function (d, i) {return colors(d.group);})
-	      .attr("class", "cluster_visual")
-			  .attr("loaded_color",function (d) {return colors(d.group); })
-			  .attr("cluster_id", function(node){return node.label})
-	      //.attr("text",function (node) { return node.label })
-	      /* .on("mouseover", function (node) { return node.label }); */
+	      .attr("class", "cluster_visual cursor-pointer cluster_point_detail")
+		  .attr("loaded_color",function (d) {return colors(d.group); })
+		  .attr("cluster_id", function(node){return node.label})
+		  .attr("data-toggle", "tooltip")
+	      .attr("data-placement", "top")
+	      .attr("title", function(node){return node.title})
+	      .attr("blogpost_id", function(node){return node.id})
+	     // .attr("text",function (node) { return node.label })
+	      
+           
+	      //.on("mouseover", function (node) { return node.label });
 	    var textElements = svg.append("g")
 	     .attr("class", "texts")
 	     .selectAll("text")
@@ -1615,7 +1620,10 @@ clusterdiagram5('#parentdivy', plot_height, plot_width);
 	   .attr('y1', function (link) { return link.source.y })
 	   .attr('x2', function (link) { return link.target.x })
 	   .attr('y2', function (link) { return link.target.y })
+	   
+	   
 	     })
+	    $('[data-toggle="tooltip"]').tooltip();
 	function handleMouseOver(d, i) { // Add interactivity
 	      // Use D3 to select element, change color and size
 	      d3.select(this).attr({
@@ -1644,6 +1652,46 @@ clusterdiagram5('#parentdivy', plot_height, plot_width);
 	 
 	 }
  ////end clustering3 function 
+ 	 
+$("body").delegate(".cluster_point_detail", "click", function() {
+    $('html,body').animate({
+        scrollTop: $("#post_detail_row").offset().top},
+        'slow');
+    
+    ////
+    var post_id = $(this).attr("blogpost_id");
+    $("body").addClass("loaded");
+	//alert(post_id);
+	//console.log(post_id);
+	$("#posts_details").html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />");
+	$(".viewpost").addClass("makeinvisible");
+	$('.blogpost_link').removeClass("activeselectedblog");
+	$('#'+post_id).addClass("activeselectedblog");
+	$(this).parent().children(".viewpost").removeClass("makeinvisible");
+	//grab all id of blog and perform an ajax request
+	$.ajax({
+		url: app_url+"subpages/influencedetail.jsp",
+		method: 'POST',
+		data: {
+			action:"fetchpost",
+			post_id:post_id,
+			tid:$("#alltid").val()
+		},
+		error: function(response)
+		{						
+			//console.log(response);
+			//$("#blogpost_detail").html(response);
+		},
+		success: function(response)
+		{   
+			//console.log(response);
+			$("#posts_details").html(response).hide();
+			$("#posts_details").fadeIn(700);
+		}
+	});
+	
+    ////
+});
  
  
  ///start clustering5 funtion
@@ -1806,6 +1854,7 @@ var nodes = dataset.nodes
       .attr("class", "cluster_visual")
 		  .attr("loaded_color",function (d) {return colors(d.group); })
 		  .attr("cluster_id", function(node){return node.label})
+		  
       //.attr("text",function (node) { return node.label })
       /* .on("mouseover", function (node) { return node.label }); */
     var textElements = svg.append("g")

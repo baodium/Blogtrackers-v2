@@ -1648,7 +1648,7 @@ ticks.append("svg:text")
 	let _chordDiagramMatrix = [];
 	
 	<% for (TopicModelling.Documents.Document doc : blogposts) { %>
-			_blogPostsData["<%=doc.blog_id%>"] = new BlogPost("<%=doc.blog_id%>", "<%=doc.blog_title%>", "<%=doc.blog_author%>", "<%=doc.blog_date%>", "<%=doc.blog_numComments%>", "<%=doc.blog_post%>", "<%=doc.blog_location%>");
+			_blogPostsData["<%=doc.blog_id%>"] = new BlogPost("<%=doc.blog_id%>", "<%=doc.blog_title%>", "<%=doc.blog_author%>", "<%=doc.blog_date%>", "<%=doc.blog_numComments%>", "<%=doc.blog_numComments%>", "<%=doc.blog_location%>");
 			<% for(Map.Entry<Integer, ArrayList<Pair<String, Double>>> entry : topics.entrySet()) { %>
 				_blogPostsData["<%=doc.blog_id%>"].topicDistrib.push(<%=doc.theta[entry.getKey()]%>);
 			<% } %>
