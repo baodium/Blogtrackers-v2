@@ -1109,8 +1109,8 @@ display: none;
 									style="width: 100%">
 									<thead>
 										<tr>
+											<th>Blogs</th>
 											<th>Location</th>
-											<th>Frequency</th>
 
 										</tr>
 									</thead>

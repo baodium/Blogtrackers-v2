@@ -59,10 +59,8 @@
 		Outlinks outl = new Outlinks();
 		if (tid != "") {
 			detail = tracker._fetch(tid.toString());
-			//System.out.println(detail);
 		} else {
 			detail = tracker._list("DESC", "", user.toString(), "1");
-			//System.out.println("List:"+detail);
 		}
 
 		boolean isowner = false;
@@ -70,7 +68,6 @@
 		String ids = "";
 		String trackername = "";
 		if (detail.size() > 0) {
-			//String res = detail.get(0).toString();
 			ArrayList resp = (ArrayList<?>) detail.get(0);
 
 			String tracker_userid = resp.get(1).toString();
@@ -79,7 +76,7 @@
 
 			if (tracker_userid.equals(user.toString())) {
 				isowner = true;
-				String query = resp.get(5).toString();//obj.get("query").toString();
+				String query = resp.get(5).toString();
 				query = query.replaceAll("blogsite_id in ", "");
 				query = query.replaceAll("\\(", "");
 				query = query.replaceAll("\\)", "");
@@ -109,15 +106,11 @@
 				}
 
 				File f = new File(filename);
-
-				//System.out.println("new_pat--"+path_new);
-
 				File path_new = new File(
 						application.getRealPath("/").replace('/', '/') + "images/profile_images");
 				if (f.exists() && !f.isDirectory()) {
 					profileimage = "images/profile_images/" + userinfo.get(2).toString() + ".jpg";
 				} else {
-					/* new File("/path/directory").mkdirs(); */
 					path_new.mkdirs();
 					System.out.println("pathhhhh1--" + path_new);
 				}
@@ -134,16 +127,13 @@
 						String path_update = userpic.substring(0, p);
 						if (!path_update.equals(path_new.toString())) {
 							profileimage = "images/profile_images/" + userinfo.get(2).toString() + ".jpg";
-							/* profileimage=userpic.replace(userpic.substring(0, p), path_new.toString()); */
 							String new_file_path = path_new.toString().replace("\\images\\profile_images", "")
 									+ "/" + profileimage;
 							System.out.println("ready to be updated--" + new_file_path);
-							/*new DbConnection().updateTable("UPDATE usercredentials SET profile_picture  = '" + pass + "' WHERE Email = '" + email + "'"); */
 						}
 					} else {
 						path_new.mkdirs();
 						profileimage = "images/profile_images/" + userinfo.get(2).toString() + ".jpg";
-						/* profileimage=userpic.replace(userpic.substring(0, p), path_new.toString()); */
 						String new_file_path = path_new.toString().replace("\\images\\profile_images", "") + "/"
 								+ profileimage;
 						System.out.println("ready to be updated--" + new_file_path);
@@ -167,7 +157,7 @@
 			Blogs blog = new Blogs();
 			Sentiments senti = new Sentiments();
 
-			//Date today = new Date();
+		
 			SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MMM d, yyyy");
 			SimpleDateFormat DATE_FORMAT2 = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -180,20 +170,20 @@
 			String stdate = post._getDate(ids, "first");
 			String endate = post._getDate(ids, "last");
 
-			Date dstart = new Date();//SimpleDateFormat("yyyy-MM-dd").parse(stdate);
-			Date today = new Date();//SimpleDateFormat("yyyy-MM-dd").parse(endate);
+			Date dstart = new Date();
+			Date today = new Date();
 
 			Date nnow = new Date();
 			try {
 				dstart = new SimpleDateFormat("yyyy-MM-dd").parse(stdate);
 			} catch (Exception ex) {
-				dstart = nnow;//new SimpleDateFormat("yyyy-MM-dd").parse(nnow);
+				dstart = nnow;
 			}
 
 			try {
 				today = new SimpleDateFormat("yyyy-MM-dd").parse(endate);
 			} catch (Exception ex) {
-				today = nnow;//new SimpleDateFormat("yyyy-MM-dd").parse(nnow);
+				today = nnow;
 			}
 
 			String day = DAY_ONLY.format(today);
@@ -228,7 +218,6 @@
 				month = MONTH_ONLY.format(nnow);
 				day = DAY_ONLY.format(nnow);
 				year = YEAR_ONLY.format(nnow);
-				//System.out.println("Now:"+month+"small:"+smallmonth);
 				if (month.equals("02")) {
 					ddey = (Integer.parseInt(year) % 4 == 0) ? "28" : "29";
 				} else if (month.equals("09") || month.equals("04") || month.equals("05")
@@ -237,9 +226,6 @@
 				}
 			}
 
-			//termss = term._searchByRange("blogsiteid", dt, dte, ids);
-
-			//System.out.println("start date"+date_start+"end date "+date_end);
 			if (!date_start.equals("") && !date_end.equals("")) {
 
 				possentiment = post._searchRangeTotal("sentiment", "0", "10", ids);
@@ -280,9 +266,6 @@
 				dte = dend;
 
 			}
-
-			//String test = post._searchTotalByTitleAndBody("war", "date", "2009-01-01", "2009-12-31");//term._searchByRange("date",dt,dte, tm,"term","10");
-			//System.out.println("Size=" + test);
 
 			String[] yst = dt.split("-");
 			String[] yend = dte.split("-");
@@ -936,12 +919,16 @@
 
 						<h6 class="mt20 mb20">Top Keywords</h6>
 						<div style="padding-right: 10px !important;">
-							<input type="search"
+							<input id="searchInput" type="search"
 								class="form-control stylesearch mb20 inputportfolio2 searchkeywords"
 								placeholder="Search Keyword" /> <i
 								class="fas fa-search searchiconinputothers"></i> <i
 								class="fas fa-times searchiconinputclose cursor-pointer resetsearch"></i>
 						</div>
+						<script>
+
+
+</script>
 						<!-- <h6 class="card-title mb0">Maximum Influence</h6> -->
 						<!-- <h4 class="mt20 mb0">Technology</h4> -->
 
@@ -1491,7 +1478,10 @@
 
 
 
+<!-- <input id="myInput" value="Some text..">
+<button id="myBtn" onclick="javascript:alert('Hello World!')">Button</button>
 
+ -->
 
 	</div>
 
@@ -1776,7 +1766,8 @@ $(document).ready(function() {
  
  var overal_holder = [];
 	
-	<% int pj = 0; for (Map.Entry<String, String> entry : map1.entrySet()) { %>
+	<% int pj = 0; 
+	for (Map.Entry<String, String> entry : map1.entrySet()) { %>
 	overal_holder[<%=pj %>] = { name: "<%=entry.getKey() %>", details: "<%=entry.getValue() %>"};
 		
 		

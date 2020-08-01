@@ -130,7 +130,7 @@ if (detail.size() > 0) {
 	}
 }
 boolean status = false;
-if(ids.length()>0 && post._getBlogPostById(tid.toString()) !=""){
+if(ids.length()>0 && post._getBlogPostById(ids) !=""){
 	total_post = Integer.parseInt(post._getBlogPostById(ids));
 	
 }else{
