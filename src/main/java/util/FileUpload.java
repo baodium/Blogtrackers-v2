@@ -36,12 +36,11 @@ public class FileUpload extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		
+
 		ServletFileUpload upload = new ServletFileUpload(new DiskFileItemFactory());
 		PrintWriter out = response.getWriter();
 
 		JSONObject json_type = new JSONObject();
-System.out.println("seun");
 		JSONObject json = new JSONObject();
 		JSONObject json_exists = new JSONObject();
 		JSONObject json_error = new JSONObject();
@@ -81,17 +80,13 @@ System.out.println("seun");
 
 					for (FileItem item : files_) {
 						String name = item.getName();
-//					System.out.println(name);
-//					out.println(name);
-
 						String root = getServletContext().getRealPath("/");
 						File path = new File(root + "/fileuploads");
 						if (!path.exists()) {
 							boolean status = path.mkdirs();
 						}
 
-						String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()).replace(".",
-								"_");
+						String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()).replace(".","_");
 
 						String ext = FilenameUtils.getExtension(name);
 						String name_new = name.replace("." + ext, "");
@@ -99,23 +94,17 @@ System.out.println("seun");
 						System.out.println("PREVIOUS" + name_new);
 						System.out.println("NEW" + name_new_);
 						System.out.println(path);
-						//
+						
 						File uploadedFile = new File(path + "/" + name_new_);
 						item.write(uploadedFile);
 						BufferedReader br = new BufferedReader(new FileReader(uploadedFile));
 
 						String st;
 						while ((st = br.readLine()) != null) {
-
-//						array_url.put(st);
-//						array_status.put("not_crawled");
-
-//						st ="https://tacticalinvestor.com/blog/"; 
 							results_blogfinder = new_blog._fetchPipeline(st);
 							System.out.println("----" + results_blogfinder);
 
 							System.out.println(results_blogfinder.size());
-//						System.out.println(st);
 							try {
 								if (results_blogfinder.size() > 0) {
 									results_blogfinder = (ArrayList<?>) results_blogfinder.get(0);
@@ -134,7 +123,6 @@ System.out.println("seun");
 									if (fileStatus.indexOf("already exists") != -1) {
 										array_url_exists.put(st);
 										array_status_exists.put("already exists");
-//								typ = "exists";
 									} else if (fileStatus == "success") {
 										array_url.put(st);
 										array_status.put(status);
@@ -142,11 +130,6 @@ System.out.println("seun");
 										array_url_error.put(st);
 										array_status_error.put("error");
 									}
-//								else if (fileStatus.indexOf("success") != -1){
-//								array_url.put(st);
-//								array_status.put("not_crawled");
-//								typ = "success";
-//							}
 
 								} else {
 									System.out.println("2--" + st);

@@ -58,17 +58,42 @@ $(document).delegate('.topics1', 'click', function(){
 	$("#term").val(all_selected_names);
 	console.log("terms", $("#term").val());
 	/* $("#term_id").val(term_id); */
-	loadBlogMentioned(date_start, date_end);
+	loadBlogMentioned($("#term").val(),date_start, date_end);
 	
-	loadMostLocation(date_start, date_end);
-	loadMostPost(date_start, date_end);
+	loadMostLocation($("#term").val(), date_start, date_end);
+	loadMostPost($("#term").val(), date_start, date_end);
 	//getLineData(name);
 
 	/* loadStat(tm); */
 	/* loadChart(tm); */
 
-	loadTable(date_start, date_end, all_selected_names1);
+	loadTable($("#term").val(), date_start, date_end, all_selected_names1);
 });
+
+
+/*START ON SEARCH FOR TERM*/
+var input = document.getElementById("searchInput");
+
+if(input){
+	input.addEventListener("keyup", function(event) {
+		  if (event.keyCode === 13) {
+		   event.preventDefault();
+		   
+		   var date_start = $("#date_start").val();
+		   var date_end = $("#date_end").val();
+		   
+		   loadBlogMentioned($('#searchInput').val(),date_start, date_end);
+		   loadMostLocation($('#searchInput').val(), date_start, date_end);
+		   loadMostPost($('#searchInput').val(), date_start, date_end);
+		   loadTable($('#searchInput').val(), date_start, date_end, "");
+		   console.log("seun", $('#searchInput').val())
+		   //document.getElementById("myBtn").click();
+		  }
+		});	
+}
+/*END ON  SEARCH FOR TERM*/
+
+
 var r = /a/;
 // console.log(typeof r.test('a')); // true
 // console.log(r.test('ba')); // false
@@ -127,7 +152,31 @@ $('.searchkeywords').on("keyup", function(e) {
  * }); }
  */
 
-function loadBlogMentioned(date_start,date_end) {
+function loadGraphData(term) {
+	$.ajax({
+		url : app_url + "KeywordTrend1",
+		method : 'POST',
+		dataType : 'json',
+		data : {
+			action : "getgraphdata",
+			term : term,
+			all_blog_ids : $("#all_blog_ids").val(),
+			date_start : $("#date_start").val(),
+			date_end : $("#date_end").val(),
+		},
+		
+		error : function(response) {
+			console.log("error occured graph data" + response);
+		},
+		success : function(response) {
+			console.log('seun2');
+			console.log(response);
+			return response			
+		}
+	});
+}
+
+function loadBlogMentioned(term, date_start,date_end) {
 	$(".blog-mentioned").html("<img src='images/loading.gif' />");
 	$.ajax({
 		url : app_url + "KeywordTrend1",
@@ -135,7 +184,7 @@ function loadBlogMentioned(date_start,date_end) {
 		/*dataType : 'json',*/
 		data : {
 			action : "getblogmentioned",
-			term : $("#term").val(),
+			term : term,
 			all_blog_ids : $("#all_blog_ids").val(),
 			date_start : date_start,
 			date_end :  date_end,
@@ -150,7 +199,7 @@ function loadBlogMentioned(date_start,date_end) {
 	});
 }
 
-function loadMostLocation(date_start,date_end) {
+function loadMostLocation(term, date_start,date_end) {
 	$(".top-location").html("<img src='images/loading.gif' />");
 	$.ajax({
 		url : app_url + "KeywordTrend1",
@@ -158,7 +207,7 @@ function loadMostLocation(date_start,date_end) {
 		/*dataType : 'json',*/
 		data : {
 			action : "getmostlocation",
-			term : $("#term").val(),
+			term : term,
 			all_blog_ids : $("#all_blog_ids").val(),
 			date_start : $("#date_start").val(),
 			date_end : $("#date_end").val(),
@@ -180,7 +229,9 @@ function loadMostLocation(date_start,date_end) {
 	});
 }
 
-function loadMostPost(date_start,date_end) {
+
+
+function loadMostPost(term, date_start,date_end) {
 	$(".post-mentioned").html("<img src='images/loading.gif' />");
 	$.ajax({
 		url : app_url + "KeywordTrend1",
@@ -188,7 +239,7 @@ function loadMostPost(date_start,date_end) {
 		/*dataType : 'json',*/
 		data : {
 			action : "getmostpost",
-			term : $("#term").val(),
+			term : term,
 			all_blog_ids : $("#all_blog_ids").val(),
 			date_start : $("#date_start").val(),
 			date_end : $("#date_end").val(),
@@ -290,7 +341,7 @@ function updateTable(response) {
 			});
 }*/
 
-function loadTable(date_start, date_end, term_string) {
+function loadTable(term, date_start, date_end, term_string) {
 
 	$("#post-list")
 			.html(
@@ -305,7 +356,7 @@ function loadTable(date_start, date_end, term_string) {
 				method : 'POST',
 				data : {
 					action : "gettable",
-					term : $("#term").val(),
+					term : term,
 					id : $("#term_id").val(),
 					all_blog_ids : $("#all_blog_ids").val(),
 					tid : $("#tid").val(),

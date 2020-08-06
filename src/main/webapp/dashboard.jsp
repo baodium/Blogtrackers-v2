@@ -1109,8 +1109,8 @@ display: none;
 									style="width: 100%">
 									<thead>
 										<tr>
+											<th>Blogs</th>
 											<th>Location</th>
-											<th>Frequency</th>
 
 										</tr>
 									</thead>
@@ -1152,7 +1152,6 @@ display: none;
 					</div>
 				</div>
 			</div>
-			
 
 			<div class="col-md-6 mt20 zoom">
 				<div class="card card-style mt20">
@@ -6018,5 +6017,3 @@ $(".option-lable").on("click",function(e){
 	}
 	}
 %>
-
-
