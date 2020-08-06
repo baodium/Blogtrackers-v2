@@ -152,6 +152,30 @@ $('.searchkeywords').on("keyup", function(e) {
  * }); }
  */
 
+function loadGraphData(term) {
+	$.ajax({
+		url : app_url + "KeywordTrend1",
+		method : 'POST',
+		dataType : 'json',
+		data : {
+			action : "getgraphdata",
+			term : term,
+			all_blog_ids : $("#all_blog_ids").val(),
+			date_start : $("#date_start").val(),
+			date_end : $("#date_end").val(),
+		},
+		
+		error : function(response) {
+			console.log("error occured graph data" + response);
+		},
+		success : function(response) {
+			console.log('seun');
+			console.log(response);
+			return response			
+		}
+	});
+}
+
 function loadBlogMentioned(term, date_start,date_end) {
 	$(".blog-mentioned").html("<img src='images/loading.gif' />");
 	$.ajax({
@@ -204,6 +228,8 @@ function loadMostLocation(term, date_start,date_end) {
 		}
 	});
 }
+
+
 
 function loadMostPost(term, date_start,date_end) {
 	$(".post-mentioned").html("<img src='images/loading.gif' />");

@@ -405,15 +405,15 @@ public class DbConnection {
 						keyword_trend.put(year, new_count);
 					}
 					
-					String blogpost_id = rs.getString("blogpost_id");
-					int count = rs.getInt("count");
-					post_count.put(blogpost_id, count);
+//					String blogpost_id = rs.getString("blogpost_id");
+//					int count = rs.getInt("count");
+//					post_count.put(blogpost_id, count);
 				}		
 			}
 			
 			conn.close();
 			result.put("KWT", keyword_trend);
-			result.put("POST_DETAILS", post_count);
+//			result.put("POST_DETAILS", post_count);
 			return result;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -439,7 +439,7 @@ public class DbConnection {
 				"ROUND ((LENGTH(lower(post)) - LENGTH(REPLACE (lower(post), \"people\", \"\"))) / LENGTH(\"people\")) AS count\r\n" + 
 				"from (select *\r\n" + 
 				"from blogposts\r\n" + 
-				"where match (post)\r\n" + 
+				"where match (title,post)\r\n" + 
 				"against (\"people\" IN BOOLEAN MODE)) a\r\n" + 
 				"where blogsite_id\r\n" + 
 				"in (63,127,223,224,611,615,617,641,673,720,817)\r\n" + 

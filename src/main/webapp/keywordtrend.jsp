@@ -1757,7 +1757,7 @@ $(document).ready(function() {
 
 
 
-
+<script src="pagedependencies/keywordtrends1.js"></script>
 
 
 	<script>
@@ -1773,7 +1773,8 @@ $(document).ready(function() {
 		
 	<% pj++; } %>
 	
-	//console.log(overal_holder)
+	console.log('seun')
+	console.log(overal_holder)
  //////start time converting function
  	
  function convertTime(str) {
@@ -1781,6 +1782,11 @@ $(document).ready(function() {
   return [date.getFullYear()];
 }
  
+	
+	/////call AJAX
+	result = loadGraphData("seun");
+	/* console.log('seun');
+	console.log(result); */
  
  ///////end time converting function
     

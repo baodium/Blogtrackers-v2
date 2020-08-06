@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import authentication.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -143,7 +144,7 @@ System.out.println(index);
 		try {
 			String t_ = "\"opens" + "\",\"seun\"";
 			String t = "__TERMS__KEYWORD__" + t_;
-			System.out.println("__TERMS__KEYWORD__" + t);
+//			System.out.println("__TERMS__KEYWORD__" + t);
 
 //			Clustering._buildSlicedScrollQuery(ids, from, to, t,"blogposts");
 //			Clustering.getPosts(ids, from, to, t, "blogposts");
@@ -151,16 +152,33 @@ System.out.println(index);
 //			System.out.println(aggregation(t_, ids, from, to, "blogposts","blogsite_id","asc","bucket_length"));
 //			System.out.println(getPostsMentioned(t_, ids, from, to, "blogposts"));
 			
-			String mostactiveterm = "\"people" + "\",\"government\"";
-			String date_start = "1970-01-01";
-			String date_end = "2020-03-26"; 
-			String all_blog_ids = "153,148,259,114,32,123,37,155,46,3,170,154,72,38,224,247,157,128,61,112,140,144,116,125,193,9,173,89,68,87,249,250,263,98,69,152,62,78,117,83,73,264,135,184,120,138,133,100,93,143,77,233,139,132,146,147,149,150,43,242,47,111,101,86,81,118,194,45,106,121,129,49,237,66,179,91,176,124,167,84,174,215,141,119,236,252,185,20,162,130,22,76,235,178,232,85,79,26,109,80,131,253,105,151,142,137,115,52,53,65,94,92,96,136,191,27,29,107,63,99,57,190,169,216,122,126,36,127,134,108,54";
-			int limit = 500;
-			JSONObject res = getBloggerTerms( mostactiveterm,  date_start,  date_end,  all_blog_ids,  limit);
-			JSONArray data = res.getJSONArray("data");
-//			for(int i = 0; i < 1; i++) {
-				System.out.println("length-----"+data.length());
+//			String mostactiveterm = "\"people" + "\",\"government\"";
+//			String date_start = "1970-01-01";
+//			String date_end = "2020-03-26"; 
+//			String all_blog_ids = "153,148,259,114,32,123,37,155,46,3,170,154,72,38,224,247,157,128,61,112,140,144,116,125,193,9,173,89,68,87,249,250,263,98,69,152,62,78,117,83,73,264,135,184,120,138,133,100,93,143,77,233,139,132,146,147,149,150,43,242,47,111,101,86,81,118,194,45,106,121,129,49,237,66,179,91,176,124,167,84,174,215,141,119,236,252,185,20,162,130,22,76,235,178,232,85,79,26,109,80,131,253,105,151,142,137,115,52,53,65,94,92,96,136,191,27,29,107,63,99,57,190,169,216,122,126,36,127,134,108,54";
+//			int limit = 500;
+//			JSONObject res = getBloggerTerms( mostactiveterm,  date_start,  date_end,  all_blog_ids,  limit);
+//			JSONArray data = res.getJSONArray("data");
+////			for(int i = 0; i < 1; i++) {
+//				System.out.println("length-----"+data.length());
 //			}
+			String mostactiveterm = "people";
+			String all_blog_ids = "1,2,5,88,9,200";
+			
+			DbConnection db = new DbConnection();
+			String q = "SELECT post, title, blogpost_id, date, \r\n" + 
+					"ROUND ((LENGTH(lower(post)) - LENGTH(REPLACE (lower(post), \""+mostactiveterm+"\", \"\"))) / LENGTH(\""+mostactiveterm+"\")) AS count\r\n" + 
+					"from (select *\r\n" + 
+					"from blogposts\r\n" + 
+					"where match (title,post)\r\n" + 
+					"against (\""+mostactiveterm+"\" IN BOOLEAN MODE)) a\r\n" + 
+					"where blogsite_id\r\n" + 
+					"in ("+all_blog_ids.toString()+")\r\n" + 
+					"\r\n";
+			HashMap result = db.queryKWT(q);
+			HashMap result_final = new HashMap();
+			result_final.put(mostactiveterm, result.get("KWT"));
+			System.out.println(result_final);
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -433,6 +451,33 @@ System.out.println(index);
 			} catch (Exception e) {
 
 			}
+		}else if (action.toString().equals("getgraphdata")) {
+			DbConnection db = new DbConnection();
+			PrintWriter out = response.getWriter();
+			mostactiveterm = mostactiveterm.toLowerCase();
+			String q = "SELECT post, title, blogpost_id, date, \r\n" + 
+					"ROUND ((LENGTH(lower(post)) - LENGTH(REPLACE (lower(post), \""+mostactiveterm+"\", \"\"))) / LENGTH(\""+mostactiveterm+"\")) AS count\r\n" + 
+					"from (select *\r\n" + 
+					"from blogposts\r\n" + 
+					"where match (title,post)\r\n" + 
+					"against (\""+mostactiveterm+"\" IN BOOLEAN MODE)) a\r\n" + 
+					"where blogsite_id\r\n" + 
+					"in ("+all_blog_ids.toString()+")\r\n" + 
+					"\r\n";
+			HashMap result = db.queryKWT(q);
+			JSONObject result_final = new JSONObject();
+			if(result.get("KWT") != null) {
+				result_final.put("name", mostactiveterm);
+				result_final.put("details", result.get("KWT"));
+			}else {
+				result_final.put("name", mostactiveterm);
+				result_final.put("details", "NO DATA AVAILABLE FOR THIS KEYWORD IN THIS TRACKER");
+			}
+			
+			
+			out.write(result_final.toString());
+			
+			
 		}
 	}
 
