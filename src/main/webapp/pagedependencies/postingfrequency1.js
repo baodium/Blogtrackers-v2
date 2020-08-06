@@ -72,7 +72,10 @@
 	console.log(blogger+$("#all_blog_ids").val()+date_start+date_end)
 	loadInfluence(all_selected_names,date_start,date_end);
 	
-	$(".total-post").html(total_post_counter.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+	var total_post_count = $("#total_post_count").val();
+	total_post_percentage = (total_post_counter/parseInt(total_post_count) * 100);
+	console.log("seun", total_post_percentage);
+	$(".total-post").html(Math.round(total_post_percentage).toString() + "%");
 	//$(".total-post").html(parseInt(response).toLocaleString('en'));
 	//loadChart(bloog,id,date_start,date_end);
 	

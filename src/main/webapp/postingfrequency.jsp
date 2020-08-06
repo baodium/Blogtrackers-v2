@@ -535,6 +535,8 @@ userinfo = (ArrayList<?>)userinfo.get(0);
 					String activew = "";
 					String post_counter = "";
 					String pids = null;
+					int total = 0;
+					
 					if (bloggerPostFrequency.size() > 0) {
 						int p = 0;
 						for (int m = 0; m < bloggerPostFrequency.size(); m++) {
@@ -545,7 +547,11 @@ userinfo = (ArrayList<?>)userinfo.get(0);
 								if (p < 10) {
 									p++;
 									
-									post_counter =  post._searchRangeTotalByBlogger("date", dt, dte, bloggerName);
+									
+									total += Integer.parseInt(bloggerPostFreq);
+									post_counter = bloggerPostFreq;
+									//post_counter =  post._searchRangeTotalByBlogger("date", dt, dte, bloggerName);
+									
 									String formatedtotalpost_counter = NumberFormat.getNumberInstance(Locale.US).format(Integer.parseInt(post_counter));
 									
 										if(m==0){
@@ -706,7 +712,9 @@ else if(sentimentval.equalsIgnoreCase("positive"))
 }
 
 totalpost =  post._searchRangeTotalByBlogger("date", dt, dte, mostactiveblogger);
-String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Integer.parseInt(totalpost));
+
+//String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format((Integer.parseInt(totalpost)/total) * 100);
+String formatedtotalpost = String.format("%.0f",(Double.parseDouble(totalpost)/(double)total) * 100) + "%";
 %>
 
 <div class="col-md-9">
@@ -734,7 +742,7 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
     <div class="card-body  p30 pt20 pb20">
       <div class="row">
      <div class="col-md-3 mt5 mb5">
-       <h6 class="card-title mb0">Total Posts</h6>
+       <h6 class="card-title mb0">Total Post</h6>
        <h3 class="mb0 bold-text total-post"><%=formatedtotalpost%></h3>
        <!-- <small class="text-success">+5% from <b>Last Week</b></small> -->
      </div>
@@ -1028,6 +1036,7 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
 		<input type="hidden" name="date_start" id="date_start" value="<%=dt%>" /> 
 		<input type="hidden" name="date_end" id="date_end" value="<%=dte%>" />
 		<input type="hidden" name="all_blog_ids" id="all_blog_ids" value="<%=ids%>" />
+		<input type="hidden" name="total_post_count" id="total_post_count" value="<%=total%>" />
 			
 	</form>
 
