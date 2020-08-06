@@ -837,7 +837,7 @@ Instant start = Instant.now();
 						
 						
 						<div class="chart-container keyword_display" id="keyword_display">
-							<div id="tagcloudcontainer" style="min-height: 300px;"></div>
+							<div id="tagcloudcontainer" style="min-height: 480px;"></div>
 						</div>
 						
 						

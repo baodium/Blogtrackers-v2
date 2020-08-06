@@ -1231,6 +1231,8 @@ public class Clustering extends HttpServlet {
 					links.put(data);
 				}
 			}
+			
+			
 
 			JSONObject final_data = new JSONObject();
 			final_data.put("nodes", nodes);

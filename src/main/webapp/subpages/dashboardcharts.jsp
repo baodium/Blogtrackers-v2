@@ -68,9 +68,6 @@ System.out.println("terms --"+dashboardterms);
 	<div class="jvectormap-zoomout zoombutton" id="zoom_out">−</div>
 </div>
 
-
-
-word cloud 
 <script type="text/javascript" src="assets/vendors/d3/d3.min.js"></script>
 <script src="assets/vendors/wordcloud/d3.layout.cloud.js"></script>
 <script type="text/javascript" src="assets/vendors/d3/d3_tooltip.js"></script>

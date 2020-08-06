@@ -869,7 +869,7 @@ authoryears.put(mostactiveblogger,postyear);
 						</div>
 						<div style="min-height: 420px;">
 							<div class="chart-container">
-								<div class="chart" id="scatterplot"></div>
+								<div class="chart" id="scatterplot" style="padding-left: 20px;"></div>
 							</div>
 						</div>
 					</div>
@@ -1216,7 +1216,9 @@ function color1(i, id, name){
            $(this).css('font-weight', 400);
 
          }else{
-
+			
+        	 $(this).removeClass("white_bac");
+        	 
            $(this).removeClass('nobccolor');
 
            $(this).addClass("thanks"); 
@@ -1937,7 +1939,9 @@ function color1(i, id, name){
 
          // Define main variables
          var d3Container = d3.select(element),
-             margin = {top: 5, right: 20, bottom: 20, left: 50},
+             margin = {top: 5, right: 20, bottom: 20, left: 50, lefty:80, righty:80},
+            // width =  $('#scatterplot').width() - margin.lefty - margin.righty,
+           	//width = 300,
              width = d3Container.node().getBoundingClientRect().width - margin.left - margin.right,
              height = height - margin.top - margin.bottom;
 
@@ -1992,8 +1996,11 @@ function color1(i, id, name){
 
          // Add SVG group
          var svg = container
-             .attr("width", width + margin.left + margin.right)
-             .attr("height", height + margin.top + margin.bottom)
+            // .attr("width", width + margin.left + margin.right)
+           //  .attr("height", height + margin.top + margin.bottom)
+             .attr("width", (width+margin.bottom)+"px")
+    	    .attr("height", (height+margin.bottom)+"px")
+             .style("overflow","visible")
              .append("g")
              // .attr("transform", "translate(0," + y(0) + ")");
                  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
@@ -2066,9 +2073,9 @@ function color1(i, id, name){
                 }
                 else if(d !== null) {
                 	var ky = d.x+""+d.y;
-                	console.log('////////////////');
-                	console.log('Influence'+d.x+', Activity='+d.y+'.Blogger:'+labels[ky]);
-                	console.log(ky);
+                	//console.log('////////////////');
+                	//console.log('Influence ='+d.x+', Activity='+d.y+'</br>.Blogger:'+labels[ky]);
+                	//console.log(ky);
                 	return "No Information Available1";
                 	
                  //return " ( Influence="+d.x+", Activity="+d.y+".Blogger:"+labels[ky]+" )<br/> Click for more information";
@@ -2240,7 +2247,8 @@ function color1(i, id, name){
                               
                             .attr("data-toggle", "tooltip")
 					      .attr("data-placement", "top")
-					      .attr("title", function(d) { return 'Influence'+d.x+', Activity='+d.y+'.Blogger:'+labels[d.x+''+d.y]; })
+					      .attr("data-html", "true")
+					      .attr("title", function(d) { return 'Influence = '+d.x+', <br> Activity = '+d.y+'. <br> Blogger : '+labels[d.x+''+d.y]; })
                               .style("fill",function(e,i){return color(i)})
                               .attr("cx",function(d) { return x(d.x); })
                               .attr("cy", function(d){return y(d.y)})

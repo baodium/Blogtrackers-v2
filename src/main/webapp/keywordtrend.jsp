@@ -1899,7 +1899,9 @@ $(document).ready(function() {
           $(this).css('font-weight', 400);
 
         }else{
-
+			
+        	$(this).removeClass("white_bac"); 
+        
           $(this).removeClass('nobccolor');
 
           $(this).addClass("thanks"); 
