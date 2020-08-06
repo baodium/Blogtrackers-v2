@@ -768,47 +768,42 @@ try{
 <!-- End scatter plot css -->
 
 <style>
-
 .node circle {
-  fill: #fff;
-/*   stroke: steelblue; */
-  stroke-width: 3px;
+	fill: #fff;
+	/*   stroke: steelblue; */
+	stroke-width: 3px;
 }
 
 .node text {
-  font: 12px sans-serif;
+	font: 12px sans-serif;
 }
 
 .link {
-  fill: none;
-  stroke: #ccc;
-/*   stroke-width: 2px; */
+	fill: none;
+	stroke: #ccc;
+	/*   stroke-width: 2px; */
 }
-
 </style>
 
 <!-- start sample chord css -->
 <style>
-
- 
 #circle circle {
-fill: none;
-pointer-events: all;
+	fill: none;
+	pointer-events: all;
 }
- 
+
 .group path {
-fill-opacity: .5;
+	fill-opacity: .5;
 }
- 
+
 path.chord {
-stroke: #000;
-stroke-width: .25px;
+	stroke: #000;
+	stroke-width: .25px;
 }
- 
+
 #circle:hover path.fade {
-display: none;
+	display: none;
 }
- 
 </style>
 <!-- end sample chord css -->
 </head>
@@ -901,8 +896,8 @@ display: none;
 					<li class="dropdown dropdown-user cursor-pointer float-right">
 						<a class="dropdown-toggle " id="profiletoggle"
 						data-toggle="dropdown"> <!-- <i class="fas fa-circle"
-							id="notificationcolor"> --></i> <img src="<%=profileimage%>"
-							width="50" height="50"
+							id="notificationcolor"> -->
+							</i> <img src="<%=profileimage%>" width="50" height="50"
 							onerror="this.src='images/default-avatar.png'" alt="" class="" />
 							<span class="bold-text"><%=user_name[0]%></span> <!-- <ul class="profilemenu dropdown-menu dropdown-menu-left">
               <li><a href="#"> My profile</a></li>
@@ -1056,67 +1051,67 @@ display: none;
 			<div class="col-md-6 mt20 zoom">
 				<div class="card card-style mt20">
 					<div class="card-body mt0 pt0 pl0" style="min-height: 520px;">
-					
-					<div class="location_mecard">
-					
-						<div class="front p30 pt5 pb5">
-				
-							<div>
-								<p class="text-primary mt0 float-left">
-									Most Active Location
-									<!-- <select
+
+						<div class="location_mecard">
+
+							<div class="front p30 pt5 pb5">
+
+								<div>
+									<p class="text-primary mt0 float-left">
+										Most Active Location
+										<!-- <select
 										class="text-primary filtersort sortbyblogblogger"><option
 											value="blogs">Blogs</option>
 										<option value="bloggers">Bloggers</option></select>  -->
-									<%-- for Past <select
+										<%-- for Past <select
 										class="text-primary filtersort sortbytimerange">
 										<option value="" >All</option>
 										<option value="week" <%=(single.equals("week"))?"selected":"" %>>Week</option>
 										<option value="month" <%=(single.equals("month"))?"selected":"" %>>Month</option>
 										<option value="year" <%=(single.equals("year"))?"selected":"" %>>Year</option></select> --%>
-								</p>
-								<button style="right: 10px; position: absolute" id="flip"
-									type="button" onclick="location_flip()"
-									class="btn btn-sm btn-primary float-right"
-									data-toggle="tooltip" data-placement="top"
-									title="Flip to view location usage" aria-expanded="false">
-									<i class="fas fa-exchange-alt" aria-hidden="true"></i>
-								</button>
+									</p>
+									<button style="right: 10px; position: absolute" id="flip"
+										type="button" onclick="location_flip()"
+										class="btn btn-sm btn-primary float-right"
+										data-toggle="tooltip" data-placement="top"
+										title="Flip to view location usage" aria-expanded="false">
+										<i class="fas fa-exchange-alt" aria-hidden="true"></i>
+									</button>
+								</div>
+								<div style="min-height: 490px;">
+									<div class="map-container map-choropleth"></div>
+								</div>
+
+
 							</div>
-							<div style="min-height: 490px;">
-								<div class="map-container map-choropleth"></div>
-							</div>
-						
-						
-						</div>
-						<!-- end front -->
-						<div class="back p30 pt5 pb5">
+							<!-- end front -->
+							<div class="back p30 pt5 pb5">
 
-							<div>
-								<p class="text-primary mt10 float-left">Location Usage</p>
-								<button style="right: 10px; position: absolute" id="flip"
-									type="button" onclick="location_flip()"
-									class="btn btn-sm btn-primary float-right"
-									data-toggle="tooltip" data-placement="top"
-									title="Flip to view location usage" aria-expanded="false">
+								<div>
+									<p class="text-primary mt10 float-left">Location Usage</p>
+									<button style="right: 10px; position: absolute" id="flip"
+										type="button" onclick="location_flip()"
+										class="btn btn-sm btn-primary float-right"
+										data-toggle="tooltip" data-placement="top"
+										title="Flip to view location usage" aria-expanded="false">
 
-									<i class="fas fa-exchange-alt" aria-hidden="true"></i>
-								</button>
-							</div>
+										<i class="fas fa-exchange-alt" aria-hidden="true"></i>
+									</button>
+								</div>
 
-							<div class="min-height-table">
-								<table id="DataTables_Table_19_wrapper" class="display"
-									style="width: 100%">
-									<thead>
-										<tr>
-											<th>Blogs</th>
-											<th>Location</th>
+								<div class="min-height-table">
+									<table id="DataTables_Table_19_wrapper" class="display"
+										style="width: 100%">
+										<thead>
+											<tr>
+												<th>Blogs</th>
+												<th>Location</th>
 
-										</tr>
-									</thead>
-									<tbody>
-	
-									<%if (locations_usage.size() > 0) {
+											</tr>
+										</thead>
+										<tbody>
+
+											<%if (locations_usage.size() > 0) {
 						for (int i = 0; i < locations_usage.size(); i++) {
 							ArrayList<?> loca = (ArrayList<?>) locations_usage.get(i);
 							String loc = loca.get(0).toString();
@@ -1124,31 +1119,31 @@ display: none;
 							String blogsite_name = loca.get(2).toString();
 							
 							%>
-							
-							<tr>
+
+											<tr>
 												<td class=""><%=blogsite_name%></td>
 												<td><%=loc%></td>
 												<!-- <td class="">j.get("letter")</td>
 												<td>j.get("frequency")</td> -->
 											</tr>
-							
-							<%}
+
+											<%}
 					}%>
 
-									</tbody>
-								</table>
+										</tbody>
+									</table>
 
+
+								</div>
 
 							</div>
+							<!-- end back -->
 
 						</div>
-						<!-- end back -->
-						
-					</div>
-				<!--end location mecard -->
-						
-						
-						
+						<!--end location mecard -->
+
+
+
 					</div>
 				</div>
 			</div>
@@ -1220,33 +1215,37 @@ display: none;
 											System.out.println("--->"+res);
 											 --%>
 											<%
-											JSONArray language_data=new JSONArray();
+											JSONArray result_language = new JSONArray();
+											ArrayList language_data=new ArrayList();
 											try{
 												language_data= post._getMostLanguage(dt, dte, ids, 10);
 											}catch(Exception e){
 												System.out.println("Language error--"+e);
 											}
-														if (language_data.length() > 0) {
+														
+											
+											
+											if (language_data.size() > 0) {
 															JSONObject lang_total = new JSONObject();
 
-															for (int y = 0; y < language_data.length(); y++) {
-																String a = language_data.get(y).toString();
-																lang_total = new JSONObject(a);
-																//System.out.println(j.get("letter"));
-																/* 	ArrayList<?> langu = (ArrayList<?>) languages.get(y);
-																	String languag = langu.get(0).toString();
+															for (int y = 0; y < language_data.size(); y++) {
+																ArrayList x = (ArrayList) language_data.get(y);
+																JSONObject a = new JSONObject();
+																if(x.get(0) != "null" && x.get(0) != "" && x.get(0) != null){
+																	a.put("letter", x.get(0));
+																	a.put("frequency", x.get(1));
+																	result_language.put(a);
 																
-																	String languag_freq = NumberFormat.getNumberInstance(Locale.US)
-																			.format(new Double(langu.get(1).toString()).intValue()); */
 											%>
 											<tr>
-												<td class=""><%=lang_total.get("letter")%></td>
-												<td><%=lang_total.get("frequency")%></td>
+												<td class=""><%=x.get(0)%></td>
+												<td><%=x.get(1)%></td>
 												<!-- <td class="">j.get("letter")</td>
 												<td>j.get("frequency")</td> -->
 											</tr>
 											<%
 												}
+															}
 														}
 											%>
 
@@ -1320,20 +1319,20 @@ display: none;
 		</div>
 
 		<div class="row mb0">
-			
+
 			<div class="col-md-6 mt20 zoom">
 				<div id="keyword_card_div" class="card card-style mt20 radial_f">
 					<div class="card-body  p30 pt5 pb5">
 						<div>
-							<p class="text-primary mt10">
-								Top Keywords
-								</p>
+							<p class="text-primary mt10">Top Keywords</p>
 						</div>
-						
+
 						<div align="center" class="" style="min-height: 420px;">
 							<div align="center" class="chart-container word-cld">
 								<div class="hidden" id="keyword_computing_loaader">
-									<div align="center" class=" word1">COMPUTING-TERMS...<span id="keyword_percentage"><%=status_percentage %>%</span></div>
+									<div align="center" class=" word1">
+										COMPUTING-TERMS...<span id="keyword_percentage"><%=status_percentage %>%</span>
+									</div>
 									<div align="center" class=" overlay1"></div>
 								</div>
 								<div class="chart hidden" id="tagcloudcontainer99">
@@ -1347,9 +1346,9 @@ display: none;
 				<div class="float-right">
 					<a id="hrefkeyword"
 						href="<%=request.getContextPath()%>/keywordtrend.jsp?tid=<%=tid%>"><button
-							class="btn buttonportfolio2 mt10" id = "keywordbtn">
-							<b class="float-left semi-bold-text ">Keyword Trend Analysis </b>
-							<b class="fas fa-search float-right icondash2 "></b>
+							class="btn buttonportfolio2 mt10" id="keywordbtn">
+							<b class="float-left semi-bold-text ">Keyword Trend Analysis
+							</b> <b class="fas fa-search float-right icondash2 "></b>
 						</button></a>
 				</div>
 			</div>
@@ -1455,7 +1454,7 @@ display: none;
 		</div>
 
 		<div class="row mb0">
-			
+
 
 			<div class="col-md-6 mt20 zoom">
 				<div class="card card-style mt20">
@@ -1495,9 +1494,9 @@ display: none;
 				</div>
 
 			</div>
-			
-			
-								<!-- <div style="min-height: 420px;">
+
+
+			<!-- <div style="min-height: 420px;">
 							<div class="chart-container word-cld">
 								<div class="chart" id="tagcloudcontainer">
 									<div class="jvectormap-zoomin zoombutton" id="zoom_in">+</div>
@@ -1505,14 +1504,15 @@ display: none;
 								</div>
 							</div>
 						</div> -->
-			
-			
+
+
 			<div class="col-md-6 mt20 zoom">
 				<div class="card card-style mt20">
 					<div class="card-body   p30 pt5 pb5">
 						<div>
-							  <p class="text-primary mt10 float-left">
-								Topic Model <!-- <select id="swapBlogger"
+							<p class="text-primary mt10 float-left">
+								Topic Model
+								<!-- <select id="swapBlogger"
 									class="text-primary filtersort sortbyblogblogger">
 									<option value="blogs">Blogs</option>
 
@@ -1524,15 +1524,16 @@ display: none;
 									<option value="month" <%=(single.equals("month"))?"selected":"" %>>Month</option>
 									<option value="year" <%=(single.equals("year"))?"selected":"" %>>Year</option></select> --%>
 							</p>
-						</div> 
-						 <div class="min-height-table" style="min-height: 500px;">
-							<div align="center" class="chart-container chord_body" id="postingfrequencycontainer">
+						</div>
+						<div class="min-height-table" style="min-height: 500px;">
+							<div align="center" class="chart-container chord_body"
+								id="postingfrequencycontainer">
 								<!-- <div class="chart" id="postingfrequencybar"></div>-->
-								<div align="center" class="chart" id="chord_body" ></div>
+								<div align="center" class="chart" id="chord_body"></div>
 							</div>
 
 						</div>
-						
+
 					</div>
 				</div>
 				<!--  <div class="float-right">
@@ -1544,21 +1545,21 @@ display: none;
 				</div>
 				-->
 				<div class="float-right">
-					<a id = "hreftopicmodels" href="topic_distribution.jsp?tid=<%=tid%>"><button disabled 
-							class="btn buttonportfolio2 buttonTopicModelling mt10">
+					<a id="hreftopicmodels" href="topic_distribution.jsp?tid=<%=tid%>"><button
+							disabled class="btn buttonportfolio2 buttonTopicModelling mt10">
 							<b class="float-left semi-bold-text">Topic Modelling </b> <b
 								class="fas fa-comment-alt float-right icondash2"></b>
 						</button></a>
 				</div>
 
 			</div>
-			
-			
+
+
 		</div>
-		
-		
+
+
 		<div class="row mb0">
-			
+
 
 			<div class="col-md-6 mt20 zoom">
 				<div id="cluster_card_div" class="card card-style mt20 radial_f">
@@ -1566,7 +1567,7 @@ display: none;
 						<div>
 							<p class="text-primary mt10 float-left">
 
-								Clustering Analysis 
+								Clustering Analysis
 								<%-- 
 						   of Past <select
 									class="text-primary filtersort sortbytimerange"><option
@@ -1575,9 +1576,12 @@ display: none;
 									<option value="year" <%=(single.equals("year"))?"selected":"" %>>Year</option></select>  --%>
 							</p>
 						</div>
-						<div id="scatter-container1" class="min-height-table" style="min-height: 500px;">
+						<div id="scatter-container1" class="min-height-table"
+							style="min-height: 500px;">
 							<div class="hidden" id="cluster_computing_loaader">
-								<div align="center" class=" word1">COMPUTING-CLUSTERS...<span id="cluster_percentage"><%=cluster_status_percentage %>%</span></div>
+								<div align="center" class=" word1">
+									COMPUTING-CLUSTERS...<span id="cluster_percentage"><%=cluster_status_percentage %>%</span>
+								</div>
 								<div align="center" class=" overlay1"></div>
 							</div>
 							<div class="chart-container" id="scatter-container">
@@ -1587,7 +1591,7 @@ display: none;
 					</div>
 				</div>
 				<div class="float-right">
-					<a href="clustering.jsp?tid=<%=tid%>"><button id = "clusterbtn"
+					<a href="clustering.jsp?tid=<%=tid%>"><button id="clusterbtn"
 							class="btn buttonportfolio2 mt10">
 							<b class="float-left semi-bold-text">Clustering Analysis </b> <b
 								class="fas fa-exchange-alt float-right icondash2"></b>
@@ -1595,9 +1599,9 @@ display: none;
 				</div>
 
 			</div>
-			
-			
-								<!-- <div style="min-height: 420px;">
+
+
+			<!-- <div style="min-height: 420px;">
 							<div class="chart-container word-cld">
 								<div class="chart" id="tagcloudcontainer">
 									<div class="jvectormap-zoomin zoombutton" id="zoom_in">+</div>
@@ -1605,14 +1609,15 @@ display: none;
 								</div>
 							</div>
 						</div> -->
-			
-			
+
+
 			<div class="col-md-6 mt20 zoom">
 				<div class="card card-style mt20">
 					<div class="card-body   p30 pt5 pb5">
 						<div>
-							  <p class="text-primary mt10 float-left">
-								Narrative Analysis <!-- <select id="swapBlogger"
+							<p class="text-primary mt10 float-left">
+								Narrative Analysis
+								<!-- <select id="swapBlogger"
 									class="text-primary filtersort sortbyblogblogger">
 									<option value="blogs">Blogs</option>
 
@@ -1624,15 +1629,15 @@ display: none;
 									<option value="month" <%=(single.equals("month"))?"selected":"" %>>Month</option>
 									<option value="year" <%=(single.equals("year"))?"selected":"" %>>Year</option></select> --%>
 							</p>
-						</div> 
-						 <div class="min-height-table" style="min-height: 500px;">
+						</div>
+						<div class="min-height-table" style="min-height: 500px;">
 							<div align="center" class="chart-container " id="">
 								<!-- <div class="chart" id="postingfrequencybar"></div>-->
-								<div align="center" class="chart" id="narrative_analysis" ></div>
+								<div align="center" class="chart" id="narrative_analysis"></div>
 							</div>
 
 						</div>
-						
+
 					</div>
 				</div>
 				<!--  <div class="float-right">
@@ -1644,16 +1649,16 @@ display: none;
 				</div>
 				-->
 				<div class="float-right">
-					<a id = "" target="_blank" href="http://haydex.com/narrative/"><button disabled 
-							class="btn buttonportfolio2 buttonTopicModelling mt10">
+					<a id="" target="_blank" href="http://haydex.com/narrative/"><button
+							disabled class="btn buttonportfolio2 buttonTopicModelling mt10">
 							<b class="float-left semi-bold-text">Narrative Analysis </b> <b
 								class="fas fa-comment-alt float-right icondash2"></b>
 						</button></a>
 				</div>
 
 			</div>
-			
-			
+
+
 		</div>
 
 		<div class="row mb50">
@@ -1683,8 +1688,8 @@ display: none;
           Export Options
           </div> -->
 							<div id="top-domain-box">
-								<table id="DataTables_Table_0_wrapper" class="display table_over_cover"
-									style="width: 100%">
+								<table id="DataTables_Table_0_wrapper"
+									class="display table_over_cover" style="width: 100%">
 									<thead>
 										<tr>
 											<th>Domain</th>
@@ -1780,8 +1785,8 @@ display: none;
 	<form action="" name="customform" id="customform" method="post">
 		<input type="hidden" name="tid" value="<%=tid%>" /> <input
 			type="hidden" name="date_start" id="date_start" value="" /> <input
-			type="hidden" name="date_end" id="date_end" value="" />
-			<input type="hidden" name="date_set" id="date_set" value="0" />
+			type="hidden" name="date_end" id="date_end" value="" /> <input
+			type="hidden" name="date_set" id="date_set" value="0" />
 		<textarea style="display: none" name="blogs" id="blogs">
 			<%
 				if (blogPostFrequency.size() > 0) {
@@ -1888,9 +1893,10 @@ display: none;
 
 
 	<script type="text/javascript" src="assets/js/jquery-1.11.3.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/lettering.js/0.6.1/jquery.lettering.min.js"></script>
-		<script src="pagedependencies/imageloader.js?v=09"></script>
-		<script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/lettering.js/0.6.1/jquery.lettering.min.js"></script>
+	<script src="pagedependencies/imageloader.js?v=09"></script>
+	<script>
 		
 		function matrix_loader(){
 			
@@ -1980,13 +1986,13 @@ display: none;
 		//matrix_loader();
 		//call matrix_loader
 		</script>
-		
-		
-		
-		<!-- Start scatter plot js -->
-		 <script type="text/javascript" src="assets/vendors/d3/d3.v4_new.min.js" ></script> 
-		 
-		 <script>
+
+
+
+	<!-- Start scatter plot js -->
+	<script type="text/javascript" src="assets/vendors/d3/d3.v4_new.min.js"></script>
+
+	<script>
 
 var treeData =
   {
@@ -2531,8 +2537,8 @@ function update(source) {
 }
 
 </script>
-		 
-		 <script>
+
+	<script>
 		 var d3v4 = window.d3;
 		
 		
@@ -2735,11 +2741,11 @@ function update(source) {
 		 ///end clustering5 function
 		 
 	</script>
-		
-		
-		<!-- End Scatter plot JS -->
-		 
-		 	<script>
+
+
+	<!-- End Scatter plot JS -->
+
+	<script>
 		
 		
 function cluster_matrix_loader(){
@@ -2923,16 +2929,16 @@ function cluster_matrix_loader(){
 		}
 		//end refresh function
 		</script>
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+
+
+
+
+
+
+
+
+
+
 	<script src="assets/bootstrap/js/bootstrap.js">
 </script>
 	<script src="assets/js/generic.js">
@@ -2957,8 +2963,8 @@ function cluster_matrix_loader(){
 		src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.html5.min.js"></script>
 	<script
 		src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.print.min.js"></script>
-		
-	
+
+
 
 	<script>
 	function flip() {
@@ -3270,7 +3276,7 @@ $(function () {
 					}%>
 	 ];  --%>
 	 
-	  data = <%=language_data%> 
+	  data = <%=result_language%> 
 	 
 	 <%-- console.log("langdata-->"+"<%=language_data%>"); --%>
      data.sort(function(a, b){
@@ -3742,7 +3748,7 @@ $(function () {
 </script>
 
 	<!--  End of influence bar -->
-	
+
 	<!-- start sample graph script -->
 	<script>
  
@@ -4509,7 +4515,7 @@ var mymarker = [
 		src="assets/vendors/maps/vector_maps_demo.js"></script>
 	<script type="text/javascript"
 		src="chartdependencies/keywordtrendd3.js"></script>
-		<script type="text/javascript" src="chartdependencies/chord.js"></script>
+	<script type="text/javascript" src="chartdependencies/chord.js"></script>
 	<!--word cloud  -->
 	<script>
 	
@@ -4943,7 +4949,7 @@ function matrix_loader1(){
 		}
 		//end refresh function
 		</script>
-	
+
 	<!-- Blogger Bubble Chart -->
 	<script>
 $(function () {

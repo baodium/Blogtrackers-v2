@@ -2763,79 +2763,87 @@ public class Blogposts {
 		return freq;
 	}
 
-	public JSONArray _getMostLanguage(String date_from, String date_to, String ids_, Integer limit) throws Exception {
+	public static ArrayList _getMostLanguage(String date_from, String date_to, String ids_, Integer limit) throws Exception {
 		ArrayList<String> list = new ArrayList<String>();
 		HashMap<String, Integer> hm2 = new HashMap<String, Integer>();
+		
+		String query = "select language, count(language) c from blogposts where blogsite_id in ("+ids_+") and date > \" "+date_from+"\" and date < \""+date_to+"\" and language is not null or language != 'null' group by language order by c desc limit "+limit+"";
+		System.out.println(query);
+		ArrayList response = DbConnection.query(query);
+		
+		
+		
+		
 
-		JSONArray all = new JSONArray();
-
-		JSONObject query = new JSONObject("{\r\n" + "    \"size\": 0,\r\n" + "    \"query\": {\r\n"
-				+ "        \"bool\": {\r\n" + "            \"must\": [\r\n" + "                {\r\n"
-				+ "                    \"terms\": {\r\n" + "                        \"blogsite_id\": [" + ids_
-				+ "],\r\n" + "                        \"boost\": 1.0\r\n" + "                    }\r\n"
-				+ "                },\r\n" + "                {\r\n" + "                    \"range\": {\r\n"
-				+ "                        \"date\": {\r\n" + "                            \"from\": \"" + date_from
-				+ "\",\r\n" + "                            \"to\": \"" + date_to + "\",\r\n"
-				+ "                            \"include_lower\": true,\r\n"
-				+ "                            \"include_upper\": true,\r\n"
-				+ "                            \"boost\": 1.0\r\n" + "                        }\r\n"
-				+ "                    }\r\n" + "                }\r\n" + "            ],\r\n"
-				+ "            \"adjust_pure_negative\": true,\r\n" + "            \"boost\": 1.0\r\n" + "        }\r\n"
-				+ "    },\r\n" + "    \"_source\": false,\r\n" + "    \"stored_fields\": \"_none_\",\r\n"
-				+ "    \"aggregations\": {\r\n" + "        \"groupby\": {\r\n" + "            \"composite\": {\r\n"
-				+ "                \"size\": 1000,\r\n" + "                \"sources\": [\r\n"
-				+ "                    {\r\n" + "                        \"dat\": {\r\n"
-				+ "                            \"terms\": {\r\n"
-				+ "                                \"field\": \"language.keyword\",\r\n"
-				+ "                                \"missing_bucket\": true,\r\n"
-				+ "                                \"order\": \"asc\"\r\n" + "                            }\r\n"
-				+ "                        }\r\n" + "                    }\r\n" + "                ]\r\n"
-				+ "            },\r\n" + "            \"aggregations\": {\r\n" + "                \"dat\": {\r\n"
-				+ "                    \"filter\": {\r\n" + "                        \"exists\": {\r\n"
-				+ "                            \"field\": \"language\",\r\n"
-				+ "                            \"boost\": 1.0\r\n" + "                        }\r\n"
-				+ "                    }\r\n" + "                }\r\n" + "            }\r\n" + "        }\r\n"
-				+ "    }\r\n" + "}");
-
-		JSONObject myResponse = this._makeElasticRequest(query, "POST", "/blogposts/_search/?");
-		String val = null;
-		Integer freq = null;
-		String idx = null;
-		String language = null;
-		JSONArray jsonArray = new JSONArray();
-		// System.out.println("query for elastic _getMostLanguage --> " + query);
-		if (null != myResponse.get("aggregations")) {
-			Object buckets = myResponse.getJSONObject("aggregations").getJSONObject("groupby").getJSONArray("buckets");
-			val = buckets.toString();
-			jsonArray = new JSONArray(val);
-
-			System.out.println("DONE GETTING POSTS FOR BLOGGER");
-
-			if (jsonArray.length() < 10) {
-				limit = jsonArray.length();
-			}
-
-			if (jsonArray != null) {
-				for (int i = 0; i < limit; i++) {
-					JSONObject da = new JSONObject();
-					idx = jsonArray.get(i).toString();
-
-					JSONObject j = new JSONObject(idx);
-					freq = (Integer) j.get("doc_count");
-
-					Object k = j.getJSONObject("key").get("dat");
-					language = k.toString();
-
-					da.put("letter", language);
-					da.put("frequency", freq);
-
-					all.put(da);
-					hm2.put(language, freq);
-				}
-
-			}
-		}
-		return all;
+//		JSONArray all = new JSONArray();
+//
+//		JSONObject query = new JSONObject("{\r\n" + "    \"size\": 0,\r\n" + "    \"query\": {\r\n"
+//				+ "        \"bool\": {\r\n" + "            \"must\": [\r\n" + "                {\r\n"
+//				+ "                    \"terms\": {\r\n" + "                        \"blogsite_id\": [" + ids_
+//				+ "],\r\n" + "                        \"boost\": 1.0\r\n" + "                    }\r\n"
+//				+ "                },\r\n" + "                {\r\n" + "                    \"range\": {\r\n"
+//				+ "                        \"date\": {\r\n" + "                            \"from\": \"" + date_from
+//				+ "\",\r\n" + "                            \"to\": \"" + date_to + "\",\r\n"
+//				+ "                            \"include_lower\": true,\r\n"
+//				+ "                            \"include_upper\": true,\r\n"
+//				+ "                            \"boost\": 1.0\r\n" + "                        }\r\n"
+//				+ "                    }\r\n" + "                }\r\n" + "            ],\r\n"
+//				+ "            \"adjust_pure_negative\": true,\r\n" + "            \"boost\": 1.0\r\n" + "        }\r\n"
+//				+ "    },\r\n" + "    \"_source\": false,\r\n" + "    \"stored_fields\": \"_none_\",\r\n"
+//				+ "    \"aggregations\": {\r\n" + "        \"groupby\": {\r\n" + "            \"composite\": {\r\n"
+//				+ "                \"size\": 1000,\r\n" + "                \"sources\": [\r\n"
+//				+ "                    {\r\n" + "                        \"dat\": {\r\n"
+//				+ "                            \"terms\": {\r\n"
+//				+ "                                \"field\": \"language.keyword\",\r\n"
+//				+ "                                \"missing_bucket\": true,\r\n"
+//				+ "                                \"order\": \"asc\"\r\n" + "                            }\r\n"
+//				+ "                        }\r\n" + "                    }\r\n" + "                ]\r\n"
+//				+ "            },\r\n" + "            \"aggregations\": {\r\n" + "                \"dat\": {\r\n"
+//				+ "                    \"filter\": {\r\n" + "                        \"exists\": {\r\n"
+//				+ "                            \"field\": \"language\",\r\n"
+//				+ "                            \"boost\": 1.0\r\n" + "                        }\r\n"
+//				+ "                    }\r\n" + "                }\r\n" + "            }\r\n" + "        }\r\n"
+//				+ "    }\r\n" + "}");
+//
+//		JSONObject myResponse = this._makeElasticRequest(query, "POST", "/blogposts/_search/?");
+//		String val = null;
+//		Integer freq = null;
+//		String idx = null;
+//		String language = null;
+//		JSONArray jsonArray = new JSONArray();
+//		// System.out.println("query for elastic _getMostLanguage --> " + query);
+//		if (null != myResponse.get("aggregations")) {
+//			Object buckets = myResponse.getJSONObject("aggregations").getJSONObject("groupby").getJSONArray("buckets");
+//			val = buckets.toString();
+//			jsonArray = new JSONArray(val);
+//
+//			System.out.println("DONE GETTING POSTS FOR BLOGGER");
+//
+//			if (jsonArray.length() < 10) {
+//				limit = jsonArray.length();
+//			}
+//
+//			if (jsonArray != null) {
+//				for (int i = 0; i < limit; i++) {
+//					JSONObject da = new JSONObject();
+//					idx = jsonArray.get(i).toString();
+//
+//					JSONObject j = new JSONObject(idx);
+//					freq = (Integer) j.get("doc_count");
+//
+//					Object k = j.getJSONObject("key").get("dat");
+//					language = k.toString();
+//
+//					da.put("letter", language);
+//					da.put("frequency", freq);
+//
+//					all.put(da);
+//					hm2.put(language, freq);
+//				}
+//
+//			}
+//		}
+		return response;
 	}
 
 	public Map<String, Integer> _keywordTermvctors(String data) throws Exception {
@@ -3695,6 +3703,13 @@ public class Blogposts {
 	 */
 	public static void main(String[] args) {
 		try {
+			
+			ArrayList res = _getMostLanguage("2000-01-01", "2020-04-15", "63,127,223,224,611,615,617,641,673,720,817,872,874,949,954,957,961,1030,1033,1034,1035,1036,1038,1040,1041,1042,1049,1051,1052,1054,1055,1056,1058,1063,1064,1065,1066,1067,1068,1069,1083,1084,1088,1089,1092,1095,1100,1101,1105,1121,1122,1124,1126,1127,1128,1134,1137,1139,1141,1148,1163,1164,1166,1169,1172,1173,1184,1185,1188,1195,1196,1204,1207,1210,1211,1213,1218,1220,1221,1222,1233,1235,1238,1239,1240,1242,1244,1250,1251,1256,1258,1262,1279,1280,1282,1288,1290,1293,1295,1297,1303,1306,1307,1315,1319,1324,1330,1333,1339,1341,1346,1350,1352,1360,1376,1379,1380,1381,1385,1387,1392,1394,1397,1399,1409,1417,1421,1424,1426,1429,1438,1439,1440,1446,1447,1448,1451,1455,1456,1457,1458,1459,1460,1461,1472,1474,1475,1478,1486,1487,1489,1490,1492,1493,1497,1501,1503,1504,1506,1507,1509,1516,1523,1525,1526,1531,1533,1543,1561,1563,1567,1568,1569,1574,1575,1582,1583,1595,1601,1602,1604,1608,1611,1614,1615,1623,1627,1628,1630,1637,1638,1639,1642,1651,1655,1659,1660,1661,1662,1663,1668,1669,1676,1681,1682,1684,1685,1686,1688,1689,1690,1691,1692,1693,1694,1697,1698,1699,1700,1701,1703,1704,1705,1706,1707,1708,1709,1710,1711,1712,1713,1714,1715,1716,1717,1718,1719,1720,1721,1722,1723,1724,1725,1726,1727,1728,1729,1730,1731,1732,1733,1734,1735,1736,1737,1738,1739,1740,1742", 10);
+			for(int i = 0; i < res.size(); i++) {
+				ArrayList x = (ArrayList) res.get(i);
+				System.out.println(x.get(0));
+			}
+			
 //			System.out.println(_getGetDateAggregate("Conscioslifenews","date","yyyy","post","1y","date_histogram", "2000-01-01", "2020-04-15", "808,62,88,239,641,182,148,109,750,193,1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276, 277, 278, 279, 280, 281, 282, 283, 284, 285, 286, 287, 288, 289, 290, 291, 292, 293, 294, 295, 296, 297, 298, 299, 300, 301, 302, 303, 304, 305, 306, 307, 308, 309, 310, 311, 312, 313, 314, 315, 316, 317, 318, 319, 320, 321, 322, 323, 324, 325, 326, 327, 328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 338, 339, 340, 341, 342, 343, 344, 345, 346, 347, 348, 349, 350, 351, 352, 353, 354, 355, 356, 357, 358, 359, 360, 361, 362, 363, 364, 365, 366, 367, 368, 369, 370, 371, 372, 373, 374, 375, 376, 377, 378, 379, 380, 381, 382, 383, 384, 385, 386, 387, 388, 389, 390, 391, 392, 393, 394, 395, 396, 397, 398, 399"));
 //			System.out.println(_getBlogPostById("7"));
 //			System.out.println();
