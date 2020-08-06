@@ -124,10 +124,16 @@ System.out.println(index);
 						.getJSONArray("buckets").length();
 				result = bucket_length.toString();
 			}else if(type.contentEquals("bucket_highest")) {
-				Object key = myResponse.getJSONObject("aggregations").getJSONObject("groupby").getJSONArray("buckets").getJSONObject(0).getJSONObject("key").get("dat");
-				Object value = myResponse.getJSONObject("aggregations").getJSONObject("groupby").getJSONArray("buckets").getJSONObject(0).get("doc_count");
+				Object k = myResponse.getJSONObject("aggregations").getJSONObject("groupby").getJSONArray("buckets");
+				if(new JSONArray(k.toString()).length() > 0) {
+					Object key = ((JSONArray) k).getJSONObject(0).getJSONObject("key").get("dat");
+					Object value = myResponse.getJSONObject("aggregations").getJSONObject("groupby").getJSONArray("buckets").getJSONObject(0).get("doc_count");
+					result = key.toString() + "___" + value.toString();
+				}else {
+					result = "NO DATA AVAILABLE" + "___" + "0";
+				}
 				
-				result = key.toString() + "___" + value.toString();
+				
 			}
 			
 
@@ -263,8 +269,12 @@ System.out.println(index);
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			if(top_location != null) {
+				out.write(top_location.toString());
+			}else {
+				out.write("NO DATA AVAILABLE");
+			}
 			
-			out.write(top_location.toString());
 
 		} else if (action.toString().equals("getmostpost")) {
 			try {

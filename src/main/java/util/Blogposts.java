@@ -2768,7 +2768,7 @@ public class Blogposts {
 		HashMap<String, Integer> hm2 = new HashMap<String, Integer>();
 		
 		String query = "select language, count(language) c from blogposts where blogsite_id in ("+ids_+") and date > \" "+date_from+"\" and date < \""+date_to+"\" and language is not null or language != 'null' group by language order by c desc limit "+limit+"";
-		System.out.println(query);
+//		System.out.println(query);
 		ArrayList response = DbConnection.query(query);
 		
 		
