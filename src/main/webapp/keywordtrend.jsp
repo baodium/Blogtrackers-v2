@@ -919,16 +919,13 @@
 
 						<h6 class="mt20 mb20">Top Keywords</h6>
 						<div style="padding-right: 10px !important;">
-							<input id="searchInput" type="search"
+								<input id="searchInput" type="search"
 								class="form-control stylesearch mb20 inputportfolio2 searchkeywords"
 								placeholder="Search Keyword" /> <i
 								class="fas fa-search searchiconinputothers"></i> <i
 								class="fas fa-times searchiconinputclose cursor-pointer resetsearch"></i>
 						</div>
-						<script>
-
-
-</script>
+						
 						<!-- <h6 class="card-title mb0">Maximum Influence</h6> -->
 						<!-- <h4 class="mt20 mb0">Technology</h4> -->
 
@@ -943,7 +940,8 @@
 						</div>
 						<div id="scroll_list" class=" scrolly"
 							style="height: 270px; padding-right: 10px !important;">
-
+							
+							<div id="new_searched_terms" ></div>
 
 							<%
 								/* 								if (sortedterms.length() > 0) {																	
@@ -1764,6 +1762,29 @@ $(document).ready(function() {
     
  /////////////////////////////////////////////////////
  
+/*START ON SEARCH FOR TERM*/
+$('#searchInput').keydown(function(e) {
+	var key = e.which;
+	if (key == 13) {
+			e.preventDefault();
+		   
+		   var date_start = $("#date_start").val();
+		   var date_end = $("#date_end").val();
+		   
+		   loadGraphData($('#searchInput').val());
+			 
+		   loadBlogMentioned($('#searchInput').val(),date_start, date_end);
+		   loadMostLocation($('#searchInput').val(), date_start, date_end);
+		   loadMostPost($('#searchInput').val(), date_start, date_end);
+		   loadTable($('#searchInput').val(), date_start, date_end, "");
+		   
+		   $('.searchkeywords').val("");
+	}
+	});
+/*END ON  SEARCH FOR TERM*/
+ 
+ 
+ 
  var overal_holder = [];
 	
 	<% int pj = 0; 
@@ -1773,8 +1794,8 @@ $(document).ready(function() {
 		
 	<% pj++; } %>
 	
-	//console.log('seun')
-	//console.log(overal_holder)
+	console.log('overalls')
+	console.log(overal_holder)
  //////start time converting function
  	
  function convertTime(str) {
@@ -1783,10 +1804,7 @@ $(document).ready(function() {
 }
  
 	
-	/////call AJAX
-	result = loadGraphData("seun");
-	 console.log('seun');
-	console.log(result); 
+	
  
  ///////end time converting function
     
@@ -1869,10 +1887,9 @@ $(document).ready(function() {
     	
     });
     
-    
-    $(document).delegate('.topics1', 'click', function(){
-
-        var id = this.id;
+    /////
+    $(document).delegate('.topics1', 'click', function(){ 
+    	var id = this.id;
         var name = $(this).attr('name');
         
        $('.line_graph').addClass('hidden');
@@ -1908,11 +1925,10 @@ $(document).ready(function() {
 
       
     	finalGraph();
-
-      })
-      
+    })
+    /////  
     
-      
+   
     
    function finalGraph(){
     	

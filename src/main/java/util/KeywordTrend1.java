@@ -258,13 +258,19 @@ System.out.println(index);
 				String t_ = mostactiveterm.toString();
 				String t = "__TERMS__KEYWORD__" + t_;
 				top_location = aggregation(t_, all_blog_ids, date_start, date_end, "blogposts","location","desc","bucket_highest");
+				
 			} catch (Exception e) {
 
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
-			out.write(top_location.toString());
+			if(top_location != null) {
+				out.write(top_location.toString());
+			}else {
+				out.write("NO DATA AVAILABLE");
+			}
+			
 
 		} else if (action.toString().equals("getmostpost")) {
 			try {
@@ -467,10 +473,10 @@ System.out.println(index);
 			HashMap result = db.queryKWT(q);
 			JSONObject result_final = new JSONObject();
 			if(result.get("KWT") != null) {
-				result_final.put("name", mostactiveterm);
+				//result_final.put("name", mostactiveterm);
 				result_final.put("details", result.get("KWT"));
 			}else {
-				result_final.put("name", mostactiveterm);
+				//result_final.put("name", mostactiveterm);
 				result_final.put("details", "NO DATA AVAILABLE FOR THIS KEYWORD IN THIS TRACKER");
 			}
 			

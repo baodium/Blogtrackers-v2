@@ -75,8 +75,37 @@ $(document).delegate('.topics1', 'click', function(){
 	/*loadStat(all_selected_names1,id);*/
 });
 
+$('.resetsearch').on("click", function() {
+	$('.searchkeywords').val("");
+	$('.select-term').css("display", "")
+});
 
-$('.searchbloggers').on("keyup",function(e){
+
+$('.searchbloggers').on("keyup", function(e) {
+	var valuetype = e.target.value;
+	if (valuetype === "") {
+		$('.select-term').removeClass("hidesection");
+	}
+	
+	mySearchingFunction()
+})
+
+function mySearchingFunction() {
+    var input, filter, ul, li, a, i, txtValue;
+    input = document.getElementById("searchInput");
+    filter = input.value.toUpperCase();
+    $('.select-term').each(function(el, i) {
+        txtValue = $(this).attr('name');
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            $(this).css("display", "")
+        } else {
+        	$(this).css("display", "none")
+        }
+    })
+}
+
+
+$('.searchbloggers1111').on("keyup",function(e){
 	var valuetype = e.target.value;
 	//console.log(valuetype==="");
 	if(valuetype === "")

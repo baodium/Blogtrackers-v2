@@ -535,8 +535,8 @@ userinfo = (ArrayList<?>)userinfo.get(0);
 					<div class="card-body  p30 pt5 pb5 mb20">
 						<h6 class="mt20 mb20">Top Bloggers</h6>
 						<div style="padding-right: 10px !important;">
-							<input type="search" class="form-control stylesearch mb20 searchbloggers"
-								placeholder="Search Bloggers" />
+							<input id="searchInput" type="search" class="form-control stylesearch mb20 searchbloggers" placeholder="Search Bloggers" />
+							<i class="fas fa-times searchiconinputclose cursor-pointer resetsearch"></i> 
 						</div>
 						
 						<div style="height: 250px; padding-right: 10px !important;" id="scroll_list_loader" class="">
@@ -615,7 +615,7 @@ userinfo = (ArrayList<?>)userinfo.get(0);
 											}
 											%>
 											<input type="hidden" id="postby<%=bloggerInf.replaceAll(" ","__")%>" value="<%=postids%>"  />
-<a href="javascript:void(0);" name="<%=bloggerInf%>" total_post_counter="<%=total_post_counter %>"  class="topics topics1 blogger-select btn btn-primary form-control bloggerinactive mb20 <%=dselected%> <%=activew%>"  id="<%=blogsiteid%>" ><b><%=bloggerInf%></b></a>
+<a href="javascript:void(0);" name="<%=bloggerInf%>" total_post_counter="<%=total_post_counter %>"  class="topics topics1 blogger-select btn btn-primary select-term form-control bloggerinactive mb20 <%=dselected%> <%=activew%>"  id="<%=blogsiteid%>" ><b><%=bloggerInf%></b></a>
 					    			
 											<%
 											k++;

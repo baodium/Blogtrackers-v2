@@ -45,7 +45,6 @@ $(document).delegate('.topics1', 'click', function(){
 		 
 	 }
 	////////////end collecting names
-	 console.log('total',total);
 	
 	$(".active-term").html(all_selected_names1);
 	/* console.log(freq); */
@@ -71,28 +70,6 @@ $(document).delegate('.topics1', 'click', function(){
 });
 
 
-/*START ON SEARCH FOR TERM*/
-var input = document.getElementById("searchInput");
-
-if(input){
-	input.addEventListener("keyup", function(event) {
-		  if (event.keyCode === 13) {
-		   event.preventDefault();
-		   
-		   var date_start = $("#date_start").val();
-		   var date_end = $("#date_end").val();
-		   
-		   loadBlogMentioned($('#searchInput').val(),date_start, date_end);
-		   loadMostLocation($('#searchInput').val(), date_start, date_end);
-		   loadMostPost($('#searchInput').val(), date_start, date_end);
-		   loadTable($('#searchInput').val(), date_start, date_end, "");
-		   console.log("seun", $('#searchInput').val())
-		   //document.getElementById("myBtn").click();
-		  }
-		});	
-}
-/*END ON  SEARCH FOR TERM*/
-
 
 var r = /a/;
 // console.log(typeof r.test('a')); // true
@@ -100,9 +77,38 @@ var r = /a/;
 
 $('.resetsearch').on("click", function() {
 	$('.searchkeywords').val("");
+	$('.select-term').css("display", "")
 });
 
+
 $('.searchkeywords').on("keyup", function(e) {
+	var valuetype = e.target.value;
+	if (valuetype === "") {
+		$('.select-term').removeClass("hidesection");
+	}
+	
+	mySearchingFunction()
+})
+
+function mySearchingFunction() {
+    var input, filter, ul, li, a, i, txtValue;
+    input = document.getElementById("searchInput");
+    filter = input.value.toUpperCase();
+    $('.select-term').each(function(el, i) {
+        txtValue = $(this).attr('name');
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            $(this).css("display", "")
+        } else {
+        	$(this).css("display", "none")
+        }
+    })
+}
+
+
+
+
+
+$('.searchkeywords1111').on("keyup", function(e) {
 	var valuetype = e.target.value;
 	// console.log(valuetype==="");
 	if (valuetype === "") {
@@ -153,6 +159,7 @@ $('.searchkeywords').on("keyup", function(e) {
  */
 
 function loadGraphData(term) {
+	
 	$.ajax({
 		url : app_url + "KeywordTrend1",
 		method : 'POST',
@@ -169,8 +176,79 @@ function loadGraphData(term) {
 			console.log("error occured graph data" + response);
 		},
 		success : function(response) {
-			console.log('seun2');
-			console.log(response);
+			
+			total_count = 0;
+			for (const property in response.details) {total_count+= response.details[property]}
+			
+			out = Object.keys(response.details).reduce((all, item) => {all.push("'" + item + "':" + response.details[item]); return all}, []).join(", ");
+			
+			overal_holder_length = overal_holder.length;
+			 
+			overal_holder[overal_holder_length] = { name: ""+term+"", details: ""+out+""};
+			
+			build = '<a name="'+term+'" class="topics topics1 btn btn-primary form-control select-term bloggerinactive mb20 size-1 thanks" value="'+total_count+'"><b></b>'+ term +'</a>'
+			
+			$('#new_searched_terms').append(build);
+			
+			////
+///////////////start collecting names
+			 var count = $('.thanks').length;
+			 
+			 if(count > 0){
+				 
+				 var all_selected_names = '';
+				 var all_selected_names1 = '';
+				 var total = 0;
+				 var i = 1;
+				 $( ".thanks" ).each(function( index ) {
+					 
+					 if(i > 1){
+						 all_selected_names += ' , ';
+						 all_selected_names1 += ' , ';
+					 }
+					 
+			    	blog_name = 	$(this).attr('name');
+			    	
+			    	blog_id = 	this.id;
+			    	
+			    	all_selected_names += '"'+blog_name+'"';
+			    	all_selected_names1 += blog_name;
+			    	
+			    	total+=parseInt($(this).attr('value'));
+			    		
+			    	i++;
+				    		
+				});
+				 
+				 
+			 }
+			////////////end collecting names
+			
+			$(".active-term").html(all_selected_names1);
+			
+			$(".keyword-count").html(total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+			
+			
+			////
+			
+			//////initiate graph 
+	        var name = term;
+	        
+	       $('.line_graph').addClass('hidden');
+	       $('#line_graph_loader').removeClass('hidden');
+	       
+	       $("#scroll_list_loader").removeClass("hidden");
+	   	   $("#scroll_list").addClass("hidden");
+	       
+	       $('#chart').html('');
+
+	    	finalGraph();
+			
+			//////end initiate graph
+			
+			
+			
+			
 			return response			
 		}
 	});

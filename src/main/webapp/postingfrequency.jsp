@@ -519,9 +519,9 @@ userinfo = (ArrayList<?>)userinfo.get(0);
   <div class="card-body  p30 pt5 pb5 mb20">
     <h5 class="mt20 mb20">Bloggers</h5>
     <div style="padding-right:10px !important;">
-      <input type="search" class="form-control stylesearch mb20 searchbloggers" placeholder="Search Bloggers" 
-       
-      /></div>
+      <input id="searchInput" type="search" class="form-control stylesearch mb20 searchbloggers inputportfolio2 searchkeywords" placeholder="Search Bloggers" />  
+      <i class="fas fa-times searchiconinputclose cursor-pointer resetsearch"></i> 
+     </div>
       	
       	<div style="height: 250px; padding-right: 10px !important;" id="scroll_list_loader" class="">
 			<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />
@@ -560,7 +560,7 @@ userinfo = (ArrayList<?>)userinfo.get(0);
 												mostactiveblogger = bloggerName;
 												pids = post._getPostIdsByBloggerName("date",dt, dte,"'"+bloggerName+"'","date","DESC");
 												//allterms = term._searchByRange("blogsiteid", dt, dte, blogsiteId);//_searchByRange("blogpostid",dt, dte,postids);
-												System.out.println("Most active blogger:"+mostactiveblogger);
+												//System.out.println("Most active blogger:"+mostactiveblogger);
 												try{
 													allentitysentiments = blogpostsentiment._searchByRange("date", dt, dte, pids);
 													
@@ -568,14 +568,14 @@ userinfo = (ArrayList<?>)userinfo.get(0);
 													
 												}
 												
-												System.out.println("entity--" + allentitysentiments.size());
-												System.out.println("pids--" + pids);
+												//System.out.println("entity--" + allentitysentiments.size());
+												//System.out.println("pids--" + pids);
 												selectedid=blogsiteId; 
 												
 												
 												//allposts = post._getBloggerByBloggerName("date",dt, dte,bloggerName,"date","DESC");	
 												allposts = post._newGetBloggerByBloggerName("date", dt, dte, bloggerName, "DESC");
-												System.out.println("date---"+allposts+ dte+bloggerName+"date"+"DESC"+blogsiteId);
+												//System.out.println("date---"+allposts+ dte+bloggerName+"date"+"DESC"+blogsiteId);
 												
 												
 										}else{
@@ -587,7 +587,7 @@ userinfo = (ArrayList<?>)userinfo.get(0);
 					/>
 	    			<a name="<%=bloggerName%>" value="<%=post_counter %>"
 	    			data-toggle="tooltip" data-placement="top" data-original-title="<%=bloggerName%>"
-	    			 class="topics topics1 blogger-select btn btn-primary form-control bloggerinactive mb20 <%=activew %> <%=dselected%>" style="overflow:hidden;"  id="<%=blogsiteId%>" ><b><%=bloggerName%></b></a>
+	    			 class="topics topics1 blogger-select btn btn-primary select-term form-control bloggerinactive mb20 <%=activew %> <%=dselected%>" style="overflow:hidden;"  id="<%=blogsiteId%>" ><b><%=bloggerName%></b></a>
 	    			<% 
 					//JSONObject jsonObj = bloggersort.getJSONObject(m);
 				}

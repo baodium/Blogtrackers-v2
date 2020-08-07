@@ -699,6 +699,7 @@ public class Clustering extends HttpServlet {
 		ConcurrentHashMap<String, String> datatuple2 = new ConcurrentHashMap<String, String>();
 		ConcurrentHashMap<String, ConcurrentHashMap<String, String>> datatuple3 = new ConcurrentHashMap<String, ConcurrentHashMap<String, String>>();
 
+		
 //		Map<String, Integer> d = Collections.synchronizedMap(new HashMap<String, Integer>());
 		ConcurrentHashMap<String, Integer> d = new ConcurrentHashMap<String, Integer>();
 		StringBuffer buffer = new StringBuffer();
