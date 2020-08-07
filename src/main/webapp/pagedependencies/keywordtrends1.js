@@ -160,6 +160,12 @@ $('.searchkeywords1111').on("keyup", function(e) {
 
 function loadGraphData(term) {
 	
+	$('.line_graph').addClass('hidden');
+    $('#line_graph_loader').removeClass('hidden');
+    
+    $("#scroll_list_loader").removeClass("hidden");
+	$("#scroll_list").addClass("hidden");
+	
 	$.ajax({
 		url : app_url + "KeywordTrend1",
 		method : 'POST',
@@ -225,31 +231,16 @@ function loadGraphData(term) {
 			////////////end collecting names
 			
 			$(".active-term").html(all_selected_names1);
-			
 			$(".keyword-count").html(total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-			
 			
 			////
 			
 			//////initiate graph 
-	        var name = term;
-	        
-	       $('.line_graph').addClass('hidden');
-	       $('#line_graph_loader').removeClass('hidden');
-	       
-	       $("#scroll_list_loader").removeClass("hidden");
-	   	   $("#scroll_list").addClass("hidden");
-	       
 	       $('#chart').html('');
 
 	    	finalGraph();
-			
 			//////end initiate graph
-			
-			
-			
-			
-			return response			
+					
 		}
 	});
 }

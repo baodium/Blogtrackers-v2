@@ -42,7 +42,7 @@ if(action.toString().equals("getsentimenttable")){
 %>
 <link rel="stylesheet" href="assets/css/table.css" />
 <link rel="stylesheet" href="assets/css/style.css" />
-<table id="DataTables_Table_1_wrapper" class="display" style="width:100%">
+<table id="DataTables_Table_1_wrapper" class="table_over_cover display" style="width:100%">
                                 <thead>
                                     <tr>
                                         <th>Entity</th>
