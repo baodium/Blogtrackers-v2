@@ -548,9 +548,9 @@ userinfo = (ArrayList<?>)userinfo.get(0);
 									p++;
 									
 									
-									total += Integer.parseInt(bloggerPostFreq);
-									post_counter = bloggerPostFreq;
-									//post_counter =  post._searchRangeTotalByBlogger("date", dt, dte, bloggerName);
+									//total += Integer.parseInt(bloggerPostFreq);
+									post_counter = post._searchRangeTotalByBlogger("date", dt, dte, bloggerName);
+									total +=  Integer.parseInt(post_counter);
 									
 									String formatedtotalpost_counter = NumberFormat.getNumberInstance(Locale.US).format(Integer.parseInt(post_counter));
 									
