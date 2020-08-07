@@ -520,7 +520,7 @@ userinfo = (ArrayList<?>)userinfo.get(0);
     <h5 class="mt20 mb20">Bloggers</h5>
     <div style="padding-right:10px !important;">
       <input id="searchInput" type="search" class="form-control stylesearch mb20 searchbloggers inputportfolio2 searchkeywords" placeholder="Search Bloggers" />  
-      <i class="fas fa-times searchiconinputclose cursor-pointer resetsearch"></i> 
+      <!-- <i class="fas fa-times searchiconinputclose cursor-pointer resetsearch"></i>  -->
      </div>
       	
       	<div style="height: 250px; padding-right: 10px !important;" id="scroll_list_loader" class="">

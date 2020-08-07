@@ -47,7 +47,6 @@ $(document).delegate('.topics1', 'click', function(){
 	////////////end collecting names
 	
 	$(".active-term").html(all_selected_names1);
-	/* console.log(freq); */
 	
 	$(".keyword-count").html(total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
 
@@ -55,7 +54,8 @@ $(document).delegate('.topics1', 'click', function(){
 	//$("#term").val(all_selected_names);
 	$('#d3-line-basic').html('');
 	$("#term").val(all_selected_names);
-	console.log("terms", $("#term").val());
+	
+	
 	/* $("#term_id").val(term_id); */
 	loadBlogMentioned($("#term").val(),date_start, date_end);
 	
@@ -68,6 +68,66 @@ $(document).delegate('.topics1', 'click', function(){
 
 	loadTable($("#term").val(), date_start, date_end, all_selected_names1);
 });
+
+
+/*START ON SEARCH FOR TERM*/
+$('#searchInput').keydown(function(e) {
+	var key = e.which;
+	if (key == 13) {
+			e.preventDefault();
+		   
+		   var date_start = $("#date_start").val();
+		   var date_end = $("#date_end").val();
+		   
+		  
+///////////////start collecting names
+			 var count = $('.thanks').length;
+			 
+			 if(count > 0){
+				 
+				 var all_selected_names = '';
+				 var all_selected_names1 = '';
+				 var total = 0;
+				 var i = 1;
+				 $( ".thanks" ).each(function( index ) {
+					 
+					 if(i > 1){
+						 all_selected_names += ' , ';
+						 all_selected_names1 += ' , ';
+					 }
+					 
+			    	blog_name = 	$(this).attr('name');
+			    	
+			    	blog_id = 	this.id;
+			    	
+			    	all_selected_names += '"'+blog_name+'"';
+			    	all_selected_names1 += blog_name;
+			    	
+			    	i++;
+				    		
+				});
+				 
+				 
+			 }
+			////////////end collecting names
+			
+		  var final_terms = all_selected_names+',"'+$('#searchInput').val()+'"';
+		  var final_terms1 = all_selected_names1+','+$('#searchInput').val();
+		  
+		  $("#term").val(final_terms);
+		  $(".active-term").html(final_terms1);
+		   
+		   loadGraphData($('#searchInput').val());
+			 
+		   loadBlogMentioned($('#term').val(),date_start, date_end);
+		   loadMostLocation($('#term').val(), date_start, date_end);
+		   loadMostPost($('#term').val(), date_start, date_end);
+		   loadTable($('#term').val(), date_start, date_end, "");
+		   
+		   $('.searchkeywords').val("");
+	}
+	});
+/*END ON  SEARCH FOR TERM*/
 
 
 
@@ -158,6 +218,16 @@ $('.searchkeywords1111').on("keyup", function(e) {
  * }); }
  */
 
+
+function isObjEmpty(obj) {
+    for(var key in obj) {
+        if(obj.hasOwnProperty(key))
+            return false;
+    }
+    return true;
+}
+
+
 function loadGraphData(term) {
 	
 	$('.line_graph').addClass('hidden');
@@ -183,63 +253,94 @@ function loadGraphData(term) {
 		},
 		success : function(response) {
 			
-			total_count = 0;
-			for (const property in response.details) {total_count+= response.details[property]}
-			
-			out = Object.keys(response.details).reduce((all, item) => {all.push("'" + item + "':" + response.details[item]); return all}, []).join(", ");
-			
-			overal_holder_length = overal_holder.length;
-			 
-			overal_holder[overal_holder_length] = { name: ""+term+"", details: ""+out+""};
-			
-			build = '<a name="'+term+'" class="topics topics1 btn btn-primary form-control select-term bloggerinactive mb20 size-1 thanks" value="'+total_count+'"><b></b>'+ term +'</a>'
-			
-			$('#new_searched_terms').append(build);
-			
-			////
-///////////////start collecting names
-			 var count = $('.thanks').length;
-			 
-			 if(count > 0){
-				 
-				 var all_selected_names = '';
-				 var all_selected_names1 = '';
-				 var total = 0;
-				 var i = 1;
-				 $( ".thanks" ).each(function( index ) {
-					 
-					 if(i > 1){
-						 all_selected_names += ' , ';
-						 all_selected_names1 += ' , ';
-					 }
-					 
-			    	blog_name = 	$(this).attr('name');
-			    	
-			    	blog_id = 	this.id;
-			    	
-			    	all_selected_names += '"'+blog_name+'"';
-			    	all_selected_names1 += blog_name;
-			    	
-			    	total+=parseInt($(this).attr('value'));
-			    		
-			    	i++;
-				    		
-				});
-				 
-				 
-			 }
-			////////////end collecting names
-			
-			$(".active-term").html(all_selected_names1);
-			$(".keyword-count").html(total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-			
-			////
-			
-			//////initiate graph 
-	       $('#chart').html('');
+			if(isObjEmpty(response.details)) {
+				
+				$('.line_graph').removeClass('hidden');
+			    $('#line_graph_loader').addClass('hidden');
+			    
+			    $("#scroll_list_loader").addClass("hidden");
+				$("#scroll_list").removeClass("hidden");
+				
+				toastr.warning("We are Sorry",'We could not find any data for this term on this tracker',
+						{
+						    allowHtml: true,
+						    closeButton: true,
+						    showMethod: 'show',
+						    positionClass: 'toast-page-center toaster1',
+						    closeHtml: '<button type="button">&times;</button>',
+						    showDuration: 0,
+						    tapToDismiss: false,
+						    closeOnHover: false,
+						    timeOut: 0,
+						    onclick: function (toast) { toastr.remove();}
 
-	    	finalGraph();
-			//////end initiate graph
+						})
+				
+			} else {
+			    // Object is NOT empty
+				total_count = 0;
+				for (const property in response.details) {total_count+= response.details[property]}
+				
+				out = Object.keys(response.details).reduce((all, item) => {all.push("'" + item + "':" + response.details[item]); return all}, []).join(", ");
+				
+				overal_holder_length = overal_holder.length;
+				 
+				overal_holder[overal_holder_length] = { name: ""+term+"", details: ""+out+""};
+				
+				build = '<a name="'+term+'" class="topics topics1 btn btn-primary form-control select-term bloggerinactive mb20 size-1 thanks" value="'+total_count+'"><b></b>'+ term +'</a>'
+				
+				$('#new_searched_terms').append(build);
+				
+				////
+	///////////////start collecting names
+				 var count = $('.thanks').length;
+				 
+				 if(count > 0){
+					 
+					 var all_selected_names = '';
+					 var all_selected_names1 = '';
+					 var total = 0;
+					 var i = 1;
+					 $( ".thanks" ).each(function( index ) {
+						 
+						 if(i > 1){
+							 all_selected_names += ' , ';
+							 all_selected_names1 += ' , ';
+						 }
+						 
+				    	blog_name = 	$(this).attr('name');
+				    	
+				    	blog_id = 	this.id;
+				    	
+				    	all_selected_names += '"'+blog_name+'"';
+				    	all_selected_names1 += blog_name;
+				    	
+				    	total+=parseInt($(this).attr('value'));
+				    		
+				    	i++;
+					    		
+					});
+					 
+					 
+				 }
+				////////////end collecting names
+				
+				$(".active-term").html(all_selected_names1);
+				$(".keyword-count").html(total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+				
+				////
+				
+				//////initiate graph 
+		       $('#chart').html('');
+
+		    	finalGraph();
+				//////end initiate graph
+			}
+			
+			
+			
+			
+			
 					
 		}
 	});

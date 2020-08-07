@@ -687,6 +687,8 @@
 
 <link rel="stylesheet" href="assets/css/daterangepicker.css" />
 <link rel="stylesheet" href="assets/css/style.css" />
+<link rel="stylesheet" href="assets/css/toastr.css" />
+
 
 <link rel="stylesheet" type="text/css" href="multiline.css">
 
@@ -1514,6 +1516,7 @@
 		src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.html5.min.js"></script>
 	<script
 		src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.print.min.js"></script>
+		<script type="text/javascript" src="assets/js/toastr.js"></script>
 	<script src="pagedependencies/baseurl.js?v=38"></script>
 
 	<script>
@@ -1755,36 +1758,10 @@ $(document).ready(function() {
 
 
 
-<script src="pagedependencies/keywordtrends1.js"></script>
-
 
 	<script>
     
- /////////////////////////////////////////////////////
- 
-/*START ON SEARCH FOR TERM*/
-$('#searchInput').keydown(function(e) {
-	var key = e.which;
-	if (key == 13) {
-			e.preventDefault();
-		   
-		   var date_start = $("#date_start").val();
-		   var date_end = $("#date_end").val();
-		   
-		   loadGraphData($('#searchInput').val());
-			 
-		   loadBlogMentioned($('#searchInput').val(),date_start, date_end);
-		   loadMostLocation($('#searchInput').val(), date_start, date_end);
-		   loadMostPost($('#searchInput').val(), date_start, date_end);
-		   loadTable($('#searchInput').val(), date_start, date_end, "");
-		   
-		   $('.searchkeywords').val("");
-	}
-	});
-/*END ON  SEARCH FOR TERM*/
- 
- 
- 
+ ///////////////////////////////////////////////////// 
  var overal_holder = [];
 	
 	<% int pj = 0; 
@@ -1794,8 +1771,6 @@ $('#searchInput').keydown(function(e) {
 		
 	<% pj++; } %>
 	
-	console.log('overalls')
-	console.log(overal_holder)
  //////start time converting function
  	
  function convertTime(str) {
