@@ -479,8 +479,8 @@ if (detail.size() > 0) {
 					<a class="breadcrumb-item active text-primary" href="postingfrequency.html">Topic Distribution</a>
 				</nav> -->
 		<div>
-					<button class="btn btn-primary stylebutton1 " id="printdoc">SAVE
-						AS PDF</button>
+					<!-- <button class="btn btn-primary stylebutton1 " id="printdoc">SAVE
+						AS PDF</button> -->
 				</div> 
 			</div>
 		</div>

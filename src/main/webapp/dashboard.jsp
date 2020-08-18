@@ -2333,9 +2333,9 @@ var treeData =
 };
 
 // Set the dimensions and margins of the diagram
-var margin = {top: 50, right: 90, bottom: 30, left: 90},
+var margin = {top: 50, right: 90, bottom: 25, left: 90},
     width =  $('#scatter-container').width() - margin.left - margin.right,
-    height = $('#scatter-container1').height() - margin.top - margin.bottom;
+    height = $('#scatter-container1').height() - 25;
 	
 //var plot_width = $('#scatter-container').width();
 //var height = $('#scatter-container1').height() - 25;
@@ -2352,7 +2352,7 @@ var widthScale = d3.scaleLinear()
 // moves the 'group' element to the top left margin
 var svg = d3.select("#narrative_analysis").append("svg")
     .attr("width", width + margin.right + margin.left)
-    .attr("height", height + margin.top + margin.bottom)
+    .attr("height", height)
   .append("g")
     .attr("transform", "translate("
           + margin.left + "," + margin.top + ")");
@@ -2624,8 +2624,8 @@ function update(source) {
 					radius = 6;
 					
 					
-			
-		   var colors = d3v4.scaleOrdinal().range(["green", "red", "blue", "orange", "purple", "pink", "black", "grey", "brown", "yellow"]);;
+		
+		   var colors = d3v4.scaleOrdinal().range(["#6b085e", "#e50471", "#0571a0", "#038a2c", "#6b8a03", "#a02f05", "#b770e1", "#fc8f82 ", "#011aa7", "#a78901"]);;
 		   // Add SVG element
 		   var container = d3Container.append("svg");
 		   // Add SVG group
@@ -3617,6 +3617,10 @@ $(function () {
               .selectAll("text")
               .style("font-size",12)
               .style("text-transform","capitalize")
+              .attr("data-toggle", "tooltip")
+		      .attr("data-placement", "top")
+		      .attr("title", function (d) {  return d; })
+		      
    			/* .attr("y", -25)
     		.attr("x", 20)
     		.attr("dy", ".75em")
@@ -5985,6 +5989,7 @@ $(".option-lable").on("click",function(e){
 			success: function(response)
 			{   
 				$("#influencecontainer").html(response);
+				$('[data-toggle="tooltip"]').tooltip();
 			}
 		});
 		

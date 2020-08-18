@@ -1363,7 +1363,7 @@
 							<button class="btn stylebuttonnocolor nocursor">
 								<b class="float-left ultra-bold-text"> <%-- <%=tobj.get("num_comments")%> --%>
 									<%=singleComments%> comments
-								</b><i class="far fa-comments float-right blogcontenticon"></i>
+								</b> &nbsp; <i class="far fa-comments float-right blogcontenticon"></i>
 							</button>
 						</div>
 						<div style="height: 600px;">

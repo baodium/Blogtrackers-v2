@@ -924,7 +924,7 @@ import java.io.OutputStreamWriter; -->
 
 <div class="col-md-2 text-right">
 <!-- <small class="text-primary cursor-pointer"><a href="">Visit Blog</a></small> --><br/>
-<a id="blog_url_link" href="http://<%=mostactiveblogurl%>" target="_blank"><button class="btn buttonportfolio"><b class="float-left active-blog styleactiveblog"><%=mostactiveblog %></b> <b class="fas fa-location-arrow float-right iconportfolio"></b></button></a>
+<a id="blog_url_link" href="http://<%=mostactiveblogurl%>" target="_blank"><button class="btn buttonportfolio"><b style="text-transform: none;" class="float-left active-blog styleactiveblog"><%=mostactiveblog %></b> <b class="fas fa-location-arrow float-right iconportfolio"></b></button></a>
 </div>
  <!--  <div class="col-md-3">
   <small class="text-primary">Find Blog</small>

@@ -26,10 +26,16 @@
     --reddish: #fd4444;
     --yellowish: #FFF474;
     --whitish: white;
-    --blueishDark: #17394C;
+    --blueishDark: rgb(23, 57, 76);
     --greyishLight: #F8F8F8;
     --greenish: #5FAA78;
+    --blueishLight: rgb(198, 234, 255);
     --yellow: yellow;
+    --yellowLight: rgb(255, 255, 223);
+    --blue: rgb(0, 162, 255);
+    --blackishTransparent2: rgba(0, 0, 0, 0.2);
+    --blueishDarkScroll: rgba(23, 57, 76, 0.8);
+    --blueishDarkScrollHover: rgba(23, 57, 76, 1);
 
     /* radius */
 
@@ -84,6 +90,8 @@ a:hover {
     margin: 0;
     padding: 0;
     box-sizing: inherit;
+    -ms-overflow-style: none;
+    scrollbar-width: none !important;
 
 }
 
@@ -93,6 +101,62 @@ ul {
 
 }
 
+body.freeze {
+
+    overflow: hidden;
+    
+}
+
+button {
+
+    background-color: transparent;
+    border: 0px;
+    outline: 0px;
+    cursor: hand;
+    cursor: pointer;
+
+}
+
+span.highlighter {
+
+    background-color: var(--blueishLight);
+
+}
+
+/** Search **/
+
+form#search {
+
+    margin: 0px auto;
+    margin-top: 50px;
+    max-width: 500px;
+    padding: 0px 10px;
+ 
+ }
+ 
+ form#search label {
+ 
+    display: none;
+ 
+ }
+ 
+ form#search input#searchBox {
+ 
+     border-radius: var(--radius25);
+     border: 2px solid var(--blackishTransparent2);
+     width: 100%;
+     font-size: 22px;
+     color: var(--blueishDark);
+     padding: 10px 20px;
+     outline: none;
+     text-align: center;
+
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+ 
+ }
+
 /** Narrative Tree **/
 
 ul#narrativeTree {
@@ -101,6 +165,7 @@ ul#narrativeTree {
     margin: 0px auto;
     margin-top: 50px;
     padding: 0px 10px;
+    padding-bottom: 30px;
 
 }
 
@@ -114,11 +179,17 @@ ul#narrativeTree li.level div.keyword {
 
     display: inline-block;
     font-size: 18px;
-    font-weight: 500;
+    font-weight: 600;
     background-color: var(--yellowish);
     padding: 10px 18px;
     border-radius: var(--radius25);
     cursor: pointer;
+
+}
+
+ul#narrativeTree li.level div.keyword:hover {
+
+    background-color: var(--blueishLight);
 
 }
 
@@ -146,6 +217,12 @@ ul#narrativeTree li.level.uncollapse div.keyword div.collapseIcon {
 }
 
 ul#narrativeTree li.level ul.narratives li.narrative {
+
+    display: none;
+
+}
+
+ul#narrativeTree li.level.uncollapse ul.narratives li.narrative.hidden {
 
     display: none;
 
@@ -212,11 +289,27 @@ ul#narrativeTree li.level ul.narratives li.narrative.last div.middleSection div.
 
 }
 
+ul#narrativeTree li.level ul.narratives li.narrative.more div.middleSection div.narrativeTextWrapper p.narrativeText {
+
+    font-weight: 600;
+    font-size: 18px;
+
+}
+
 ul#narrativeTree li.level ul.narratives li.narrative div.middleSection p.narrativeText {
 
     font-size: 18px;
+    /* padding: 5px 5px; */
+    opacity: 1;
+    border-radius: var(--radius5);
     transition: font-size .2s ease;
     cursor: pointer;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative div.middleSection p.narrativeText:hover {
+
+    background-color: var(--blueishLight);
 
 }
 
@@ -225,6 +318,38 @@ ul#narrativeTree li.level ul.narratives li.narrative.open div.middleSection p.na
     font-size: 30px;
     line-height: 30px;
     font-weight: 600;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative div.middleSection p.counter {
+
+    display: inline-flex;
+    font-size: 16px;
+    font-weight: 500;
+    border-radius: var(--radius25);
+    border: 1px solid var(--blueishDark);
+    padding: 3px 8px;
+    margin-top: 10px;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative.open div.middleSection p.counter {
+
+    /* background-color: var(--blueishDark);
+    color: var(--whitish); */
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative div.middleSection div.narrativeTextWrapper:hover p.counter {
+
+    /* background-color: var(--blueishDark);
+    color: var(--whitish); */
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative div.middleSection p.counter span.number {
+
+    margin-right: 5px;
 
 }
 
@@ -246,11 +371,35 @@ ul#narrativeTree li.level ul.narratives li.narrative.open div.bottomSection div.
     display: block;
     position: absolute;
     top: 20px;
-    height: 300px;
-    overflow: auto;
+    overflow-x: scroll;
+    -ms-overflow-style: auto;
+    scrollbar-width: auto !important;
     white-space: nowrap;
     width: calc(50vw + 220px);
+    padding-bottom: 4px;
 
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative.open div.bottomSection div.posts::-webkit-scrollbar {
+    -webkit-appearance: none;
+    height: 8px;
+    width: 7px;
+    cursor: pointer;
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative.open div.bottomSection div.posts::-webkit-scrollbar-thumb {
+    border-radius: 25px;
+    background-color: var(--blueishDarkScroll);
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative.open div.bottomSection div.posts::-webkit-scrollbar-thumb:hover {
+    background-color: var(--blueishDarkScrollHover);
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative.open div.bottomSection div.posts::-webkit-scrollbar-track {
+    background-color: rgba(0,0,0,0);
+    height: 2px;
+    width: 7px;
 }
 
 ul#narrativeTree li.level ul.narratives li.narrative div.bottomSection div.posts {
@@ -266,6 +415,13 @@ ul#narrativeTree li.level ul.narratives li.narrative.open div.bottomSection div.
     height: 280px;
     background-color: var(--greyishLight);
     border-radius: var(--radius15);
+    cursor: pointer;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative.open div.bottomSection div.posts div.post:hover {
+
+    background-color: var(--blueishLight);
 
 }
 
@@ -312,12 +468,274 @@ ul#narrativeTree li.level ul.narratives li.narrative.open div.bottomSection div.
 
 }
 
+/* Notifications */
+
+section#notifications {
+
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    position: fixed;
+    bottom: 0px;
+    background-color: var(--blue);
+    color: var(--whitish);
+    text-align: center;
+    
+    padding-top: 5px;
+    padding-bottom: 5px;
+    z-index: 10;
+
+}
+
+/* More Info Modal */
+
+section#moreInfoModal {
+
+    display: none;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    justify-content: center;
+    z-index: 1000;
+
+}
+
+section#moreInfoModal.displayed {
+
+    display: flex;
+
+}
+
+section#moreInfoModal div#shadow {
+
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--blackishTransparent2);
+    opacity: 0.5;
+    
+}
+
+section#moreInfoModal div#messageBox {
+
+    position: fixed;
+    margin: 0px auto;
+    align-self: center;
+    height: 95vh;
+    width: calc(95vh / 1.3);
+    max-width: 500px;
+    max-height: 770px;
+    overflow: scroll;
+    padding-bottom: 30px;
+    background-color: var(--whitish);
+    border-radius: 15px;
+    
+}
+
+section#moreInfoModal div#messageBox button#closeButton {
+
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 36px;
+    height: 36px;
+    background-image: var(--interface);
+    background-position: -474px -427px;
+    
+}
+
+section#moreInfoModal div#messageBox button#closeButton:hover {
+
+
+    /* background-position-x: -520px; */
+    
+}
+
+/** Misinfo **/
+
+section#moreInfoModal div#messageBox div#messageContent img.postImageModal {
+
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    border-radius: var(--radius15) var(--radius15) 0px 0px;
+
+}
+
+section#moreInfoModal div#messageBox div#messageContent {
+
+    overflow: scroll;
+    
+}
+
+section#moreInfoModal div#messageBox div#messageContent div.detailsWrapper {
+
+    padding: 40px;
+    
+}
+
+section#moreInfoModal div#messageBox p#title {
+
+    font-size: 36px;
+    line-height: 36px;
+    font-weight: 600;
+
+}
+
+section#moreInfoModal div#messageBox p#title span#tag {
+
+    color: var(--reddish);
+
+}
+
+section#moreInfoModal div#messageBox ul#details {
+
+    margin-top: 20px;
+    list-style: none;
+    opacity: 0.6;
+
+}
+
+section#moreInfoModal div#messageBox ul#details div.detailsIcon {
+
+    display: inline-block;
+    width: 20px;
+    height: 26px;
+    background-image: var(--interface);
+
+}
+
+section#moreInfoModal div#messageBox ul#details li {
+
+    display: inline-block;
+    margin-right: 10px;
+    height: 20px;
+    overflow: hidden;
+
+}
+
+section#moreInfoModal div#messageBox ul#details li p {
+
+    display: inline-block;
+    vertical-align: top;
+
+}
+
+/** Debunk Date **/
+
+section#moreInfoModal div#messageBox ul#details li#debunkDate div#icon {
+
+    background-position: -454px -272px;
+
+}
+
+/** Debunked By **/
+
+section#moreInfoModal div#messageBox ul#details li#debunkedBy div#icon {
+
+    background-position: -477px -272px;
+    transform: scale(0.9);
+
+}
+
+/** Published **/
+
+section#moreInfoModal div#messageBox ul#details li#published {
+
+    display: none;
+
+}
+
+section#moreInfoModal div#messageBox ul#details li#published div#icon {
+
+    background-position: -503px -273px;
+
+}
+
+/** Location **/
+
+section#moreInfoModal div#messageBox ul#details li#location div#icon {
+
+    width: 15px;
+    background-position: -558px -273px;
+
+}
+
+/** Description **/
+
+section#moreInfoModal div#messageBox p#description {
+
+    margin-top: 30px;
+
+}
+
+/** Sources **/
+
+section#moreInfoModal div#messageBox div#sources {
+
+    margin-top: 30px;
+
+}
+
+section#moreInfoModal div#messageBox div#sources p {
+
+    display: inline-block;
+    vertical-align: top;
+    font-weight: 500;
+    word-wrap: break-word;
+    word-break: break-all;
+
+}
+
+section#moreInfoModal div#messageBox li#Source div.detailsIcon {
+
+    display: inline-block;
+    width: 19px;
+    height: 32px;
+    background-image: var(--interface);
+
+}
+
+section#moreInfoModal div#messageBox li#Source div.detailsIcon {
+
+    background-position: -578px -270px;
+
+}
+
+section#moreInfoModal div#messageBox div#messageContent {
+
+    overflow: scroll;
+    height: 100%;
+    
+}
+
 @media only screen and (max-width: 500px) {
 
     ul#narrativeTree li.level ul.narratives li.narrative.open div.bottomSection div.posts {
 
         width: 100%;
     
+    }
+
+    /** More Information Modal **/
+
+    section#moreInfoModal div#messageBox {
+
+        width: 100vw;
+        height: 100vh;
+        max-height: 1000px;
+        
+    }
+
+    section#moreInfoModal div#messageBox div#messageContent div.detailsWrapper {
+
+        padding: 30px;
+        
+    }
+
+    section#moreInfoModal div#messageBox div#messageContent {
+
+        padding-bottom: 100px;
+        
     }
 
 }
