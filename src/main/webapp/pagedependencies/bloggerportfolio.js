@@ -30,6 +30,7 @@ $('#blogger-changed').on("change", function(){
 	
 	
 	var blog_id = blg[0];
+	//alert(blog_id)
 	
 	$(".active-blog").html(blg[1]);
 	$("#blogger").val(blg[1]);

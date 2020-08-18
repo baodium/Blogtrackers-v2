@@ -18,6 +18,7 @@ String pi = request.getScheme() + "://" + request.getServerName() + ":" + reques
 
 
 System.out.println("INDEX--" + request.getHeader("referer"));
+//request.getHeader("referer").toString();
 
 /*  if(request.getHeader("referer").equals(null)){
 	session.invalidate();
