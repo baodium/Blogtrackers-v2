@@ -469,8 +469,9 @@ if(results.size()>0){
       </tbody>   
 </table>
 </div>
+<% if(all_loaded_blogs != ""){ %>
 <button type="button" class="btn btn-success homebutton p50 pt10 pb10" id="select_all">Select all</button> 
-
+<% } %>
 <div class="card-columns pt0 pb10  mt20 mb50 gridlook hidden" id="appendee">
 
 <% 
@@ -640,13 +641,14 @@ src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.print.min.js"></script>
 
 var all_loaded_blogs = [<%=all_loaded_blogs %>];
 var all_loaded_blogs_name = <%=all_loaded_blogs_name %>;
-console.log(all_loaded_blogs)
-console.log(all_loaded_blogs_name)
 
 var array_to_send = [];
 var array_of_all_blogs = new Map();
+if(all_loaded_blogs.length > 0){
+	all_loaded_blogs_name.forEach((all_loaded_blogs_name)=>array_of_all_blogs.set(parseInt(all_loaded_blogs_name._source.blogsite_id), ""+all_loaded_blogs_name._source.blogsite_name+"") );
+}
 
-all_loaded_blogs_name.forEach((all_loaded_blogs_name)=>array_of_all_blogs.set(parseInt(all_loaded_blogs_name._source.blogsite_id), ""+all_loaded_blogs_name._source.blogsite_name+"") );
+
 
 function remove_array_element(array, n)
 {
@@ -760,15 +762,22 @@ $(document).on("click",".trackblog",function(e){
 if($(this).hasClass('active_selection')){
 	$(this).removeClass('active_selection');
 	blog_id = $(this).attr('blog_identify');
+	blog_name = $(this).attr('blog_name_identify');
 	active_selected = true;
 	
 }else{
 	$(this).addClass('active_selection');
 	blog_id = $(this).attr('blog_identify');
+	blog_name = $(this).attr('blog_name_identify');
 	active_selected = false;
 	
 }
-console.log(blog_id)
+
+
+if(array_of_all_blogs.has(blog_id) == false){
+	array_of_all_blogs.set(parseInt(blog_id), ""+blog_name+"")	
+}
+
 
 if(!active_selected)
 {
