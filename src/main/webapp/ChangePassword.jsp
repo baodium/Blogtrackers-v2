@@ -1,12 +1,12 @@
 <%@page import="authentication.*"%>
 <%
-	Object email = (null == session.getAttribute("email")) ? "" : session.getAttribute("email");
+	/* Object email = (null == session.getAttribute("email")) ? "" : session.getAttribute("email"); */
 	/* System.out.println("Email is " + email); */
 	/* 	if (email != null && email != "") {
 			response.sendRedirect("dashboard.jsp");
 		} */
 
-	/* Object email = request.getAttribute("email"); */
+ Object email = request.getAttribute("email"); 
 	System.out.println("Email is " + email);
 %>
 
@@ -101,11 +101,10 @@
                         <br />
 
                         <div class="form-group">
-                            <b>OLD PASSWORD</b> <input type="password"
+                            <b>ENTER TEMPORARY PASSWORD</b> <input type="password" value=""
                                 class="form-control curved-form-login text-primary" required="required"
                                 autocomplete="off" required="required" id="password" name = placeholder="Password">
-                            <div class="invalid-feedback">Please enter your old
-                                password</div>
+                            <div class="invalid-feedback">Please enter temporary password sent to email</div>
                             <!-- <input type="password" id="password2" required="required"
                                 class="form-control curved-form-login text-primary" placeholder="Re-type Password"> -->
                             <br /> <b>NEW PASSWORD</b> <input type="password"
@@ -277,13 +276,13 @@
 			capital = document.getElementById("capital").className;
 			number = document.getElementById("number").className;
             
-            console.log("vl--"+valueintext);
+            /* console.log("vl--"+valueintext);
             console.log("EMAIL--"+email);
             console.log("password--"+oldpassword);
             console.log("newpassword--"+newpassword);
             console.log("confirmpassword--"+confirmpassword);
             
-            console.log("lengthclass--"+length);
+            console.log("lengthclass--"+length); */
             
             
             
@@ -322,6 +321,7 @@
                                 console.log("RESPONSE FOR SUCCESS--"+response);
                                 var statuss = response;// .responseText;
                                 // console.log(login_status);
+                                //alert(statuss)
                                 if (statuss === "success") {
                                     toastr.success(
                                             'Profile successfully updated!',
@@ -338,7 +338,7 @@
                                     %>
                                     return false;
                         		} else {
-                                    toastr.error('Old password is not valid!', 'Invalid');
+                                    toastr.error('Temporary password is not valid! Please check email for new one', 'Invalid');
                                     return false;
                                 }
 

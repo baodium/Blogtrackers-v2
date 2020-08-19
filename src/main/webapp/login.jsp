@@ -7,20 +7,11 @@ String p = request.getScheme() + "://" + request.getServerName() + ":" + request
 
 System.out.println("LOGIN--" + request.getHeader("referer"));
 System.out.println("LOGIN_EMAIL--" + email);
-	if (email != null && email != "") {
+ //email = null;
+	/* if (email != null && email != "") {
 		response.sendRedirect("dashboard.jsp");		
-	} 
-	/* else if (request.getHeader("referer").equals(p +"/forgotpassword.jsp")){
-		response.sendRedirect("ChangePassword.jsp");
 	}  */
-	/* else if (request.getHeader("referer").equals(p +"/ChangePassword.jsp")){
-		session.invalidate();
-		response.sendRedirect("ChangePassword.jsp");
-	} */
-	/* else if (request.getHeader("referer").equals(p +"/ChangePassword.jsp")){
-		session.invalidate();
-		response.sendRedirect("ChangePassword.jsp");
-	} */
+	
 %>
 
 <!DOCTYPE html>
@@ -254,7 +245,7 @@ System.out.println("LOGIN_EMAIL--" + email);
 					signin : "yes",
 				},
 				error : function(response) {
-
+					alert('error')
 				},
 				success : function(response) {
 					toastr.success('Login successfull!', 'Success');

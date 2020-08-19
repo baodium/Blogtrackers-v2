@@ -64,7 +64,7 @@ public class Resetpassword extends HttpServlet {
 		if (submitted != null && submitted.equals("yes")) {
 			try {
 				String email = request.getParameter("email");
-				session.setAttribute("email",email);
+				
 				// System.out.println(email);
 				ArrayList prev = dbinstance.query("SELECT * FROM usercredentials WHERE Email = '" + email + "'");
 				// prev = (ArrayList)prev.get(0);
@@ -79,22 +79,26 @@ public class Resetpassword extends HttpServlet {
 							"UPDATE usercredentials SET password  = '" + pass + "' WHERE Email = '" + email + "'");
 					if (updated) {
 						
-						session.setAttribute("success_message",
-								"A mail has been sent to " + email + " containing your login information");
-						
 						try {
 							
 							Mailing.postMail(receivers, "Blogtrackers - Password Reset Information", "Hello "
-									+ prev.get(0) +"YOU ARE A BIG BOY"
+									+ prev.get(0)
 									+ ", <br/><br/> Please note that your password has been changed to <b>" + pass
-									+ "</b>. <br/>You are strongly advised to change your password after first login. <br/>Kindly login at <a href='http://localhost:8080/Blogtrackers/login.jsp'> Blogtrackers </a><br/><br/> Thanks for using Blogtrackers");
+									+ "</b>. <br/>You are strongly advised to change your password after first login. <br/>Kindly login at <a href='https://btracker.host.ualr.edu/login.jsp'> Blogtrackers </a><br/><br/> Thanks for using Blogtrackers");
+							
+							session.setAttribute("success_message",
+									"A mail has been sent to " + email + " containing your login information");
+							//session.setAttribute("email",email);
 							request.setAttribute("email", email);
 							request.getRequestDispatcher("ChangePassword.jsp").forward(request, response);
-							response.sendRedirect("forgotpassword.jsp");
+							//response.sendRedirect("forgotpassword.jsp");
+							
 							
 						} catch (Exception e) {
-							response.setContentType("text/html");
-							response.sendRedirect("login.jsp");
+//							response.setContentType("text/html");
+//							response.sendRedirect("login.jsp");
+							session.setAttribute("error_message", "Password cannot be changed at this time. Please try again later");
+							response.sendRedirect("forgotpassword.jsp");
 						}
 					} else {
 						session.setAttribute("error_message", "invalid operation");
@@ -160,19 +164,26 @@ public class Resetpassword extends HttpServlet {
 			            
 //			            session.invalidate();
 			            
+//			            request.getRequestDispatcher("login.jsp").forward(request, response);
+//			            response.setHeader("refresh", "login.jsp");
+			            //response.setHeader("Location", "login.jsp");
+			            
 			            
 					}
 				}
 				
-				System.out.println("NEW"+password);
+				//System.out.println("NEW"+password);
 //				pww.write("success"); 
 				
 //				response.sendRedirect("ChangePassword.jsp");
-				
+//				session.setAttribute("success_message",success_message
+//				response.sendRedirect("login.jsp");
 //				session.setAttribute("email", email);
 //				response.sendRedirect("index.jsp");
-//				response.sendRedirect("login.jsp");
+				//session.setAttribute("email","");
+				//response.sendRedirect("login.jsp");
 			} catch (Exception e) {
+				System.out.println(e);
 				// TODO: handle exception
 			}
 			

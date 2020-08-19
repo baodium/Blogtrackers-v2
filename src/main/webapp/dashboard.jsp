@@ -1218,7 +1218,8 @@ path.chord {
 											JSONArray result_language = new JSONArray();
 											ArrayList language_data=new ArrayList();
 											try{
-												language_data= post._getMostLanguage(dt, dte, ids, 10);
+												language_data = DbConnection.query("SELECT language, sum(language_count) c FROM blogtrackers.language where blogsite_id in ("+ids+") and language is not null or language != 'null' group by language order by c desc limit 10");
+												//language_data= post._getMostLanguage(dt, dte, ids, 10);
 											}catch(Exception e){
 												System.out.println("Language error--"+e);
 											}

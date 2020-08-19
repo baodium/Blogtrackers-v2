@@ -218,8 +218,8 @@ $(document).ready(function(){
 				},
 				error: function(response)
 				{
-					alert(tid)
-					alert(type)
+					//alert(tid)
+					//alert(type)
 					//alert('could not compute terms')
 					console.log('could not compute terms')
 				},

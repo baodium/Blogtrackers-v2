@@ -24,12 +24,21 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class DbConnection {
 	/**
@@ -384,33 +393,41 @@ public class DbConnection {
 	/* Custom query for KWT */
 	public static HashMap queryKWT(String query) {
 		HashMap result = new HashMap();
-		HashMap<String,Integer> keyword_trend = new HashMap<String, Integer>();
-		HashMap<String,Integer> post_count = new HashMap<String, Integer>();
+		HashMap<String, Integer> keyword_trend = new HashMap<String, Integer>();
+		HashMap<String, Integer> post_count = new HashMap<String, Integer>();
 		try {
 			Connection conn = getConnection();
-			Statement stmt = conn.createStatement(); 
+			Statement stmt = conn.createStatement();
 			ResultSet rs = stmt.executeQuery(query);
-			
-			while(rs.next()) {
+			System.out.println(query);
+//			List<Map<String, Integer>> res = new ArrayList<>();
+//
+//			while(rs.next()) {
+//				String obj = rs.getString("terms");
+//				ObjectMapper oMapper = new ObjectMapper();
+//				Map<String, Integer> map = oMapper.readValue(obj, Map.class);
+//				res.add(map);
+//			}
+			while (rs.next()) {
 				String date = rs.getString("date");
-				if(date != null) {
+				if (date != null) {
 					String year = date.split("-")[0];
-					if(keyword_trend.get(year) == null) {
+					if (keyword_trend.get(year) == null) {
 						int count = rs.getInt("count");
 						keyword_trend.put(year, count);
-					}else {
+					} else {
 						int count = rs.getInt("count");
 						int old_count = keyword_trend.get(year);
 						int new_count = count + old_count;
 						keyword_trend.put(year, new_count);
 					}
-					
+
 //					String blogpost_id = rs.getString("blogpost_id");
 //					int count = rs.getInt("count");
 //					post_count.put(blogpost_id, count);
-				}		
+				}
 			}
-			
+
 			conn.close();
 			result.put("KWT", keyword_trend);
 //			result.put("POST_DETAILS", post_count);
@@ -422,8 +439,42 @@ public class DbConnection {
 		return result;
 	}
 
+	public static List<HashMap<String, Integer>> queryTerms(String query) {
+		List<HashMap<String, Integer>> res = new ArrayList<>();
+		try {
+			Connection conn = getConnection();
+			Statement stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery(query);
+			System.out.println(query);
+
+			while (rs.next()) {
+				String obj = rs.getString("terms");
+				ObjectMapper oMapper = new ObjectMapper();
+				HashMap<String, Integer> map;
+				if (!obj.equals("\"{'NO KEYWORD': 1}\"")) {
+					try {
+						map = oMapper.readValue(obj, HashMap.class);
+						res.add(map);
+					} catch (JsonMappingException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (JsonProcessingException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+
+			}
+			return res;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return res;
+
+	}
+
 	public static void main(String[] args) {
-		Instant start = Instant.now();
+		
 		System.out.println("started");
 //		String q = "SELECT date,\r\n" + 
 //				"sum(ROUND ((LENGTH(lower(post)) - LENGTH(REPLACE (lower(post), \"people\", \"\"))) / LENGTH(\"people\"))) AS count\r\n" + 
@@ -435,22 +486,30 @@ public class DbConnection {
 //				"in (63,127)\r\n" + 
 //				"group by year(date)";
 //		(63,127,223,224,611,615,617,641,673,720,817,872,874,949,954,957,961,1030,1033,1034,1035,1036,1038,1040,1041,1042,1049,1051,1052,1054,1055,1056,1058,1063,1064,1065,1066,1067,1068,1069,1083,1084,1088,1089,1092,1095,1100,1101,1105,1121,1122,1124,1126,1127,1128,1134,1137,1139,1141,1148,1163,1164,1166,1169,1172,1173,1184,1185,1188,1195,1196,1204,1207,1210,1211,1213,1218,1220,1221,1222,1233,1235,1238,1239,1240,1242,1244,1250,1251,1256,1258,1262,1279,1280,1282,1288,1290,1293,1295,1297,1303,1306,1307,1315,1319,1324,1330,1333,1339,1341,1346,1350,1352,1360,1376,1379,1380,1381,1385,1387,1392,1394,1397,1399,1409,1417,1421,1424,1426,1429,1438,1439,1440,1446,1447,1448,1451,1455,1456,1457,1458,1459,1460,1461,1472,1474,1475,1478,1486,1487,1489,1490,1492,1493,1497,1501,1503,1504,1506,1507,1509,1516,1523,1525,1526,1531,1533,1543,1561,1563,1567,1568,1569,1574,1575,1582,1583,1595,1601,1602,1604,1608,1611,1614,1615,1623,1627,1628,1630,1637,1638,1639,1642,1651,1655,1659,1660,1661,1662,1663,1668,1669,1676,1681,1682,1684,1685,1686,1688,1689,1690,1691,1692,1693,1694,1697,1698,1699,1700,1701,1703,1704,1705,1706,1707,1708,1709,1710,1711,1712,1713,1714,1715,1716,1717,1718,1719,1720,1721,1722,1723,1724,1725,1726,1727,1728,1729,1730,1731,1732,1733,1734,1735,1736,1737,1738,1739,1740,1742,1743,1744,1745,1746,1747,1749,1750,1751,1752,1753,1754,1755,1756,1757,1759,1761,1762,1763,1764,1765,1766,1767,1768,1769,1770,1771,1772,1773,1774,1775,1776,1777,1778,1779,1780,1781,1782,1783,1784,1786,1787,1788,1790,1791,1792,1793,1794,1795,1796,1797,1798,1799,1800,1801,1802,1803,1804,1806,1807,1808,1809,1810,1811,1812,1813,1814,1815,1816,1817,1818,1822,1823,1824,1825,1826,1827,1829,1830,1831,1833,1834,1835,1836,1837,1838,1839,1840,1841,1842,1843,1844,1845,1846,1848,1849,1850,1851,1852,1853,1854,1856,1857,1858,1859,1860,1861,1862,1863,1864,1865,1866,1867,1868,1869,1870,1871,1872,1873,1874,1875,1876,1878,1886,1907,1927,1929,1934,1940,1943,1944,1952,1957,1961,1963,1964,1965,1966,1968,1971,1973,1974,1977,1978,2050)
-		String q = "SELECT post, title, blogpost_id, date, \r\n" + 
-				"ROUND ((LENGTH(lower(post)) - LENGTH(REPLACE (lower(post), \"people\", \"\"))) / LENGTH(\"people\")) AS count\r\n" + 
-				"from (select *\r\n" + 
-				"from blogposts\r\n" + 
-				"where match (title,post)\r\n" + 
-				"against (\"people\" IN BOOLEAN MODE)) a\r\n" + 
-				"where blogsite_id\r\n" + 
-				"in (63,127,223,224,611,615,617,641,673,720,817)\r\n" + 
-				"\r\n";
-		
-		HashMap result =  queryKWT(q);
-		
-		
+//		String q = "SELECT post, title, blogpost_id, date, \r\n" + 
+//				"ROUND ((LENGTH(lower(post)) - LENGTH(REPLACE (lower(post), \"uche\", \"\"))) / LENGTH(\"uche\")) AS count\r\n" + 
+//				"from (select *\r\n" + 
+//				"from blogposts\r\n" + 
+//				"where match (title,post)\r\n" + 
+//				"against (\"uche\" IN BOOLEAN MODE)) a\r\n" + 
+//				"where blogsite_id\r\n" + 
+//				"in (617,961,1030)\r\n" + 
+//				"\r\n";
+
+		String q = "SELECT terms from blogpost_terms_api where blogsiteid in (62,88,117,128,238,248,254,255,616,641,777,787,858,859,860,862,863,874,923,966,1030)";
+
+		List<HashMap<String, Integer>> result = queryTerms(q);
+		System.out.println("DOne with query");
+		Instant start = Instant.now();
+		HashMap<String, Integer> map_count = result.stream()
+				.flatMap(map -> map.entrySet().parallelStream())
+				.collect(Collectors.toMap(Entry::getKey, Entry::getValue, Integer::sum, HashMap::new));
+
+		System.out.println("done with counting");
+//		System.out.println(map_count);
 //		ArrayList test = query(q);
 
-		System.out.println(result);
+//		System.out.println(result);
 		Instant end = Instant.now();
 		Duration timeElapsed = Duration.between(start, end);
 		System.out.println("Time taken: " + timeElapsed.getSeconds() + " seconds");

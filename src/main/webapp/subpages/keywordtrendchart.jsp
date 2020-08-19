@@ -154,7 +154,7 @@
           Export Options
           </div> -->
 			<%
-				System.out.println("values1--" + mostactiveterm + "NOBLOGGER" + "," + dt + "," + dte + "," + ids);
+				System.out.println("values1here now--" + mostactiveterm + "NOBLOGGER" + "," + dt + "," + dte + "," + ids);
 					JSONObject sql = post._getBloggerPosts(mostactiveterm, "NOBLOGGER", dt, dte, ids, 500);
 
 					JSONObject firstpost = new JSONObject();

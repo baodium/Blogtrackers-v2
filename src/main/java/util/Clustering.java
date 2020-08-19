@@ -630,9 +630,6 @@ public class Clustering extends HttpServlet {
 //			Object post = jsonArray.getJSONObject(i).getJSONObject("_source").get("post");
 			Object post = t.getJSONObject("_source").get("post");
 			result.add(post.toString());
-
-//				test.put(post_id.toString(), post.toString());
-//				result.put(post_id.toString(), post.toString());
 		}
 
 		System.out.println("this is result" + result.size());
@@ -644,8 +641,6 @@ public class Clustering extends HttpServlet {
 		int size = 50;
 		DbConnection db = new DbConnection();
 		String count = "0";
-		// System.out.println("SELECT * FROM clusters WHERE tid = '" + tid + "");
-
 		ArrayList result = new ArrayList();
 		try {
 			result = db.queryJSON("SELECT *  FROM clusters WHERE tid = '" + tid + "'");
@@ -663,9 +658,6 @@ public class Clustering extends HttpServlet {
 		int size = 50;
 		DbConnection db = new DbConnection();
 		String count = "0";
-		// System.out.println("SELECT * FROM cluster_svd WHERE post_id in ( " + postids
-		// + ")");
-
 		ArrayList result = new ArrayList();
 		try {
 			result = db.queryJSON("SELECT *  FROM cluster_svd WHERE post_id in ( " + postids + ")");
@@ -681,26 +673,17 @@ public class Clustering extends HttpServlet {
 	public static JSONObject topTerms(List postDataAll, String limit) {
 		JSONObject res = new JSONObject();
 		JSONArray output = new JSONArray();
-		//System.out.println("postall" + postDataAll.size());
-//		Terms t = new Terms();
-//		t.wrangleDatadata2(postDataAll,"terms", 0, postDataAll.length());
-
+		
 		int a = postDataAll.size();
 		int b = 1000;
 		int poolsize = ((a / b)) > 0 ? (a / b) + 1 : 1;
 		System.out.println(poolsize);
-////	System.out.println(jsonArray.length());
+		
 		ExecutorService executorServiceSplitLoop = Executors.newFixedThreadPool(poolsize);
 		System.out.println("1" + executorServiceSplitLoop.isShutdown());
-//ArrayList<int[]> result = new ArrayList<int[]>();
-//		List<Tuple2<String, Integer>> returnedData = new ArrayList<Tuple2<String, Integer>>();
-		List<Tuple2<String, Integer>> returnedData = Collections
-				.synchronizedList(new ArrayList<Tuple2<String, Integer>>());
+		List<Tuple2<String, Integer>> returnedData = Collections.synchronizedList(new ArrayList<Tuple2<String, Integer>>());
 		ConcurrentHashMap<String, String> datatuple2 = new ConcurrentHashMap<String, String>();
 		ConcurrentHashMap<String, ConcurrentHashMap<String, String>> datatuple3 = new ConcurrentHashMap<String, ConcurrentHashMap<String, String>>();
-
-		
-//		Map<String, Integer> d = Collections.synchronizedMap(new HashMap<String, Integer>());
 		ConcurrentHashMap<String, Integer> d = new ConcurrentHashMap<String, Integer>();
 		StringBuffer buffer = new StringBuffer();
 
@@ -708,38 +691,26 @@ public class Clustering extends HttpServlet {
 
 			int start1 = 0;
 			int end_ = 0;
-
-//	int[] test = new int[2];
-//test[0] = i;
 			start1 = i;
 
 			if ((i + b) > a) {
-//test[1] = i +(a%b);
 				end_ = i + (a % b);
 			} else {
-//test[1] = i + b;
 				end_ = i + b;
 			}
 			System.out.println(start1 + "--" + end_);
 			JSONObject q = new JSONObject();
-			RunnableUtil es = new RunnableUtil(q, postDataAll, start1, end_, returnedData, datatuple2, d, "loop",
-					"blogpost_terms", "terms", buffer, datatuple3);
+			RunnableUtil es = new RunnableUtil(q, postDataAll, start1, end_, returnedData, datatuple2, d, "loop", "blogpost_terms", "terms", buffer, datatuple3);
 			executorServiceSplitLoop.execute(es);
-//			returnedData = es.datatuple;
-			// System.out.println("returned"+returnedData.size());
-
 		}
 
 		executorServiceSplitLoop.shutdown();
 		while (!executorServiceSplitLoop.isTerminated()) {
 		}
 
-//		System.out.println("2" + executorServiceSplitLoop.isShutdown());
 		System.out.println("datatule2--" + datatuple2.size());
 		System.out.println("datatule3--" + datatuple3.size());
 		System.out.println("json array size" + postDataAll.size());
-//		RunnableUtil es = new RunnableUtil();
-//		(în,114787)
 		System.out.println("returned--" + returnedData.size());
 		HashMap<String, Integer> m = new HashMap<String, Integer>();
 		for (Tuple2<String, Integer> p : returnedData) {
@@ -753,20 +724,13 @@ public class Clustering extends HttpServlet {
 				m.put(first, new_mval);
 			}
 		}
-//		System.out.println(returnedData.get(0));
-
-//		result = term.mapReduce(returnedData, limit);
+		
 		List<Entry<String, Integer>> entry = new Terms().entriesSortedByValues(m);
-//		
-		// System.out.println("entry-"+entry);
 		if (entry.size() > 0) {
-
 			for (int i = 0; i < Integer.parseInt(limit); i++) {
 				if (i < entry.size()) {
-
 					String left = entry.get(i).getKey();
 					Integer right = entry.get(i).getValue();
-//			String v =  "(" + left + "," + String.valueOf(right) + ")";
 					Tuple2<String, Integer> v = new Tuple2<String, Integer>(left, right);
 					output.put(v);
 				} else {
@@ -775,8 +739,6 @@ public class Clustering extends HttpServlet {
 			}
 			System.out.println("answer--" + entry.get(0));
 			System.out.println("output--" + output);
-
-//			return output;
 		}
 		res.put("output", output);
 		res.put("post_id_term_pair", datatuple2);
@@ -856,9 +818,6 @@ public class Clustering extends HttpServlet {
 
 	public static JSONObject getTopTermsFromBlogIds(String ids, String from, String to, String limit) throws Exception {
 		String result = null;
-
-		// List<JSONObject> postDataAll = getPosts(ids, from, to,
-		// "__ONLY__TERMS__BLOGSITE_IDS__", "blogpost_terms");
 		System.out.println("select * from blogpost_terms where blogsiteid in  (" + ids + ") and date > \"" + from
 				+ "\" and date < \"" + to + "\"");
 		List postDataAll = DbConnection.queryJSON("select * from blogpost_terms where blogsiteid in  (" + ids
@@ -870,9 +829,6 @@ public class Clustering extends HttpServlet {
 
 	public static String getTopTermsFromBlogger(String blogger, String from, String to, String limit) throws Exception {
 		String result = null;
-
-		// List<JSONObject> postDataAll = getPosts(ids, from, to,
-		// "__ONLY__TERMS__BLOGSITE_IDS__", "blogpost_terms");
 		System.out.println("select * from blogpost_terms where blogger in  (" + blogger + ") and date > \"" + from
 				+ "\" and date < \"" + to + "\"");
 		List postDataAll = DbConnection.queryJSON("select * from blogpost_terms where blogger in  (" + blogger
@@ -884,9 +840,6 @@ public class Clustering extends HttpServlet {
 
 	public static String getTopTermsFromDashboard(String ids, String from, String to, String limit) throws Exception {
 		String result = null;
-
-		// List<JSONObject> postDataAll = getPosts(ids, from, to,
-		// "__ONLY__TERMS__BLOGSITE_IDS__", "blogpost_terms");
 		System.out.println("select * from blogpost_terms where blogsiteid in  (" + ids + ") and date > \"" + from
 				+ "\" and date < \"" + to + "\"");
 		List postDataAll = DbConnection.queryJSON("select * from blogpost_terms where blogsiteid in  (" + ids
@@ -898,9 +851,6 @@ public class Clustering extends HttpServlet {
 
 	public static String getTopTermsBlogger(String bloggers, String from, String to, String limit) throws Exception {
 		String result = null;
-
-		// List<JSONObject> postDataAll = getPosts(bloggers, from, to,
-		// "__ONLY__TERMS__BLOGGERS", "blogpost_terms");
 		System.out.println("select * from blogpost_terms where blogger = \"" + bloggers + "\" and date > \"" + from
 				+ "\" and date < \"" + to + "\"");
 		List postDataAll = DbConnection.queryJSON("select * from blogpost_terms where blogger = \"" + bloggers
@@ -924,9 +874,6 @@ public class Clustering extends HttpServlet {
 		List<JSONObject> postDataAll = getPosts(ids, from, to, "__ONLY__TERMS__BLOGSITE_IDS__", "blogpost_terms");
 
 		System.out.println(postDataAll.size());
-
-		// result = term.mapReduce(returnedData, limit);
-
 		return result;
 	}
 

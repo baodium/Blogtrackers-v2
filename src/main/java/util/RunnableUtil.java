@@ -230,8 +230,6 @@ public class RunnableUtil implements Runnable {
 
 			this.datatuple3.put(post_ids.trim(), temp);
 
-//			
-
 			String val = terms;
 			// String new_str1 = val.replace("),", "-").replace(",", "_").replace("(",
 			// "").replace("-", ",").replace(" ", "").replace(")", "").replace("\'",
