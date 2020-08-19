@@ -187,17 +187,7 @@
 			String dte = dend;
 			String year_start = "";
 			String year_end = "";
-			/* if(!single.equals("")){
-				month = MONTH_ONLY.format(nnow); 
-				day = DAY_ONLY.format(nnow); 
-				year = YEAR_ONLY.format(nnow); 
-				//System.out.println("Now:"+month+"small:"+smallmonth);
-				if(month.equals("02")){
-					ddey = (Integer.parseInt(year)%4==0)?"28":"29";
-				}else if(month.equals("09") || month.equals("04") || month.equals("05") || month.equals("11")){
-					ddey = "30";
-				}
-			} */
+
 
 			if (!date_start.equals("") && !date_end.equals("")) {
 				totalpost = post._searchRangeTotal("date", date_start.toString(), date_end.toString(), ids);
@@ -213,342 +203,6 @@
 				historyfrom = DATE_FORMAT.format(start);
 				historyto = DATE_FORMAT.format(end);
 
-
-			} /*  else if (single.equals("day")) {
-				dt = year + "-" + month + "-" + day;
-				
-				//dispfrom = DATE_FORMAT.format(new SimpleDateFormat("yyyy-MM-dd").parse(dt));
-				//dispto = DATE_FORMAT.format(new SimpleDateFormat("yyyy-MM-dd").parse(dt));			
-				totalpost = post._searchRangeTotal("date", dt, dt, ids);
-				termss = term._searchByRange("date", dt, dt, ids);
-				outlinks = outl._searchByRange("date", dt, dt, ids);
-				
-				allauthors = post._getBloggerByBlogId("date",dt, dt,ids,"influence_score","DESC");
-				
-				} else if (single.equals("week")) {
-				
-				dte = year + "-" + month + "-" + day;
-				int dd = Integer.parseInt(day)-7;
-				
-				Calendar cal = Calendar.getInstance();
-				cal.add(Calendar.DATE, -7);
-				Date dateBefore7Days = cal.getTime();
-				dt = YEAR_ONLY.format(dateBefore7Days) + "-" + MONTH_ONLY.format(dateBefore7Days) + "-" + DAY_ONLY.format(dateBefore7Days);
-				
-				
-				//dispfrom = DATE_FORMAT.format(new SimpleDateFormat("yyyy-MM-dd").parse(dt));
-				//dispto = DATE_FORMAT.format(new SimpleDateFormat("yyyy-MM-dd").parse(dte));			
-				totalpost = post._searchRangeTotal("date", dt, dte, ids);
-				termss = term._searchByRange("date", dt, dte, ids);
-				outlinks = outl._searchByRange("date", dt, dte, ids);
-				
-				allauthors=post._getBloggerByBlogId("date",dt, dte,ids,"influence_score","DESC");
-				
-				
-				} else if (single.equals("month")) {
-				dt = year + "-" + month + "-01";
-				dte = year + "-" + month + "-"+day;	
-				//dispfrom = DATE_FORMAT.format(new SimpleDateFormat("yyyy-MM-dd").parse(dt));
-				//dispto = DATE_FORMAT.format(new SimpleDateFormat("yyyy-MM-dd").parse(dte));
-				
-				totalpost = post._searchRangeTotal("date", dt, dte, ids);
-				termss = term._searchByRange("date", dt, dte, ids);
-				outlinks = outl._searchByRange("date", dt, dte, ids);
-				
-				allauthors=post._getBloggerByBlogId("date",dt, dte,ids,"influence_score","DESC");
-				
-				
-				} else if (single.equals("year")) {
-				dt = year + "-01-01";
-				dte = year + "-12-"+ddey;
-				//dispfrom = DATE_FORMAT.format(new SimpleDateFormat("yyyy-MM-dd").parse(dt));
-				//dispto = DATE_FORMAT.format(new SimpleDateFormat("yyyy-MM-dd").parse(dte));
-				
-				totalpost = post._searchRangeTotal("date", dt, dte, ids);
-				termss = term._searchByRange("date", dt, dte, ids);
-				outlinks = outl._searchByRange("date", dt, dte, ids);
-				allauthors=post._getBloggerByBlogId("date",dt, dte,ids,"influence_score","DESC");
-				
-				
-				
-				} */ else {
-				dt = dst;
-				dte = dend;
-				
-			}
-			
-			totalpost = post._searchRangeTotal("date", dt, dte, ids);
-			termss = term._searchByRange("blogsiteid", dt, dte, ids);
-			
-			allauthors = post._getBloggerByBlogId("date", dt, dte, ids, "influence_score", "DESC");
-			//allauthors = post._getPostByBlogpostId("date",dt, dte,sentimentpost);
-			
-			outlinks = outl._searchByRange("date", dst, dend, ids);
-
-			ArrayList blogs = blog._fetch(ids);
-			int totalblog = blogs.size();
-
-			JSONObject authors = new JSONObject();
-			JSONArray sentimentpost = new JSONArray();
-			JSONArray sentimentpost2 = new JSONArray();
-
-			JSONArray authorcount = new JSONArray();
-			ArrayList authorlooper = new ArrayList();
-
-			if (allauthors.size() > 0) {
-				String tres = null;
-				JSONObject tresp = null;
-				String tresu = null;
-				JSONObject tobj = null;
-
-				for (int i = 0; i < allauthors.size(); i++) {
-					tres = allauthors.get(i).toString();
-					tresp = new JSONObject(tres);
-					tresu = tresp.get("_source").toString();
-					tobj = new JSONObject(tresu);
-					sentimentpost.put(tobj.get("blogpost_id").toString());
-					if (i < 1) {
-						sentimentpost2.put(tobj.get("blogpost_id").toString());
-					}
-				}
-			}
-
-			ArrayList posttodisplay = post._getPostByBlogpostId("date",dt, dte,sentimentpost);
-			
-			JSONObject graphyearspos = new JSONObject();
-			JSONObject graphyearsneg = new JSONObject();
-			JSONArray yearsarray = new JSONArray();
-
-			String[] yst = dt.split("-");
-			String[] yend = dte.split("-");
-			year_start = yst[0];
-			year_end = yend[0];
-			int ystint = new Double(year_start).intValue();
-			int yendint = new Double(year_end).intValue();
-
-			if(yendint>Integer.parseInt(YEAR_ONLY.format(new Date()))){
-				dte = DATE_FORMAT2.format(new Date()).toString();	
-				yendint = Integer.parseInt(YEAR_ONLY.format(new Date()));
-			}
-			
-			if(ystint<2000){
-				ystint = 2000;
-				dt = "2000-01-01";
-			}
-			
- 			dispfrom = DATE_FORMAT.format(new SimpleDateFormat("yyyy-MM-dd").parse(dt));
-			dispto = DATE_FORMAT.format(new SimpleDateFormat("yyyy-MM-dd").parse(dte));
-			
-			int b = 0;
-			for (int y = ystint; y <= yendint; y++) {
-				
-				String dtu = y + "-01-01";
-				String dtue = y + "-12-31";
-				
-				if(b==0){
-					dtu = dt;
-				}else if(b==yendint){
-					dtue = dte;
-				}
-				
-				possentiment=new Liwc()._searchRangeAggregate("date", dtu, dtue, sentimentpost,"posemo");
-				negsentiment=new Liwc()._searchRangeAggregate("date", dtu, dtue, sentimentpost,"negemo");
-				
-				graphyearspos.put(y + "", Integer.parseInt(possentiment));
-				graphyearsneg.put(y + "", Integer.parseInt(negsentiment));
-				yearsarray.put(b, y);
-				b++;
-			}
-
-			JSONArray topterms = new JSONArray();
-			JSONObject outerlinks = new JSONObject();
-			ArrayList outlinklooper = new ArrayList();
-			
-			if (outlinks.size() > 0) {
-				int mm = 0;
-				for (int p = 0; p < outlinks.size(); p++) {
-					String bstr = outlinks.get(p).toString();
-					JSONObject bj = new JSONObject(bstr);
-					bstr = bj.get("_source").toString();
-					bj = new JSONObject(bstr);
-					String link = bj.get("link").toString();
-
-					JSONObject content = new JSONObject();
-					String maindomain = "";
-					try {
-						URI uri = new URI(link);
-						String domain = uri.getHost();
-						if (domain.startsWith("www.")) {
-							maindomain = domain.substring(4);
-						} else {
-							maindomain = domain;
-						}
-					} catch (Exception ex) {
-					}
-
-					if (outerlinks.has(maindomain)) {
-						content = new JSONObject(outerlinks.get(maindomain).toString());
-
-						int valu = Integer.parseInt(content.get("value").toString());
-						valu++;
-
-						content.put("value", valu);
-						content.put("link", link);
-						content.put("domain", maindomain);
-						outerlinks.put(maindomain, content);
-					} else {
-						int valu = 1;
-						content.put("value", valu);
-						content.put("link", link);
-						content.put("domain", maindomain);
-						outerlinks.put(maindomain, content);
-						outlinklooper.add(mm, maindomain);
-						mm++;
-					}
-
-				}
-			}
-
-			//System.out.println("senti"+ sentimentblog);
-
-			JSONObject bloggers = new JSONObject();
-
-			ArrayList looper = new ArrayList();
-
-			String allpost = "0";
-			float totalinfluence = 0;
-			String mostactiveblog = "";
-			String mostactivebloglink = "";
-			String mostactiveblogposts = "0";
-			String mostactiveblogid = "0";
-
-			String mostactiveblogger = "";
-			String secondactiveblogger = "";
-
-			String secondactiveblog = "";
-			String secondactiveid = "";
-
-			String mostusedkeyword = "";
-			String fsid = "";
-
-			ArrayList mostactive = blog._getMostactive(ids);
-			if (mostactive.size() > 0) {
-				mostactiveblog = mostactive.get(0).toString();
-				mostactivebloglink = mostactive.get(1).toString();
-				mostactiveblogposts = mostactive.get(2).toString();
-				mostactiveblogid = mostactive.get(3).toString();
-				fsid = mostactiveblogid;
-				if (mostactive.size() > 4) {
-					secondactiveblog = mostactive.get(4).toString();
-					secondactiveid = mostactive.get(7).toString();
-					fsid = mostactiveblogid + "," + secondactiveid;
-				}
-			}
-
-			int highestfrequency = 0;
-			JSONObject keys = new JSONObject();
-			if (termss.size() > 0) {
-				for (int p = 0; p < termss.size(); p++) {
-					String bstr = termss.get(p).toString();
-					JSONObject bj = new JSONObject(bstr);
-					bstr = bj.get("_source").toString();
-					bj = new JSONObject(bstr);
-					String frequency = bj.get("frequency").toString();
-					int freq = Integer.parseInt(frequency);
-
-					String tm = bj.get("term").toString();
-					if (freq > highestfrequency) {
-						highestfrequency = freq;
-						mostusedkeyword = tm;
-					}
-					JSONObject cont = new JSONObject();
-					cont.put("key", tm);
-					cont.put("frequency", frequency);
-					if (!keys.has(tm)) {
-						keys.put(tm, tm);
-						topterms.put(cont);
-					}
-				}
-			}
-
-			ArrayList sentimentor = new ArrayList();
-
-			int death = 0;
-			int work = 0;
-			int leisure = 0;
-			int religion = 0;
-			int home = 0;
-			int money = 0;
-			int focuspast = 0;
-			int focuspresent = 0;
-			int focusfuture = 0;
-			int affiliation = 0;
-			int achieve = 0;
-			int risk = 0;
-			int reward = 0;
-			int power = 0;
-			int insight = 0;
-			int differ = 0;
-			int cause = 0;
-			int discrep = 0;
-			int certain = 0;
-			int tentat = 0;
-			int analytic = 0;
-			int tone = 0;
-			int clout = 0;
-			int authentic = 0;
-			int posemo = 0;
-			int negemo = 0;
-			int anger = 0;
-			int anx = 0;
-			int sad = 0;
-
-			//System.out.println(sentimentpost2);
-			ArrayList toxicity = new ToxicityBlogposts()._searchByRange("", "2018-03-30", "2015-01-30", sentimentpost2);
-
-			ArrayList sentimentor2 = new Liwc()._searchByRange("date", dt, dte, sentimentpost2);
-
-			if (sentimentor2.size() > 0) {
-				for (int v = 0; v < sentimentor2.size(); v++) {
-					String bstr = sentimentor2.get(v).toString();
-					JSONObject bj = new JSONObject(bstr);
-
-					bstr = bj.get("_source").toString();
-
-					bj = new JSONObject(bstr);
-					//System.out.println("result eree"+bj);
-
-					death += Integer.parseInt(bj.get("death").toString());
-					work += Integer.parseInt(bj.get("work").toString());
-					leisure += Integer.parseInt(bj.get("leisure").toString());
-					religion += Integer.parseInt(bj.get("religion").toString());
-					home += Integer.parseInt(bj.get("home").toString());
-					money += Integer.parseInt(bj.get("money").toString());
-
-					focuspast += Integer.parseInt(bj.get("focuspast").toString());
-					focuspresent += Integer.parseInt(bj.get("focuspresent").toString());
-					focusfuture += Integer.parseInt(bj.get("focusfuture").toString());
-					affiliation += Integer.parseInt(bj.get("affiliation").toString());
-					achieve += Integer.parseInt(bj.get("achieve").toString());
-					risk += Integer.parseInt(bj.get("risk").toString());
-					reward += Integer.parseInt(bj.get("reward").toString());
-					power += Integer.parseInt(bj.get("power").toString());
-					insight += Integer.parseInt(bj.get("insight").toString());
-					differ += Integer.parseInt(bj.get("differ").toString());
-					cause += Integer.parseInt(bj.get("cause").toString());
-					discrep += Integer.parseInt(bj.get("discrep").toString());
-					certain += Integer.parseInt(bj.get("certain").toString());
-					tentat += Integer.parseInt(bj.get("tentat").toString());
-					analytic += Integer.parseInt(bj.get("analytic").toString());
-					tone += Integer.parseInt(bj.get("tone").toString());
-					clout += Integer.parseInt(bj.get("clout").toString());
-					authentic += Integer.parseInt(bj.get("authentic").toString());
-					posemo += Integer.parseInt(bj.get("posemo").toString());
-					negemo += Integer.parseInt(bj.get("negemo").toString());
-					anger += Integer.parseInt(bj.get("anger").toString());
-					anx += Integer.parseInt(bj.get("anx").toString());
-					sad += Integer.parseInt(bj.get("sad").toString());
-				}
 			}
 %>
 <!DOCTYPE html>
@@ -580,10 +234,16 @@
 
 <link rel="stylesheet" href="assets/css/daterangepicker.css" />
 <link rel="stylesheet" href="assets/css/style.css" />
+<<<<<<< HEAD
+<link rel="stylesheet" href="assets/presentation/narrative-analysis.css"/>
+        
+        <script src="assets/behavior/narrative-analysis.js"></script>
+=======
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900" rel="stylesheet">
 <link rel="stylesheet" href="assets/presentation/narrative-analysis.css"/>
         
 <script src="assets/behavior/narrative-analysis.js"></script>
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
 <!--end of bootsrap -->
 <script src="assets/js/jquery-3.2.1.slim.min.js"></script>
 <script src="assets/js/popper.min.js"></script>
@@ -800,6 +460,15 @@
 </div> -->
 
 
+<<<<<<< HEAD
+
+
+	<ul id="narrativeTree">
+            <li class="level">
+                <div class="keyword">
+                    <div class="collapseIcon"></div>
+                    <p class="text">COVID-19</p>
+=======
 		<!-- Search -->
         <form id="search">
             <label for="searchBox">Search Website</label>
@@ -812,6 +481,7 @@
                 <div class="keyword">
                     <div class="collapseIcon"></div>
                     <p class="text">US Forces</p>
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                 </div>
                 <ul class="narratives">
                     <li class="narrative">
@@ -825,136 +495,218 @@
                                 <div class="connector"></div>
                                 <div class="dot"></div>
                             </div>
+<<<<<<< HEAD
+                            <p class="narrativeText">The American Red Cross is closely monitoring the outbreak…</p>
+=======
                             <div class="narrativeTextWrapper">
                                 <p class="narrativeText">New york governor andrew cuomo has called for the army corps to increase hospital capacity.</p>
                                 <p class="counter"><span class="number">2</span>Posts</p>
                             </div>
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                         </div>
                         <div class="bottomSection">
                             <div class="connectorBox">
                                 <div class="connector"></div>
                             </div>
                             <div class="posts">
+<<<<<<< HEAD
+                                <a href="#">
+=======
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/1.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/2.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/3.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/4.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/5.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/6.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/7.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/8.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/9.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/10.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/11.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/12.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/13.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/14.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/15.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+=======
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                             </div>
                         </div>
                     </li>
@@ -969,136 +721,218 @@
                                 <div class="connector"></div>
                                 <div class="dot"></div>
                             </div>
+<<<<<<< HEAD
+                            <p class="narrativeText">Cautioned young people to heed the advice to socially distance and be wary of the…</p>
+=======
                             <div class="narrativeTextWrapper">
                                 <p class="narrativeText">Chinese senior officials alleged without evidence that the us army brought the virus.</p>
                                 <p class="counter"><span class="number">55</span>Posts</p>
                             </div>
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                         </div>
                         <div class="bottomSection">
                             <div class="connectorBox">
                                 <div class="connector"></div>
                             </div>
                             <div class="posts">
+<<<<<<< HEAD
+                                <a href="#">
+=======
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/1.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/2.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/3.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/4.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/5.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/6.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/7.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/8.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/9.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/10.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/11.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/12.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/13.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/14.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/15.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+=======
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                             </div>
                         </div>
                     </li>
@@ -1107,7 +941,11 @@
             <li class="level uncollapse">
                 <div class="keyword">
                     <div class="collapseIcon"></div>
+<<<<<<< HEAD
+                    <p class="text">US Forces</p>
+=======
                     <p class="text">COVID-19</p>
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                 </div>
                 <ul class="narratives">
                     <li class="narrative">
@@ -1121,140 +959,226 @@
                                 <div class="connector"></div>
                                 <div class="dot"></div>
                             </div>
+<<<<<<< HEAD
+                            <p class="narrativeText">The American Red Cross is closely monitoring the outbreak…</p>
+=======
                             <div class="narrativeTextWrapper">
                                 <p class="narrativeText">Arkansas had already said that a number of coronavirus cases had been connected to a church.</p>
                                 <p class="counter"><span class="number">32</span>Posts</p>
                             </div>
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                         </div>
                         <div class="bottomSection">
                             <div class="connectorBox">
                                 <div class="connector"></div>
                             </div>
                             <div class="posts">
+<<<<<<< HEAD
+                                <a href="#">
+=======
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/24.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/25.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/35.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/4.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/5.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/6.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/7.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/8.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/9.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/10.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/11.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/12.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/13.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/14.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/15.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="narrative open">
+=======
                                 
                             </div>
                         </div>
                     </li>
                     <li class="narrative">
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                         <div class="topSection">
                             <div class="connectorBox">
                                 <div class="connector"></div>
@@ -1265,140 +1189,228 @@
                                 <div class="connector"></div>
                                 <div class="dot"></div>
                             </div>
+<<<<<<< HEAD
+                            <p class="narrativeText">President Donald Trump and a top US health official cautioned young people to heed the advice to socially distance and be wary of the…</p>
+=======
                             <div class="narrativeTextWrapper">
                                 <p class="narrativeText">Conservative senator tom cotton an arkansas embarrassment suggested that the coronavirus was manufactured by the chinese government.</p>
                                 <p class="counter"><span class="number">140</span>Posts</p>
                             </div>
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                         </div>
                         <div class="bottomSection">
                             <div class="connectorBox">
                                 <div class="connector"></div>
                             </div>
                             <div class="posts">
+<<<<<<< HEAD
+                                <a href="#">
+=======
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/1.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="assets/images/posts/2.jpg">
+=======
                                 
                                 
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/42.jpg">
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/3.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/4.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/5.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/6.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/7.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/8.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/9.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/10.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/11.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/12.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/13.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/14.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/15.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="narrative last">
+=======
                                 
                             </div>
                         </div>
                     </li>
                     <li class="narrative hidden">
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                         <div class="topSection">
                             <div class="connectorBox">
                                 <div class="connector"></div>
@@ -1409,39 +1421,162 @@
                                 <div class="connector"></div>
                                 <div class="dot"></div>
                             </div>
+<<<<<<< HEAD
+                            <p class="narrativeText">Cautioned young people to heed the advice to socially distance and be wary of the…</p>
+=======
                             <div class="narrativeTextWrapper">
                                 <p class="narrativeText">the coronavirus pandemic are crushing demand for new pipeline projects.</p>
                                 <p class="counter"><span class="number">3</span>Posts</p>
                             </div>
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                         </div>
                         <div class="bottomSection">
                             <div class="connectorBox">
                                 <div class="connector"></div>
                             </div>
                             <div class="posts">
+<<<<<<< HEAD
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="assets/images/posts/1.jpg">
+=======
                                 
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/38.jpg">
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="assets/images/posts/2.jpg">
+=======
                                 
                                 
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/39.jpg">
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="assets/images/posts/3.jpg">
+=======
                                 
                                 
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/40.jpg">
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="assets/images/posts/4.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="assets/images/posts/5.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="assets/images/posts/6.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="assets/images/posts/7.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="assets/images/posts/8.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="assets/images/posts/9.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="assets/images/posts/10.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="assets/images/posts/11.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="assets/images/posts/12.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="assets/images/posts/13.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="assets/images/posts/14.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+                                <a href="#">
+                                    <div class="post">
+                                        <img class="postImage" src="assets/images/posts/15.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                </a>
+=======
                                 
                             </div>
                         </div>
@@ -1491,6 +1626,7 @@
                             </div>
                             <div class="narrativeTextWrapper">
                                 <p class="narrativeText">More...</p>
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                             </div>
                         </div>
                     </li>
@@ -1499,7 +1635,11 @@
             <li class="level">
                 <div class="keyword">
                     <div class="collapseIcon"></div>
+<<<<<<< HEAD
+                    <p class="text">Hackers Trackers 2</p>
+=======
                     <p class="text">Chinese Government</p>
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                 </div>
                 <ul class="narratives">
                     <li class="narrative">
@@ -1513,136 +1653,218 @@
                                 <div class="connector"></div>
                                 <div class="dot"></div>
                             </div>
+<<<<<<< HEAD
+                            <p class="narrativeText">The American Red Cross is closely monitoring the outbreak…</p>
+=======
                             <div class="narrativeTextWrapper">
                                 <p class="narrativeText">Twitter ceo jack dorsey stressed that the chinese government was using the platform.</p>
                                 <p class="counter"><span class="number">9</span>Posts</p>
                             </div>
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                         </div>
                         <div class="bottomSection">
                             <div class="connectorBox">
                                 <div class="connector"></div>
                             </div>
                             <div class="posts">
+<<<<<<< HEAD
+                                <a href="#">
+=======
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/1.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/2.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/3.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/4.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/5.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/6.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/7.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/8.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/9.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/10.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/11.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/12.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/13.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/14.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/15.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+=======
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                             </div>
                         </div>
                     </li>
@@ -1657,136 +1879,218 @@
                                 <div class="connector"></div>
                                 <div class="dot"></div>
                             </div>
+<<<<<<< HEAD
+                            <p class="narrativeText">President Donald Trump and a top US health official cautioned young people to heed the advice to socially distance and be wary of the…</p>
+=======
                             <div class="narrativeTextWrapper">
                                 <p class="narrativeText">The communist chinese government has lied about disease rates.</p>
                                 <p class="counter"><span class="number">12</span>Posts</p>
                             </div>
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                         </div>
                         <div class="bottomSection">
                             <div class="connectorBox">
                                 <div class="connector"></div>
                             </div>
                             <div class="posts">
+<<<<<<< HEAD
+                                <a href="#">
+=======
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/1.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/2.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/3.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/4.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/5.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/6.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/7.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/8.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/9.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/10.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/11.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/12.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/13.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/14.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/15.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+=======
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                             </div>
                         </div>
                     </li>
@@ -1801,136 +2105,218 @@
                                 <div class="connector"></div>
                                 <div class="dot"></div>
                             </div>
+<<<<<<< HEAD
+                            <p class="narrativeText">President Donald Trump and a top US health official cautioned young people to heed the advice to socially distance and be wary of the…</p>
+=======
                             <div class="narrativeTextWrapper">
                                 <p class="narrativeText">China affecting delivery of chinese goods to croatia.</p>
                                 <p class="counter"><span class="number">81,102,912</span>Posts</p>
                             </div>
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                         </div>
                         <div class="bottomSection">
                             <div class="connectorBox">
                                 <div class="connector"></div>
                             </div>
                             <div class="posts">
+<<<<<<< HEAD
+                                <a href="#">
+=======
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/1.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/2.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/3.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/4.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/5.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/6.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/7.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/8.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/9.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/10.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/11.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/12.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/13.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/14.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/15.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+=======
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                             </div>
                         </div>
                     </li>
@@ -1945,136 +2331,218 @@
                                 <div class="connector"></div>
                                 <div class="dot"></div>
                             </div>
+<<<<<<< HEAD
+                            <p class="narrativeText">Cautioned young people to heed the advice to socially distance and be wary of the…</p>
+=======
                             <div class="narrativeTextWrapper">
                                 <p class="narrativeText">Many believe that this young woman was coerced by the communist chinese government.</p>
                                 <p class="counter"><span class="number">3</span>Posts</p>
                             </div>
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                         </div>
                         <div class="bottomSection">
                             <div class="connectorBox">
                                 <div class="connector"></div>
                             </div>
                             <div class="posts">
+<<<<<<< HEAD
+                                <a href="#">
+=======
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/1.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/2.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/3.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/4.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/5.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/6.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/7.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/8.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/9.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/10.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/11.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/12.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/13.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/14.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/15.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+=======
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                             </div>
                         </div>
                     </li>
@@ -2083,7 +2551,11 @@
             <li class="level">
                 <div class="keyword">
                     <div class="collapseIcon"></div>
+<<<<<<< HEAD
+                    <p class="text">Nato</p>
+=======
                     <p class="text">Stock Market</p>
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                 </div>
                 <ul class="narratives">
                     <li class="narrative">
@@ -2097,136 +2569,218 @@
                                 <div class="connector"></div>
                                 <div class="dot"></div>
                             </div>
+<<<<<<< HEAD
+                            <p class="narrativeText">The American Red Cross is closely monitoring the outbreak…</p>
+=======
                             <div class="narrativeTextWrapper">
                                 <p class="narrativeText">The fed induced stock market bubble hillary clinton.</p>
                                 <p class="counter"><span class="number">29</span>Posts</p>
                             </div>
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                         </div>
                         <div class="bottomSection">
                             <div class="connectorBox">
                                 <div class="connector"></div>
                             </div>
                             <div class="posts">
+<<<<<<< HEAD
+                                <a href="#">
+=======
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/1.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/2.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/3.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/4.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/5.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/6.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/7.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/8.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/9.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/10.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/11.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/12.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/13.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/14.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/15.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+=======
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                             </div>
                         </div>
                     </li>
@@ -2241,145 +2795,234 @@
                                 <div class="connector"></div>
                                 <div class="dot"></div>
                             </div>
+<<<<<<< HEAD
+                            <p class="narrativeText">Cautioned young people to heed the advice to socially distance and be wary of the…</p>
+=======
                             <div class="narrativeTextWrapper">
                                 <p class="narrativeText">people are panicking over the stock market.</p>
                                 <p class="counter"><span class="number">400</span>Posts</p>
                             </div>
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                         </div>
                         <div class="bottomSection">
                             <div class="connectorBox">
                                 <div class="connector"></div>
                             </div>
                             <div class="posts">
+<<<<<<< HEAD
+                                <a href="#">
+=======
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/1.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/2.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/3.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/4.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/5.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/6.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/7.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/8.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/9.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/10.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/11.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/12.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/13.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/14.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/15.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+=======
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                             </div>
                         </div>
                     </li>
                 </ul>
             </li>
+<<<<<<< HEAD
+            <li class="level uncollapse">
+                <div class="keyword">
+                    <div class="collapseIcon"></div>
+                    <p class="text">China</p>
+=======
             <li class="level">
                 <div class="keyword">
                     <div class="collapseIcon"></div>
                     <p class="text">Banks</p>
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                 </div>
                 <ul class="narratives">
                     <li class="narrative last">
@@ -2393,136 +3036,218 @@
                                 <div class="connector"></div>
                                 <div class="dot"></div>
                             </div>
+<<<<<<< HEAD
+                            <p class="narrativeText">Cautioned young people to heed the advice to socially distance and be wary of the…</p>
+=======
                             <div class="narrativeTextWrapper">
                                 <p class="narrativeText">Government controlled money frees economies from private bankers.</p>
                                 <p class="counter"><span class="number">583</span>Posts</p>
                             </div>
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                         </div>
                         <div class="bottomSection">
                             <div class="connectorBox">
                                 <div class="connector"></div>
                             </div>
                             <div class="posts">
+<<<<<<< HEAD
+                                <a href="#">
+=======
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/1.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/2.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/3.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/4.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/5.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/6.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/7.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/8.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/9.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/10.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/11.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/12.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/13.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/14.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+                                <a href="#">
+=======
                                 
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/15.jpg">
                                         <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
                                         <p class="postDate">Sep 12 2020 - 9:00 PM</p>
                                         <p class="postSource">www.cnn.net</p>
                                     </div>
+<<<<<<< HEAD
+                                </a>
+=======
                                 
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
                             </div>
                         </div>
                     </li>
@@ -2530,6 +3255,10 @@
             </li>
         </ul>
 
+<<<<<<< HEAD
+
+
+=======
         <!-- Notifications -->
         <section id="notifications">
             <p id="notificationsWrapper">
@@ -2574,6 +3303,7 @@
                 </div>
             </div>
         </section>
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
 
 	
 
@@ -2851,75 +3581,7 @@ $(function () {
     ////////////////////////// Data //////////////////////////////
     //////////////////////////////////////////////////////////////
 
-    var personalcontent = [
-          [//iPhone
-          {axis:"Death",value:<%=death%>},
-          {axis:"Work",value:<%=work%>},
-          {axis:"Leisure",value:<%=leisure%>},
-          {axis:"Religion",value:<%=religion%>},
-          {axis:"Home",value:<%=home%>},
-          {axis:"Money",value:<%=money%>}
-          ]
-        ];
-	
 
-        var timeorientation = [
-              [//iPhone
-              {axis:"Past Focus",value:<%=focuspast%>},
-              {axis:"Present Focus",value:<%=focuspresent%>},
-              {axis:"Future Focus",value:<%=focusfuture%>}
-              ]
-            ];
-
-            var coredriveandneed = [
-                  [//iPhone
-                  {axis:"Affiliation",value:<%=affiliation%>},
-                  {axis:"Achievement",value:<%=achieve%>},
-                  {axis:"Risk/Prevention Focus",value:<%=risk%>},
-                  {axis:"Reward Focus",value:<%=reward%>},
-                  {axis:"Power",value:<%=power%>},
-                  ]
-                ];
-        
-                var cognitiveprocess = [
-                      [//iPhone
-                      {axis:"Insight",value:<%=insight%>},
-                      {axis:"Differentiation",value:<%=differ%>},
-                      {axis:"Cause",value:<%=cause%>},
-                      {axis:"Discrepancies",value:<%=discrep%>},
-                      {axis:"Certainty",value:<%=certain%>},
-                      {axis:"Tentativeness",value:<%=tentat%>}
-                      ]
-                    ];
-
-                    var summaryvariable = [
-                          [//iPhone
-                          {axis:"Analytical Thinking",value:<%=analytic%>},
-                          {axis:"Emotional Tone",value:<%=tone%>},
-                          {axis:"Clout",value:<%=clout%>},
-                          {axis:"Authentic",value:<%=authentic%>}
-                          ]
-                        ];
-
-                        var sentimentemotion = [
-                              [//iPhone
-                              {axis:"Positive Emotion",value:<%=posemo%>},
-                              {axis:"Sadness",value:<%=sad%>},
-                              {axis:"Negative Emotion",value:<%=anger%>},
-                              {axis:"Anger",value:<%=anger%>},
-                              {axis:"Anxiety",value:<%=anx%>}
-                              ]
-                            ];
-                        
-                        var toxicity = [
-                            [//iPhone
-                            {axis:"Sexually Explicit",value:<%=posemo%>},
-                            {axis:"Identity Attack",value:<%=sad%>},
-                            {axis:"Profanity",value:<%=anger%>},
-                            {axis:"Insult",value:<%=anger%>},
-                            {axis:"Threat",value:<%=anx%>}
-                            ]
-                          ];
     //////////////////////////////////////////////////////////////
     //////////////////// Draw the Chart //////////////////////////
     //////////////////////////////////////////////////////////////
@@ -3006,6 +3668,9 @@ $(function () {
 });
   </script>
 	<script>
+<<<<<<< HEAD
+
+=======
  $(function () {
 
      // Initialize chart
@@ -3094,17 +3759,7 @@ $(function () {
          // data = [[{"date": "Jan","close": 120},{"date": "Feb","close": 140},{"date": "Mar","close":160},{"date": "Apr","close": 180},{"date": "May","close": 200},{"date": "Jun","close": 220},{"date": "Jul","close": 240},{"date": "Aug","close": 260},{"date": "Sep","close": 280},{"date": "Oct","close": 300},{"date": "Nov","close": 320},{"date": "Dec","close": 340}],
          // [{"date":"Jan","close":10},{"date":"Feb","close":20},{"date":"Mar","close":30},{"date": "Apr","close": 40},{"date": "May","close": 50},{"date": "Jun","close": 60},{"date": "Jul","close": 70},{"date": "Aug","close": 80},{"date": "Sep","close": 90},{"date": "Oct","close": 100},{"date": "Nov","close": 120},{"date": "Dec","close": 140}],
          // ];
-         data = [	
-         	[<%for (int q = 0; q < yearsarray.length(); q++) {
-						String yer = yearsarray.get(q).toString();
-						int vlue = Integer.parseInt(graphyearsneg.get(yer).toString());%>{"date":"<%=yer%>","close":<%=vlue%>},
-      		<%} System.out.println("!111!!"+yearsarray);%>],
-      		[<%for (int q = 0; q < yearsarray.length(); q++) {
-						String yer = yearsarray.get(q).toString();
-						int vlue = Integer.parseInt(graphyearspos.get(yer).toString());%>{"date":"<%=yer%>","close":<%=vlue%>},
-  		<%} System.out.println("!222!!"+yearsarray);%>]     	
-         	];
-         console.log(data);
+  
          // data = [];
 
          // data = [
@@ -3594,6 +4249,7 @@ $(function () {
          }
      }
  });
+>>>>>>> 6769ea8aca84a309e733ba5db6e70dda84209567
  </script>
 	<script>
 $(".option-only").on("change",function(e){
