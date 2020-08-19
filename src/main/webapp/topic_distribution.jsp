@@ -479,8 +479,8 @@ if (detail.size() > 0) {
 					<a class="breadcrumb-item active text-primary" href="postingfrequency.html">Topic Distribution</a>
 				</nav> -->
 		<div>
-					<button class="btn btn-primary stylebutton1 " id="printdoc">SAVE
-						AS PDF</button>
+					<!-- <button class="btn btn-primary stylebutton1 " id="printdoc">SAVE
+						AS PDF</button> -->
 				</div> 
 			</div>
 		</div>
@@ -618,7 +618,7 @@ if (detail.size() > 0) {
 			
 
 			<div id="blogPostContainer" class="col-md-6 mt20 card card-style nobordertopleft noborderbottomleft">
-				<div style="" class="pt20">
+				<div style="" class="pt20" id="blogpost_detail">>
 					<h5 id="titleContainer" class="text-primary p20 pt0 pb0"></h5>
 					<div class="text-center mb20 mt20">
 						<button class="btn stylebuttonblue">
@@ -677,7 +677,7 @@ if (detail.size() > 0) {
 
 
 
-	
+	<script src="pagedependencies/baseurl.js?v=93"></script>
 	
 	<!--  Blogpost -->
 <script>
@@ -1324,7 +1324,7 @@ class ChordDiagram {
     	this.colors = ["#C4C4C4", "#69B40F", "#EC1D25", "#C8125C", "#008FC8", "#10218B", "#134B24", "#737373", "#ffff00", "#ff79c5"];
     	
     	for (let i = 0; i < this.matrix.length; i++) {
-    		this.names.push("Topic " + (i + 1));
+    		this.names.push("Topic " + (i + 1))
     	}
     }
 
@@ -1807,6 +1807,28 @@ class BlogPosts {
         }
         let id = selection.getAttribute("blogId");
         
+    	$.ajax({
+			url: app_url+"subpages/influencedetail.jsp",
+			method: 'POST',
+			data: {
+				action:"fetchpost",
+				post_id:id,
+				tid:$("#alltid").val()
+			},
+			error: function(response)
+			{					
+				alert('error')
+				//console.log(response);
+				//$("#blogpost_detail").html(response);
+			},
+			success: function(response)
+			{   
+				//console.log(response);
+				$("#blogpost_detail").html(response).hide();
+				$("#blogpost_detail").fadeIn(700);
+			}
+		});
+        
         //this.titleContainer.innerHTML = this.blogPosts[id].title;
 		//this.authorContainer.innerHTML = this.blogPosts[id].author;
 		//this.dateContainer.innerHTML = this.blogPosts[id].date;
@@ -1832,7 +1854,40 @@ class BlogPosts {
 	
 }
 
-$(document).delegate('.blogPostClickListener', 'click', function(){
+$( "body" ).delegate( ".blogpost_link", "click", function() {
+		$("body").addClass("loaded");
+		var post_id = $(this).attr("blogid");
+		$("#blogpost_detail").html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />");
+		$(".viewpost").addClass("makeinvisible");
+		$('.blogpost_link').removeClass("activeselectedblog");
+		$('#blog_'+post_id).addClass("activeselectedblog");
+		$(this).parent().children(".viewpost").removeClass("makeinvisible");
+		//grab all id of blog and perform an ajax request
+		$.ajax({
+			url: app_url+"subpages/influencedetail.jsp",
+			method: 'POST',
+			data: {
+				action:"fetchpost",
+				post_id:post_id,
+				tid:$("#alltid").val()
+			},
+			error: function(response)
+			{					
+				alert('error')
+				//console.log(response);
+				//$("#blogpost_detail").html(response);
+			},
+			success: function(response)
+			{   
+				//console.log(response);
+				$("#blogpost_detail").html(response).hide();
+				$("#blogpost_detail").fadeIn(700);
+			}
+		});
+		
+	});
+
+$(document).delegate('.blogPostClickListener111', 'click', function(){
 	var a_view_model = new BlogPosts();
 	a_view_model.blogPostClickListener(_blogPostsData);
 	
@@ -1894,13 +1949,13 @@ class Topics {
         this.topicButtons.forEach(topicButton => {
         	if (topicButton.classList.contains("stylebuttonactive")) {
         		topicButton.classList.remove("btn-primary", "stylebuttonactive", "activebar")
-        		topicButton.classList.add("stylebuttoninactive", "opacity53", "text-primary");
+        		topicButton.classList.add("stylebuttoninactive", "opacity53pp", "text-primary");
         	}
         })        
         
         if (selectedButton.classList.contains("stylebuttoninactive")) {
         	selectedTopic = parseInt(selectedButton.getAttribute("topicNumber"));
-        	selectedButton.classList.remove("stylebuttoninactive", "opacity53", "text-primary");        		
+        	selectedButton.classList.remove("stylebuttoninactive", "opacity53pp", "text-primary");        		
         	selectedButton.classList.add("btn-primary", "stylebuttonactive", "activebar")
         }
         
@@ -1923,11 +1978,14 @@ class Topics {
             }
         }
 	}
-	
+    
 	createTopicButton(n) {
+		let colors_array = ["#C4C4C4", "#69B40F", "#EC1D25", "#C8125C", "#008FC8", "#10218B", "#134B24", "#737373", "#ffff00", "#ff79c5"];
 		let element = document.createElement("a");
-		element.classList.add("btn", "form-control", "stylebuttoninactive", "mb20", "opacity53", "text-primary");
+		element.classList.add("btn", "form-control", "stylebuttoninactive", "mb20", "opacity53pp", "text-primary");
 		element.setAttribute("topicNumber", n);
+		element.setAttribute("id", "topic_"+n+"");
+		element.style.backgroundColor = colors_array[n];
 		let bold = document.createElement("b");
 		bold.innerHTML = "Topic " + (n + 1);
 		element.appendChild(bold);

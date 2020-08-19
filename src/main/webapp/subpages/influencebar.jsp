@@ -26,8 +26,11 @@
 %>
 			
 <div class="chart" id="influencebar"></div>
+<script type="text/javascript" src="assets/js/jquery-1.11.3.min.js"></script>
+<script src="assets/bootstrap/js/bootstrap.js"></script>
 <script>
 
+$('[data-toggle="tooltip"]').tooltip();
 
 $(function () {
 
@@ -173,6 +176,11 @@ $(function () {
               .selectAll("text")
               .style("font-size",12)
               .style("text-transform","capitalize")
+              .attr("data-toggle", "tooltip")
+		      .attr("data-placement", "top")
+		      .attr("title", function (d) {  return d; })
+		      /* .on('mouseover', tip.show)
+               .on('mouseout', tip.hide) */
    			/* .attr("y", -25)
     		.attr("x", 20)
     		.attr("dy", ".75em")
