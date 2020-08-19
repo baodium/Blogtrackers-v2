@@ -114,12 +114,16 @@ String sort =  (null == request.getParameter("sortby")) ? "date" : request.getPa
 
 ArrayList results = null;
 String all_loaded_blogs = "";
+ArrayList all_loaded_blogs_name = null;
 
 if(term.equals("")){
 	results = post._list("DESC","0",sort);
 }else{
 	results = post._search(term,"0",sort);
 	all_loaded_blogs = post.getBlogIdsfromsearch(term);
+	
+	all_loaded_blogs_name = post.getBlogIdsAndNamesfromsearch(all_loaded_blogs);
+	
 	
 }
 
@@ -635,8 +639,15 @@ src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.print.min.js"></script>
 <script type="text/javascript">
 
 var all_loaded_blogs = [<%=all_loaded_blogs %>];
+var all_loaded_blogs_name = <%=all_loaded_blogs_name %>;
+console.log(all_loaded_blogs)
+console.log(all_loaded_blogs_name)
+
 var array_to_send = [];
-console.log('all_loaded_blogs1',all_loaded_blogs)
+var array_of_all_blogs = new Map();
+
+all_loaded_blogs_name.forEach((all_loaded_blogs_name)=>array_of_all_blogs.set(parseInt(all_loaded_blogs_name._source.blogsite_id), ""+all_loaded_blogs_name._source.blogsite_name+"") );
+
 function remove_array_element(array, n)
 {
   var index = array.indexOf(n);
@@ -860,11 +871,11 @@ function updateCurrentSelectedBlogs(array_to_send){
 		$("#selected_blogs_").val(all_blogs);
 		
 		let arrayLength = array_to_send.length;
-		
+		$("#selected_blog_list").html('')
 		for(let i = 0 ; i < arrayLength; i++) {
 			let blog_site_id = array_to_send[i];
 			let blog_name = $("#identify_"+blog_site_id).attr( "blog_name_identify" );
-			$("#selected_blog_list").append('<button class="col-md-9 btn text-left text-white bold-text blogselection mt10 pt10 pb10 blogg_'+blog_site_id+'" id="blogg_'+blog_site_id+'">'+blog_name+'<i class="fas fa-trash float-right hidden deleteblog" id="'+blog_site_id+'"></i></button>');
+			$("#selected_blog_list").append('<button class="col-md-9 btn text-left text-white bold-text blogselection mt10 pt10 pb10 blogg_'+blog_site_id+'" id="blogg_'+blog_site_id+'">'+array_of_all_blogs.get(blog_site_id)+'<i class="fas fa-trash float-right hidden deleteblog" id="'+blog_site_id+'"></i></button>');
 			
 		}
 		

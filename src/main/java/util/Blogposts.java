@@ -1182,6 +1182,22 @@ public class Blogposts {
 		System.out.println(result);
 		return result;
 	}
+	
+	public static ArrayList getBlogIdsAndNamesfromsearch(String ids) {
+		
+		DbConnection db = new DbConnection();
+		ArrayList response = new ArrayList();
+		ids = ids.replaceAll(",$", "");
+		ids = ids.replaceAll(", $", "");
+		ids = "(" + ids + ")";
+		try {
+			response = db.queryJSON("SELECT blogsite_id, blogsite_name FROM blogsites WHERE blogsite_id  in " + ids);
+		} catch (Exception e) {
+			return response;
+		}
+
+		return response;
+	}
 
 	public ArrayList _search(String term, String from, String sortby) throws Exception {
 

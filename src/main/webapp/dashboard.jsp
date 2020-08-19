@@ -2625,7 +2625,7 @@ function update(source) {
 					
 					
 		
-		   var colors = d3v4.scaleOrdinal().range(["#6b085e", "#e50471", "#0571a0", "#038a2c", "#6b8a03", "#a02f05", "#b770e1", "#fc8f82 ", "#011aa7", "#a78901"]);;
+		   var colors = d3v4.scaleOrdinal().range(["#6b085e", "#e50471", "#0571a0", "#038a2c", "#6b8a03", "#a02f05", "#b770e1", "#fc8f82 ", "#011aa7", "#a78901"]);
 		   // Add SVG element
 		   var container = d3Container.append("svg");
 		   // Add SVG group
