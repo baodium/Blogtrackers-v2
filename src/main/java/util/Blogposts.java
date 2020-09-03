@@ -1155,7 +1155,7 @@ public class Blogposts {
 				+ "            ]\r\n" + "        }\r\n" + "    },\r\n" + "    \"size\": 0,\r\n"
 				+ "    \"_source\": false,\r\n" + "    \"stored_fields\": \"_none_\",\r\n"
 				+ "    \"aggregations\": {\r\n" + "        \"groupby\": {\r\n" + "            \"composite\": {\r\n"
-				+ "                \"size\": 1000,\r\n" + "                \"sources\": [\r\n"
+				+ "                \"size\": 10000,\r\n" + "                \"sources\": [\r\n"
 				+ "                    {\r\n" + "                        \"dat\": {\r\n"
 				+ "                            \"terms\": {\r\n"
 				+ "                                \"field\": \"blogsite_id\",\r\n"

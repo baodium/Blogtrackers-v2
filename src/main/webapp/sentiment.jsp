@@ -524,7 +524,7 @@
 
 					bj = new JSONObject(bstr);
 					//System.out.println("result eree"+bj);
-
+try{
 					death += Integer.parseInt(bj.get("death").toString());
 					work += Integer.parseInt(bj.get("work").toString());
 					leisure += Integer.parseInt(bj.get("leisure").toString());
@@ -561,6 +561,9 @@
 					insult += Integer.parseInt(bj.get("insult").toString());
 					profanity += Integer.parseInt(bj.get("profanity").toString());
 					identity_attack += Integer.parseInt(bj.get("identity_attack").toString());
+}catch(Exception e){
+	
+}
 				}
 			}
 %>

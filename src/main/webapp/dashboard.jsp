@@ -4139,7 +4139,9 @@ $(function () {
 	  $(function () {
 	
 	 <%String pos = "";
+	 int temp_pos = 0;
 					String neg = "";
+					int temp_neg = 0;
 					for (int i = 0; i < getPositiveEmotion.size(); i++) {
 						ArrayList<?> posi = (ArrayList<?>) getPositiveEmotion.get(i);
 						//System.out.println(posi.get(0));
@@ -4149,6 +4151,8 @@ $(function () {
 							pos = posi.get(0).toString();
 						}
 						//pos = () ? "" : posi.get(0).toString();
+						 temp_pos+= Integer.parseInt(pos);
+						
 						
 					}
 					for (int i = 0; i < getNegativeEmotion.size(); i++) {
@@ -4158,12 +4162,15 @@ $(function () {
 						}else{
 							neg = nega.get(0).toString();
 						}
-						
+						temp_neg+= Integer.parseInt(neg);
 
 					}%>
       sentimentdata = [
-            {label:"Negative", value:<%=Integer.parseInt(pos)%>},
-            {label:"Positive", value:<%=Integer.parseInt(neg)%>}
+            <%-- {label:"Negative", value:<%=Integer.parseInt(pos)%>},
+            {label:"Positive", value:<%=Integer.parseInt(neg)%>} --%>
+            
+            {label:"Negative", value:<%=temp_pos%>},
+            {label:"Positive", value:<%=temp_neg%>}
         ];
       
       pieChartAnimation("#sentimentpiechart",180,sentimentdata);
