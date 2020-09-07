@@ -818,15 +818,36 @@ public class Clustering extends HttpServlet {
 //		return res;
 	}
 
-	public static JSONObject getTopTermsFromBlogIds(String ids, String from, String to, String limit) throws Exception {
+	public static String getTopTermsFromBlogIds(String ids, String from, String to, String limit) throws Exception {
 		String result = null;
-		System.out.println("select * from blogpost_terms where blogsiteid in  (" + ids + ") and date > \"" + from
-				+ "\" and date < \"" + to + "\"");
-		List postDataAll = DbConnection.queryJSON("select * from blogpost_terms where blogsiteid in  (" + ids
-				+ ") and date > \"" + from + "\" and date < \"" + to + "\"");
-		JSONObject o = topTerms(postDataAll, limit);
+		JSONArray output = new JSONArray();
+//		System.out.println("select * from blogpost_terms where blogsiteid in  (" + ids + ") and date > \"" + from
+//				+ "\" and date < \"" + to + "\"");
+//		List postDataAll = DbConnection.queryJSON("select * from blogpost_terms where blogsiteid in  (" + ids
+//				+ ") and date > \"" + from + "\" and date < \"" + to + "\"");
+//		JSONObject o = topTerms(postDataAll, limit);
+//
+//		return o;
+		
+		String query = "select n.term, sum(n.occurr) occurrence " + "from blogpost_terms_api, "
+				+ "json_table(terms_test, " + "'$[*]' columns( " + "term varchar(128) path '$.term', "
+				+ "occurr int(11) path '$.occurrence' " + ") " + ") " + "as n " + "where blogsiteid in  (" + ids
+				+ ") and date > \"" + from + "\" and date < \"" + to + "\" " + "group by n.term "
+				+ "order by occurrence desc " + "limit " + limit + "";
+		System.out.println(query);
+		List postDataAll = DbConnection.queryJSON(query);
+		if (postDataAll.size() > 0) {
+			for (int i = 0; i < postDataAll.size(); i++) {
+				JSONObject data = new JSONObject(postDataAll.get(i).toString());
+				Object term = data.getJSONObject("_source").get("term");
+				Object occurrence = data.getJSONObject("_source").get("occurrence");
+				Tuple2<String, Integer> v = new Tuple2<String, Integer>(term.toString(),
+						Integer.parseInt(occurrence.toString()));
+				output.put(v);
 
-		return o;
+			}
+		}
+		return output.toString();
 	}
 
 	public static String getTopTermsFromBlogger(String blogger, String from, String to, String limit) throws Exception {
@@ -839,11 +860,14 @@ public class Clustering extends HttpServlet {
 //		JSONObject o = topTerms(postDataAll, limit);
 //
 //		return o.get("output").toString();
+		if(blogger.indexOf("\"") != 0) {
+			blogger = "\"" + blogger + "\"";
+		}
 		String query = "select n.term, sum(n.occurr) occurrence " + "from blogpost_terms_api, "
 				+ "json_table(terms_test, " + "'$[*]' columns( " + "term varchar(128) path '$.term', "
 				+ "occurr int(11) path '$.occurrence' " + ") " + ") " + "as n " + "where blogger in  (" + blogger
 				+ ") and date > \"" + from + "\" and date < \"" + to + "\" " + "group by n.term "
-				+ "order by occurrence desc " + "limit 100";
+				+ "order by occurrence desc " + "limit " + limit + "";
 		System.out.println(query);
 		List postDataAll = DbConnection.queryJSON(query);
 		if (postDataAll.size() > 0) {
