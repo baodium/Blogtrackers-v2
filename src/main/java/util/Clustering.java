@@ -550,31 +550,79 @@ public class Clustering extends HttpServlet {
 	}
 
 	public String getTopPostingLocation(String postIds) throws Exception {
+//		String result = null;
+//		JSONObject query = new JSONObject("{\r\n" + "    \"size\": 0,\r\n" + "    \"query\": {\r\n"
+//				+ "        \"terms\": {\r\n" + "            \"blogpost_id\": [" + postIds + "],\r\n"
+//				+ "            \"boost\": 1.0\r\n" + "        }\r\n" + "    },\r\n" + "    \"_source\": false,\r\n"
+//				+ "    \"stored_fields\": \"_none_\",\r\n" + "    \"aggregations\": {\r\n"
+//				+ "        \"groupby\": {\r\n" + "            \"composite\": {\r\n"
+//				+ "                \"size\": 10000,\r\n" + "                \"sources\": [\r\n"
+//				+ "                    {\r\n" + "                        \"dat\": {\r\n"
+//				+ "                            \"terms\": {\r\n"
+//				+ "                                \"field\": \"location.keyword\",\r\n"
+//				+ "                                \"missing_bucket\": true,\r\n"
+//				+ "                                \"order\": \"desc\"\r\n" + "                            }\r\n"
+//				+ "                        }\r\n" + "                    }\r\n" + "                ]\r\n"
+//				+ "            },\r\n" + "            \"aggregations\": {\r\n" + "                \"dat\": {\r\n"
+//				+ "                    \"filter\": {\r\n" + "                        \"exists\": {\r\n"
+//				+ "                            \"field\": \"location\",\r\n"
+//				+ "                            \"boost\": 1.0\r\n" + "                        }\r\n"
+//				+ "                    }\r\n" + "                }\r\n" + "            }\r\n" + "        }\r\n"
+//				+ "    }\r\n" + "}");
+//		// System.out.println("getTopPostingLocation --" + query);
+//		JSONObject myResponse = term._makeElasticRequest(query, "POST", "/blogposts/_search");
+//		if (null != myResponse.get("hits")) {
+//			Object aggregations = myResponse.getJSONObject("aggregations").getJSONObject("groupby")
+//					.getJSONArray("buckets").getJSONObject(0).getJSONObject("key").get("dat");
+//			result = aggregations.toString();
+//		}
+//		return result;
+
 		String result = null;
-		JSONObject query = new JSONObject("{\r\n" + "    \"size\": 0,\r\n" + "    \"query\": {\r\n"
-				+ "        \"terms\": {\r\n" + "            \"blogpost_id\": [" + postIds + "],\r\n"
-				+ "            \"boost\": 1.0\r\n" + "        }\r\n" + "    },\r\n" + "    \"_source\": false,\r\n"
-				+ "    \"stored_fields\": \"_none_\",\r\n" + "    \"aggregations\": {\r\n"
+		JSONObject query = new JSONObject();
+		query = new JSONObject("{\r\n" + "    \"size\": 0,\r\n" + "    \"query\": {\r\n" + "        \"bool\": {\r\n"
+				+ "            \"must\": [\r\n" + "                {\r\n" + "                    \"terms\": {\r\n"
+				+ "                        \"blogpost_id\": [" + postIds + "],\r\n"
+				+ "                        \"boost\": 1\r\n" + "                    }\r\n" + "                }\r\n"
+				+ "            ]\r\n" + "        }\r\n" + "    },\r\n" + "    \"aggregations\": {\r\n"
 				+ "        \"groupby\": {\r\n" + "            \"composite\": {\r\n"
-				+ "                \"size\": 10000,\r\n" + "                \"sources\": [\r\n"
+				+ "                \"size\": 1000,\r\n" + "                \"sources\": [\r\n"
 				+ "                    {\r\n" + "                        \"dat\": {\r\n"
 				+ "                            \"terms\": {\r\n"
-				+ "                                \"field\": \"location.keyword\",\r\n"
-				+ "                                \"missing_bucket\": true,\r\n"
-				+ "                                \"order\": \"desc\"\r\n" + "                            }\r\n"
+				+ "                                \"missing_bucket\": false,\r\n"
+				+ "                                \"field\": \"location\",\r\n"
+				+ "                                \"order\": \"asc\"\r\n" + "                            }\r\n"
 				+ "                        }\r\n" + "                    }\r\n" + "                ]\r\n"
-				+ "            },\r\n" + "            \"aggregations\": {\r\n" + "                \"dat\": {\r\n"
-				+ "                    \"filter\": {\r\n" + "                        \"exists\": {\r\n"
-				+ "                            \"field\": \"location\",\r\n"
-				+ "                            \"boost\": 1.0\r\n" + "                        }\r\n"
-				+ "                    }\r\n" + "                }\r\n" + "            }\r\n" + "        }\r\n"
-				+ "    }\r\n" + "}");
-		// System.out.println("getTopPostingLocation --" + query);
-		JSONObject myResponse = term._makeElasticRequest(query, "POST", "/blogposts/_search");
+				+ "            }\r\n" + "        }\r\n" + "    }\r\n" + "}");
+
+		JSONObject myResponse = term._makeElasticRequest(query, "POST", "/blogposts/_search/?");
 		if (null != myResponse.get("hits")) {
-			Object aggregations = myResponse.getJSONObject("aggregations").getJSONObject("groupby")
-					.getJSONArray("buckets").getJSONObject(0).getJSONObject("key").get("dat");
-			result = aggregations.toString();
+			Object key = null;
+			Object value = null;
+
+			String key_result = null;
+			String value_result = null;
+
+			Object k = myResponse.getJSONObject("aggregations").getJSONObject("groupby").getJSONArray("buckets");
+			int lenght_of_array = new JSONArray(k.toString()).length();
+			if (lenght_of_array > 0) {
+				int current_max = 0;
+				for (int i = 0; i < lenght_of_array; i++) {
+					key = ((JSONArray) k).getJSONObject(i).getJSONObject("key").get("dat");
+					value = myResponse.getJSONObject("aggregations").getJSONObject("groupby").getJSONArray("buckets")
+							.getJSONObject(i).get("doc_count");
+
+					if (Integer.parseInt(value.toString()) >= current_max) {
+						current_max = Integer.parseInt(value.toString());
+						key_result = key.toString();
+						value_result = value.toString();
+					}
+				}
+				result = key_result.toUpperCase();
+			} else {
+				result = "NO DATA AVAILABLE";
+			}
+
 		}
 		return result;
 	}
@@ -828,7 +876,7 @@ public class Clustering extends HttpServlet {
 //		JSONObject o = topTerms(postDataAll, limit);
 //
 //		return o;
-		
+
 		String query = "select n.term, sum(n.occurr) occurrence " + "from blogpost_terms_api, "
 				+ "json_table(terms_test, " + "'$[*]' columns( " + "term varchar(128) path '$.term', "
 				+ "occurr int(11) path '$.occurrence' " + ") " + ") " + "as n " + "where blogsiteid in  (" + ids
@@ -860,7 +908,7 @@ public class Clustering extends HttpServlet {
 //		JSONObject o = topTerms(postDataAll, limit);
 //
 //		return o.get("output").toString();
-		if(blogger.indexOf("\"") != 0) {
+		if (blogger.indexOf("\"") != 0) {
 			blogger = "\"" + blogger + "\"";
 		}
 		String query = "select n.term, sum(n.occurr) occurrence " + "from blogpost_terms_api, "
