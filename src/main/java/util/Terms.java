@@ -1171,7 +1171,8 @@ public class Terms extends HttpServlet implements Runnable {
 			System.out.println("action is getkeyworddashboard and ids are " + ids.toString());
 			try {
 				JSONObject output_ = new JSONObject();
-				o = cluster.getTopTermsFromBlogIds(ids.toString(), date_start.toString(), date_end.toString(),"100");
+				//o = cluster.getTopTermsFromBlogIds(ids.toString(), date_start.toString(), date_end.toString(),"100");
+				output = cluster.getTopTermsFromBlogIds(ids.toString(), date_start.toString(), date_end.toString(),"100");
 //				out_ = (JSONArray) o.get("output");
 
 //				String result = out_.toString().replaceAll("\"", "");
@@ -1191,25 +1192,29 @@ public class Terms extends HttpServlet implements Runnable {
 
 			}
 			System.out.println("dashboard output");
-			out.write(o.toString());
+//			out.write(o.toString());
+			out.write(output.toString());
 		} else if (action.toString().equals("gethighestterms")) {
 			try {
-				o = cluster.getTopTermsFromBlogIds(ids.toString(), date_start.toString(), date_end.toString(),"1");
-				out_ = (JSONArray) o.get("output");
+//				o = cluster.getTopTermsFromBlogIds(ids.toString(), date_start.toString(), date_end.toString(),"1");
+//				out_ = (JSONArray) o.get("output");
+				output = cluster.getTopTermsFromBlogIds(ids.toString(), date_start.toString(), date_end.toString(),"1");
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			out.write(out_.toString().replaceAll("\"", ""));
+//			out.write(out_.toString().replaceAll("\"", ""));
+			out.write(output.toString().replace("\"", ""));
 		}else if (action.toString().equals("getbloggerhighestterms")) {
 			try {
-				output = cluster.getTopTermsBlogger(blogger.toString(), date_start.toString(), date_end.toString(),
-						"1");
+//				output = cluster.getTopTermsBlogger(blogger.toString(), date_start.toString(), date_end.toString(),
+//						"1");
+				output = cluster.getTopTermsFromBlogger(blogger.toString(), date_start.toString(), date_end.toString(), "1");
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			out.write(output.toString());
+			out.write(output.toString().replace("\"", ""));
 		}
 			
 	}

@@ -118,6 +118,11 @@ System.out.println(index);
 		if (null != myResponse.get("hits")) {
 
 //		JSONArray jsonArray = new JSONArray();
+			Object key = null;
+			Object value = null;
+			
+			String key_result = null;
+			String value_result = null;
 			
 			if(type.contentEquals("bucket_length")) {
 				Object bucket_length = myResponse.getJSONObject("aggregations").getJSONObject("groupby")
@@ -125,10 +130,21 @@ System.out.println(index);
 				result = bucket_length.toString();
 			}else if(type.contentEquals("bucket_highest")) {
 				Object k = myResponse.getJSONObject("aggregations").getJSONObject("groupby").getJSONArray("buckets");
-				if(new JSONArray(k.toString()).length() > 0) {
-					Object key = ((JSONArray) k).getJSONObject(0).getJSONObject("key").get("dat");
-					Object value = myResponse.getJSONObject("aggregations").getJSONObject("groupby").getJSONArray("buckets").getJSONObject(0).get("doc_count");
-					result = key.toString() + "___" + value.toString();
+				int lenght_of_array = new JSONArray(k.toString()).length();
+				if(lenght_of_array > 0) {
+					int current_max = 0;
+					for(int i = 0; i < lenght_of_array; i++) {
+						key = ((JSONArray) k).getJSONObject(i).getJSONObject("key").get("dat");
+						value = myResponse.getJSONObject("aggregations").getJSONObject("groupby").getJSONArray("buckets").getJSONObject(i).get("doc_count");
+						
+						if(Integer.parseInt(value.toString()) >= current_max){
+							current_max = Integer.parseInt(value.toString());
+							key_result = key.toString();
+							value_result = value.toString();
+						}
+					}
+					
+					result = key_result + "___" + value_result;
 				}else {
 					result = "NO DATA AVAILABLE" + "___" + "0";
 				}

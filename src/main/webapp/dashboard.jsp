@@ -1650,6 +1650,7 @@ path.chord {
 				</div>
 				-->
 				<div class="float-right">
+				<!-- <a id="" target="_blank" href="http://haydex.com/narrative/"><button -->
 					<a id="" target="_blank" href="narrative.jsp?tid=<%=tid%>"><button
 							disabled class="btn buttonportfolio2 buttonTopicModelling mt10">
 							<b class="float-left semi-bold-text">Narrative Analysis </b> <b
