@@ -69,12 +69,12 @@
 
 	//alert(all_selected_names)
 	loadTerms(all_selected_names,$("#all_blog_ids").val(),date_start,date_end, all_selected_names1);
-	console.log(blogger+$("#all_blog_ids").val()+date_start+date_end)
+	//console.log(blogger+$("#all_blog_ids").val()+date_start+date_end)
 	loadInfluence(all_selected_names,date_start,date_end);
 	
 	var total_post_count = $("#total_post_count").val();
 	total_post_percentage = (total_post_counter/parseInt(total_post_count) * 100);
-	console.log("seun", total_post_percentage);
+	//console.log("seun", total_post_percentage);
 	$(".total-post").html(Math.round(total_post_percentage).toString() + "%");
 	//$(".total-post").html(parseInt(response).toLocaleString('en'));
 	//loadChart(bloog,id,date_start,date_end);
@@ -332,6 +332,7 @@ function loadTopKeyword(blogger,blog_id,start_date,end_date){/*
 
 
 function loadSentiments(blogger,blog_id,start_date,end_date){
+	console.log(blogger, blog_id)
 	$("#entity_table").html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />");
 	var blger = blogger.replaceAll(" ","__");
 	

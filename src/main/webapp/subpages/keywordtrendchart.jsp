@@ -33,6 +33,10 @@
 	Object id = (null == request.getParameter("id")) ? "" : request.getParameter("id");
 	Object tid = (null == request.getParameter("tid")) ? "" : request.getParameter("tid");
 	String ids = (null == request.getParameter("all_blog_ids")) ? "" : request.getParameter("all_blog_ids");
+	
+	String tempYear = (null == request.getParameter("tempYear")) ? "0" : request.getParameter("tempYear");
+	int tempYear1 = Integer.parseInt(tempYear);
+
 
 	Trackers tracker = new Trackers();
 	Blogposts post = new Blogposts();
@@ -149,6 +153,10 @@
 		<div class="card-body p0 pt20 pb20" style="min-height: 420px;">
 			<p>
 				Posts that mentioned <b class="text-green active-term"><%=term_string%></b>
+				<% if(tempYear1 > 0){ %>
+				<span id="year_mentioned">in the year <em style="color: #1F90D0" ><%=tempYear %></em> </span>
+				<%}else{} %>
+				
 			</p>
 			<!--  <div class="p15 pb5 pt0" role="group">
           Export Options

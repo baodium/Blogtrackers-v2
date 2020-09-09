@@ -511,8 +511,8 @@ function updateTable(response) {
 			});
 }*/
 
-function loadTable(term, date_start, date_end, term_string) {
-
+function loadTable(term, date_start, date_end, term_string, tempYear) {
+	
 	$("#post-list")
 			.html(
 					"<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />");
@@ -532,6 +532,7 @@ function loadTable(term, date_start, date_end, term_string) {
 					tid : $("#tid").val(),
 					date_start : date_start,
 					date_end : date_end,
+					tempYear:tempYear,
 					term_string : term_string
 				},
 				error : function(response) {
@@ -548,6 +549,7 @@ function loadTable(term, date_start, date_end, term_string) {
 					$.getScript("pagedependencies/baseurl.js?v=38", function(
 							data, textStatus, jqxhr) {
 					});
+					
 				/*	$.getScript("pagedependencies/keywordtrends.js?v=0879",
 							function(data, textStatus, jqxhr) {
 							});*/

@@ -116,20 +116,22 @@
 					bstr = bj.get("_source").toString();
 					bj = new JSONObject(bstr);
 					String link = bj.get("link").toString();
-					
+
 					JSONObject content = new JSONObject();
-					String maindomain="";
+					String maindomain = "";
 					try {
 						URI uri = new URI(link);
-						String domain = bj.get("link").toString();
+						String domain = uri.getHost();
 						if (domain.startsWith("www.")) {
 							maindomain = domain.substring(4);
 						} else {
 							maindomain = domain;
 						}
-					} catch (Exception ex) {}
-					maindomain = bj.get("domain").toString();
+					} catch (Exception ex) {
+					}
+					
 					if(listtype.equals("urls")){
+						maindomain = bj.get("domain").toString();
 						if (outerlinks.has(link)) {
 							content = new JSONObject(outerlinks.get(link).toString());
 							
@@ -152,10 +154,8 @@
 					}else{
 						if (outerlinks.has(maindomain)) {
 							content = new JSONObject(outerlinks.get(maindomain).toString());
-							
-							int valu = Integer.parseInt(content.get("value").toString());
+							int valu = new Double(content.get("value").toString()).intValue();
 							valu++;
-							
 							content.put("value", valu);
 							content.put("link", link);
 							content.put("domain", maindomain);

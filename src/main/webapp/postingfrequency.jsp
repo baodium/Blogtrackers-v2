@@ -1461,6 +1461,41 @@ String formatedtotalpost = String.format("%.0f",(Double.parseDouble(totalpost)/(
                         	   var d2 = 	  tempYear + "-12-31";
                         	 
                         	   bloog = d.name.replaceAll("__"," ");
+                        	   
+                 ///////////////start collecting names
+                        		 var count = $('.thanks').length;
+                        		 
+                        		 if(count > 0){
+                        			 
+                        			 var all_selected_names = '';
+                        			 var all_selected_names1 = '';
+                        			 var i = 1;
+                        			 var total_post_counter = 0;
+                        			 $( ".thanks" ).each(function( index ) {
+                        				 
+                        				 
+                        				 if(i > 1){
+                        					 all_selected_names += ' , ';
+                        					 all_selected_names1 += ' , ';
+                        				 }
+                        				 
+                        		    	blog_name = 	$(this).attr('name');
+                        		    	
+                        		    	blog_id = 	this.id;
+                        		    	
+                        		    	all_selected_names += '"'+blog_name+'"';
+                        		    	all_selected_names1 += blog_name;
+                        		    		
+                        		    	i++;
+                        		    	
+                        		    	//getting total post count from each blogger
+                        		    	total_post_counter+=parseInt($(this).attr('value'));
+                        		    	
+                        			});
+                        			 
+                        			 
+                        		 }
+                        		////////////end collecting names
                         		
                         	   $('.activeblogger').html(bloog);
                         	   
@@ -1468,7 +1503,7 @@ String formatedtotalpost = String.format("%.0f",(Double.parseDouble(totalpost)/(
                         	   getTopLocation(bloog,$("#all_blog_ids").val(),d1,d2);
                         	   
                         	   loadTerms(temp_blog,$("#blogid").val(),d1,d2);	
-                        		loadSentiments(bloog,$("#all_blog_ids").val(),d1,d2);
+                        		loadSentiments(all_selected_names,$("#all_blog_ids").val(),d1,d2);
                         		getTotalPost(bloog,"",d1,d2);
                         	  // loadInfluence(d1,d2); 
                         	   

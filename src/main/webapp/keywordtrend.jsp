@@ -692,6 +692,29 @@
 
 <link rel="stylesheet" type="text/css" href="multiline.css">
 
+<style>
+.tick line{
+			opacity: 0.2;
+		  }
+		.line{
+		  fill: none;
+		  stroke-width: 1.5px;
+		  pointer-events:visible;
+		}
+		.line:hover{
+			stroke-width:2.5px;
+		}
+		.hover-rect{
+			fill:none; 
+			pointer-events:visibleFill;
+		}
+		.hover-line {
+		  stroke: steelblue;
+		  stroke-width: 1px;
+		  stroke-dasharray: 3,3;
+		}
+</style>
+
 <!--end of bootsrap -->
 <script src="assets/js/jquery-3.2.1.slim.min.js"></script>
 <script src="assets/js/popper.min.js"></script>
@@ -1148,7 +1171,7 @@
 					id="post-list">
 					<div class="card-body p0 pt20 pb20" style="min-height: 420px;">
 						<p>
-							Posts that mentioned <b class="text-green active-term"><%=m.replace("\"", "")%></b>
+							Posts that mentioned <b class="text-green active-term"><%=m.replace("\"", "")%></b> <span id="year_mentioned"></span>
 						</p>
 						<!--  <div class="p15 pb5 pt0" role="group">
           Export Options
@@ -2085,6 +2108,8 @@ $(document).ready(function() {
 	 		    var height = 200;
 	 		    var margin = 30;
 	 		    var duration = 250;
+	 		    
+	 		   var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"]
 
 	 		    var lineOpacity = "0.25";
 	 		    var lineOpacityHover = "0.85";
@@ -2140,7 +2165,9 @@ $(document).ready(function() {
 	 		      .append('g')
 	 		      .attr("transform", `translate(${margin}, ${margin})`);
 
-
+				
+				
+				
 	 		    /* Add line into SVG */
 	 		    var line = d3.svg.line()
 	 		      .x(d => xScale(d.date))
@@ -2191,7 +2218,8 @@ $(document).ready(function() {
 	 		            .style("stroke-width", lineStroke)
 	 		            .style("cursor", "none");
 	 		        });
-
+				
+	 		 
 
 	 		    /* Add circles in the line */
 	 		    lines.selectAll("circle-group")
@@ -2203,7 +2231,7 @@ $(document).ready(function() {
 	 		       
 	 		      .data(d => d.values).enter()
 	 		      .append("g")
-	 		      .attr("class", "circle") 
+	 		      .attr("class", "circle")
 	 		      
 	 		      
 	 		      .on("click",function(d){
@@ -2213,9 +2241,9 @@ $(document).ready(function() {
                    	   var d2 = 	  tempYear + "-12-31";
                    	 
                    	   bloog = d.name.replaceAll("__"," ");
-                   		
-                   	   $('.activeblogger').html(bloog);
                    	   
+                   	   //$('.activeblogger').html(bloog);
+                   	   //$(".active-term").html(bloog);
                    	   
                    	 ///////////////start collecting names
 	                	 var count = $('.thanks').length;
@@ -2251,15 +2279,17 @@ $(document).ready(function() {
 	                		 
 	                	 }
 	                	////////////end collecting names
-	                	loadBlogMentioned(d1, d2);
-						loadMostLocation(d1, d2);
-						loadMostPost(d1, d2);
-						loadTable(d1, d2, all_selected_names1);
-                   	   getTopLocation(all_selected_names,$("#all_blog_ids").val(),d1,d2);
-                   	   loadTerms(all_selected_names,$("#all_blog_ids").val(),d1,d2);	
-                   		loadSentiments(all_selected_names,$("#all_blog_ids").val(),d1,d2);
+	              
+                   		$(".active-term").html(all_selected_names1);
+                   		$("#term").val(all_selected_names);
                    		
-                   	  // loadInfluence(d1,d2); 
+						loadBlogMentioned($("#term").val(),d1,d2);
+                   		loadMostLocation($("#term").val(), d1,d2);
+                   		loadMostPost($("#term").val(), d1,d2);
+                   		loadTable($("#term").val(), d1,d2, all_selected_names1, parseInt(tempYear));
+                   		
+                   		
+                   		
                    	   
                       })
                       
@@ -2292,20 +2322,118 @@ $(document).ready(function() {
 	 		      .append("circle")
 	 		      .attr("cx", d => xScale(d.date))
 	 		      .attr("cy", d => yScale(d.close))
+	 		      .attr("class", function(d) { temp_det = convertTime(d.date); return temp_det +""; })
 	 		      .attr("r", circleRadius)
 	 		      .style('opacity', circleOpacity)
 	 		      .on("mouseover", function(d) {
+	 		    	 temp_detail = convertTime(d.date);
+	 		    	 $('.'+temp_detail).attr("r", circleRadiusHover)
 	 		            d3.select(this)
 	 		              .transition()
 	 		              .duration(duration)
 	 		              .attr("r", circleRadiusHover);
 	 		          })
 	 		        .on("mouseout", function(d) {
+	 		        	temp_detail = convertTime(d.date);
+		 		    	$('.'+temp_detail).attr("r", circleRadius)
 	 		            d3.select(this) 
 	 		              .transition()
 	 		              .duration(duration)
 	 		              .attr("r", circleRadius);  
 	 		          });
+	 		    
+	 		  //start
+		 	/* 	   var mouseG = svg.append("g")
+	      .attr("class", "mouse-over-effects");
+
+	    mouseG.append("path") // this is the black vertical line to follow mouse
+	      .attr("class", "mouse-line")
+	      .style("stroke", "black")
+	      .style("stroke-width", "1px")
+	      .style("opacity", "0")
+	    .style("max-height", "100px");
+	    
+	     lines = document.getElementsByClassName('line');
+	    
+	    var mousePerLine = mouseG.selectAll('.mouse-per-line')
+	    .data(data)
+	    .enter()
+	    .append("g")
+	    .attr("class", "mouse-per-line");
+	    
+	    mousePerLine.append("circle")
+	    .attr("r", 7)
+	    .style("stroke", function(d) {
+	      return color(d.name);
+	    })
+	    .style("fill", "none")
+	    .style("stroke-width", "1px")
+	    .style("opacity", "0");
+	    
+	    mousePerLine.append("text")
+	    .attr("transform", "translate(10,3)");
+	    
+	    mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
+	    .attr('width', width) // can't catch mouse events on a g element
+	    .attr('height', (height+margin)+"px")
+	    .attr('fill', 'none')
+	    .attr('pointer-events', 'all')
+	    .on('mouseout', function() { // on mouse out hide line, circles and text
+	      d3.select(".mouse-line")
+	        .style("opacity", "0");
+	      d3.selectAll(".mouse-per-line circle")
+	        .style("opacity", "0");
+	      d3.selectAll(".mouse-per-line text")
+	        .style("opacity", "0");
+	    })
+	    .on('mouseover', function() { // on mouse in show line, circles and text
+	        d3.select(".mouse-line")
+	          .style("opacity", "1");
+	        d3.selectAll(".mouse-per-line circle")
+	          .style("opacity", "1");
+	        d3.selectAll(".mouse-per-line text")
+	          .style("opacity", "1");
+	      })
+	      .on('mousemove', function() { // mouse moving over canvas
+	        var mouse = d3.mouse(this);
+	        d3.select(".mouse-line")
+	          .attr("d", function() {
+	            var d = "M" + mouse[0] + "," + height;
+	            d += " " + mouse[0] + "," + 0;
+	            return d;
+	          });
+
+	        d3.selectAll(".mouse-per-line")
+	          .attr("transform", function(d, i) {
+	            //console.log(width/mouse[0])
+	            var xDate = xScale.invert(mouse[0]),
+	                bisect = d3.bisector(function(d) { return d.date; }).right;
+	                idx = bisect(d.values, xDate);
+	            
+	            var beginning = 0,
+	                end = lines[i].getTotalLength(),
+	                target = null;
+
+	            while (true){
+	              target = Math.floor((beginning + end) / 2);
+	              pos = lines[i].getPointAtLength(target);
+	              if ((target === end || target === beginning) && pos.x !== mouse[0]) {
+	                  break;
+	              }
+	              if (pos.x > mouse[0])      end = target;
+	              else if (pos.x < mouse[0]) beginning = target;
+	              else break; //position found
+	            }
+	            
+	            d3.select(this).select('text')
+	              .text(y.invert(pos.y).toFixed(2));
+	              
+	            return "translate(" + mouse[0] + "," + pos.y +")";
+	          });
+	      }); */
+	    
+		 		   
+		 		   ///ender 
 
 
 	 		    /* Add Axis into SVG */

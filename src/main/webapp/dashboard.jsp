@@ -1650,7 +1650,7 @@ path.chord {
 				</div>
 				-->
 				<div class="float-right">
-					<a id="" target="_blank" href="http://haydex.com/narrative/"><button
+					<a id="" target="_blank" href="narrative.jsp?tid=<%=tid%>"><button
 							disabled class="btn buttonportfolio2 buttonTopicModelling mt10">
 							<b class="float-left semi-bold-text">Narrative Analysis </b> <b
 								class="fas fa-comment-alt float-right icondash2"></b>
@@ -2353,7 +2353,7 @@ var widthScale = d3.scaleLinear()
 // moves the 'group' element to the top left margin
 var svg = d3.select("#narrative_analysis").append("svg")
     .attr("width", width + margin.right + margin.left)
-    .attr("height", height)
+    .attr("height", height - 40)
   .append("g")
     .attr("transform", "translate("
           + margin.left + "," + margin.top + ")");
@@ -2633,6 +2633,7 @@ function update(source) {
 		   var svg = container
 		     .attr("width", width + margin.left + margin.right)
 		     .attr("height", height + margin.top + margin.bottom)
+		     .call(responsivefy) // tada!
 		   .attr("overflow", "visible");
 		     //.append("g")
 		    //  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
@@ -2738,6 +2739,41 @@ function update(source) {
 		      });
 		     }
 		 simulation.force("link").links(links)
+		 
+		 function responsivefy(svg) {
+  // container will be the DOM element the svg is appended to
+  // we then measure the container and find its aspect ratio
+  const container = d3.select(svg.node().parentNode),
+      width = parseInt(svg.style('width'), 10),
+      height = parseInt(svg.style('height'), 10),
+      aspect = width / height;
+
+  // add viewBox attribute and set its value to the initial size
+  // add preserveAspectRatio attribute to specify how to scale
+  // and call resize so that svg resizes on inital page load
+  svg.attr('viewBox', `0 0 ${width} ${height}`)
+      .attr('preserveAspectRatio', 'xMinYMid')
+      .call(resize);
+
+  // add a listener so the chart will be resized when the window resizes
+  // to register multiple listeners for same event type,
+  // you need to add namespace, i.e., 'click.foo'
+  // necessary if you invoke this function for multiple svgs
+  // api docs: https://github.com/mbostock/d3/wiki/Selections#on
+  d3.select(window).on('resize.' + container.attr('id'), resize);
+
+  // this is the code that actually resizes the chart
+  // and will be called on load and in response to window resize
+  // gets the width of the container and proportionally resizes the svg to fit
+  function resize() {
+      const targetWidth = parseInt(container.style('width'));
+      svg.attr('width', targetWidth);
+      svg.attr('height', Math.round(targetWidth / aspect));
+  }
+}
+		 
+		
+		 
 		 }
 		 ///end clustering5 function
 		 
@@ -4719,6 +4755,9 @@ var mymarker = [
 		
 	
 	<%-- wordtagcloud("#tagcloudcontainer",450,<%=res%>); --%>
+	
+	
+	
 
 	function loadChordDashboard(){
 		
@@ -4980,6 +5019,7 @@ $(function () {
             var svg = container
                 .attr("width", diameter + margin.left + margin.right)
                 .attr("height",diameter + margin.top + margin.bottom)
+                .call(responsivefy)
                 .attr("class", "bubble");
         // Create chart
         // ------------------------------
@@ -5153,6 +5193,39 @@ data = {
             recurse(null, root);
             return {children: classes};
         }
+        
+        
+        function responsivefy(svg) {
+        	  // container will be the DOM element the svg is appended to
+        	  // we then measure the container and find its aspect ratio
+        	  const container = d3.select(svg.node().parentNode),
+        	      width = parseInt(svg.style('width'), 10),
+        	      height = 495,
+        	      aspect = width / height;
+
+        	  // add viewBox attribute and set its value to the initial size
+        	  // add preserveAspectRatio attribute to specify how to scale
+        	  // and call resize so that svg resizes on inital page load
+        	  svg.attr('viewBox', `0 0 ${width} ${height}`)
+        	      .attr('preserveAspectRatio', 'xMinYMid')
+        	      .call(resize);
+
+        	  // add a listener so the chart will be resized when the window resizes
+        	  // to register multiple listeners for same event type,
+        	  // you need to add namespace, i.e., 'click.foo'
+        	  // necessary if you invoke this function for multiple svgs
+        	  // api docs: https://github.com/mbostock/d3/wiki/Selections#on
+        	  d3.select(window).on('resize.' + container.attr('id'), resize);
+
+        	  // this is the code that actually resizes the chart
+        	  // and will be called on load and in response to window resize
+        	  // gets the width of the container and proportionally resizes the svg to fit
+        	  function resize() {
+        	      const targetWidth = parseInt(container.style('width'));
+        	      svg.attr('width', targetWidth);
+        	      svg.attr('height', Math.round(targetWidth / aspect));
+        	  }
+        	}
     }
 });
 </script>
@@ -5189,6 +5262,7 @@ $(function () {
             var svg = container
                 .attr("width", diameter + margin.left + margin.right)
                 .attr("height",diameter + margin.top + margin.bottom)
+                .call(responsivefy)
                 .attr("class", "bubble");
         // Create chart
         // ------------------------------
@@ -5347,6 +5421,38 @@ data = {
             recurse(null, root);
             return {children: classes};
         }
+        
+        function responsivefy(svg) {
+      	  // container will be the DOM element the svg is appended to
+      	  // we then measure the container and find its aspect ratioF
+      	  const container = d3.select(svg.node().parentNode),
+      	      width = parseInt(svg.style('width'), 10),
+      	      height = 495,
+      	      aspect = width / height;
+
+      	  // add viewBox attribute and set its value to the initial size
+      	  // add preserveAspectRatio attribute to specify how to scale
+      	  // and call resize so that svg resizes on inital page load
+      	  svg.attr('viewBox', `0 0 ${width} ${height}`)
+      	      .attr('preserveAspectRatio', 'xMinYMid')
+      	      .call(resize);
+
+      	  // add a listener so the chart will be resized when the window resizes
+      	  // to register multiple listeners for same event type,
+      	  // you need to add namespace, i.e., 'click.foo'
+      	  // necessary if you invoke this function for multiple svgs
+      	  // api docs: https://github.com/mbostock/d3/wiki/Selections#on
+      	  d3.select(window).on('resize.' + container.attr('id'), resize);
+
+      	  // this is the code that actually resizes the chart
+      	  // and will be called on load and in response to window resize
+      	  // gets the width of the container and proportionally resizes the svg to fit
+      	  function resize() {
+      	      const targetWidth = parseInt(container.style('width'));
+      	      svg.attr('width', targetWidth);
+      	      svg.attr('height', Math.round(targetWidth / aspect));
+      	  }
+      	}
     }
 });
 </script>
