@@ -45,7 +45,7 @@
     --radius25: 25px;
     --radius1000: 1000px;
 
-    --interface: url(/assets/interface/interface.svg);
+    --interface: url(../interface/interface.svg);
     
 }
 

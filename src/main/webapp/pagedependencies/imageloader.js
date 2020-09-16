@@ -15,7 +15,7 @@ $(document).ready(function() {
     for(i=0; i<img.length; i++){
     	var id = img[i].id;
 		var url = img[i].value;
-		//console.log(id);
+		//console.log(id, url);
 		//scrapeImage(id, "https://www.oodaloop.com/");
 		getImage(id,url);
 		//console.log(url);
