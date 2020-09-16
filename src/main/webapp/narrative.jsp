@@ -491,7 +491,11 @@
 
 	
 		
-	
+	<!-- Search -->
+        <form id="search">
+            <label for="searchBox">Search Website</label>
+            <input id="searchBox" type="text" placeholder="Search..." autocomplete="off">
+        </form>
 
 
 
@@ -617,15 +621,20 @@
                     				}
                     				//System.out.println(permalink.toString());
                             %> 
-                                <a href=<%=permalink.toString()%> target="_blank" id="<%=bp_id%>">
+                                <a href=<%=permalink.toString()%> target="_blank" idy="<%=bp_id%>">
                                     <div class="post">
-                                        <img class="postImage" src="assets/images/posts/1.jpg">
+                                         <!-- <img class="postImage" src="assets/images/posts/1.jpg"> -->
+                                        <div class="<%=bp_id%>">
+                                        	<input type="hidden" class="post-image" id="<%=bp_id%>" name="pic" value="<%=permalink.toString()%>">
+                                        </div> 
+                                        
                                         <h2 class="postTitle"><%=title.toString() %></h2>
                                         <p class="postDate"><%=date.toString() %></p>
                                         <p class="postSource"><%=domain %></p>
                                         <%-- <input type="hidden" class="post-image" id="<%=bp_id%>" name="pic" value="<%=permalink.toString()%>"> --%>
                                         <%-- <p class="postSource"><%=bp_id %></p> --%>
                                     </div>
+                                    
                                 </a>
                                 <!-- <a href="#">
                                     <div class="post">
@@ -645,6 +654,102 @@
                         </div>
                     </li>
                     <%} %>
+                    <li class="narrative hidden">
+                        <div class="topSection">
+                            <div class="connectorBox">
+                                <div class="connector"></div>
+                            </div>
+                        </div>
+                        <div class="middleSection">
+                            <div class="connectorBox">
+                                <div class="connector"></div>
+                                <div class="dot"></div>
+                            </div>
+                            <div class="narrativeTextWrapper">
+                                <p class="narrativeText">the coronavirus pandemic are crushing demand for new pipeline projects.</p>
+                                <p class="counter"><span class="number">3</span>Posts</p>
+                            </div>
+                        </div>
+                        <div class="bottomSection">
+                            <div class="connectorBox">
+                                <div class="connector"></div>
+                            </div>
+                            <div class="posts">
+                                
+                                    <div class="post">
+                                        <img class="postImage" src="assets/images/posts/38.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                
+                                
+                                    <div class="post">
+                                        <img class="postImage" src="assets/images/posts/39.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                
+                                
+                                    <div class="post">
+                                        <img class="postImage" src="assets/images/posts/40.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    <li class="narrative hidden">
+                        <div class="topSection">
+                            <div class="connectorBox">
+                                <div class="connector"></div>
+                            </div>
+                        </div>
+                        <div class="middleSection">
+                            <div class="connectorBox">
+                                <div class="connector"></div>
+                                <div class="dot"></div>
+                            </div>
+                            <div class="narrativeTextWrapper">
+                                <p class="narrativeText">Last year a mysterious shipment was caught smuggling coronavirus from canada.</p>
+                                <p class="counter"><span class="number">1</span>Posts</p>
+                            </div>
+                        </div>
+                        <div class="bottomSection">
+                            <div class="connectorBox">
+                                <div class="connector"></div>
+                            </div>
+                            <div class="posts">
+                                
+                                    <div class="post">
+                                        <img class="postImage" src="assets/images/posts/41.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    <li class="narrative last more">
+                        <div class="topSection">
+                            <div class="connectorBox">
+                                <div class="connector"></div>
+                            </div>
+                        </div>
+                        <div class="middleSection">
+                            <div class="connectorBox">
+                                <div class="connector"></div>
+                                <div class="dot"></div>
+                            </div>
+                            <div class="narrativeTextWrapper">
+                                <p class="narrativeText">More...</p>
+                            </div>
+                        </div>
+                    </li>
                 </ul>
             </li>
             <%}}%>
@@ -664,6 +769,7 @@
  </script>
 	<script src="assets/js/generic.js">
  </script>
+
 	<script src="assets/vendors/bootstrap-daterangepicker/moment.js"></script>
 	<script
 		src="assets/vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
@@ -684,8 +790,9 @@
 		src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.print.min.js"></script>
 
 	<script src="pagedependencies/baseurl.js?v=3"></script>
+	<script src="pagedependencies/narrative.js?v=09"></script>
 	<script src="pagedependencies/sentiment.js?v=140"></script>
-
+ 
 	<script>
  $(document).ready(function() {
 	 
@@ -904,113 +1011,7 @@
 	<script type="text/javascript" src="assets/vendors/d3/d3.min.js"></script>
 	<script src="assets/vendors/wordcloud/d3.layout.cloud.js"></script>
 	<script type="text/javascript" src="assets/vendors/d3/d3_tooltip.js"></script>
-	<script src="assets/vendors/radarchart/radarChart.js"></script>
-	<script>
-$(function () {
-    
-
-    //////////////////////////////////////////////////////////////
-    //////////////////////// Set-Up //////////////////////////////
-    //////////////////////////////////////////////////////////////
-
-    var margin = {top: 100, right: 100, bottom: 100, left: 100},
-      width = Math.min(450, window.innerWidth - 10) - margin.left - margin.right,
-      height = Math.min(width, window.innerHeight - margin.top - margin.bottom - 20);
-
-
-
-    //////////////////////////////////////////////////////////////
-    ////////////////////////// Data //////////////////////////////
-    //////////////////////////////////////////////////////////////
-
-
-    //////////////////////////////////////////////////////////////
-    //////////////////// Draw the Chart //////////////////////////
-    //////////////////////////////////////////////////////////////
-
-    var color = d3.scale.ordinal()
-      .range(["#0080CC","#0080CC","#0080CC"]);
-
-    var radarChartOptions1 = {
-      w: width,
-      h: height,
-      margin: margin,
-      maxValue: 0.5,
-      levels: 5,
-      roundStrokes: true,
-      color: color
-    };
-    var radarChartOptions2 = {
-      w: width,
-      h: height,
-      margin: margin,
-      maxValue: 0.5,
-      levels: 5,
-      roundStrokes: true,
-      color: color
-    };
-    var radarChartOptions3 = {
-      w: width,
-      h: height,
-      margin: margin,
-      maxValue: 0.5,
-      levels: 5,
-      roundStrokes: true,
-      color: color
-    };
-    var radarChartOptions4 = {
-      w: width,
-      h: height,
-      margin: margin,
-      maxValue: 0.5,
-      levels: 5,
-      roundStrokes: true,
-      color: color
-    };
-    var radarChartOptions5 = {
-      w: width,
-      h: height,
-      margin: margin,
-      maxValue: 0.5,
-      levels: 5,
-      roundStrokes: true,
-      color: color
-    };
-    
-    var radarChartOptions6 = {
-    	      w: width,
-    	      h: height,
-    	      margin: margin,
-    	      maxValue: 0.5,
-    	      levels: 5,
-    	      roundStrokes: true,
-    	      color: color
-    	    };
-    
-    var radarChartOptions7 = {
-  	      w: width,
-  	      h: height,
-  	      margin: margin,
-  	      maxValue: 0.5,
-  	      levels: 5,
-  	      roundStrokes: true,
-  	      color: color
-  	    };
- 
-    //Call function to draw the Radar chart
-
-      RadarChart(".personalcontent", personalcontent, radarChartOptions1);
-      RadarChart(".timeorientation", timeorientation, radarChartOptions2);
-      RadarChart(".coredriveandneed", coredriveandneed, radarChartOptions3);
-      RadarChart(".cognitiveprocess", cognitiveprocess, radarChartOptions4);
-      RadarChart(".summaryvariable", summaryvariable, radarChartOptions5);
-      RadarChart(".sentimentemotion", sentimentemotion, radarChartOptions6);
-      RadarChart(".toxicity", toxicity, radarChartOptions7);
-
-});
-  </script>
-	<script>
- </script>
+	
 	<script>
 $(".option-only").on("change",function(e){
 	//console.log("only changed ");
