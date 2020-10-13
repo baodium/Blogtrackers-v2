@@ -535,6 +535,7 @@
                 ArrayList blogpost_narratives = new ArrayList();
                 try{
                 	blogpost_narratives = db.queryJSON(blogpost_narratives_query);
+                	System.out.println("NNNNNNNAAARAAA"+blogpost_narratives );
                 }catch(Exception e){
                 	System.out.println(e);
                 }
@@ -563,7 +564,15 @@
                                 <div class="connector"></div>
                                 <div class="dot"></div>
                             </div>
-                            <p class="narrativeText"><%=narrative.toString() %></p>
+                            <div class="narrativeTextWrapper">
+                                <div id="editWrapper">
+                                    <textarea name="narrativeTextInput" class="narrativeText"><%=narrative.toString() %></textarea>
+                                    <div id="editControls">
+                                        <button id="editButton"></button>
+                                    </div>
+                                </div>
+                                <p class="counter"><span class="number">32</span>Posts</p>
+                            </div>
                         </div>
                         <div class="bottomSection">
                             <div class="connectorBox">
@@ -598,6 +607,7 @@
                              Object permalink = null;
                              Object date = null;
              				Object title = null;
+             				Object post_detail = null;
              				String domain = null;
              				int b = 0;
                     		for(String bp_id : blogposts_data){                              			
@@ -606,12 +616,13 @@
 										break;
 									}
                     				try{
-                    				ArrayList permalink_data = db.queryJSON("SELECT permalink, title, date from blogposts where blogpost_id = " + bp_id);
+                    				ArrayList permalink_data = db.queryJSON("SELECT permalink, title, date, post from blogposts where blogpost_id = " + bp_id);
                     				if(permalink_data.size() > 0){
                     					JSONObject permalink_data_index = new JSONObject(permalink_data.get(0).toString());
                         				permalink = permalink_data_index.getJSONObject("_source").get("permalink");
                         				date = permalink_data_index.getJSONObject("_source").get("date");
                         				title = permalink_data_index.getJSONObject("_source").get("title");
+                        				post_detail = permalink_data_index.getJSONObject("_source").get("post");
                         				URI uri = new URI(permalink.toString());
                         				domain = uri.getHost();
                     				}
@@ -621,21 +632,22 @@
                     				}
                     				//System.out.println(permalink.toString());
                             %> 
-                                <a href=<%=permalink.toString()%> target="_blank" idy="<%=bp_id%>">
-                                    <div class="post">
+                                <%-- <a href=<%=permalink.toString()%> target="_blank" idy="<%=bp_id%>"> --%>
+                                    <div post_id=<%=bp_id %> class="post missingImage post_id_<%=bp_id%>">
                                          <!-- <img class="postImage" src="assets/images/posts/1.jpg"> -->
                                         <div class="<%=bp_id%>">
                                         	<input type="hidden" class="post-image" id="<%=bp_id%>" name="pic" value="<%=permalink.toString()%>">
                                         </div> 
                                         
-                                        <h2 class="postTitle"><%=title.toString() %></h2>
-                                        <p class="postDate"><%=date.toString() %></p>
-                                        <p class="postSource"><%=domain %></p>
+                                        <h2 id="post_title_<%=bp_id %>" class="postTitle"><%=title.toString() %></h2>
+                                        <p id="post_date_<%=bp_id %>" class="postDate"><%=date.toString() %></p>
+                                        <p id="post_source_<%=bp_id %>" post_permalink="<%=permalink.toString()%>" class="postSource"><%=domain %></p>
+                                        <input id="post_detail_<%=bp_id %>" type="hidden" value="<%=post_detail.toString() %>" >
                                         <%-- <input type="hidden" class="post-image" id="<%=bp_id%>" name="pic" value="<%=permalink.toString()%>"> --%>
                                         <%-- <p class="postSource"><%=bp_id %></p> --%>
                                     </div>
                                     
-                                </a>
+                               <!--  </a> -->
                                 <!-- <a href="#">
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/2.jpg">
@@ -755,6 +767,51 @@
             <%}}%>
         </ul>
 	</div>
+	
+	<!-- Notifications -->
+        <section id="notifications">
+            <p id="notificationsWrapper">
+                <span id="label">Click a narrative to show its posts.</span>
+            </p>
+        </section>
+
+        <!-- More Info Modal -->
+        <section id="moreInfoModal" class="">
+            <div id="shadow"></div>
+            <div id="messageBox">
+                <button id="closeButton"></button>
+                <div id="messageContent">
+                    <img class="modal_pic postImageModal hidden" src="assets/images/posts/37.jpg">
+                    <div class="detailsWrapper">
+                        <p id="title"><span class="modal_title" id="text">Pentagon watchdog tapped to lead committee overseeing $2 trillion coronavirus package</span></p>
+                        <ul id="details">
+                            <li id="Source">
+                                <div id="icon" class="detailsIcon"></div>
+                                <p id="label">Source : </p>
+                                <a class="modal_link" href="https://www.cdc.gov/" target="_blank">
+                                    <p class="modal_source" id="value">www.cnet.net</p>
+                                </a>
+                            </li>
+                            <li id="published">
+                                <div id="icon" class="detailsIcon"></div>
+                                <p id="label">Published : </p>
+                                <p class="modal_detail" id="value">04/03/2020</p>
+                            </li>
+                            <li id="location">
+                                <div id="icon" class="detailsIcon"></div>
+                                <p id="label">Location : </p>
+                                <p id="value">China</p>
+                            </li>
+                        </ul>
+                        <p class="modal_detail" id="description">The nation's top <span class="highlighter">government watchdogs on Monday appointed Glenn Fine</span>, the acting inspector general for the Pentagon, to lead the newly created committee that oversees implementation of the $2 trillion coronavirus relief bill signed by President Donald Trump last week.<br><br>
+
+                            Fine will lead a panel of fellow inspectors general, dubbed the Pandemic Response Accountability Committee, and command an $80 million budget meant to <span class="highlighter">"promote transparency and support oversight" of the massive disaster response legislation. His appointment was made by a fellow committee of inspectors general</span>, assigned by the new law to pick a chairman of the committee.<br><br>
+                            
+                            Fine, who served as Justice Department inspector general from 2000 to 2011 — spanning parts of the Clinton, Bush and Obama presidencies — will join nine other inspectors general on the new committee. They include the IGs of the Departments of Defense, Education, Health and Human Services, Homeland Security, Justice, Labor, and the Treasury; the inspector general of the Small Business Administration; and the Treasury inspector general for Tax Administration.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
 
 
 	<!-- <footer class="footer">

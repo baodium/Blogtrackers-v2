@@ -1577,7 +1577,7 @@ function color1(i, id, name){
     	    		                           	   var d2 = 	  yr + "-12-31";
     	    		                           	   
     	    		                           	var va = $('.selectionactive').attr('name');
-    	    		                           	   alert(va);
+    	    		                           	   
     	    		                           	loadTerms(va,$("#blogid").val(),d1,d2);
     	    		                                
     	    		                              });

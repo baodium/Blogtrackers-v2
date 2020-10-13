@@ -24,6 +24,32 @@ $(document).ready(function() {
   
 });
 
+///////
+$("body").delegate(".post", "click", function() {
+	post_id = $(this).attr("post_id")
+	
+	$(".modal_detail").text($('#post_detail_'+post_id).val())
+	$(".modal_title").text($('#post_title_'+post_id).text())
+	$(".modal_source").text($('#post_source_'+post_id).text())
+	$(".modal_link").attr("href", $('#post_source_'+post_id).attr("post_permalink"))
+	
+	if($('#post_image_'+post_id).attr("set") == 1){
+		$(".modal_pic").removeClass("hidden")
+		$(".modal_pic").attr("src", $('#post_image_'+post_id).attr("src"))	
+	}else{
+		$(".modal_pic").addClass("hidden")
+		$(".modal_pic").attr("src", $('#post_image_'+post_id).attr("src"))
+	}
+	
+	
+});
+///
+
+
+function imgError(image_id) {
+	$(".post_id_"+image_id).addClass("missingImage");
+	$("post_image_"+image_id).attr("set", 0);
+}
 
 function getImage(image_id,url){
 	//console.log("hello Here");
@@ -47,8 +73,9 @@ function getImage(image_id,url){
 				det = det.replace('"',"");
 				//console.log(det);
 				if(det!="https://s0.wp.com/i/blank.jpg" ){						
-					$("."+image_id).html('<img class="card-img-top pt30 pb30" src="'+det+'"  />');
+					$("."+image_id).html('<img set="1" onerror="imgError('+image_id+');" id="post_image_'+image_id+'" class="postImage" src="'+det+'"  />');
 					$("#"+image_id).remove();
+					$(".post_id_"+image_id).removeClass("missingImage");
 					return false;
 				}
 			}else if(meta2.length>1){
@@ -59,12 +86,13 @@ function getImage(image_id,url){
 				//console.log(det2);
 				
 				if(det2!="https://s0.wp.com/i/blank.jpg" ){						
-					$("."+image_id).html('<img class="card-img-top pt30 pb30" src="'+det2+'"  />');
+					$("."+image_id).html('<img set="1" onerror="imgError('+image_id+');" id="post_image_'+image_id+'" class="postImage" src="'+det2+'"  />');
 					$("#"+image_id).remove();
+					$(".post_id_"+image_id).removeClass("missingImage");
 					return false;
 				}
 			}else{
-				$("."+image_id).html('<img class="card-img-top pt30 pb30" src="images/blogtrackers.png" style="height:100%; margin-bottom:30px"  />');
+				$("."+image_id).html('<img set="0" id="post_image_'+image_id+'" class="PostImage" src="images/blogtrackers.png" style="height:100%; margin-bottom:30px"  />');
 				$("#"+image_id).remove();
 				return false;
 			}

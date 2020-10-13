@@ -176,19 +176,27 @@
 			
 %>
 <link rel="stylesheet" href="assets/css/table.css" />
+<style>
+	.half_tr{
+		width: 85% !important;
+	}
+	
+</style>
 <link rel="stylesheet" href="assets/css/style.css" />
-
-							<table id="DataTables_Table_0_wrapper" class="display" style="width: 100%">
+							
+							<div id="top-domain-box">
+							<table id="DataTables_Table_0_wrapper"
+									class="display " style="width: 100%">
 								<thead>
 									
 									<% if(listtype.equals("urls")){ %>
-										<tr><th>URLs</th>
-										<th>Frequency</th>
+										<tr><th style="width: 85%" class="half_tr">URLs</th>
+										<th style="width: 85%">Frequency</th>
 										</tr>
 									<% } else { %>	
 									<tr>
-									<th >Domain</th>
-									<th>Frequency</th>
+									<th style="width: 85%">Domain</th>
+									<th style="width: 15%">Frequency</th>
 									</tr>
 									<% } %>
 
@@ -206,9 +214,9 @@
 									%>
 									<tr>
 									<% if(listtype.equals("urls")){ %>
-										<td class=""><a href="<%=resu.get("link")%>" target="_blank"><%=resu.get("link")%></a></td>
+										<td class=""><a style="width: 75%" href="<%=resu.get("link")%>" target="_blank"><%=resu.get("link")%></a></td>
 									<% }else{ %>
-										<td class=""><a href="<%=resu.get("domain")%>" target="_blank"><%=resu.get("domain")%></a> </td>
+										<td class=""><a style="width: 10%" href="<%=resu.get("domain")%>" target="_blank"><%=resu.get("domain")%></a> </td>
 									<% } %>
 										<td><%=resu.get("value")%></td>
 									</tr>
@@ -216,6 +224,7 @@
 									
 									</tbody>
 							</table>
+							</div>
 							
 <script type="text/javascript" src="assets/vendors/DataTables/datatables.min.js"></script>
 			<script>
@@ -233,7 +242,8 @@
 		  // datatable setup
 		    $('#DataTables_Table_0_wrapper').DataTable( {
 		    	 "columnDefs": [
-		    		    { "width": "80%", "targets": 0 }
+		    		 { "width": "70%", "targets": 0 },
+		    		    { "width": "15%", "targets": 1 }
 		    		  ]
 		 /*        "scrollY": 430,
 		        "scrollX": false,
@@ -256,8 +266,8 @@
 		      } */
 		    } );
 	
-	$('#DataTables_Table_0_wrapper').css( 'display', 'block' );
-	 $('#DataTables_Table_0_wrapper').width('100%');
+	//$('#DataTables_Table_0_wrapper').css( 'display', 'block' );
+	 //$('#DataTables_Table_0_wrapper').width('100%');
 	 
  } );
  </script>
