@@ -25,6 +25,51 @@ $(document).ready(function() {
 });
 
 ///////
+$("body").delegate(".load_more_entity", "click", function() {
+	entity = $(this).attr("entity")
+	level = $(this).attr("level")
+	load_more_entity(entity, level)
+	
+});
+///
+
+function load_more_entity(entity, level){
+	
+	console.log(entity, level)
+	
+	//$("#blogdistribution").html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />");
+		offset = level * 5
+		
+		$.ajax({
+			url: app_url+"subpages/more_narrative.jsp",
+			method: 'POST',
+			data: {
+				action:"load_more_narrative",
+				entity:entity,
+				offset:offset,
+				leve:level,
+				tid:$('#tracker_id').val()
+			},
+			error: function(response)
+			{		
+				console.log("error");
+				console.log(response);
+				$("#blogdistribution").html(response);
+			},
+			success: function(response)
+			{   
+				console.log(response);
+				//$("#blogpost_detail").html(response);
+				
+				$("#narrative_list_"+entity).html(response);
+				$("#load_more_"+entity).attr("level", level+1)
+				
+		
+			}
+		});
+}
+
+///////
 $("body").delegate(".post", "click", function() {
 	post_id = $(this).attr("post_id")
 	

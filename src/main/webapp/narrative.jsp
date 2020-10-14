@@ -495,8 +495,9 @@
         <form id="search">
             <label for="searchBox">Search Website</label>
             <input id="searchBox" type="text" placeholder="Search..." autocomplete="off">
+            <input type="hidden" value="<%=tid%>" name="tracker_id" id="tracker_id">
         </form>
-
+		
 
 
 	<ul id="narrativeTree">
@@ -515,7 +516,7 @@
                 </div>
                 
                 <!-- Getting Narratives for each entities-->
-                <ul class="narratives">
+                <ul id="narrative_list_<%=entity %>" class="narratives">
                 
                 <%
                 String blogpost_narratives_query = "select n.narrative, group_concat(n.blogpost_id separator ',') blogpost_id_concatenated, count(n.blogpost_id) c " + 
@@ -535,7 +536,7 @@
                 ArrayList blogpost_narratives = new ArrayList();
                 try{
                 	blogpost_narratives = db.queryJSON(blogpost_narratives_query);
-                	System.out.println("NNNNNNNAAARAAA"+blogpost_narratives );
+                	
                 }catch(Exception e){
                 	System.out.println(e);
                 }
@@ -746,7 +747,7 @@
                             </div>
                         </div>
                     </li>
-                    <li class="narrative last more">
+                    <li class="narrative last1 more1">
                         <div class="topSection">
                             <div class="connectorBox">
                                 <div class="connector"></div>
@@ -758,7 +759,7 @@
                                 <div class="dot"></div>
                             </div>
                             <div class="narrativeTextWrapper">
-                                <p class="narrativeText">More...</p>
+                                <p id="load_more_<%=entity %>" entity="<%=entity %>" level="1" class="narrativeText load_more_entity">More...</p>
                             </div>
                         </div>
                     </li>
