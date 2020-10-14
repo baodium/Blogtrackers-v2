@@ -1,18 +1,16 @@
-<%@page import="java.io.PrintWriter"%>
 <%@page import="authentication.*"%>
 <%@page import="java.util.*"%>
 <%@page import="util.*"%>
 <%@page import="java.io.File"%>
-<%@page import="util.Blogposts"%>
-<%@page import="java.text.NumberFormat"%>
-<%@page import="java.util.Locale"%>
-<%@page import="java.util.ArrayList"%>
 <%@page import="org.json.JSONObject"%>
 <%@page import="org.json.JSONArray"%>
+<%@page import="java.net.URI"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="java.util.Date"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@page import="java.time.LocalDateTime"%>
+<%@page import="java.net.URI"%>
 
 <%
 Object action = (null == request.getParameter("action")) ? "" : request.getParameter("action");
@@ -22,25 +20,23 @@ Object level = (null == request.getParameter("level")) ? "" : request.getParamet
 Object tid = (null == request.getParameter("tid")) ? "" : request.getParameter("tid");
 
 
-PrintWriter out_ = response.getWriter();
+DbConnection db = new DbConnection();
 
 
 if(action.toString().equals("load_more_narrative")){
 	
-	System.out.println(action+"--->"+entity.toString()+"--->"+level.toString()+"--->"+tid.toString()+"--->"+offset.toString());
+	System.out.println(action+"--->"+entity.toString()+"--->level"+level+"--->"+tid.toString()+"--->"+offset.toString());
 
 	%>
 	
 	
 	<!-- start -->
 	<link rel="stylesheet" href="assets/presentation/narrative-analysis.css"/>
-        
-    <script src="assets/behavior/narrative-analysis.js"></script>
-	
+    
 	<!-- Getting Narratives for each entities-->
                 
                 <%
-                String blogpost_narratives_query = "select n.narrative, group_concat(n.blogpost_id separator ',') blogpost_id_concatenated, count(n.blogpost_id) c " + 
+                String blogpost_narratives_query = "select COUNT(n.narrative) AS total_narrative_count, n.narrative, group_concat(n.blogpost_id separator ',') blogpost_id_concatenated, count(n.blogpost_id) c " + 
                 		"from tracker_narratives, " +
                 		"json_table(blogpost_narratives," +
                 		  "'$.*.\""+ entity +"\"[*]' columns(" +
@@ -52,12 +48,12 @@ if(action.toString().equals("load_more_narrative")){
                 		  "where tid ="+ tid +" and n.narrative is not null " +
                 		  "group by n.narrative " +
                 		  "order by c desc " +
-                		  "limit 1 offset "+ offset +";";
+                		  "limit 5 offset "+ offset +";";
                 		
                 ArrayList blogpost_narratives = new ArrayList();
                 try{
                 	blogpost_narratives = db.queryJSON(blogpost_narratives_query);
-                	
+                	System.out.println(blogpost_narratives);
                 }catch(Exception e){
                 	System.out.println(e);
                 }
@@ -67,15 +63,16 @@ if(action.toString().equals("load_more_narrative")){
         			JSONObject narratives_data = new JSONObject(blogpost_narratives.get(i).toString());
         			Object narrative = narratives_data.getJSONObject("_source").get("narrative");
         			Object blogpost_ids = narratives_data.getJSONObject("_source").get("blogpost_id_concatenated");
-        			
+        			Object total_narrative_count = narratives_data.getJSONObject("_source").get("total_narrative_count");
+        			System.out.println(total_narrative_count);
         		 String replace = "<span style=background:red;color:#fff>" + entity + "</span>";
-        		 if(narrative.toString().toLowerCase().indexOf(entity.toLowerCase()) != -1){
+        		// if(narrative.toString().toLowerCase().indexOf(entity.toString().toLowerCase()) != -1){
         			 
-        		 }
+        		// }
         		 //String narrative_replaced = narrative.replace(entity, replace);
         		
                 %>
-                    <li class="narrative">
+                    <li id="narrative_pop_<%=i %>" class="narrative">
                         <div class="topSection">
                             <div class="connectorBox">
                                 <div class="connector"></div>
@@ -86,14 +83,14 @@ if(action.toString().equals("load_more_narrative")){
                                 <div class="connector"></div>
                                 <div class="dot"></div>
                             </div>
-                            <div class="narrativeTextWrapper">
-                                <div id="editWrapper">
-                                    <textarea name="narrativeTextInput" class="narrativeText"><%=narrative.toString() %></textarea>
+                            <div class="narrativeTextWrapper">                                
+                            	<div id="editWrapper">
+                                    <textarea count="<%=i %>" name="narrativeTextInput" class="narrativeText narrative_text_test"><%=narrative.toString() %></textarea>
                                     <div id="editControls">
                                         <button id="editButton"></button>
                                     </div>
                                 </div>
-                                <p class="counter"><span class="number">32</span>Posts</p>
+                                <p class="counter"><span class="number"><%=total_narrative_count.toString() %></span>Posts</p>
                             </div>
                         </div>
                         <div class="bottomSection">
@@ -158,7 +155,7 @@ if(action.toString().equals("load_more_narrative")){
                                     <div post_id=<%=bp_id %> class="post missingImage post_id_<%=bp_id%>">
                                          <!-- <img class="postImage" src="assets/images/posts/1.jpg"> -->
                                         <div class="<%=bp_id%>">
-                                        	<input type="hidden" class="post-image" id="<%=bp_id%>" name="pic" value="<%=permalink.toString()%>">
+                                        	<input type="hidden" class="post-image <%=entity %>_image new_image" id="<%=bp_id%>" name="pic" value="<%=permalink.toString()%>">
                                         </div> 
                                         
                                         <h2 id="post_title_<%=bp_id %>" class="postTitle"><%=title.toString() %></h2>
@@ -268,7 +265,7 @@ if(action.toString().equals("load_more_narrative")){
                             </div>
                         </div>
                     </li>
-                    <li class="narrative last more">
+                    <li id="secondli_<%=entity %>" class="narrative last1 more1">
                         <div class="topSection">
                             <div class="connectorBox">
                                 <div class="connector"></div>
@@ -280,12 +277,12 @@ if(action.toString().equals("load_more_narrative")){
                                 <div class="dot"></div>
                             </div>
                             <div class="narrativeTextWrapper">
-                                <p entity="<%=entity %>" level="<%=level+1 %>" class="narrativeText load_more_entity">More...</p>
+                                <p id="load_more_<%=entity %>" entity="<%=entity %>" level="<%=level %>" class="narrativeText load_more_entity">More...</p>
                             </div>
                         </div>
                     </li>
                 
-	
+	<script src="assets/behavior/narrative-analysis.js"></script>
 	<!-- end -->
 	
 <% } %>

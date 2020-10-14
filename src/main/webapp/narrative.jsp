@@ -499,8 +499,8 @@
         </form>
 		
 
-
-	<ul id="narrativeTree">
+	
+	<ul class="current_narrative_tree" id="narrativeTree">
 	<%
 		for(String entity: slice){
 			if(entity != null){
@@ -519,7 +519,7 @@
                 <ul id="narrative_list_<%=entity %>" class="narratives">
                 
                 <%
-                String blogpost_narratives_query = "select n.narrative, group_concat(n.blogpost_id separator ',') blogpost_id_concatenated, count(n.blogpost_id) c " + 
+                String blogpost_narratives_query = "select  COUNT(n.narrative) AS total_narrative_count, n.narrative, group_concat(n.blogpost_id separator ',') blogpost_id_concatenated, count(n.blogpost_id) c " + 
                 		"from tracker_narratives, " +
                 		"json_table(blogpost_narratives," +
                 		  "'$.*.\""+ entity +"\"[*]' columns(" +
@@ -546,6 +546,7 @@
         			JSONObject narratives_data = new JSONObject(blogpost_narratives.get(i).toString());
         			Object narrative = narratives_data.getJSONObject("_source").get("narrative");
         			Object blogpost_ids = narratives_data.getJSONObject("_source").get("blogpost_id_concatenated");
+        			Object total_narrative_count = narratives_data.getJSONObject("_source").get("total_narrative_count");
         			
         		 String replace = "<span style=background:red;color:#fff>" + entity + "</span>";
         		 if(narrative.toString().toLowerCase().indexOf(entity.toLowerCase()) != -1){
@@ -572,7 +573,7 @@
                                         <button id="editButton"></button>
                                     </div>
                                 </div>
-                                <p class="counter"><span class="number">32</span>Posts</p>
+                                <p class="counter"><span class="number"><%=total_narrative_count.toString() %></span>Post </p>
                             </div>
                         </div>
                         <div class="bottomSection">
@@ -747,7 +748,7 @@
                             </div>
                         </div>
                     </li>
-                    <li class="narrative last1 more1">
+                    <li id="secondli_<%=entity %>" class="narrative last1 more1">
                         <div class="topSection">
                             <div class="connectorBox">
                                 <div class="connector"></div>
@@ -759,7 +760,7 @@
                                 <div class="dot"></div>
                             </div>
                             <div class="narrativeTextWrapper">
-                                <p id="load_more_<%=entity %>" entity="<%=entity %>" level="1" class="narrativeText load_more_entity">More...</p>
+                                <p id="load_more_<%=entity %>" total_narrative_count="<%=entity %>" entity="<%=entity %>" level="1" class="narrativeText load_more_entity">More...</p>
                             </div>
                         </div>
                     </li>
@@ -767,6 +768,13 @@
             </li>
             <%}}%>
         </ul>
+        
+        <div id="current_narrative_loader" class="hidden">
+			<img style='position: absolute; top: 50%; left: 50%;'
+				src='images/loading.gif' />
+		</div>
+        
+       	<div id="search_narrative_tree"></div>
 	</div>
 	
 	<!-- Notifications -->

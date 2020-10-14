@@ -15,11 +15,8 @@ $(document).ready(function() {
     for(i=0; i<img.length; i++){
     	var id = img[i].id;
 		var url = img[i].value;
-		//console.log(id, url);
-		//scrapeImage(id, "https://www.oodaloop.com/");
 		getImage(id,url);
-		//console.log(url);
-				
+			
     }
   
 });
@@ -35,10 +32,15 @@ $("body").delegate(".load_more_entity", "click", function() {
 
 function load_more_entity(entity, level){
 	
-	console.log(entity, level)
 	
 	//$("#blogdistribution").html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />");
-		offset = level * 5
+		//if((level * 5) >= total_count ){
+			
+		//}
+		offset = parseInt(level) * 5
+		level = parseInt(level)+1
+		console.log(entity, level, offset)
+		
 		
 		$.ajax({
 			url: app_url+"subpages/more_narrative.jsp",
@@ -47,7 +49,7 @@ function load_more_entity(entity, level){
 				action:"load_more_narrative",
 				entity:entity,
 				offset:offset,
-				leve:level,
+				level:level,
 				tid:$('#tracker_id').val()
 			},
 			error: function(response)
@@ -58,16 +60,70 @@ function load_more_entity(entity, level){
 			},
 			success: function(response)
 			{   
-				console.log(response);
+				//console.log(response);
 				//$("#blogpost_detail").html(response);
 				
-				$("#narrative_list_"+entity).html(response);
-				$("#load_more_"+entity).attr("level", level+1)
+				//$("#append_test").html(response);
+				$("#secondli_"+entity+"").remove();
+				$("#narrative_list_"+entity+"").append(response);
+				$.getScript("assets/behavior/narrative-analysis.js");
+				//$("#load_more_"+entity+"").attr("level", parseInt(level))
 				
-		
+				var img = $('.new_image');
+				console.log(img.length)
+			    for(i=0; i<img.length; i++){
+			    	var id = img[i].id;
+					var url = img[i].value;
+					getImage(id,url);
+			    }
+				
 			}
 		});
 }
+
+/*START ON SEARCH FOR TERM*/
+$('#searchBox').keydown(function(e) {
+	var key = e.which;
+	var searh_key = $('#searchInput').val();
+	if(searh_key == ""){
+		$('.current_narrative_tree').removeClass('hidden');
+		$('#current_narrative_loader').addClass('hidden');
+		$("#search_narrative_tree").addClass("hidden");
+		$("#search_narrative_tree").html();
+		
+	}
+	if (key == 13) {
+			e.preventDefault();
+			
+			$('.current_narrative_tree').addClass('hidden');
+		    $('#current_narrative_loader').removeClass('hidden');
+		    
+		    $.ajax({
+				url: app_url+"subpages/search_narrative.jsp",
+				method: 'POST',
+				data: {
+					action:"search_narrative",
+					search_value:$('#searchInput').val(),
+					tid:$('#tracker_id').val()
+				},
+				error: function(response)
+				{		
+					console.log("error");
+					console.log(response);
+					$("#blogdistribution").html(response);
+				},
+				success: function(response)
+				{   
+					$('#current_narrative_loader').addClass('hidden');
+					$("#search_narrative_tree").html(response);
+					
+				}
+			});
+		    
+		   $('.searchkeywords').val("");
+	}
+	});
+/*END ON  SEARCH FOR TERM*/
 
 ///////
 $("body").delegate(".post", "click", function() {
