@@ -32,18 +32,18 @@ import static java.util.stream.Collectors.toMap;
 public class KeywordTrend1 extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
-
-	/**
-	 * @see HttpServlet#HttpServlet()
-	 * 
-	 * 
-	 * 
-	 *      /**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
 	static Terms term = new Terms();
 
+	/**
+	 * Custom query to compute all posts and other details where most active term occurs
+	 * 
+	 * @param mostactiveterm query string for most active term
+	 * @param date_start query string for start date range
+	 * @param date_end query string for end of date range
+	 * @param all_blog_ids query string for all selected blog_ids
+	 * @param limit query string for limit to display
+	 * @return JSONObject result
+	 */
 	public static JSONObject getBloggerTerms(String mostactiveterm, String date_start, String date_end, String all_blog_ids, int limit) {
 		Blogposts post = new Blogposts();
 		JSONObject result = new JSONObject();
@@ -56,6 +56,16 @@ public class KeywordTrend1 extends HttpServlet {
 		return result;
 	}
 	
+	/**
+	 * Custom query to count of number of posts where terms occur
+	 * 
+	 * @param terms query string for most active term
+	 * @param ids query string for all selected blog_ids
+	 * @param from query string for start date range
+	 * @param to  query string for end of date range
+	 * @param index query string for selected index or table
+	 * @return String result
+	 */
 	public static String getPostsMentioned(String terms, String ids, String from, String to, String index)
 			throws Exception {
 		String result = null;
@@ -80,6 +90,19 @@ public class KeywordTrend1 extends HttpServlet {
 		return result;
 	}
 
+	/**
+	 * Custom Elasticsearch query to perform aggregation
+	 * 
+	 * @param terms query string for most active term
+	 * @param ids query string for all selected blog_ids
+	 * @param from query string for start date range
+	 * @param to  query string for end of date range
+	 * @param index query string for selected index or table
+	 * @param field query string for field
+	 * @param sort query string for field to sort on
+	 * @param type query string for type of aggregation (e.g bucket_highest, bucket_length)
+	 * @return String result
+	 */
 	public static String aggregation(String terms, String ids, String from, String to, String index, String field, String sort, String type)
 			throws Exception {
 		String result = null;
@@ -103,7 +126,7 @@ public class KeywordTrend1 extends HttpServlet {
 				+ "                \"sources\": [\r\n" + "                    {\r\n"
 				+ "                        \"dat\": {\r\n" + "                            \"terms\": {\r\n"
 				+ "                                \"field\": \""+field+"\",\r\n"
-				+ "                                \"missing_bucket\": true,\r\n"
+				+ "                                \"missing_bucket\": false,\r\n"
 				+ "                                \"order\": \""+sort+"\"\r\n" + "                            }\r\n"
 				+ "                        }\r\n" + "                    }\r\n" + "                ]\r\n"
 				+ "            }\r\n" + "        }\r\n" + "    }\r\n" + "}");
@@ -130,11 +153,14 @@ public class KeywordTrend1 extends HttpServlet {
 						key = ((JSONArray) k).getJSONObject(i).getJSONObject("key").get("dat");
 						value = myResponse.getJSONObject("aggregations").getJSONObject("groupby").getJSONArray("buckets").getJSONObject(i).get("doc_count");
 						
-						if(Integer.parseInt(value.toString()) >= current_max){
-							current_max = Integer.parseInt(value.toString());
-							key_result = key.toString();
-							value_result = value.toString();
+						if(!key.equals("null") && !key.equals(null)) {
+							if(Integer.parseInt(value.toString()) >= current_max){
+								current_max = Integer.parseInt(value.toString());
+								key_result = key.toString();
+								value_result = value.toString();
+							}
 						}
+						
 					}
 					
 					result = key_result + "___" + value_result;
@@ -150,36 +176,15 @@ public class KeywordTrend1 extends HttpServlet {
 		return result;
 	}
 
-	public static void main(String[] args) {
-		Instant start = Instant.now();
-		new Clustering();
-		try {
-			String mostactiveterm = "people";
-			String all_blog_ids = "1,2,5,88,9,200";
-			
-			DbConnection db = new DbConnection();
-			String q = "SELECT post, title, blogpost_id, date, \r\n" + 
-					"ROUND ((LENGTH(lower(post)) - LENGTH(REPLACE (lower(post), \""+mostactiveterm+"\", \"\"))) / LENGTH(\""+mostactiveterm+"\")) AS count\r\n" + 
-					"from (select *\r\n" + 
-					"from blogposts\r\n" + 
-					"where match (title,post)\r\n" + 
-					"against (\""+mostactiveterm+"\" IN BOOLEAN MODE)) a\r\n" + 
-					"where blogsite_id\r\n" + 
-					"in ("+all_blog_ids.toString()+")\r\n" + 
-					"\r\n";
-			HashMap result = db.queryKWT(q);
-			HashMap result_final = new HashMap();
-			result_final.put(mostactiveterm, result.get("KWT"));
-			
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		Instant end = Instant.now();
-		Duration timeElapsed = Duration.between(start, end);
-		System.out.println("Time taken: " + timeElapsed.getSeconds() + " seconds");
-	}
-
+	/**
+	 * @see HttpServlet#HttpServlet()
+	 * 
+	 * 
+	 * 
+	 *      /**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
@@ -205,6 +210,7 @@ public class KeywordTrend1 extends HttpServlet {
 			session.getAttribute("top_terms");
 		}
 		// TODO Auto-generated method stub
+		// Get all parameters from post request
 		String date_start = (null == request.getParameter("date_start")) ? "" : request.getParameter("date_start");
 		String date_end = (null == request.getParameter("date_end")) ? "" : request.getParameter("date_end");
 		String mostactiveterm = (null == request.getParameter("term")) ? "" : request.getParameter("term").toString();
@@ -240,6 +246,7 @@ public class KeywordTrend1 extends HttpServlet {
 
 		List<HashMap<String, Integer>> items = new ArrayList<>();
 
+		// Get number of blogs mentioned
 		if (action.toString().equals("getblogmentioned")) {
 			try {
 				PrintWriter out = response.getWriter();
@@ -251,7 +258,9 @@ public class KeywordTrend1 extends HttpServlet {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		} else if (action.toString().equals("getmostlocation")) {
+		} 
+		// Get most location
+		else if (action.toString().equals("getmostlocation")) {
 			PrintWriter out = response.getWriter();
 			try {
 				String t_ = mostactiveterm.toString();
@@ -269,7 +278,10 @@ public class KeywordTrend1 extends HttpServlet {
 			}
 			
 
-		} else if (action.toString().equals("getmostpost")) {
+		} 
+		
+		// Get number of posts mentioned
+		else if (action.toString().equals("getmostpost")) {
 			try {
 				PrintWriter out = response.getWriter();
 				String t_ = mostactiveterm.toString();
@@ -279,7 +291,10 @@ public class KeywordTrend1 extends HttpServlet {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		} else if (action.toString().equals("gettermtable")) {
+		} 
+
+		// Populate terms table
+		else if (action.toString().equals("gettermtable")) {
 			try {
 				PrintWriter out = response.getWriter();
 				json_type_2 = (null == session.getAttribute(tid.toString())) ? ""
@@ -331,7 +346,9 @@ public class KeywordTrend1 extends HttpServlet {
 			} catch (Exception e) {
 
 			}
-		} else if (action.toString().equals("line_graph")) {
+		} 
+		// Get trend data for line graph
+		else if (action.toString().equals("line_graph")) {
 
 			try {
 				PrintWriter out = response.getWriter();
@@ -407,7 +424,9 @@ public class KeywordTrend1 extends HttpServlet {
 			} catch (Exception e) {
 
 			}
-		}else if (action.toString().equals("getgraphdata")) {
+		}
+		// Get data for keyword trend
+		else if (action.toString().equals("getgraphdata")) {
 			DbConnection db = new DbConnection();
 			PrintWriter out = response.getWriter();
 			mostactiveterm = mostactiveterm.toLowerCase();
@@ -431,6 +450,36 @@ public class KeywordTrend1 extends HttpServlet {
 			
 			
 		}
+	}
+
+	public static void main(String[] args) {
+		Instant start = Instant.now();
+		new Clustering();
+		try {
+			String mostactiveterm = "people";
+			String all_blog_ids = "1,2,5,88,9,200";
+			
+			DbConnection db = new DbConnection();
+			String q = "SELECT post, title, blogpost_id, date, \r\n" + 
+					"ROUND ((LENGTH(lower(post)) - LENGTH(REPLACE (lower(post), \""+mostactiveterm+"\", \"\"))) / LENGTH(\""+mostactiveterm+"\")) AS count\r\n" + 
+					"from (select *\r\n" + 
+					"from blogposts\r\n" + 
+					"where match (title,post)\r\n" + 
+					"against (\""+mostactiveterm+"\" IN BOOLEAN MODE)) a\r\n" + 
+					"where blogsite_id\r\n" + 
+					"in ("+all_blog_ids.toString()+")\r\n" + 
+					"\r\n";
+			HashMap result = db.queryKWT(q);
+			HashMap result_final = new HashMap();
+			result_final.put(mostactiveterm, result.get("KWT"));
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Instant end = Instant.now();
+		Duration timeElapsed = Duration.between(start, end);
+		System.out.println("Time taken: " + timeElapsed.getSeconds() + " seconds");
 	}
 
 }
