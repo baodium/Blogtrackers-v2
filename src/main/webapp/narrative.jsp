@@ -568,7 +568,7 @@
                             </div>
                             <div class="narrativeTextWrapper">
                                 <div id="editWrapper">
-                                    <textarea name="narrativeTextInput" class="narrativeText"><%=narrative.toString() %></textarea>
+                                    <textarea entity="<%=entity %>" name="narrativeTextInput" class="narrativeText narrative_text_input"><%=narrative.toString() %></textarea>
                                     <div id="editControls">
                                         <button id="editButton"></button>
                                     </div>
@@ -580,7 +580,7 @@
                             <div class="connectorBox">
                                 <div class="connector"></div>
                             </div>
-                            <div class="posts">
+                            <div id="narrative_posts_<%=entity %>" style="overflow-y:hidden;" class="posts">
                             
                              <%
                             //Getting posts related to narrative

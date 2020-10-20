@@ -329,7 +329,7 @@ if(action.toString().equals("search_narrative")){
             <li class="level uncollapse">
                 <div class="keyword">
                     <div class="collapseIcon"></div>
-                    <p class="text">444COVID-19</p>
+                    <p class="text">COVID-19</p>
                 </div>
                 <ul class="narratives">
                     <li class="narrative">

@@ -85,7 +85,7 @@ if(action.toString().equals("load_more_narrative")){
                             </div>
                             <div class="narrativeTextWrapper">                                
                             	<div id="editWrapper">
-                                    <textarea count="<%=i %>" name="narrativeTextInput" class="narrativeText narrative_text_test"><%=narrative.toString() %></textarea>
+                                    <textarea count="<%=i %>" name="narrativeTextInput" class="narrativeText narrative_text_input"><%=narrative.toString() %></textarea>
                                     <div id="editControls">
                                         <button id="editButton"></button>
                                     </div>
@@ -97,7 +97,7 @@ if(action.toString().equals("load_more_narrative")){
                             <div class="connectorBox">
                                 <div class="connector"></div>
                             </div>
-                            <div class="posts">
+                            <div id="narrative_posts_<%=entity %>" style="overflow-y:hidden;" class="posts">
                             
                              <%
                             //Getting posts related to narrative
@@ -285,7 +285,42 @@ if(action.toString().equals("load_more_narrative")){
 	<script src="assets/behavior/narrative-analysis.js"></script>
 	<!-- end -->
 	
-<% } %>
+<% }else if(action.toString().equals("search_narrative_post")){ 
+	
+	int bp_id; 
+	String permalink;
+	String title;
+	String domain;
+	String post_detail;
+	String date;
+	
+	for (int i = 1; i <= 10; i++){
+		
+		 bp_id = 5; 
+		 permalink = "https://www.globalresearch.ca/trumps-alliance-with-body-choppers-death-squads-and-child-killers-saudi-arabia-brazil-and-israel/5657201";
+		 title = "this is a dummy title";
+		 domain = "www.juga.com";
+		 post_detail = "htis is the informations for the post";
+		 date = "31/09/2012";
+		
+	%>
+
+	<div post_id=<%=bp_id %> class="post missingImage post_id_<%=bp_id%>">
+        <!-- <img class="postImage" src="assets/images/posts/1.jpg"> -->
+       <div class="<%=bp_id%>">
+       	<input type="hidden" class="post-image <%=entity %>_image new_narrative_image" id="<%=bp_id%>" name="pic" value="<%=permalink.toString()%>">
+       </div> 
+         
+         <h2 id="post_title_<%=bp_id %>" class="postTitle"><%=title.toString() %></h2>
+         <p id="post_date_<%=bp_id %>" class="postDate"><%=date.toString() %></p>
+         <p id="post_source_<%=bp_id %>" post_permalink="<%=permalink.toString()%>" class="postSource"><%=domain %></p>
+         <input id="post_detail_<%=bp_id %>" type="hidden" value="<%=post_detail.toString() %>" >
+         <%-- <input type="hidden" class="post-image" id="<%=bp_id%>" name="pic" value="<%=permalink.toString()%>"> --%>
+         <%-- <p class="postSource"><%=bp_id %></p> --%>
+     </div>
+	
+	
+<%  }} %>
 	
 
 	
