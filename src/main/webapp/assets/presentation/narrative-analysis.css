@@ -11,7 +11,7 @@
 	Description: Tracking Blog's data.
 	Beneficiary: COSMOS
 	
-	Copyright Â© 1988 - 2020 HAYDEX, All Rights Reserved.
+	Copyright © 1988 - 2020 HAYDEX, All Rights Reserved.
 	
 	
 	
@@ -46,6 +46,7 @@
     --radius1000: 1000px;
 
     --interface: url(../interface/interface.svg);
+    --cursor: url(../interface/cursor.svg);
     
 }
 
@@ -120,6 +121,13 @@ button {
 span.highlighter {
 
     background-color: var(--blueishLight);
+
+}
+
+textarea {
+
+    color: var(--blueishDark);
+    font-family: "Roboto", sans-serif;
 
 }
 
@@ -289,10 +297,22 @@ ul#narrativeTree li.level ul.narratives li.narrative.last div.middleSection div.
 
 }
 
+ul#narrativeTree li.level ul.narratives li.narrative div.middleSection div.narrativeTextWrapper {
+
+    width: 100%;
+
+}
+
 ul#narrativeTree li.level ul.narratives li.narrative.more div.middleSection div.narrativeTextWrapper p.narrativeText {
 
     font-weight: 600;
     font-size: 18px;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative div.middleSection div#editWrapper {
+
+    display: flex;
 
 }
 
@@ -307,6 +327,15 @@ ul#narrativeTree li.level ul.narratives li.narrative div.middleSection p.narrati
 
 }
 
+ul#narrativeTree li.level ul.narratives li.narrative.open div.middleSection textarea.narrativeText {
+
+    font-size: 30px;
+    line-height: 30px;
+    font-weight: 600;
+    height: 120px;
+
+}
+
 ul#narrativeTree li.level ul.narratives li.narrative div.middleSection p.narrativeText:hover {
 
     background-color: var(--blueishLight);
@@ -318,6 +347,39 @@ ul#narrativeTree li.level ul.narratives li.narrative.open div.middleSection p.na
     font-size: 30px;
     line-height: 30px;
     font-weight: 600;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative div.middleSection textarea.narrativeText {
+
+    transition: height .2s ease, font-size .2s ease;
+    flex-grow: 1;
+    font-size: 18px;
+    border: 0px;
+    resize: none;
+    height: 50px;
+    outline: 0px;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative.open div.middleSection div#editControls {
+
+    margin-left: 5px;    
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative.open div.middleSection div#editControls button#editButton {
+
+    width: 25px;
+    height: 25px;
+    background-image: var(--interface);
+    background-position: -105px -960px;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative.open div.middleSection div#editControls button#editButton:hover {
+
+    opacity: 0.5;
 
 }
 
@@ -413,6 +475,7 @@ ul#narrativeTree li.level ul.narratives li.narrative.open div.bottomSection div.
     display: inline-block;
     width: 210px;
     height: 280px;
+    vertical-align: top;
     background-color: var(--greyishLight);
     border-radius: var(--radius15);
     cursor: pointer;
@@ -422,6 +485,7 @@ ul#narrativeTree li.level ul.narratives li.narrative.open div.bottomSection div.
 ul#narrativeTree li.level ul.narratives li.narrative.open div.bottomSection div.posts div.post:hover {
 
     background-color: var(--blueishLight);
+    cursor: var(--cursor) 20 20, auto;
 
 }
 
@@ -431,6 +495,12 @@ ul#narrativeTree li.level ul.narratives li.narrative.open div.bottomSection div.
     height: 130px;
     object-fit: cover;
     border-radius: 15px 15px 0px 0px;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative.open div.bottomSection div.posts div.post.missingImage img {
+
+    display: none;
 
 }
 
@@ -447,6 +517,13 @@ ul#narrativeTree li.level ul.narratives li.narrative.open div.bottomSection div.
 
 }
 
+ul#narrativeTree li.level ul.narratives li.narrative.open div.bottomSection div.posts div.post.missingImage h2.postTitle {
+
+    padding-top: 10px;
+    height: auto;
+
+}
+
 ul#narrativeTree li.level ul.narratives li.narrative.open div.bottomSection div.posts div.post p.postDate {
 
     white-space: normal;
@@ -458,6 +535,14 @@ ul#narrativeTree li.level ul.narratives li.narrative.open div.bottomSection div.
 
 }
 
+ul#narrativeTree li.level ul.narratives li.narrative.open div.bottomSection div.posts div.post.missingImage p.postDate {
+
+    position: absolute;
+    bottom: 37px;
+    width: 200px;
+
+}
+
 ul#narrativeTree li.level ul.narratives li.narrative.open div.bottomSection div.posts div.post p.postSource {
 
     white-space: normal;
@@ -465,6 +550,14 @@ ul#narrativeTree li.level ul.narratives li.narrative.open div.bottomSection div.
     line-height: 12px;
     font-weight: 600;
     padding: 0px 20px;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative.open div.bottomSection div.posts div.post.missingImage p.postSource {
+
+    position: absolute;
+    bottom: 25px;
+    width: 200px;
 
 }
 

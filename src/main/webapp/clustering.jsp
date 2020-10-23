@@ -649,7 +649,7 @@ Instant start = Instant.now();
 								//JSONArray postData = new JSONArray();
 								ArrayList postData;
 
-								String[] colors = {"#6b085e", "#e50471", "#0571a0", "#038a2c", "#6b8a03", "#a02f05", "#b770e1", "#fc8f82 ", "#011aa7", "#a78901"};
+								String[] colors = {"#E377C2","#8C564B", "#9467BD", "#D62728", "#2CA02C", "#FF7F0E", "#1F77B4", "#7F7F7F","#17B890", "#D35269"};
 								int i = 0;
 								Pair<String, String> currentKey = new Pair<String, String>(null, null);
 
@@ -1786,7 +1786,7 @@ var nodes = dataset.nodes
 			
 			
 	
-   var colors = d3v4.scaleOrdinal().range(["#6b085e", "#e50471", "#0571a0", "#038a2c", "#6b8a03", "#a02f05", "#b770e1", "#fc8f82 ", "#011aa7", "#a78901"]);;
+   var colors = d3v4.scaleOrdinal().range(["#E377C2","#8C564B", "#9467BD", "#D62728", "#2CA02C", "#FF7F0E", "#1F77B4", "#7F7F7F","#17B890", "#D35269"]);;
    // Add SVG element
    var container = d3Container.append("svg");
    // Add SVG group
@@ -2045,7 +2045,7 @@ function handleMouseOver(d, i) { // Add interactivity
 					.attr("x", 0).attr("y", 0);
 
 			var color = d3v4_.scaleOrdinal().domain(["1", "2","3","4","5","6","7","8","9","10" ]).range(
-					["#6b085e", "#e50471", "#0571a0", "#038a2c", "#6b8a03", "#a02f05", "#b770e1", "#fc8f82 ", "#011aa7", "#a78901"])
+					["#E377C2","#8C564B", "#9467BD", "#D62728", "#2CA02C", "#FF7F0E", "#1F77B4", "#7F7F7F","#17B890", "#D35269"])
 			/* .domain(["0", "1", "2","3","4","5","6","7","8","9" ]) */
 			/* .range([ 'red', 'green', 'blue', 'orange', 'purple','pink', 'black', 'grey', 'brown','yellow']) */
 
@@ -2317,7 +2317,7 @@ $('.blogpost_link').on("click", function(){
 		    d3 = d3version3 */
 		    var rotation = 0;
 		 	var names = ["Cluster 1", "Cluster 2", "Cluster 3", "Cluster 4", "Cluster 5", "Cluster 6", "Cluster 7", "Cluster 8", "Cluster 9", "Cluster 10"];
-		 	var colors = ["#6b085e", "#e50471", "#0571a0", "#038a2c", "#6b8a03", "#a02f05", "#b770e1", "#fc8f82 ", "#011aa7", "#a78901"];
+		 	var colors = ["#E377C2","#8C564B", "#9467BD", "#D62728", "#2CA02C", "#FF7F0E", "#1F77B4", "#7F7F7F","#17B890", "#D35269"];
 		    var chord_options = {
 	    		    "gnames": names,
 	    		    "rotation": rotation,

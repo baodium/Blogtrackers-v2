@@ -779,7 +779,7 @@ class BlogPost {
 	        var formatDate = d3.time.format("%H:%M");
 
 	        // Colors
-	        var colorrange = ["#C4C4C4", "#69B40F", "#EC1D25", "#C8125C", "#008FC8", "#10218B", "#134B24", "#737373", "#ffff00", "#ff79c5"];
+	        var colorrange = ["#E377C2","#8C564B", "#9467BD", "#D62728", "#2CA02C", "#FF7F0E", "#1F77B4", "#7F7F7F","#17B890", "#D35269"];
 
 
 
@@ -1321,7 +1321,7 @@ class ChordDiagram {
     	this.names = [];
     	this.height = _height;
     	this.container = document.getElementById("chorddiagram");
-    	this.colors = ["#C4C4C4", "#69B40F", "#EC1D25", "#C8125C", "#008FC8", "#10218B", "#134B24", "#737373", "#ffff00", "#ff79c5"];
+    	this.colors = ["#E377C2","#8C564B", "#9467BD", "#D62728", "#2CA02C", "#FF7F0E", "#1F77B4", "#7F7F7F","#17B890", "#D35269"];
     	
     	for (let i = 0; i < this.matrix.length; i++) {
     		this.names.push("Topic " + (i + 1))
@@ -1409,7 +1409,7 @@ class ChordDiagram {
             height: 600,
             rotation: 0,
             textgap: 40,
-            colors: ["#C4C4C4", "#69B40F", "#EC1D25", "#C8125C", "#008FC8", "#10218B", "#134B24", "#737373", "#ffff00", "#ff79c5"]
+            colors: ["#E377C2","#8C564B", "#9467BD", "#D62728", "#2CA02C", "#FF7F0E", "#1F77B4", "#7F7F7F","#17B890", "#D35269"]
         };
         
         // add options to the chord configuration object
@@ -1980,7 +1980,7 @@ class Topics {
 	}
     
 	createTopicButton(n) {
-		let colors_array = ["#C4C4C4", "#69B40F", "#EC1D25", "#C8125C", "#008FC8", "#10218B", "#134B24", "#737373", "#ffff00", "#ff79c5"];
+		let colors_array = ["#E377C2","#8C564B", "#9467BD", "#D62728", "#2CA02C", "#FF7F0E", "#1F77B4", "#7F7F7F","#17B890", "#D35269"];
 		let element = document.createElement("a");
 		element.classList.add("btn", "form-control", "stylebuttoninactive", "mb20", "opacity53pp", "text-primary");
 		element.setAttribute("topicNumber", n);
