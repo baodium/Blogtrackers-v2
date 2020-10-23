@@ -1668,6 +1668,7 @@ path.chord {
 				<div class="card card-style mt20">
 					<div class="card-body  p5 pt10 pb10">
 
+
 						<div style="min-height: 420px;">
 							<div>
 								<p class="text-primary p15 pb5 pt0">
