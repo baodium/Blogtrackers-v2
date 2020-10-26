@@ -375,8 +375,8 @@
 					<%-- <%=date %> --%><%=max_occurence_post_date%></button>
 				<button class="btn stylebuttonnocolor nocursor">
 					<b class="float-left ultra-bold-text"> <%-- <%=tobj.get("num_comments")%> --%><%=max_occurence_post_num_comments%>
-						comments9
-					</b><i class="far fa-comments float-right blogcontenticon"></i>
+						 comments
+					</b> &nbsp; <i class="far fa-comments float-right blogcontenticon"></i>
 				</button>
 			</div>
 			<div style="height: 600px;">

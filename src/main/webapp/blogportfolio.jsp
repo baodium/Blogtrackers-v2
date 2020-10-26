@@ -1199,7 +1199,7 @@ import java.io.OutputStreamWriter; -->
 											<button class="btn stylebuttonnocolor nocursor"><%=date %></button>
 									
 											<button class="btn stylebuttonnocolor nocursor">
-												<b class="float-left ultra-bold-text"><%=tobj.get("num_comments")%> comments</b><i
+												<b class="float-left ultra-bold-text"><%=tobj.get("num_comments")%> comments</b> &nbsp; <i
 													class="far fa-comments float-right blogcontenticon"></i>
 											</button>
 										</div>
