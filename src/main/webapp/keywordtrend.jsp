@@ -1317,6 +1317,9 @@ $(document).ready(function() {
 			});
 
 			$('#DataTables_Table_2_wrapper').DataTable({
+				"columnDefs": [
+	    		    { "width": "70%", "targets": 0 }
+	    		  ],
 				"scrollY": 480,
 
 				"pagingType": "simple",
