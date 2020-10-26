@@ -9,6 +9,7 @@
 package authentication;
 
 import java.io.BufferedReader;
+import java.math.BigDecimal;
 import java.io.FileReader;
 import java.io.IOException;
 import java.security.MessageDigest;
@@ -43,6 +44,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class DbConnection {
 	/**
 	 * loadConstant() - For loading the configuration file from a remote repository
+	 * 
 	 * @return hashmap
 	 */
 
@@ -76,6 +78,7 @@ public class DbConnection {
 
 	/**
 	 * For getting the connection parameter and connecting to the database driver
+	 * 
 	 * @return connection
 	 */
 	// hello
@@ -118,6 +121,7 @@ public class DbConnection {
 	/**
 	 * * This method checks to see if the username is already in the database We use
 	 * this method to verify if a user already has an account in our database
+	 * 
 	 * @param iUserName username of user
 	 * @return boolean; True if user exists and False if other wise
 	 */
@@ -153,11 +157,11 @@ public class DbConnection {
 
 	/**
 	 * same as isUserExists
+	 * 
 	 * @param iUserName username of user
 	 * @return boolean; True if user exists and False if other wise
 	 */
-	public boolean removeUser(String iUserName) 
-	{
+	public boolean removeUser(String iUserName) {
 		try {
 
 			String queryStr = "Delete FROM UserCredentials where UserName = ?";
@@ -184,9 +188,10 @@ public class DbConnection {
 
 	/**
 	 * add user to usercredentials table
+	 * 
 	 * @param iUserName username of user
 	 * @param iPassword password of user
-	 * @param iEmail email of user
+	 * @param iEmail    email of user
 	 */
 	public void addUser(String iUserName, String iPassword, String iEmail) {
 		if (isUserExists(iUserName)) {
@@ -217,6 +222,7 @@ public class DbConnection {
 
 	/**
 	 * Update table query
+	 * 
 	 * @param query MySQL query string
 	 * @return boolean; True if table updated and False if otherwise
 	 */
@@ -242,6 +248,7 @@ public class DbConnection {
 
 	/**
 	 * Insert record query
+	 * 
 	 * @param query query string
 	 * @return boolean; True if table inserted and False if otherwise
 	 */
@@ -264,6 +271,7 @@ public class DbConnection {
 
 	/**
 	 * Query Database
+	 * 
 	 * @param query query string
 	 * @return arraylist result
 	 */
@@ -306,7 +314,8 @@ public class DbConnection {
 	}
 
 	/**
-	 * Query Database  
+	 * Query Database
+	 * 
 	 * @param query query string
 	 * @return json result
 	 */
@@ -361,6 +370,7 @@ public class DbConnection {
 
 	/**
 	 * calculates the MD5 hash of a string.
+	 * 
 	 * @param userNamePass user password
 	 * @return hashed string
 	 */
@@ -386,7 +396,8 @@ public class DbConnection {
 	// static void split(String query)
 
 	/**
-	 * Custom query for Keyword Trend 
+	 * Custom query for Keyword Trend
+	 * 
 	 * @param query query string for Keyword Trend
 	 * @return hashmap result
 	 */
@@ -449,19 +460,90 @@ public class DbConnection {
 		// "in (617,961,1030)\r\n" +
 		// "\r\n";
 
-		// String q = "SELECT terms from blogpost_terms_api where blogsiteid in (62,88,117,128,238,248,254,255,616,641,777,787,858,859,860,862,863,874,923,966,1030)";
+		// String q = "SELECT terms from blogpost_terms_api where blogsiteid in
+		// (62,88,117,128,238,248,254,255,616,641,777,787,858,859,860,862,863,874,923,966,1030)";
 
 		// List<HashMap<String, Integer>> result = queryTerms(q);
 		// System.out.println("DOne with query");
 		Instant start = Instant.now();
-		// HashMap<String, Integer> map_count = result.stream().flatMap(map -> map.entrySet().parallelStream())
-		// 		.collect(Collectors.toMap(Entry::getKey, Entry::getValue, Integer::sum, HashMap::new));
+		// HashMap<String, Integer> map_count = result.stream().flatMap(map ->
+		// map.entrySet().parallelStream())
+		// .collect(Collectors.toMap(Entry::getKey, Entry::getValue, Integer::sum,
+		// HashMap::new));
 
 		// System.out.println("done with counting");
 		// System.out.println(map_count);
 		// ArrayList test = query(q);
 
 		// System.out.println(result);
+		HashMap<String, Double> notes = new HashMap<String, Double>();
+
+		String[] notes_name = { "Fifty Pounds", "Twenty Pounds", "Ten Pounds", "Five Pounds", "Two Pounds", "One Pound",
+				"Fifty Pence", "Twenty Pence", "Ten Pence", "Five Pence", "Two Pence", "One Pence" };
+		//BigDecimal[] notes_value = {new BigDecimal(50.0), new BigDecimal(20.0), new BigDecimal(10.0), new BigDecimal(5.0), 
+		//new BigDecimal(2.0), new BigDecimal(1.0), new BigDecimal(0.50), new BigDecimal(0.20), new BigDecimal(0.10), new BigDecimal(0.05), new BigDecimal(0.02), new BigDecimal(0.01)};
+		int [] notes_value = {5000, 2000, 1000, 500, 200, 100, 50, 20, 10, 5, 2, 1};
+		
+		notes.put("Fifty Pounds", 50.0);
+		notes.put("Twenty Pounds", 20.0);
+		notes.put("Ten Pounds", 10.0);
+		notes.put("Five Pounds", 5.0);
+		notes.put("Two Pounds", 2.0);
+		notes.put("One Pound", 1.0);
+		notes.put("Fifty Pence", 0.50);
+		notes.put("Twenty Pence", 0.20);
+		notes.put("Ten Pence", 0.10);
+		notes.put("Five Pence", 0.05);
+		notes.put("Two Pence", 0.02);
+		notes.put("One Pence", 0.01);
+
+		int cash = 50 * 100;
+		double purchasePrice = 8.25 * 100;
+
+		if (cash < purchasePrice) {
+			System.out.println("ERROR");
+		} else if (cash == purchasePrice) {
+			System.out.println("Zero");
+		} else {
+//			BigDecimal cash_ = new BigDecimal(cash);
+//			BigDecimal purchase_cash = new BigDecimal(purchasePrice);
+//			BigDecimal change = cash_.subtract(purchase_cash);
+			
+			int change = cash - (int)purchasePrice;
+
+			/*
+			 * String res = getChange("", change); System.out.println(res);
+			 */
+			int i = 0;
+
+			//while (change > 0) {
+
+				// for(int i = 0; i< notes_name.length; i++){
+				while (i < notes_name.length) {
+					int current_amount_v = notes_value[i];
+					String current_amount_s = notes_name[i];
+					if (change >= current_amount_v) {
+						if (change != current_amount_v) {
+							System.out.print(current_amount_s + ", ");
+						}else {
+						System.out.print(current_amount_s);
+						}
+						change -= current_amount_v;
+
+						if (change > current_amount_v) {
+							i--;
+						}
+
+					}
+					i++;
+					if (change == 0) {
+						break;
+					}
+
+				}
+			//}
+		}
+
 		Instant end = Instant.now();
 		Duration timeElapsed = Duration.between(start, end);
 		System.out.println("Time taken: " + timeElapsed.getSeconds() + " seconds");

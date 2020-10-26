@@ -42,6 +42,7 @@
 		ArrayList<?> userinfo = null;
 		String profileimage = "";
 		String username = "";
+		
 		String name = "";
 		String phone = "";
 		String date_modified = "";
@@ -484,10 +485,14 @@
 			
 			///start clusering check
 			ArrayList cluster_details = DbConnection.query("select status, status_percentage from clusters where tid = " + tid);
-			ArrayList cluster_res = (ArrayList)cluster_details.get(0);
-			
-			String cluster_status = cluster_res.get(0).toString();
-			String cluster_status_percentage = cluster_res.get(1).toString();
+			ArrayList cluster_res = new ArrayList<>();
+			String cluster_status = "";
+			String cluster_status_percentage = "";
+			if(cluster_details.size() > 0){
+				cluster_res = (ArrayList)cluster_details.get(0);
+				cluster_status = cluster_res.get(0).toString();
+				cluster_status_percentage = cluster_res.get(1).toString();
+			}
 			
 			JSONObject cluster_final_result = new JSONObject();
 			cluster_final_result.put("status_percentage",status_percentage);
@@ -4178,6 +4183,7 @@ $(function () {
 	  $(function () {
 	
 	 <%String pos = "";
+	 
 					String neg = "";
 					for (int i = 0; i < getPositiveEmotion.size(); i++) {
 						ArrayList<?> posi = (ArrayList<?>) getPositiveEmotion.get(i);
@@ -5071,7 +5077,15 @@ data = {
 						for (int m = 0; m < bloggerPostFrequency.size(); m++) {
 							ArrayList<?> bloggerFreq = (ArrayList<?>) bloggerPostFrequency.get(m);
 							String bloggerName = bloggerFreq.get(0).toString();
-							String bloggerPostFreq = bloggerFreq.get(1).toString();%>
+							String bloggerPostFreq="0";
+							try{
+							bloggerPostFreq = (null ==  bloggerFreq.get(1).toString()) ? "0" :  bloggerFreq.get(1).toString();
+							}
+							catch(Exception e){
+								System.out.println(e);
+							}
+							%>
+							
 							{"label":"<%=bloggerName.trim()%>","name":"<%=bloggerName.trim()%>", "size":<%=Integer.parseInt(bloggerPostFreq)%>},
 <%}
 

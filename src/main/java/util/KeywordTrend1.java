@@ -421,7 +421,8 @@ public class KeywordTrend1 extends HttpServlet {
 				result.put("index", index);
 
 				out.write(result.toString());
-			} catch (Exception e) {
+			} 
+			catch (Exception e) {
 
 			}
 		}
