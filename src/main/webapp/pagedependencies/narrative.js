@@ -85,36 +85,39 @@ $('.narrative_text_input').keydown(function(e) {
 	if (key == 13) {
 		e.preventDefault();
 		
-		//$('.current_narrative_tree').addClass('hidden');
-	    //$('#current_narrative_loader').removeClass('hidden');
-	    
-	    $("#narrative_posts_"+entity).html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />");
-	    
-	    $.ajax({
-			url: app_url+"subpages/more_narrative.jsp",
-			method: 'POST',
-			data: {
-				action:"search_narrative_post",
-				search_value:search_key,
-				tid:$('#tracker_id').val()
-			},
-			error: function(response)
-			{		
-				console.log("error");
-				console.log(response);
-			},
-			success: function(response)
-			{  
-				$("#narrative_posts_"+entity).html(response)
-				var img = $('.new_narrative_image');
-			    for(i=0; i<img.length; i++){
-			    	var id = img[i].id;
-					var url = img[i].value;
-					getImage(id,url);
-			    }
-			}
-		});
-	   
+		if(search_key === ""){
+			alert("narrarive cannot be emoty!")
+		}else{
+			
+			 $("#narrative_posts_"+entity).html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />");
+			    
+			    $.ajax({
+					url: app_url+"subpages/more_narrative.jsp",
+					method: 'POST',
+					data: {
+						action:"search_narrative_post",
+						search_value:search_key,
+						tid:$('#tracker_id').val()
+					},
+					error: function(response)
+					{		
+						console.log("error");
+						console.log(response);
+					},
+					success: function(response)
+					{  
+						$("#narrative_posts_"+entity).html(response)
+						var img = $('.new_narrative_image');
+					    for(i=0; i<img.length; i++){
+					    	var id = img[i].id;
+							var url = img[i].value;
+							getImage(id,url);
+					    }
+					}
+				});
+			
+		}
+		
 }
 	
 	

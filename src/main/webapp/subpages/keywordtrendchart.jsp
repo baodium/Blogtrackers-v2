@@ -192,7 +192,7 @@
 				class="display table_over_cover" style="width: 100%">
 				<thead>
 					<tr>
-						<th>Post title</th>
+						<th>Post Title</th>
 						<th>Occurence</th>
 					</tr>
 				</thead>
@@ -375,7 +375,7 @@
 					<%-- <%=date %> --%><%=max_occurence_post_date%></button>
 				<button class="btn stylebuttonnocolor nocursor">
 					<b class="float-left ultra-bold-text"> <%-- <%=tobj.get("num_comments")%> --%><%=max_occurence_post_num_comments%>
-						comments
+						comments9
 					</b><i class="far fa-comments float-right blogcontenticon"></i>
 				</button>
 			</div>
@@ -415,6 +415,10 @@
 
 		// datatable setup
 		$('#DataTables_Table_2_wrapper').DataTable({
+			"columnDefs": [
+    		    { "width": "70%", "targets": 0 }
+    		  ],	
+		
 			"scrollY" : 480,
 			"scrollX" : true,
 			"order" : [ [ 1, "desc" ] ],
