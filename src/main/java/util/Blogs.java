@@ -161,7 +161,10 @@ public class Blogs extends DbConnection{
 		blog_ids = blog_ids.replaceAll(", $", "");
 		blog_ids = "("+blog_ids+")";
 		try {
-			 response = db.query("select blogsite_id, blogsite_name, totalposts, last_crawled from blogsites where blogsite_id in "+blog_ids);
+			 response = db.query("select blogsite_id, blogsite_name, totalposts, CASE\r\n" + 
+			 		"    WHEN last_crawled is null THEN last_modified_time\r\n" + 
+			 		"    ELSE last_crawled\r\n" + 
+			 		"END last_crawled from blogsites where blogsite_id in "+blog_ids);
 			if(response.size()>0) {
 				return response;
 			}

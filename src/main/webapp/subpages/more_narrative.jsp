@@ -11,6 +11,8 @@
 	pageEncoding="UTF-8"%>
 <%@page import="java.time.LocalDateTime"%>
 <%@page import="java.net.URI"%>
+<%@page import="java.time.LocalDate"%>
+<%@page import="java.time.format.DateTimeFormatter"%>
 
 <%
 Object action = (null == request.getParameter("action")) ? "" : request.getParameter("action");
@@ -18,6 +20,10 @@ Object entity = (null == request.getParameter("entity")) ? "" : request.getParam
 Object offset = (null == request.getParameter("entity")) ? "" : request.getParameter("offset");
 Object level = (null == request.getParameter("level")) ? "" : request.getParameter("level");
 Object tid = (null == request.getParameter("tid")) ? "" : request.getParameter("tid");
+Object blog_ids = (null == request.getParameter("blog_ids")) ? "" : request.getParameter("blog_ids");
+Object search_value = (null == request.getParameter("search_value")) ? "" : request.getParameter("search_value");
+
+
 
 
 DbConnection db = new DbConnection();
@@ -100,27 +106,7 @@ if(action.toString().equals("load_more_narrative")){
                             <div id="narrative_posts_<%=entity %>" style="overflow-y:hidden;" class="posts">
                             
                              <%
-                            //Getting posts related to narrative
-                            //String blogposts_query = "SELECT JSON_SEARCH(blogpost_narratives, 'all', '" + narrative + "') AS j from narratives where tid = " + tid;
-                            /* String blogposts_query = "SELECT JSON_SEARCH(blogpost_narratives, 'all', '" + narrative + "', NULL, '$.*.\"" + entity + "\"[*]') AS j from tracker_narratives where tid = " + tid;
-                            ArrayList blogposts = new ArrayList();
-                            JSONArray blogpost_source_array = new JSONArray();
-                            JSONArray blogposts_data = new JSONArray();
-                            try{
-                            	blogposts = db.query(blogposts_query);
-                            	blogpost_source_array = new JSONArray(blogposts.get(0).toString());
-                            	String temp = blogpost_source_array.get(0).toString();
-                            	if(temp.charAt(0) == "[".charAt(0)){
-                            		blogposts_data = new JSONArray(temp);
-                            	}else{
-                            		blogposts_data = new JSONArray("[\"" + temp.replaceAll("\"","\\\\\"") + "\"]");
-                            	}
-
-                        		
-                            }catch(Exception e){
-                            	System.out.println(e);
-                            }
-                             */
+                            
                             
                              String [] blogposts_data = blogpost_ids.toString().split(",");
                              Object permalink = null;
@@ -166,15 +152,6 @@ if(action.toString().equals("load_more_narrative")){
                                         <%-- <p class="postSource"><%=bp_id %></p> --%>
                                     </div>
                                     
-                               <!--  </a> -->
-                                <!-- <a href="#">
-                                    <div class="post">
-                                        <img class="postImage" src="assets/images/posts/2.jpg">
-                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
-                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
-                                        <p class="postSource">www.cnn.net</p>
-                                    </div>
-                                </a> -->
                                
                                 <%
                                 b++;
@@ -287,21 +264,40 @@ if(action.toString().equals("load_more_narrative")){
 	
 <% }else if(action.toString().equals("search_narrative_post")){ 
 	
-	int bp_id; 
+	String bp_id; 
 	String permalink;
 	String title;
 	String domain;
 	String post_detail;
 	String date;
 	
+	ArrayList res = Narrative.search_narratives_post(blog_ids.toString(), search_value.toString(), "10");
+	for(Object x: res) {
+		JSONObject source = new JSONObject(x.toString());
+		
+		bp_id = source.getJSONObject("_source").get("blogpost_id").toString();
+		permalink = source.getJSONObject("_source").get("permalink").toString();
+		title = source.getJSONObject("_source").get("title").toString();
+		
+		URI uri = new URI(permalink.toString());
+		domain = uri.getHost();
+		
+		date = source.getJSONObject("_source").get("date").toString();
+		LocalDate datee = LocalDate.parse(date.toString().split(" ")[0]);
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");
+		date = dtf.format(datee);
+		
+		post_detail = source.getJSONObject("_source").get("post").toString();
+	/* }
+	
 	for (int i = 1; i <= 10; i++){
 		
-		 bp_id = 5; 
+		 bp_id = ""; 
 		 permalink = "https://www.globalresearch.ca/trumps-alliance-with-body-choppers-death-squads-and-child-killers-saudi-arabia-brazil-and-israel/5657201";
 		 title = "this is a dummy title";
 		 domain = "www.juga.com";
 		 post_detail = "htis is the informations for the post";
-		 date = "31/09/2012";
+		 date = "31/09/2012"; */
 		
 	%>
 

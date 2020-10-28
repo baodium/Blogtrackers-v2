@@ -10,6 +10,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@page import="java.time.LocalDateTime"%>
+<%@page import="java.time.LocalDate"%>
+<%@page import="java.time.format.DateTimeFormatter"%>
 <%@page import="java.net.URI"%>
 
 <%
@@ -496,6 +498,7 @@
             <label for="searchBox">Search Website</label>
             <input id="searchBox" type="text" placeholder="Search..." autocomplete="off">
             <input type="hidden" value="<%=tid%>" name="tracker_id" id="tracker_id">
+            <input type="hidden" name="all_blog_ids" id="all_blog_ids" value="<%=ids%>" />
         </form>
 		
 
@@ -622,7 +625,12 @@
                     				if(permalink_data.size() > 0){
                     					JSONObject permalink_data_index = new JSONObject(permalink_data.get(0).toString());
                         				permalink = permalink_data_index.getJSONObject("_source").get("permalink");
+                        				
                         				date = permalink_data_index.getJSONObject("_source").get("date");
+                        				LocalDate datee = LocalDate.parse(date.toString().split(" ")[0]);
+										DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");
+										date = dtf.format(datee);
+                        				
                         				title = permalink_data_index.getJSONObject("_source").get("title");
                         				post_detail = permalink_data_index.getJSONObject("_source").get("post");
                         				URI uri = new URI(permalink.toString());
@@ -642,7 +650,7 @@
                                         </div> 
                                         
                                         <h2 id="post_title_<%=bp_id %>" class="postTitle"><%=title.toString() %></h2>
-                                        <p id="post_date_<%=bp_id %>" class="postDate"><%=date.toString() %></p>
+                                        <p id="post_date_<%=bp_id %>" class="postDate"><%=date.toString()%></p>
                                         <p id="post_source_<%=bp_id %>" post_permalink="<%=permalink.toString()%>" class="postSource"><%=domain %></p>
                                         <input id="post_detail_<%=bp_id %>" type="hidden" value="<%=post_detail.toString() %>" >
                                         <%-- <input type="hidden" class="post-image" id="<%=bp_id%>" name="pic" value="<%=permalink.toString()%>"> --%>

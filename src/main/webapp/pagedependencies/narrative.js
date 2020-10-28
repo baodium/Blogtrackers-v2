@@ -97,7 +97,8 @@ $('.narrative_text_input').keydown(function(e) {
 					data: {
 						action:"search_narrative_post",
 						search_value:search_key,
-						tid:$('#tracker_id').val()
+						tid:$('#tracker_id').val(),
+						blog_ids:$('#all_blog_ids').val()
 					},
 					error: function(response)
 					{		
@@ -157,7 +158,7 @@ $('#searchBox').keydown(function(e) {
 				method: 'POST',
 				data: {
 					action:"search_narrative",
-					search_value:$('#searchInput').val(),
+					search_value:$('#searchBox').val(),
 					tid:$('#tracker_id').val()
 				},
 				error: function(response)

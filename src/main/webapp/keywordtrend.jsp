@@ -112,36 +112,28 @@
 					profileimage = "images/profile_images/" + userinfo.get(2).toString() + ".jpg";
 				} else {
 					path_new.mkdirs();
-					System.out.println("pathhhhh1--" + path_new);
 				}
 
 				if (path_new.exists()) {
 
 					String t = "/images/profile_images";
 					int p = userpic.indexOf(t);
-					System.out.println(p);
 					if (p != -1) {
-
-						System.out.println("pic path---" + userpic);
-						System.out.println("path exists---" + userpic.substring(0, p));
 						String path_update = userpic.substring(0, p);
 						if (!path_update.equals(path_new.toString())) {
 							profileimage = "images/profile_images/" + userinfo.get(2).toString() + ".jpg";
 							String new_file_path = path_new.toString().replace("\\images\\profile_images", "")
 									+ "/" + profileimage;
-							System.out.println("ready to be updated--" + new_file_path);
 						}
 					} else {
 						path_new.mkdirs();
 						profileimage = "images/profile_images/" + userinfo.get(2).toString() + ".jpg";
 						String new_file_path = path_new.toString().replace("\\images\\profile_images", "") + "/"
 								+ profileimage;
-						System.out.println("ready to be updated--" + new_file_path);
 
 						new DbConnection().updateTable("UPDATE usercredentials SET profile_picture  = '"
 								+ "images/profile_images/" + userinfo.get(2).toString() + ".jpg"
 								+ "' WHERE Email = '" + email + "'");
-						System.out.println("updated");
 					}
 				} else {
 					System.out.println("path doesnt exist");
@@ -303,51 +295,9 @@
 
 			JSONArray unsortedterms = new JSONArray();
 			JSONObject termstore = new JSONObject();
-			/* Map<String, Integer> top_terms = new HashMap<String, Integer>();
-			if (termss.size() > 0) {
-				for (int p = 0; p < termss.size(); p++) {
-					String bstr = termss.get(p).toString();
-					JSONObject bj = new JSONObject(bstr);
-					bstr = bj.get("_source").toString();
-					bj = new JSONObject(bstr);
-					String tm = bj.get("term").toString();
 			
-					String frequency = bj.get("frequency").toString();
-					String id = bj.get("id").toString();
-					//String frequency = "10";
-					int frequency2 = Integer.parseInt(frequency);
-					if (top_terms.containsKey(tm)) {
-						top_terms.put(tm, top_terms.get(tm) + frequency2);
-						frequency2 = top_terms.get(tm) + frequency2;
-					} else {
-						top_terms.put(tm, frequency2);
-					}
-					JSONObject cont = new JSONObject();
-					unsortedterms.put(frequency2 + "___" + tm + "___" + id);
-			
-				}
-			} */
-
-			//JSONArray sortedterms = term._sortJson2(unsortedterms);
-
-			/* if (sortedterms.length() > 0) {
-				for (int i = 0; i < sortedterms.length(); i++) {
-					String[] vals = sortedterms.get(i).toString().split("___");
-					String size = vals[0];
-					String tm = vals[1];
-					String terms_id = vals[2];
-					if (i == 0) {
-						mostactiveterm = tm;
-						mostactiveterm_id = terms_id;
-					}
-			
-				}
-			} */
 
 			JSONObject termsyears = new JSONObject();
-
-			//allterms = term._searchByRange("blogsiteid", dt, dte, ids);//term._searchByRange("date", dt, dte, ids);
-			//termss = term._searchByRange("blogsiteid", dt, dte, ids);
 
 			int postmentioned = 0;
 			int blogmentioned = 0;
@@ -363,278 +313,74 @@
 			JSONObject keys = new JSONObject();
 			JSONObject positions = new JSONObject();
 			int termsposition = 0;
-			/* if (allterms.size() > 0) {
-				for (int p = 0; p < allterms.size(); p++) {
-					String bstr = allterms.get(p).toString();
-					JSONObject bj = new JSONObject(bstr);
-					bstr = bj.get("_source").toString();
-					bj = new JSONObject(bstr);
-					String frequency = bj.get("frequency").toString();
-					//String frequency = "10";
-					int freq = Integer.parseInt(frequency);
 			
-					String tm = bj.get("term").toString();
-					String tmid = bj.get("id").toString();
-					String blogpostid = bj.get("blogpostid").toString();
-					String blogid = bj.get("blogsiteid").toString();
-			
-					if (freq > highestfrequency) {
-						highestfrequency = freq;
-						//mostactiveterm = tm;
-					}
-			
-					String postc = "0";
-					String blogc = "0";
-					String bloggerc = "0";
-					String language = "";
-					String leadingblogger = "";
-					String location = "";
-					String leadingblogid = "";
-			
-					///ArrayList postdetail = post._fetch(blogpostid);
-			
-					/* if (postdetail.size() > 0) {
-						String tres3 = null;
-						JSONObject tresp3 = null;
-						String tresu3 = null;
-						JSONObject tobj3 = null;
-			
-						for (int j = 0; j < 1; j++) {
-							tres3 = postdetail.get(j).toString();
-							tresp3 = new JSONObject(tres3);
-							tresu3 = tresp3.get("_source").toString();
-							tobj3 = new JSONObject(tresu3);
-			
-							leadingblogger = tobj3.get("blogger").toString();
-							language = tobj3.get("language").toString();
-							leadingblogid = tobj3.get("blogsite_id").toString();
-							location = blog._getTopLocation(leadingblogid);//tobj3.get("location").toString();
-			
-						}
-					} */
-
-			/* if (p == 0) {
-				allposts = post._searchByTitleAndBody(tm, "date", dt, dte);//term._searchByRange("date",dt,dte, tm,"term","10");
-				toplocation = location;
-				//mostactiveterm = tm;
-				//mostactiveterm_id = tmid;
-			
-				postc = post._searchTotalAndUnique(tm, "date", dt, dte, "blogpost_id");//post._searchTotalByTitleAndBody(tm,"date", dt,dte);
-			
-				//System.out.println("postc="+postc);
-				blogc = post._searchTotalAndUnique(tm, "date", dt, dte, "blogsite_id");
-				bloggerc = post._searchTotalAndUnique(tm, "date", dt, dte, "blogger");//post._searchTotalAndUniqueBlogger(tm,"date", dt,dte,"blogger");
-			
-				postmentioned += (Integer.parseInt(postc));
-				blogmentioned += (Integer.parseInt(blogc));
-				bloggermentioned += (Integer.parseInt(bloggerc));
-			
-				//postm   = post._searchByTitleAndBodyTotal(tm,"date",dt,dte);
-			}
-			
-			JSONObject cont = new JSONObject();
-			
-			cont.put("key", tm);
-			cont.put("id", tmid);
-			cont.put("frequency", frequency);
-			cont.put("postcount", postc);
-			cont.put("blogcount", blogc);
-			cont.put("bloggercount", bloggerc);
-			cont.put("blogsite_id", blogid);
-			cont.put("leadingblogger", leadingblogger);
-			cont.put("language", language);
-			cont.put("location", location);
-			
-			if (keys.has(tm)) {
-				String frequ = keys.get(tm).toString();
-				String pos = positions.get(tm).toString();
-				int fr1 = Integer.parseInt(frequency);
-				int fr2 = Integer.parseInt(frequ);
-			
-				cont.put("key", tm);
-				cont.put("frequency", (fr1 + fr2));
-				topterms.put(Integer.parseInt(pos), cont);
-			} else {
-				cont.put("key", tm);
-				cont.put("frequency", frequency);
-				keys.put(tm, frequency);
-				positions.put(tm, termsposition);
-				topterms.put(cont);
-				termscount.put(p, tm);
-			} */
-			/*
-			if(!keys.has(tm)){
-				keys.put(tm,tm);
-				topterms.put(cont);
-				termscount.put(p, tm);
-			}
-			*/
-			/* 	}
-			}  */
-
-			/* if (termscount.length() > 0) {
-				for (int n = 0; n < 1; n++) {
-					int b = 0;
-					JSONObject postyear = new JSONObject();
-					for (int y = ystint; y <= yendint; y++) {
-						String dtu = y + "-01-01";
-						String dtue = y + "-12-31";
-						if (b == 0) {
-							dtu = dt;
-						} else if (b == yendint) {
-							dtue = dte;
-						}
-			
-						String totu = post._searchTotalByTitleAndBody(mostactiveterm, "date", dtu, dtue);//term._searchRangeTotal("date",dtu, dtue,termscount.get(n).toString());						   
-			
-						System.out.println(mostactiveterm + ":TM:" + dtu + "," + dtue + "=" + totu);
-			
-						if (!years.has(y + "")) {
-							years.put(y + "", y);
-							yearsarray.put(b, y);
-							b++;
-						}
-			
-						postyear.put(y + "", totu);
-					}
-					termsyears.put(termscount.get(n).toString(), postyear);
-				}
-			} */
-
-			//---------------///
 			String terms = null;
 			ArrayList<HashMap<String, Integer>> termsJson = new ArrayList<HashMap<String, Integer>>();
 			ArrayList<HashMap<String, Integer>> termsJson1 = new ArrayList<HashMap<String, Integer>>();
 			String mosttermOccurence = null;
 			JSONObject post_id_pair = new JSONObject();
 			JSONObject post_id_post_pair = new JSONObject();
-			/* if (null == session.getAttribute(ids + "--getkeyworddashboard")) {
-				//WHAT TO DO IF NO KEY WORDS
-				Object dashboardWordCloudObject = "NO KEYWORDS";
-				terms = dashboardWordCloudObject.toString();
-				response.sendRedirect("dashboard.jsp?tid="+tid);
-			} else { */
-				/* Object dashboardWordCloudObject = (null == session.getAttribute(ids + "--getkeyworddashboard"))
-						? ""
-						: session.getAttribute(ids + "--getkeyworddashboard");
-				JSONObject o = new JSONObject(dashboardWordCloudObject.toString());
-				JSONArray out_ = new JSONArray();
-
-				//HashMap<String, String> post_id_pair = new HashMap<String, String>();
-				/* String terms = dashboardWordCloudObject.toString().replace("{","[").replace("}","]").replace("),","-").replace("(","").replace(",",":").replace("-",",").replace(")","").replace("'","").replaceAll("[0-9]", "").replace(":", ""); */
-				/* out_ = (JSONArray) o.get("output");
-				//JSONObject pair = o.get("post_id_term_pair");
-				//ObjectMapper oMapper = new ObjectMapper();
-
-				//Map<String, String> post_id_pair = (Map<String, String>) o.get("post_id_term_pair");
-				post_id_pair = (JSONObject) o.get("post_id_term_pair");
-				post_id_post_pair = (JSONObject) o.get("post_id_post");  */
-
-				/* for(int i = 0; i < 1; i++){
-					System.out.println("key--"+iter.next());
-					System.out.println("pair--"+post_id_post_pair.get(iter.next()));
-				}  */
+			
 				JSONArray out_ = new JSONArray();
 				ArrayList response_terms = DbConnection.query("select terms from tracker_keyword where tid = " + tid);
 				ArrayList res = (ArrayList)response_terms.get(0);
-				//System.out.println("terms_result" + res.get(0));
-				
 				
 				ArrayList response_terms1 = DbConnection.query("select keyword_trend from tracker_keyword where tid = " + tid);
 				ArrayList res1 = (ArrayList)response_terms1.get(0);
-				//System.out.println("uchuehcuhcuhcuhcuhucehuhduhduhu");
-			//System.out.println("trend_resulty" + res1.get(0));
-				//System.out.println("uchuehcuhcuhcuhcuhucehuhduhduhu");
 				
 				String[] termsSplit1 = res1.get(0).toString().split("}, '");
-				//System.out.println("wwwwwwwwwwww");
-				//System.out.println("trend_resulty" + termsSplit1);
-				//System.out.println("trend_resulty" + termsSplit1.length);
-				//System.out.println("wwwwwwwwwwwwww");
+				
 				HashMap<String, String> map1 = new HashMap<String, String>();
 				for (int i = 0; i < termsSplit1.length; i++) {
-					
-					//System.out.println(termsSplit1[i]);
-					
+										
 					
 					String[] split1 = termsSplit1[i].split("[{]");
 					String date_details = "";
 					String term1_ = "";
 					
 					if(i == 0){
-						
-						//System.out.println("sweetererer boyyy");
-						//System.out.println(split1[2]);
 						 term1_ = split1[1].replace("\'", "").replace(":", "").trim();
-						 //System.out.println("sweet boyyy");
-						 //System.out.println(term1_);
 						date_details = split1[2];
-						
 					}else{
-						
-						//System.out.println("sweetererer boyyy");
-						//System.out.println(split1[1]);
 						 term1_ = split1[0].replace("\'", "").replace(":", "").trim();
-						 //System.out.println("sweet boyyy");
-						 //System.out.println(term1_);
 						date_details = split1[1];
 						
 					}
-					
-					
-					
-					
 					
 					map1.put(term1_, date_details);
 					
 		
 				}
-					//System.out.println("FINALLLLL");
 					for (Map.Entry<String, String> entry : map1.entrySet()) {
-					    //System.out.println(entry.getKey() + " = " + entry.getValue());
+
 					}
-					//System.out.println("FINALLLLL");
-					
-				//JSONObject finalres = new JSONObject(res.get(0).toString());
-				//HashMap<String, String> pair = new HashMap<String, String>(post_id_pair)
-				/* terms = out_.toString().replace("\'", "").replace("{", "").replace("}", "").replace("),", "-")
-						.replace("(", "").replace(",", ":").replace("-", ",").replace(")", "").replace("'", ""); */
-				//System.out.println("before" + out_.toString());
-				//System.out.println("terms" + terms);
-				//System.out.println("pair--" + post_id_pair.length());
+
+
 				String[] termsSplit = res.get(0).toString().replace("\'", "").replace("{", "").replace("}", "").split(",");
-				System.out.println("working on it"+Arrays.toString(termsSplit));
+
 				for (int i = 0; i < termsSplit.length; i++) {
 					if (i == 0) {
 						String[] split = termsSplit[i].split(":");
 						String term_ = split[0].replace("\"", "").trim();
 						mosttermOccurence = split[1].trim();
 						mostactiveterm = term_;
-						//System.out.println(term_ + mosttermOccurence);
+
 					}
 					
 					String[] split = termsSplit[i].split(":");
 					String term_ = split[0].replace("\"", "").trim();
 					
-					//System.out.println(split[1]);
-					//System.out.println(term_ );
-					
 					int termOccurence = Integer.parseInt(split[1].trim());
 					HashMap<String, Integer> map = new HashMap<String, Integer>();
 					map.put(term_, termOccurence);
 					termsJson.add(map);
-					//System.out.println(term_ + termOccurence);
+
 				}
-				//System.out.println("session collected -" + mostactiveterm);
-				//var terms = <%-- "<%=dashboardWordCloudObject.toString()--%
-				//var new_dd = terms.replace('[','{').replace(']','}').replace(/\),/g,'-').replace(/\(/g,'').replace(/,/g,':').replace(/-/g,',').replace(/\)/g,'').replace(/'/g,"");
-				//var newjson = new_dd.replace(/\s+/g,'').replace(/{/g,'{"').replace(/:/g,'":"').replace(/,/g,'","').replace(/}/g,'"}')
-				//var jsondata = JSON.parse(newjson)
+
 
 				KeywordTrend1 KWT = new KeywordTrend1();
 				Clustering c = new Clustering();
 				String m = "\"" + mostactiveterm + "\"";
-				System.out.println("m--" + m);
 				String top_location = KWT
 						.aggregation(m, ids, dt, dte, "blogposts", "location", "desc", "bucket_highest")
 						.split("___")[0].toUpperCase();
@@ -643,15 +389,9 @@
 				String post_mentioned = KWT.getPostsMentioned(m, ids, dt, dte, "blogposts");
 
 				String t = "__TERMS__KEYWORD__" + m;
-				System.out.println("date range---" + dt + "," + dte);
-				
 				
 				JSONObject termOccurenceInPost = KWT.getBloggerTerms( mostactiveterm,  dt,  dte,  ids,  500);
 				JSONArray occurenceData = termOccurenceInPost.getJSONArray("data");
-
-				//List<JSONObject> p = c.getPosts(ids, dt, dte, t, "blogposts");
-				//System.out.println("keysss"+post_id_pair.keySet());
-				//System.out.println("length of a---rray ---" + occurenceData.get(0));
 %>
 
 
@@ -997,13 +737,7 @@
 							<%-- <script> loadKeywordDashboard(null, "<%=ids%>"); </script> --%>
 
 							<%
-								} /* else {
-																																																																																																														String dselected = "";
-																																																																																																														} */
-
-											//System.out.println(termsJson);
-											//Iterator<String> kys = termsJson.keys();
-											//String dselected = "abloggerselected";
+								}
 											for (int i = 0; i < termsJson.size(); i++) {
 												if (i == 0) {
 													String dselected = "abloggerselected thanks";
@@ -1014,7 +748,6 @@
 													String terms_id = "1";
 													mostactiveterm = tm;
 													activew = "thanks";
-													//selectedkeycount = term.getTermOcuurence(tm, dt, dte);
 							%>
 							<a name="<%=tm %>" value=" <%=v%>"
 								class="topics topics1 btn btn-primary form-control select-term bloggerinactive mb20 <%=dselected%>  <%=activew%>  size-<%=size%>"
@@ -1041,28 +774,8 @@
 							<%
 								}
 											}
-											/* k++;
-												}
-														} */
-											/* 	}
-											  }
-											}	 */
-
-											/* Integer blog_mentioned = post._getBlogOrPostMentioned("blogsite_id", mostactiveterm, dt, dte, ids);
-											System.out.println(dt + dte + ids);
 											
-											try {
-												top_location = post._getMostLocation(mostactiveterm, dt, dte, ids);
-												top_location =(null == top_location || "" == top_location) ? "NOT AVAILABLE" : top_location;
-											
-											} catch (Exception e) {
-											
-											}
-											top_location =(null == top_location || "" == top_location) ? "NOT AVAILABLE" : top_location; */
-											/* Integer post_mentioned=post._getBlogOrPostMentioned("post","care",dt, dte,ids); */
 							%>
-							<!-- BY SEUN--ENDING -->
-
 						</div>
 					</div>
 				</div>
@@ -1085,14 +798,10 @@
 							<div id="main-chart">
 								<div id="chart-container">
 									<div class="chart-container">
-										<!-- <div class="chart" id="d3-line-basic"></div>  -->
-
 										<div id="line_graph_loader" class="hidden">
 											<img style='position: absolute; top: 50%; left: 50%;'
 												src='images/loading.gif' />
 										</div>
-
-
 										<div class="chart line_graph" id="chart"></div>
 									</div>
 								</div>
@@ -1115,7 +824,6 @@
 								<h6 class="card-title mb0">Keyword Count</h6>
 
 								<%
-									//System.out.println(keyword_count);
 								%>
 								<h2 class="mb0 bold-text keyword-count"><%=(null == mosttermOccurence)
 								? "0"
@@ -1137,7 +845,6 @@
 
 								<h3 class="mb0 bold-text top-location"><%=(null == top_location || "" == top_location) ? "NOT AVAILABLE" : top_location%>
 								</h3>
-								<!-- <small class="text-success">+5% from <b>Last Week</b></small> -->
 							</div>
 
 
@@ -2536,20 +2243,7 @@ $(document).ready(function() {
     	 }else{
     		 console.log("no active selection");
     	 }
-    	
-    	
-    	
-    	
-    	
-    	
-    	
-    	
-    	
-    	
-    	
-    	
-
-    	
+    		
     	
     }
     
