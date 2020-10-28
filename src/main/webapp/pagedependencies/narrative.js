@@ -108,7 +108,6 @@ $('.narrative_text_input').keydown(function(e) {
 					success: function(response)
 					{  
 						$("#narrative_posts_"+entity).html(response)
-						//$("#narrative_posts_"+entity).html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />");
 						var img = $('.new_narrative_image');
 					    for(i=0; i<img.length; i++){
 					    	var id = img[i].id;
@@ -135,7 +134,7 @@ $('#searchBox').keydown(function(e) {
 	
 	if( key == 8 ){
     	//backspace pressed
-		if($('#searchBox').val() == ''){
+		if($('#searchBox').val() == ""){
 			$('#searchBox').val("")
 			$('.current_narrative_tree').removeClass('hidden');
 			$('#current_narrative_loader').addClass('hidden');
@@ -170,6 +169,7 @@ $('#searchBox').keydown(function(e) {
 				success: function(response)
 				{   
 					$('#current_narrative_loader').addClass('hidden');
+					$("#search_narrative_tree").removeClass('hidden');
 					$("#search_narrative_tree").html(response);
 					var img = $('.new_search_image');
 				    for(i=0; i<img.length; i++){
