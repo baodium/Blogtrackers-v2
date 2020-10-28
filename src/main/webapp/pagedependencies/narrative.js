@@ -134,7 +134,7 @@ $('#searchBox').keydown(function(e) {
 	
 	if( key == 8 ){
     	//backspace pressed
-		if($('#searchBox').val() == ''){
+		if($('#searchBox').val() == ""){
 			$('#searchBox').val("")
 			$('.current_narrative_tree').removeClass('hidden');
 			$('#current_narrative_loader').addClass('hidden');
@@ -169,6 +169,7 @@ $('#searchBox').keydown(function(e) {
 				success: function(response)
 				{   
 					$('#current_narrative_loader').addClass('hidden');
+					$("#search_narrative_tree").removeClass('hidden');
 					$("#search_narrative_tree").html(response);
 					
 				}
