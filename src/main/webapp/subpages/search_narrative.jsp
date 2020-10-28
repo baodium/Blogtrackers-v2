@@ -10,6 +10,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@page import="java.time.LocalDateTime"%>
+<%@page import="java.time.LocalDate"%>
+<%@page import="java.time.format.DateTimeFormatter"%>
 <%@page import="java.net.URI"%>
 
 
@@ -32,17 +34,23 @@ if(action.toString().equals("search_narrative")){
 	%>
 	
 	<!-- Narrative Tree -->
-        <ul id="narrativeTree">
+	<link rel="stylesheet" href="assets/presentation/narrative-analysis.css"/>
+     <script src="assets/behavior/narrative-analysis.js"></script>
+     
+     <ul id="narrativeTree">
         <%
         for(Narrative.Entity x: res){
         	//System.out.println(res);
         	entity_string = x.toString().split("-------")[0];
         %>
-            <li class="level">
-                <div class="keyword">
+            <li class="level level1">
+                <div class="keyword keyword1">
                     <div class="collapseIcon"></div>
                     <p class="text"><%= entity_string%></p>
                 </div>
+                
+                <!-- Getting Narratives for each entities-->
+                <ul id="narrative_list_<%=entity %>" class="narratives">
                 
                 <%
                 JSONArray narratives = new JSONArray(x.toString().split("-------")[1]);
@@ -56,7 +64,7 @@ if(action.toString().equals("search_narrative")){
                 	
                 	JSONArray blogpost_ids = new JSONArray(narr.get("blogpost_ids").toString());
                 %>
-                <ul class="narratives">
+                <!-- <ul class="narratives"> -->
                     <li class="narrative">
                         <div class="topSection">
                             <div class="connectorBox">
@@ -69,7 +77,7 @@ if(action.toString().equals("search_narrative")){
                                 <div class="dot"></div>
                             </div>
                             <div class="narrativeTextWrapper">
-                                <p class="narrativeText"><%=narrative %></p>
+                                <p class="narrativeText narrative_text_input"><%=narrative %></p>
                                 <p class="counter"><span class="number">2</span>Posts</p>
                             </div>
                         </div>
@@ -79,17 +87,52 @@ if(action.toString().equals("search_narrative")){
                             </div>
                             <div class="posts">
                             		 <%
+                            		 String [] blogposts_data = blogpost_ids.toString().split(",");
+                                     Object permalink = null;
+                                     Object date = null;
+                     				Object title = null;
+                     				Object post_detail = null;
+                     				String domain = null;
                             		for(int j = 0; j < blogpost_ids.length(); j++){
+                            			System.out.println("fffffffffffffff"+blogpost_ids.get(j));
+                            			String bp_id = blogpost_ids.get(j).toString();
                             			if(j == 10){
                             				break;
                             			}
+                            			try{
+                            				ArrayList permalink_data = db.queryJSON("SELECT permalink, title, date, post from blogposts where blogpost_id = " + bp_id);
+                            				if(permalink_data.size() > 0){
+                            					JSONObject permalink_data_index = new JSONObject(permalink_data.get(0).toString());
+                                				permalink = permalink_data_index.getJSONObject("_source").get("permalink");
+                                				
+                                				date = permalink_data_index.getJSONObject("_source").get("date");
+                                				LocalDate datee = LocalDate.parse(date.toString().split(" ")[0]);
+        										DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");
+        										date = dtf.format(datee);
+                                				
+                                				title = permalink_data_index.getJSONObject("_source").get("title");
+                                				post_detail = permalink_data_index.getJSONObject("_source").get("post");
+                                				URI uri = new URI(permalink.toString());
+                                				domain = uri.getHost();
+                            				}
+                            				
+                            				}catch(Exception e){
+                            					System.out.println(e);
+                            				}
                             		%> 
-                                    <div class="post">
-                                        <img class="postImage" src="assets/images/posts/1.jpg">
-                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus Awaken to the Coronavirus</h2>
-                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
-                                        <p class="postSource">www.cnn.net</p>
-                                    </div> 
+                                    <div post_id=<%=bp_id %> class="post missingImage post_id_<%=bp_id%>">
+                                         <!-- <img class="postImage" src="assets/images/posts/1.jpg"> -->
+                                        <div class="<%=bp_id%>">
+                                        	<input type="hidden" class="post-image new_search_image" id="<%=bp_id%>" name="pic" value="<%=permalink.toString()%>">
+                                        </div> 
+                                        
+                                        <h2 id="post_title_<%=bp_id %>" class="postTitle"><%=title.toString() %></h2>
+                                        <p id="post_date_<%=bp_id %>" class="postDate"><%=date.toString()%></p>
+                                        <p id="post_source_<%=bp_id %>" post_permalink="<%=permalink.toString()%>" class="postSource"><%=domain %></p>
+                                        <input id="post_detail_<%=bp_id %>" type="hidden" value="<%=post_detail.toString() %>" >
+                                        <%-- <input type="hidden" class="post-image" id="<%=bp_id%>" name="pic" value="<%=permalink.toString()%>"> --%>
+                                        <%-- <p class="postSource"><%=bp_id %></p> --%>
+                                    </div>
                                      <%} %> 
                             </div>
                         </div>
@@ -132,6 +175,9 @@ if(action.toString().equals("search_narrative")){
             </li>  
             <%} %>  
         </ul>
+     
+        
+        
 	
 	
 <% } %>

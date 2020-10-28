@@ -607,7 +607,9 @@
                             	System.out.println(e);
                             }
                              */
-                            
+                             
+                             System.out.println("ddddddddddd"+blogpost_ids);
+                             
                              String [] blogposts_data = blogpost_ids.toString().split(",");
                              Object permalink = null;
                              Object date = null;
