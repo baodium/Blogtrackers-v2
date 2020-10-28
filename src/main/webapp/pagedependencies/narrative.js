@@ -88,7 +88,7 @@ $('.narrative_text_input').keydown(function(e) {
 		if(search_key === ""){
 			alert("narrarive cannot be emoty!")
 		}else{
-			
+			 $("#narrative_posts_"+entity).css("height", "300px");
 			 $("#narrative_posts_"+entity).html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />");
 			    
 			    $.ajax({
@@ -108,6 +108,7 @@ $('.narrative_text_input').keydown(function(e) {
 					success: function(response)
 					{  
 						$("#narrative_posts_"+entity).html(response)
+						//$("#narrative_posts_"+entity).html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />");
 						var img = $('.new_narrative_image');
 					    for(i=0; i<img.length; i++){
 					    	var id = img[i].id;

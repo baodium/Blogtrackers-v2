@@ -583,7 +583,8 @@
                             <div class="connectorBox">
                                 <div class="connector"></div>
                             </div>
-                            <div id="narrative_posts_<%=entity %>" style="overflow-y:hidden;" class="posts">
+                            
+                            <div id="narrative_posts_<%=entity %>" class="posts">
                             
                              <%
                             //Getting posts related to narrative
