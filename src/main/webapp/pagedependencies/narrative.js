@@ -170,6 +170,12 @@ $('#searchBox').keydown(function(e) {
 				{   
 					$('#current_narrative_loader').addClass('hidden');
 					$("#search_narrative_tree").html(response);
+					var img = $('.new_search_image');
+				    for(i=0; i<img.length; i++){
+				    	var id = img[i].id;
+						var url = img[i].value;
+						getImage(id,url);
+				    }
 					
 				}
 			});

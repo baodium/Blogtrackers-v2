@@ -91,6 +91,31 @@ document.addEventListener("DOMContentLoaded", function() {
             	
             });
             
+            //START Keyword click delegate
+            $("body").delegate(".keyword1", "click", function() {
+            	
+            	if ($(this).parent('li').hasClass("uncollapse")){
+            		$(this).parent('li').removeClass("uncollapse");
+        		} else {
+        			$(this).parent('li').addClass("uncollapse");
+        		}
+            	
+            });
+            //END Keyword click delegate
+            
+            //START Narrative click delegate
+	        $("body").delegate(".narrative_text_input", "click", function() {
+	        	
+	        	if ($(this).parent('div').parent('div').parent('li').hasClass("open")){
+	        		$(this).parent('div').parent('div').parent('li').removeClass("open");
+	    		} else {
+	    			$(this).parent('div').parent('div').parent('li').addClass("open");
+	    		}
+	        	
+	        });
+	        //END Narrative click delegate
+            
+            
 
         }
         
