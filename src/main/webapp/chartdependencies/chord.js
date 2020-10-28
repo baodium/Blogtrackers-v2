@@ -77,7 +77,7 @@ function drawChord(container, options, matrix, array) {
     // initialize the chord configuration variables
     var config = {
         width: 500,
-        height: 400,
+        height: 440,
         rotation: 0,
         textgap: 40,
         colors: ["#C4C4C4", "#69B40F", "#EC1D25", "#C8125C", "#008FC8", "#10218B", "#134B24", "#737373", "#ffff00", "#ff79c5"]
@@ -152,6 +152,7 @@ var container = d3Container.append("svg:svg");
 var svg = container
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
+    .style("overflow", "visible")
     .call(responsivefy)
     .append("svg:g")
     .attr("transform", "translate(" + (margin.left + width / 2) + "," + (margin.top + height / 2) + ")");
