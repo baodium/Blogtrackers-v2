@@ -42,6 +42,7 @@
 		ArrayList<?> userinfo = null;
 		String profileimage = "";
 		String username = "";
+		
 		String name = "";
 		String phone = "";
 		String date_modified = "";
@@ -484,10 +485,14 @@
 			
 			///start clusering check
 			ArrayList cluster_details = DbConnection.query("select status, status_percentage from clusters where tid = " + tid);
-			ArrayList cluster_res = (ArrayList)cluster_details.get(0);
-			
-			String cluster_status = cluster_res.get(0).toString();
-			String cluster_status_percentage = cluster_res.get(1).toString();
+			ArrayList cluster_res = new ArrayList<>();
+			String cluster_status = "";
+			String cluster_status_percentage = "";
+			if(cluster_details.size() > 0){
+				cluster_res = (ArrayList)cluster_details.get(0);
+				cluster_status = cluster_res.get(0).toString();
+				cluster_status_percentage = cluster_res.get(1).toString();
+			}
 			
 			JSONObject cluster_final_result = new JSONObject();
 			cluster_final_result.put("status_percentage",status_percentage);
@@ -1668,6 +1673,7 @@ path.chord {
 				<div class="card card-style mt20">
 					<div class="card-body  p5 pt10 pb10">
 
+
 						<div style="min-height: 420px;">
 							<div>
 								<p class="text-primary p15 pb5 pt0">
@@ -2627,7 +2633,8 @@ function update(source) {
 					
 					
 		
-		   var colors = d3v4.scaleOrdinal().range(["#6b085e", "#e50471", "#0571a0", "#038a2c", "#6b8a03", "#a02f05", "#b770e1", "#fc8f82 ", "#011aa7", "#a78901"]);
+		   //var colors = d3v4.scaleOrdinal().range(["#6b085e", "#e50471", "#0571a0", "#038a2c", "#6b8a03", "#a02f05", "#b770e1", "#fc8f82 ", "#011aa7", "#a78901"]);
+		   var colors = d3v4.scaleOrdinal().range(["#E377C2","#8C564B", "#9467BD", "#D62728", "#2CA02C", "#FF7F0E", "#1F77B4", "#7F7F7F","#17B890", "#D35269"]);
 		   // Add SVG element
 		   var container = d3Container.append("svg");
 		   // Add SVG group
@@ -4176,6 +4183,7 @@ $(function () {
 	  $(function () {
 	
 	 <%String pos = "";
+	 
 					String neg = "";
 					for (int i = 0; i < getPositiveEmotion.size(); i++) {
 						ArrayList<?> posi = (ArrayList<?>) getPositiveEmotion.get(i);
@@ -4199,10 +4207,10 @@ $(function () {
 
 					}%>
       sentimentdata = [
-            {label:"Negative", value:<%=Integer.parseInt(pos)%>},
-            {label:"Positive", value:<%=Integer.parseInt(neg)%>}
+            {label:"Negative", value:<%=Integer.parseInt(neg)%>},
+            {label:"Positive", value:<%=Integer.parseInt(pos)%>}
         ];
-      
+      console.log("here---",sentimentdata);
       pieChartAnimation("#sentimentpiechart",180,sentimentdata);
 	  });
         
@@ -5069,7 +5077,15 @@ data = {
 						for (int m = 0; m < bloggerPostFrequency.size(); m++) {
 							ArrayList<?> bloggerFreq = (ArrayList<?>) bloggerPostFrequency.get(m);
 							String bloggerName = bloggerFreq.get(0).toString();
-							String bloggerPostFreq = bloggerFreq.get(1).toString();%>
+							String bloggerPostFreq="0";
+							try{
+							bloggerPostFreq = (null ==  bloggerFreq.get(1).toString()) ? "0" :  bloggerFreq.get(1).toString();
+							}
+							catch(Exception e){
+								System.out.println(e);
+							}
+							%>
+							
 							{"label":"<%=bloggerName.trim()%>","name":"<%=bloggerName.trim()%>", "size":<%=Integer.parseInt(bloggerPostFreq)%>},
 <%}
 

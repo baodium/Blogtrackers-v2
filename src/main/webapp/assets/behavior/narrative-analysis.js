@@ -53,7 +53,6 @@ document.addEventListener("DOMContentLoaded", function() {
         }
 
         initialize() {
-
             for (let i = 0; i < this.moreButton.length; i++) {
 
                 this.moreButton[i].addEventListener("click", this.morebuttonClickListener.bind(this));
@@ -69,7 +68,7 @@ document.addEventListener("DOMContentLoaded", function() {
             for (let i = 0; i < this.narratives.length; i++) {
 
                 this.narratives[i].addEventListener("click", this.narrativesClickListener.bind(this));
-
+               
             }
 
             for (let i = 0; i < this.posts.length; i++) {
@@ -81,8 +80,46 @@ document.addEventListener("DOMContentLoaded", function() {
             this.moreInfoCloseButton.addEventListener("click", this.moreInfoCloseButtonClickListener.bind(this));
             this.moreInfoModalShadow.addEventListener("click", this.moreInfoModalShadowClickListener.bind(this));
             document.addEventListener("keydown", this.escapeKeyListener.bind(this));
+            
+            $("body").delegate(".narrative_text_test", "click", function() {
+            	
+            	if($("#narrative_pop_"+$(this).attr("count")).hasClass("open")){
+            		$("#narrative_pop_"+$(this).attr("count")).removeClass("open")
+            	}else{
+            		$("#narrative_pop_"+$(this).attr("count")).addClass("open")
+            	}
+            	
+            });
+            
+            //START Keyword click delegate
+            $("body").delegate(".keyword1", "click", function() {
+            	
+            	if ($(this).parent('li').hasClass("uncollapse")){
+            		$(this).parent('li').removeClass("uncollapse");
+        		} else {
+        			$(this).parent('li').addClass("uncollapse");
+        		}
+            	
+            });
+            //END Keyword click delegate
+            
+            //START Narrative click delegate
+	        $("body").delegate(".narrative_text_input", "click", function() {
+	        	
+	        	if ($(this).parent('div').parent('div').parent('li').hasClass("open")){
+	        		$(this).parent('div').parent('div').parent('li').removeClass("open");
+	    		} else {
+	    			$(this).parent('div').parent('div').parent('li').addClass("open");
+	    		}
+	        	
+	        });
+	        //END Narrative click delegate
+            
+            
 
         }
+        
+        
 
         morebuttonClickListener() {
 

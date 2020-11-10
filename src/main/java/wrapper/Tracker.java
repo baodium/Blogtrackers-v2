@@ -536,7 +536,7 @@ String[] bloggs = blogs.replaceAll(", $", "").split(",");
 									"						</button></a>" + 
 									"						<button class='btn stylebuttonnocolor'>"+date+"</button>" + 
 									"						<button class='btn stylebuttonnocolor'>" + 
-									"							<b class='float-left ultra-bold-text'>"+bj.get("num_comments").toString()+" comments</b><i" + 
+									"							<b class='float-left ultra-bold-text'>"+bj.get("num_comments").toString()+" comments </b> &nbsp; <i" + 
 									"								class='far fa-comments float-right blogcontenticon'></i>" + 
 									"						</button>" + 
 									"					</div>" + 
@@ -583,7 +583,7 @@ String[] bloggs = blogs.replaceAll(", $", "").split(",");
 									"						</button>" + 
 									"						<button class='btn stylebuttonnocolor'>"+date+"</button>" + 
 									"						<button class='btn stylebuttonnocolor'>" + 
-									"							<b class='float-left ultra-bold-text'>"+bj.get("num_comments").toString()+" comments</b><i" + 
+									"							<b class='float-left ultra-bold-text'>"+bj.get("num_comments").toString()+" comments </b> &nbsp; <i" + 
 									"								class='far fa-comments float-right blogcontenticon'></i>" + 
 									"						</button>" + 
 									"					</div>" + 

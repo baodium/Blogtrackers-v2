@@ -24,6 +24,7 @@
 			<attribute name="owner.project.facets" value="jst.web"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="C:/Users/Uche/Desktop/lib (1)/lib/annotations-api.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Uche/Desktop/lib (1)/lib/catalina.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Uche/Desktop/lib (1)/lib/catalina-ant.jar"/>
@@ -52,7 +53,6 @@
 	<classpathentry kind="lib" path="C:/Users/Uche/Desktop/lib (1)/lib/mail-1.4.5.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Uche/Desktop/lib (1)/lib/mysql-connector-java-8.0.11.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Uche/Desktop/lib (1)/lib/servlet-api.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Uche/Desktop/lib (1)/lib/src.zip"/>
 	<classpathentry kind="lib" path="C:/Users/Uche/Desktop/lib (1)/lib/tomcat7-websocket.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Uche/Desktop/lib (1)/lib/tomcat-api.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Uche/Desktop/lib (1)/lib/tomcat-coyote.jar"/>
@@ -63,7 +63,5 @@
 	<classpathentry kind="lib" path="C:/Users/Uche/Desktop/lib (1)/lib/tomcat-jdbc.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Uche/Desktop/lib (1)/lib/tomcat-util.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Uche/Desktop/lib (1)/lib/websocket-api.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="C:/Users/Uche/Downloads/json-20200518.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

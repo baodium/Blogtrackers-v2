@@ -10,6 +10,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@page import="java.time.LocalDateTime"%>
+<%@page import="java.time.LocalDate"%>
+<%@page import="java.time.format.DateTimeFormatter"%>
 <%@page import="java.net.URI"%>
 
 <%
@@ -491,11 +493,17 @@
 
 	
 		
+	<!-- Search -->
+        <form id="search">
+            <label for="searchBox">Search Website</label>
+            <input id="searchBox" type="text" placeholder="Search..." autocomplete="off">
+            <input type="hidden" value="<%=tid%>" name="tracker_id" id="tracker_id">
+            <input type="hidden" name="all_blog_ids" id="all_blog_ids" value="<%=ids%>" />
+        </form>
+		
+
 	
-
-
-
-	<ul id="narrativeTree">
+	<ul class="current_narrative_tree" id="narrativeTree">
 	<%
 		for(String entity: slice){
 			if(entity != null){
@@ -511,10 +519,10 @@
                 </div>
                 
                 <!-- Getting Narratives for each entities-->
-                <ul class="narratives">
+                <ul id="narrative_list_<%=entity %>" class="narratives">
                 
                 <%
-                String blogpost_narratives_query = "select n.narrative, group_concat(n.blogpost_id separator ',') blogpost_id_concatenated, count(n.blogpost_id) c " + 
+                String blogpost_narratives_query = "select  COUNT(n.narrative) AS total_narrative_count, n.narrative, group_concat(n.blogpost_id separator ',') blogpost_id_concatenated, count(n.blogpost_id) c " + 
                 		"from tracker_narratives, " +
                 		"json_table(blogpost_narratives," +
                 		  "'$.*.\""+ entity +"\"[*]' columns(" +
@@ -531,6 +539,7 @@
                 ArrayList blogpost_narratives = new ArrayList();
                 try{
                 	blogpost_narratives = db.queryJSON(blogpost_narratives_query);
+                	
                 }catch(Exception e){
                 	System.out.println(e);
                 }
@@ -540,6 +549,7 @@
         			JSONObject narratives_data = new JSONObject(blogpost_narratives.get(i).toString());
         			Object narrative = narratives_data.getJSONObject("_source").get("narrative");
         			Object blogpost_ids = narratives_data.getJSONObject("_source").get("blogpost_id_concatenated");
+        			Object total_narrative_count = narratives_data.getJSONObject("_source").get("total_narrative_count");
         			
         		 String replace = "<span style=background:red;color:#fff>" + entity + "</span>";
         		 if(narrative.toString().toLowerCase().indexOf(entity.toLowerCase()) != -1){
@@ -559,13 +569,21 @@
                                 <div class="connector"></div>
                                 <div class="dot"></div>
                             </div>
-                            <p class="narrativeText"><%=narrative.toString() %></p>
+                            <div class="narrativeTextWrapper">
+                                <div id="editWrapper">
+                                    <textarea entity="<%=entity %>" name="narrativeTextInput" class="narrativeText narrative_text_input"><%=narrative.toString() %></textarea>
+                                    <div id="editControls">
+                                        <button id="editButton"></button>
+                                    </div>
+                                </div>
+                                <p class="counter"><span class="number"><%=total_narrative_count.toString() %></span>Post </p>
+                            </div>
                         </div>
                         <div class="bottomSection">
                             <div class="connectorBox">
                                 <div class="connector"></div>
                             </div>
-                            <div class="posts">
+                            <div id="narrative_posts_<%=entity %>" style="overflow-y:hidden;" class="posts">
                             
                              <%
                             //Getting posts related to narrative
@@ -589,25 +607,49 @@
                             	System.out.println(e);
                             }
                              */
-                            
+                             
+                             //System.out.println("ddddddddddd"+blogpost_ids);
+                             
                              String [] blogposts_data = blogpost_ids.toString().split(",");
-                             Object permalink = null;
-                             Object date = null;
-             				Object title = null;
-             				String domain = null;
-             				int b = 0;
-                    		for(String bp_id : blogposts_data){                              			
+                             List<?> permalink_data = new ArrayList<>();
+                             
+                             int length = blogpost_ids.toString().length();
+                             String post_ids = (blogpost_ids.toString().substring(length - 1).equals(",")) ? blogpost_ids.toString().substring(0,length -1) : blogpost_ids.toString();
+                             try{
+                            	 String query = "SELECT blogpost_id, permalink, title, date, post from blogposts where blogpost_id in ("+post_ids+") and blogsite_id in ("+ids+") order by date desc;";
+                                 permalink_data = db.queryJSON(query);
+                             }catch(Exception e){
+                            	 System.out.println("here");
+                             }
+                             
+                             Object permalink = "";
+                             Object date = "";
+             				Object title = "";
+             				Object post_detail = "";
+             				String domain = "";
+             				String bp_id = "";
+             				/* int b = 0;
+                    		for(String bp_id : blogposts_data){      */       
+                    		for(int b = 0; b < permalink_data.size(); b++){
                     				//Extract blogposts and entities
 									if(b == 10){
 										break;
 									}
                     				try{
-                    				ArrayList permalink_data = db.queryJSON("SELECT permalink, title, date from blogposts where blogpost_id = " + bp_id);
+                    				
                     				if(permalink_data.size() > 0){
-                    					JSONObject permalink_data_index = new JSONObject(permalink_data.get(0).toString());
+                    					JSONObject permalink_data_index = new JSONObject(permalink_data.get(b).toString());
                         				permalink = permalink_data_index.getJSONObject("_source").get("permalink");
+                        				
+                        				bp_id = permalink_data_index.getJSONObject("_source").get("blogpost_id").toString();
+                        				
                         				date = permalink_data_index.getJSONObject("_source").get("date");
+                        				LocalDate datee = LocalDate.parse(date.toString().split(" ")[0]);
+										DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");
+										date = dtf.format(datee);
+                        				
                         				title = permalink_data_index.getJSONObject("_source").get("title");
+                        				post_detail = permalink_data_index.getJSONObject("_source").get("post");
                         				URI uri = new URI(permalink.toString());
                         				domain = uri.getHost();
                     				}
@@ -617,16 +659,22 @@
                     				}
                     				//System.out.println(permalink.toString());
                             %> 
-                                <a href=<%=permalink.toString()%> target="_blank" id="<%=bp_id%>">
-                                    <div class="post">
-                                        <img class="postImage" src="assets/images/posts/1.jpg">
-                                        <h2 class="postTitle"><%=title.toString() %></h2>
-                                        <p class="postDate"><%=date.toString() %></p>
-                                        <p class="postSource"><%=domain %></p>
+                                <%-- <a href=<%=permalink.toString()%> target="_blank" idy="<%=bp_id%>"> --%>
+                                    <div post_id=<%=bp_id %> class="post missingImage post_id_<%=bp_id%>">
+                                         <!-- <img class="postImage" src="assets/images/posts/1.jpg"> -->
+                                        <div class="<%=bp_id%>">
+                                        	<input type="hidden" class="post-image" id="<%=bp_id%>" name="pic" value="<%=permalink.toString()%>">
+                                        </div> 
+                                        
+                                        <h2 id="post_title_<%=bp_id %>" class="postTitle"><%=title.toString() %></h2>
+                                        <p id="post_date_<%=bp_id %>" class="postDate"><%=date.toString()%></p>
+                                        <p id="post_source_<%=bp_id %>" post_permalink="<%=permalink.toString()%>" class="postSource"><%=domain %></p>
+                                        <input id="post_detail_<%=bp_id %>" type="hidden" value="<%=post_detail.toString() %>" >
                                         <%-- <input type="hidden" class="post-image" id="<%=bp_id%>" name="pic" value="<%=permalink.toString()%>"> --%>
                                         <%-- <p class="postSource"><%=bp_id %></p> --%>
                                     </div>
-                                </a>
+                                    
+                               <!--  </a> -->
                                 <!-- <a href="#">
                                     <div class="post">
                                         <img class="postImage" src="assets/images/posts/2.jpg">
@@ -645,11 +693,160 @@
                         </div>
                     </li>
                     <%} %>
+                    <li class="narrative hidden">
+                        <div class="topSection">
+                            <div class="connectorBox">
+                                <div class="connector"></div>
+                            </div>
+                        </div>
+                        <div class="middleSection">
+                            <div class="connectorBox">
+                                <div class="connector"></div>
+                                <div class="dot"></div>
+                            </div>
+                            <div class="narrativeTextWrapper">
+                                <p class="narrativeText">the coronavirus pandemic are crushing demand for new pipeline projects.</p>
+                                <p class="counter"><span class="number">3</span>Posts</p>
+                            </div>
+                        </div>
+                        <div class="bottomSection">
+                            <div class="connectorBox">
+                                <div class="connector"></div>
+                            </div>
+                            <div class="posts">
+                                
+                                    <div class="post">
+                                        <img class="postImage" src="assets/images/posts/38.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                
+                                
+                                    <div class="post">
+                                        <img class="postImage" src="assets/images/posts/39.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                
+                                
+                                    <div class="post">
+                                        <img class="postImage" src="assets/images/posts/40.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    <li class="narrative hidden">
+                        <div class="topSection">
+                            <div class="connectorBox">
+                                <div class="connector"></div>
+                            </div>
+                        </div>
+                        <div class="middleSection">
+                            <div class="connectorBox">
+                                <div class="connector"></div>
+                                <div class="dot"></div>
+                            </div>
+                            <div class="narrativeTextWrapper">
+                                <p class="narrativeText">Last year a mysterious shipment was caught smuggling coronavirus from canada.</p>
+                                <p class="counter"><span class="number">1</span>Posts</p>
+                            </div>
+                        </div>
+                        <div class="bottomSection">
+                            <div class="connectorBox">
+                                <div class="connector"></div>
+                            </div>
+                            <div class="posts">
+                                
+                                    <div class="post">
+                                        <img class="postImage" src="assets/images/posts/41.jpg">
+                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus Awaken to the Coronavirus</h2>
+                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
+                                        <p class="postSource">www.cnn.net</p>
+                                    </div>
+                                
+                            </div>
+                        </div>
+                    </li>
+                    <li id="secondli_<%=entity %>" class="narrative last1 more1">
+                        <div class="topSection">
+                            <div class="connectorBox">
+                                <div class="connector"></div>
+                            </div>
+                        </div>
+                        <div class="middleSection">
+                            <div class="connectorBox">
+                                <div class="connector"></div>
+                                <div class="dot"></div>
+                            </div>
+                            <div class="narrativeTextWrapper">
+                                <p id="load_more_<%=entity %>" total_narrative_count="<%=entity %>" entity="<%=entity %>" level="1" class="narrativeText load_more_entity">More...</p>
+                            </div>
+                        </div>
+                    </li>
                 </ul>
             </li>
             <%}}%>
+            
         </ul>
+        
+        <div id="current_narrative_loader" class="hidden">
+			<img style='position: absolute; top: 50%; left: 50%;'
+				src='images/loading.gif' />
+		</div>
+        
+       	<div id="search_narrative_tree"></div>
 	</div>
+	
+	<!-- Notifications -->
+        <section id="notifications">
+            <p id="notificationsWrapper">
+                <span id="label">Click a narrative to show its posts.</span>
+            </p>
+        </section>
+
+        <!-- More Info Modal -->
+        <section id="moreInfoModal" class="">
+            <div id="shadow"></div>
+            <div id="messageBox">
+                <button id="closeButton"></button>
+                <div id="messageContent">
+                    <img class="modal_pic postImageModal hidden" src="assets/images/posts/37.jpg">
+                    <div class="detailsWrapper">
+                        <p id="title"><span class="modal_title" id="text">Pentagon watchdog tapped to lead committee overseeing $2 trillion coronavirus package</span></p>
+                        <ul id="details">
+                            <li id="Source">
+                                <div id="icon" class="detailsIcon"></div>
+                                <p id="label">Source : </p>
+                                <a class="modal_link" href="https://www.cdc.gov/" target="_blank">
+                                    <p class="modal_source" id="value">www.cnet.net</p>
+                                </a>
+                            </li>
+                            <li id="published">
+                                <div id="icon" class="detailsIcon"></div>
+                                <p id="label">Published : </p>
+                                <p class="modal_detail" id="value">04/03/2020</p>
+                            </li>
+                            <li id="location">
+                                <div id="icon" class="detailsIcon"></div>
+                                <p id="label">Location : </p>
+                                <p id="value">China</p>
+                            </li>
+                        </ul>
+                        <p class="modal_detail" id="description">The nation's top <span class="highlighter">government watchdogs on Monday appointed Glenn Fine</span>, the acting inspector general for the Pentagon, to lead the newly created committee that oversees implementation of the $2 trillion coronavirus relief bill signed by President Donald Trump last week.<br><br>
+
+                            Fine will lead a panel of fellow inspectors general, dubbed the Pandemic Response Accountability Committee, and command an $80 million budget meant to <span class="highlighter">"promote transparency and support oversight" of the massive disaster response legislation. His appointment was made by a fellow committee of inspectors general</span>, assigned by the new law to pick a chairman of the committee.<br><br>
+                            
+                            Fine, who served as Justice Department inspector general from 2000 to 2011 — spanning parts of the Clinton, Bush and Obama presidencies — will join nine other inspectors general on the new committee. They include the IGs of the Departments of Defense, Education, Health and Human Services, Homeland Security, Justice, Labor, and the Treasury; the inspector general of the Small Business Administration; and the Treasury inspector general for Tax Administration.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
 
 
 	<!-- <footer class="footer">
@@ -664,6 +861,7 @@
  </script>
 	<script src="assets/js/generic.js">
  </script>
+
 	<script src="assets/vendors/bootstrap-daterangepicker/moment.js"></script>
 	<script
 		src="assets/vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
@@ -684,8 +882,9 @@
 		src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.print.min.js"></script>
 
 	<script src="pagedependencies/baseurl.js?v=3"></script>
+	<script src="pagedependencies/narrative.js?v=09"></script>
 	<script src="pagedependencies/sentiment.js?v=140"></script>
-
+ 
 	<script>
  $(document).ready(function() {
 	 
@@ -904,113 +1103,7 @@
 	<script type="text/javascript" src="assets/vendors/d3/d3.min.js"></script>
 	<script src="assets/vendors/wordcloud/d3.layout.cloud.js"></script>
 	<script type="text/javascript" src="assets/vendors/d3/d3_tooltip.js"></script>
-	<script src="assets/vendors/radarchart/radarChart.js"></script>
-	<script>
-$(function () {
-    
-
-    //////////////////////////////////////////////////////////////
-    //////////////////////// Set-Up //////////////////////////////
-    //////////////////////////////////////////////////////////////
-
-    var margin = {top: 100, right: 100, bottom: 100, left: 100},
-      width = Math.min(450, window.innerWidth - 10) - margin.left - margin.right,
-      height = Math.min(width, window.innerHeight - margin.top - margin.bottom - 20);
-
-
-
-    //////////////////////////////////////////////////////////////
-    ////////////////////////// Data //////////////////////////////
-    //////////////////////////////////////////////////////////////
-
-
-    //////////////////////////////////////////////////////////////
-    //////////////////// Draw the Chart //////////////////////////
-    //////////////////////////////////////////////////////////////
-
-    var color = d3.scale.ordinal()
-      .range(["#0080CC","#0080CC","#0080CC"]);
-
-    var radarChartOptions1 = {
-      w: width,
-      h: height,
-      margin: margin,
-      maxValue: 0.5,
-      levels: 5,
-      roundStrokes: true,
-      color: color
-    };
-    var radarChartOptions2 = {
-      w: width,
-      h: height,
-      margin: margin,
-      maxValue: 0.5,
-      levels: 5,
-      roundStrokes: true,
-      color: color
-    };
-    var radarChartOptions3 = {
-      w: width,
-      h: height,
-      margin: margin,
-      maxValue: 0.5,
-      levels: 5,
-      roundStrokes: true,
-      color: color
-    };
-    var radarChartOptions4 = {
-      w: width,
-      h: height,
-      margin: margin,
-      maxValue: 0.5,
-      levels: 5,
-      roundStrokes: true,
-      color: color
-    };
-    var radarChartOptions5 = {
-      w: width,
-      h: height,
-      margin: margin,
-      maxValue: 0.5,
-      levels: 5,
-      roundStrokes: true,
-      color: color
-    };
-    
-    var radarChartOptions6 = {
-    	      w: width,
-    	      h: height,
-    	      margin: margin,
-    	      maxValue: 0.5,
-    	      levels: 5,
-    	      roundStrokes: true,
-    	      color: color
-    	    };
-    
-    var radarChartOptions7 = {
-  	      w: width,
-  	      h: height,
-  	      margin: margin,
-  	      maxValue: 0.5,
-  	      levels: 5,
-  	      roundStrokes: true,
-  	      color: color
-  	    };
- 
-    //Call function to draw the Radar chart
-
-      RadarChart(".personalcontent", personalcontent, radarChartOptions1);
-      RadarChart(".timeorientation", timeorientation, radarChartOptions2);
-      RadarChart(".coredriveandneed", coredriveandneed, radarChartOptions3);
-      RadarChart(".cognitiveprocess", cognitiveprocess, radarChartOptions4);
-      RadarChart(".summaryvariable", summaryvariable, radarChartOptions5);
-      RadarChart(".sentimentemotion", sentimentemotion, radarChartOptions6);
-      RadarChart(".toxicity", toxicity, radarChartOptions7);
-
-});
-  </script>
-	<script>
- </script>
+	
 	<script>
 $(".option-only").on("change",function(e){
 	//console.log("only changed ");

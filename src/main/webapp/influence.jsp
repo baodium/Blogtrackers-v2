@@ -1021,7 +1021,7 @@ authoryears.put(mostactiveblogger,postyear);
 											</button>
 											<button class="btn stylebuttonnocolor nocursor"><%=date%></button>
 											<button class="btn stylebuttonnocolor nocursor">
-												<b class="float-left ultra-bold-text"><%=tobj.get("num_comments")%> comments</b><i
+												<b class="float-left ultra-bold-text"><%=tobj.get("num_comments")%> comments</b> &nbsp; <i
 													class="far fa-comments float-right blogcontenticon"></i>
 											</button>
 										</div>
@@ -1577,7 +1577,7 @@ function color1(i, id, name){
     	    		                           	   var d2 = 	  yr + "-12-31";
     	    		                           	   
     	    		                           	var va = $('.selectionactive').attr('name');
-    	    		                           	   alert(va);
+    	    		                           	   
     	    		                           	loadTerms(va,$("#blogid").val(),d1,d2);
     	    		                                
     	    		                              });
