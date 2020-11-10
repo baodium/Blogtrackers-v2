@@ -4207,10 +4207,10 @@ $(function () {
 
 					}%>
       sentimentdata = [
-            {label:"Negative", value:<%=Integer.parseInt(pos)%>},
-            {label:"Positive", value:<%=Integer.parseInt(neg)%>}
+            {label:"Negative", value:<%=Integer.parseInt(neg)%>},
+            {label:"Positive", value:<%=Integer.parseInt(pos)%>}
         ];
-      
+      console.log("here---",sentimentdata);
       pieChartAnimation("#sentimentpiechart",180,sentimentdata);
 	  });
         

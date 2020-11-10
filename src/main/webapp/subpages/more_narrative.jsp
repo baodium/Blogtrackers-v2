@@ -264,30 +264,36 @@ if(action.toString().equals("load_more_narrative")){
 	
 <% }else if(action.toString().equals("search_narrative_post")){ 
 	
-	String bp_id; 
-	String permalink;
-	String title;
-	String domain;
-	String post_detail;
-	String date;
+	String bp_id = ""; 
+	String permalink = "";
+	String title = "";
+	String domain ="";
+	String post_detail ="";
+	String date="";
 	
-	ArrayList res = Narrative.search_narratives_post(blog_ids.toString(), search_value.toString(), "10");
-	for(Object x: res) {
-		JSONObject source = new JSONObject(x.toString());
-		
-		bp_id = source.getJSONObject("_source").get("blogpost_id").toString();
-		permalink = source.getJSONObject("_source").get("permalink").toString();
-		title = source.getJSONObject("_source").get("title").toString();
-		
-		URI uri = new URI(permalink.toString());
-		domain = uri.getHost();
-		
-		date = source.getJSONObject("_source").get("date").toString();
-		LocalDate datee = LocalDate.parse(date.toString().split(" ")[0]);
-		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");
-		date = dtf.format(datee);
-		
-		post_detail = source.getJSONObject("_source").get("post").toString();
+	JSONObject res = Narrative.search_narratives_post(blog_ids.toString(), search_value.toString(), "10");
+	JSONArray x = new JSONArray(res.getJSONObject("hits").getJSONArray("hits").toString());
+	//for(Object x: res) {
+	for(int i = 0; i < x.length(); i++) {
+		try{
+			JSONObject source = new JSONObject(x.get(i).toString());
+			
+			bp_id = source.getJSONObject("_source").get("blogpost_id").toString();
+			permalink = source.getJSONObject("_source").get("permalink").toString();
+			title = source.getJSONObject("_source").get("title").toString();
+			
+			URI uri = new URI(permalink.toString());
+			domain = uri.getHost();
+			
+			date = source.getJSONObject("_source").get("date").toString();
+			LocalDate datee = LocalDate.parse(date.toString().split("T")[0]);
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");
+			date = dtf.format(datee);
+			
+			post_detail = source.getJSONObject("_source").get("post").toString();
+		}catch(Exception e){ 
+			System.out.println("");
+		}
 	/* }
 	
 	for (int i = 1; i <= 10; i++){
@@ -316,7 +322,9 @@ if(action.toString().equals("load_more_narrative")){
      </div>
 	
 	
-<%  }} %>
+<%  }}
+	
+	%>
 	
 
 	

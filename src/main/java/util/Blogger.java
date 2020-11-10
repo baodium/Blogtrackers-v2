@@ -32,7 +32,7 @@ public class Blogger {
 		blog_ids = "("+blog_ids+")";
 		
 		try {
-			ArrayList response = DbConnection.query("select count(distinct(blogger)) from blogposts where blogsite_id in  "+blog_ids+" ");		
+			ArrayList response = DbConnection.query("select count(distinct(blogger_name)) from blogger where blogsite_id in  "+blog_ids+" ");		
 			if(response.size()>0){
 			 	ArrayList hd = (ArrayList)response.get(0);
 				count = hd.get(0).toString();

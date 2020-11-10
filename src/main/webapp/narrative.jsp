@@ -608,25 +608,40 @@
                             }
                              */
                              
-                             System.out.println("ddddddddddd"+blogpost_ids);
+                             //System.out.println("ddddddddddd"+blogpost_ids);
                              
                              String [] blogposts_data = blogpost_ids.toString().split(",");
-                             Object permalink = null;
-                             Object date = null;
-             				Object title = null;
-             				Object post_detail = null;
-             				String domain = null;
-             				int b = 0;
-                    		for(String bp_id : blogposts_data){                              			
+                             List<?> permalink_data = new ArrayList<>();
+                             
+                             int length = blogpost_ids.toString().length();
+                             String post_ids = (blogpost_ids.toString().substring(length - 1).equals(",")) ? blogpost_ids.toString().substring(0,length -1) : blogpost_ids.toString();
+                             try{
+                            	 String query = "SELECT blogpost_id, permalink, title, date, post from blogposts where blogpost_id in ("+post_ids+") and blogsite_id in ("+ids+") order by date desc;";
+                                 permalink_data = db.queryJSON(query);
+                             }catch(Exception e){
+                            	 System.out.println("here");
+                             }
+                             
+                             Object permalink = "";
+                             Object date = "";
+             				Object title = "";
+             				Object post_detail = "";
+             				String domain = "";
+             				String bp_id = "";
+             				/* int b = 0;
+                    		for(String bp_id : blogposts_data){      */       
+                    		for(int b = 0; b < permalink_data.size(); b++){
                     				//Extract blogposts and entities
 									if(b == 10){
 										break;
 									}
                     				try{
-                    				ArrayList permalink_data = db.queryJSON("SELECT permalink, title, date, post from blogposts where blogpost_id = " + bp_id);
+                    				
                     				if(permalink_data.size() > 0){
-                    					JSONObject permalink_data_index = new JSONObject(permalink_data.get(0).toString());
+                    					JSONObject permalink_data_index = new JSONObject(permalink_data.get(b).toString());
                         				permalink = permalink_data_index.getJSONObject("_source").get("permalink");
+                        				
+                        				bp_id = permalink_data_index.getJSONObject("_source").get("blogpost_id").toString();
                         				
                         				date = permalink_data_index.getJSONObject("_source").get("date");
                         				LocalDate datee = LocalDate.parse(date.toString().split(" ")[0]);
@@ -777,6 +792,7 @@
                 </ul>
             </li>
             <%}}%>
+            
         </ul>
         
         <div id="current_narrative_loader" class="hidden">

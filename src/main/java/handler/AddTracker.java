@@ -81,8 +81,8 @@ public class AddTracker extends HttpServlet {
 			pww.write("\n Validated the user session \n");
 			try {
 			
-				ArrayList tracker =null;
-				ArrayList blogsite = null;
+				List<?> tracker =new ArrayList<>();
+				List<?> blogsite = new ArrayList<>();
 				
 				DbConnection db = new DbConnection();
 				AutomatedCrawlerConnect automatedCrawler = new AutomatedCrawlerConnect();

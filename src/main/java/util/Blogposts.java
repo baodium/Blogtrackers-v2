@@ -200,7 +200,7 @@ public class Blogposts {
 				+ "									\"filter\":{ \r\n"
 				+ "											\"terms\":{ \r\n"
 				+ "												\r\n"
-				+ "											\"blogpost_id\":" + arg2 + "\r\n"
+				+ "											\"blogsite_id\":" + arg2 + "\r\n"
 				+ "													}\r\n"
 				+ "											}\r\n" + "										} \r\n"
 				+ "						}, \r\n" + "						\r\n" + "	 		        { \r\n"
