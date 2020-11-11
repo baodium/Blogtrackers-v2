@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
   "name": "jquery-mousewheel",
   "main": "./jquery.mousewheel.js",
@@ -13,3 +14,20 @@
     "jquery": ">=1.7.2"
   }
 }
+=======
+{
+  "name": "jquery-mousewheel",
+  "main": "./jquery.mousewheel.js",
+  "ignore": [
+    "*.json",
+    "*.markdown",
+    "*.txt",
+    ".*",
+    "!LICENSE.txt",
+    "test"
+  ],
+  "dependencies": {
+    "jquery": ">=1.7.2"
+  }
+}
+>>>>>>> 1f92e31eaa52c61d7b7996ab5ec5a9cf214df293

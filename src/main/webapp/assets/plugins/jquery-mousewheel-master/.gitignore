@@ -1,3 +1,9 @@
+<<<<<<< HEAD
 .DS_Store
 /npm-debug.log
 /node_modules
+=======
+.DS_Store
+/npm-debug.log
+/node_modules
+>>>>>>> 1f92e31eaa52c61d7b7996ab5ec5a9cf214df293
