@@ -3023,6 +3023,9 @@ $(document).ready(function() {
 	
 	
 	 $('#DataTables_Table_19_wrapper').DataTable( {
+		 "columnDefs": [
+ 		    { "width": "65%", "targets": 0 }
+ 		  ],
 	        "scrollY": 380,
 	        "scrollX": true,
 	         "pagingType": "simple",
@@ -3037,6 +3040,9 @@ $(document).ready(function() {
 	
   // datatable setup
     $('#DataTables_Table_1_wrapper').DataTable( {
+    	"columnDefs": [
+ 		    { "width": "65%", "targets": 0 }
+ 		  ],
         "scrollY": 380,
         "scrollX": true,
          "pagingType": "simple",

@@ -22,6 +22,14 @@ pageEncoding="UTF-8"%>
   Blogs blogs  = new Blogs();
   int perpage =12;
   PrintWriter pww = response.getWriter();
+  int session_set;
+  if(null == session.getAttribute("email")){  
+	  // User is not logged in. 
+	  session_set = 0;
+	}else{  
+	  // User IS logged in. 
+	  session_set = 1;
+	}
  System.out.println("Here");
 	//try {
 
@@ -134,7 +142,9 @@ for(int j=0; j<allblogarray.length; j++)
 } 
 }  
 %>
+			<% if(session_set == 1){ %>
 			  <div class="text-center"><i id="blogpostt_<%=obj.get("blogpost_id").toString() %>" class="<%=favoritestatus %> fa-heart text-medium pb30  favorites-text icon-big favoritestoggle cursor-pointer" data-toggle="tooltip" data-placement="top" title="<%=title %>"></i></div>
+			  <% } %>
 			</div>
 			</div>
 <!-- grid look  -->

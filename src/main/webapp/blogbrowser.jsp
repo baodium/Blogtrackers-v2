@@ -25,12 +25,15 @@ JSONObject myblogs = new JSONObject();
 ArrayList mytrackers = new ArrayList();
 Trackers trackers  = new Trackers();
 Blogs blogs  = new Blogs();
+int session_set;
 
 userinfo = DbConnection.query("SELECT * FROM usercredentials where Email = '"+email+"'");
  //System.out.println(userinfo);
 if (userinfo.size()<1) {
+	session_set = 0;
 	//response.sendRedirect("login.jsp");
 }else{
+	session_set = 1;
 userinfo = (ArrayList<?>)userinfo.get(0);
 try{
 username = (null==userinfo.get(0))?"":userinfo.get(0).toString();
@@ -559,7 +562,9 @@ for(int j=0; j<allblogarray.length; j++)
 } 
 }  
 %>
+	<% if(session_set == 1){ %>
   <div class="text-center"><i id="blogpostt_<%=obj.get("blogpost_id").toString() %>" class="<%=favoritestatus %> fa-heart text-medium pb30  favorites-text icon-big favoritestoggle cursor-pointer" data-toggle="tooltip" data-placement="top" title="<%=title %>"></i></div>
+  	<% } %>
 </div>
 </div>
 
@@ -911,6 +916,7 @@ function updateCurrentSelectedBlogs(array_to_send){
 
 </script>
 <script>
+//trigger funtion for end of scroll on page
 $(window).scroll(function() {
 	if($(window).scrollTop() + $(window).height() > $(document).height() - 200) {
 		

@@ -32,7 +32,9 @@ public class Blogger {
 		blog_ids = "("+blog_ids+")";
 		
 		try {
+
 			ArrayList response = DbConnection.query("select count(distinct(blogger_name)) from blogger where blogsite_id in  "+blog_ids+" ");		
+
 			if(response.size()>0){
 			 	ArrayList hd = (ArrayList)response.get(0);
 				count = hd.get(0).toString();
@@ -55,7 +57,9 @@ public class Blogger {
 		
 		try {
 
-			result = db.query("select distinct blogger_name, sum(blogpost_count) as totalpost, blogsite_id from blogger where blogger_name!=\"\" and blogsite_id in "+blogids+" group by blogger_name order by totalpost desc limit 50");		
+
+			result = db.query("select distinct blg.blogger_name, sum(blg.blogpost_count) as totalpost, blg.blogsite_id, bls.blogsite_url from blogsites as bls, blogger as blg where blg.blogsite_id = bls.blogsite_id and blg.blogger_name!=\"\" and blg.blogsite_id in "+blogids+" group by blg.blogger_name order by totalpost desc limit 50");		
+
 			
 		}catch(Exception e){
 		}

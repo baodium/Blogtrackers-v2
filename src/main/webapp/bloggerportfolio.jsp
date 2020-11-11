@@ -330,6 +330,7 @@
 					ArrayList<?> bloggerFreq = (ArrayList<?>) bloggerPostFrequency.get(m);
 					String bloggerName = bloggerFreq.get(0).toString();
 					String blogsiteId = bloggerFreq.get(2).toString();
+					
 					mostactiveblogger = bloggerName;
 					
 					selectedblogid = blogsiteId;
@@ -806,6 +807,7 @@ JSONObject allposts = new JSONObject();
 <h6 class="mt5">
 <select id="blogger-changed" class="custom-select">
  <%
+ String most_active_url = "";
  if (bloggerPostFrequency.size() > 0) {
 		int p = 0;
 		
@@ -821,8 +823,10 @@ JSONObject allposts = new JSONObject();
 		
 			String bloggerPostFreq = bloggerFreq.get(1).toString();
 			String blogsiteId = bloggerFreq.get(2).toString();
+			String blogsiteUrl = bloggerFreq.get(3).toString();
 				if(p==0){
 					mostactiveblogger = bloggerName;
+					most_active_url = blogsiteUrl;
 				}
 				if (p < 10) {
 					
@@ -830,7 +834,7 @@ JSONObject allposts = new JSONObject();
 					all_bloggers += bloggerName;
 					
 					%>
-					<option value="<%=blogsiteId%>______<%=bloggerName%>" <% if(mostactiveblogger.equals(bloggerName)){ %> selected <% } %>><%=bloggerName%></option>
+					<option value="<%=blogsiteId%>______<%=bloggerName%>______<%=blogsiteUrl %>" <% if(mostactiveblogger.equals(bloggerName)){ %> selected <% } %>><%=bloggerName%></option>
  
 				<%	p++;
 					
@@ -904,7 +908,7 @@ JSONObject allposts = new JSONObject();
 					<div class="card-body p0 pt5 pb5">
 <!-- <small class="text-primary">Blogsite of <b class="text-blue"><u>Advonum</u></b></small><br/> -->
 <!--   <h5 class="text-primary mb0 active-blog"><%=mostactiveblogger%></h5> -->
-<h3><a href="http://<%=mostactiveblogurl%>" target="_blank"><button class="btn buttonportfolio"><b class="float-left">Visit Site</b> <b class="far fa-file-alt float-right iconportfolio"></b></button></a></h3>
+<h3><a id="visit_site" href="http://<%=most_active_url%>" target="_blank"><button class="btn buttonportfolio"><b class="float-left">Visit Site</b> <b class="far fa-file-alt float-right iconportfolio"></b></button></a></h3>
 </div>
 </div>
 </div>

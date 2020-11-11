@@ -307,7 +307,7 @@ if (detail.size() > 0) {
 <script src="assets/js/jquery-3.2.1.slim.min.js"></script>
 <script src="assets/js/popper.min.js"></script>
 <script src="pagedependencies/googletagmanagerscript.js"></script>
-
+<script type="text/javascript" src="assets/js/jquery.inview.js"></script>
 <script type="text/javascript" src="assets/js/jquery-1.11.3.min.js"></script>
 <script src="assets/bootstrap/js/bootstrap.js"> </script>
 <script src="assets/js/generic.js"> </script>
@@ -315,10 +315,20 @@ if (detail.size() > 0) {
 <script src="assets/vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
 
 <!-- Charts -->
+
+<script src="https://d3js.org/d3.v4.js"></script> 
+<script>
+    var d3v4 = window.d3;
+    window.d3 = null;
+</script>
+
 <script type="text/javascript" src="assets/vendors/d3/d3.min.js"></script>
-<script src="assets/vendors/wordcloud/d3.layout.cloud.js"></script>
-<script type="text/javascript" src="assets/vendors/d3/d3_tooltip.js"></script>
 <script type="text/javascript" src="assets/vendors/d3/d3.v4.min.js"></script>
+<script src="assets/vendors/wordcloud/d3.layout.cloud.js"></script>
+<script type="text/javascript" src="chartdependencies/keywordtrendd3.js"></script>
+<script type="text/javascript" src="assets/vendors/d3/d3_tooltip.js"></script>
+ -->
+
 </head>
 <body>
 	<%@include file="subpages/loader.jsp"%>
@@ -695,504 +705,136 @@ class BlogPost {
 }
 </script>
 
-	<!-- Line Chart -->
-	<script>
+<!-- Stacked Chart -->
+<script>
 
-	class LineChart {
+class StackedChart {
 
-		constructor(_blogPostsData) {
-			this.mouse;
-			this.mousex;
-			this.mousey;
-			this.datearray;
-			this.height = 230;
-			this.blogPosts = _blogPostsData;
-			this.data = [];
-		}
+	constructor(_blogPostsData) {
+		this.mouse;
+		this.mousex;
+		this.mousey;
+		this.datearray;
+		this.height = 250;
+		this.blogPosts = _blogPostsData;
+		this.data = [];
+	}
 
-		initialize() {
-			this.processData("year");
-			this.draw('#topicstream', this.height, this.data);
-		}
+	initialize() {
+		this.processData("year");
+		this.draw('#topicstream', this.height, this.data);
+	}
+	
+	processData(range) {
+		let distributions = {};
+		let averages = {};
+		this.data = [];
 		
-		processData(range) {
-			let distributions = {};
-			let averages = {};
-			this.data = [];
-			
-			if (range == "year") {
-				// Collect blogs' topic distribution for each year
-				for (var id in this.blogPosts) {
-					if (this.blogPosts[id].date.substr(2,2) in distributions) {
-						distributions[this.blogPosts[id].date.substr(2,2)].push(this.blogPosts[id].topicDistrib);
-					}
-					else {
-						distributions[this.blogPosts[id].date.substr(2,2)] = [this.blogPosts[id].topicDistrib];
-					}
+		if (range == "year") {
+			// Collect blogs' topic distribution for each year
+			for (var id in this.blogPosts) {
+				if (this.blogPosts[id].date.substr(0,4) in distributions) {
+					distributions[this.blogPosts[id].date.substr(0,4)].push(this.blogPosts[id].topicDistrib);
 				}
-				// Average topic distribution for each year
-				for (var year in distributions) {
-					averages[year] = [];
-					for (let topic = 0; topic < distributions[year][0].length; topic++) {
-						let avg = 0;
-						for (let i = 0; i < distributions[year].length; i++) {
-							avg += distributions[year][i][topic]
-						}
-						averages[year].push(avg / distributions[year].length);
-					}
-				}
-				// Format averaged data for the line chart 
-				for (var year in averages) {
-					for (let topic = 0; topic < averages[year].length; topic++) {
-						let formatted_date = "01/01/" + year + " 0:00";
-						//Full day format (use for monthly/weekly charts - i.e. 06/30/19 0:00)
-						//formatted_date = ("0" + (date.getMonth() + 1)).slice(-2) + "/" + ("0" + date.getDate()).slice(-2) + "/" + date.getFullYear().toString().substr(-2) + " 0:00"; 
-						this.data.push({"key": "Topic " + (topic + 1), "value": averages[year][topic].toFixed(3), "date": formatted_date});
-					}
+				else {
+					distributions[this.blogPosts[id].date.substr(0,4)] = [this.blogPosts[id].topicDistrib];
 				}
 			}
+			// Average topic distribution for each year
+			for (var year in distributions) {
+				averages[year] = [];
+				for (let topic = 0; topic < distributions[year][0].length; topic++) {
+					let avg = 0;
+					for (let i = 0; i < distributions[year].length; i++) {
+						avg += distributions[year][i][topic]
+					}
+					averages[year].push(avg / distributions[year].length);
+				}
+			}
+			// Format averaged data for the line chart 
+			for (var year in averages) {
+				let dict = {}
+				dict['year'] = year;
+				for (let topic = 0; topic < averages[year].length; topic++) {
+					//Full day format (use for monthly/weekly charts - i.e. 06/30/19 0:00)
+					//formatted_date = ("0" + (date.getMonth() + 1)).slice(-2) + "/" + ("0" + date.getDate()).slice(-2) + "/" + date.getFullYear().toString().substr(-2) + " 0:00";
+					//this.data.push({"key": "Topic " + (topic + 1), "value": averages[year][topic].toFixed(3), "date": formatted_date});
+					dict['Topic ' + (topic + 1)] = averages[year][topic].toFixed(3);
+				}
+				this.data.push(dict);
+			}
 		}
-		//console.log("This is data");
-		//console.log(this.data); 
-	    // Chart setup
-	    draw(element, height, data) {
-	    	console.log(data);
-
-	        // Basic setup
-	        // ------------------------------
-
-	        // Define main variables
-	        var d3Container = d3.select(element),
-	            margin = {top: 5, right: 50, bottom: 40, left: 50},
-	            width = d3Container.node().getBoundingClientRect().width - margin.left - margin.right,
-	            height = height - margin.top - margin.bottom,
-	            tooltipOffset = 30;
-
-	        // Tooltip
-	        var tooltip = d3Container
-	            .append("div")
-	            .attr("class", "d3-tip e")
-	            .style("display", "none")
-
-	        // Format date
-	        var format = d3.time.format("%m/%d/%y %H:%M");
-	        var formatDate = d3.time.format("%H:%M");
-
-	        // Colors
-	        var colorrange = ["#E377C2","#8C564B", "#9467BD", "#D62728", "#2CA02C", "#FF7F0E", "#1F77B4", "#7F7F7F","#17B890", "#D35269"];
-
-
-
-	        // Construct scales
-	        // ------------------------------
-
-	        // Horizontal
-	        var x = d3.time.scale().range([0, width]);
-
-	        // Vertical
-	        var y = d3.scale.linear().range([height, 0]);
-
-	        // Colors
-	        var z = d3.scale.ordinal().range(colorrange);
-
-
-
-	        // Create axes
-	        // ------------------------------
-
-	        // Horizontal
-	        var xAxis = d3.svg.axis()
-	            .scale(x)
-	            .orient("bottom")
-	            .ticks(d3.time.date, 2)
-	            .innerTickSize(4)
-	            .tickPadding(8)
-	            .tickFormat(d3.time.format("%m/%d/%y")); // Display date in month day and year
-
-	        // Left vertical
-	        var yAxis = d3.svg.axis()
-	            .scale(y)
-	            .ticks(6)
-	            .innerTickSize(4)
-	            .outerTickSize(0)
-	            .tickPadding(8)
-	            // remove comma seperator
-	             // .tickFormat(function (d) { return (d); });
-
-	        // Right vertical
-	        var yAxis2 = yAxis;
-
-	        // Dash lines
-	        var gridAxis = d3.svg.axis()
-	            .scale(y)
-	            .orient("left")
-	            .ticks(6)
-	            .tickPadding(8)
-	            .tickFormat("")
-	            .tickSize(-width, 0, 0);
-
-
-
-	        // Create chart
-	        // ------------------------------
-
-	        // Container
-	        var container = d3Container.append("svg")
-
-	        // SVG element
-	        var svg = container
-	            .attr('width', width + margin.left + margin.right)
-	            .attr("height", height + margin.top + margin.bottom)
-	            .append("g")
-	            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-
-
-	        // Construct chart layout
-	        // ------------------------------
-
-	        // Stack
-	        var stack = d3.layout.stack()
-	            .offset("silhouette")
-	            .values(function(d) { return d.values; })
-	            .x(function(d) { return d.date; })
-	            .y(function(d) { return d.value; });
-
-	        // Nest
-	        var nest = d3.nest()
-	            .key(function(d) { return d.key; });
-
-	        // Area
-	        var area = d3.svg.area()
-	            .interpolate("cardinal")
-	            .x(function(d) { return x(d.date); })
-	            .y0(function(d) { return y(d.y0); })
-	            .y1(function(d) { return y(d.y0 + d.y); });
-
-	            // Pull out values
-	            data.forEach(function (d) {
-	                d.date = format.parse(d.date);
-	                d.value = +d.value;
-	            });
-
-	            // // Stack and nest layers
-	           var layers = stack(nest.entries(data));
-
-
-
-	            // Set input domains
-	            // ------------------------------
-
-	            // Horizontal
-	            x.domain(d3.extent(data, function(d, i) { return d.date; }));
-
-	            // Vertical
-	           y.domain([0, d3.max(data, function(d) { return d.y0+d.y; })]);
-
-
-
-	            // Add grid
-	            // ------------------------------
-
-	            // Horizontal grid. Must be before the group
-	            svg.append("g")
-	                .attr("class", "d3-grid-dashed")
-	                .call(gridAxis);
-
-
-
-	            // //
-	            // // Append chart elements
-	            // //
-	            //
-	            // // Stream layers
-	            // // ------------------------------
-	            //
-	            // Create group
-	            var group = svg.append('g')
-	                .attr('class', 'streamgraph-layers-group');
-
-	            // And append paths to this group
-	            var layer = group.selectAll(".streamgraph-layer")
-	                .data(layers)
-	                .enter()
-	                    .append("path")
-	                    .attr("class", "streamgraph-layer")
-	                    .attr("d", function(d) { return area(d.values); })
-	                    .style('stroke', '#fff')
-	                    .style('stroke-width', 0.5)
-	                    .style("fill", function(d, i) { return z(i); });
-
-	            // Add transition
-	            var layerTransition = layer
-	                .style('opacity', 0)
-	                .transition()
-	                    .duration(750)
-	                    .delay(function(d, i) { return i * 50; })
-	                    .style('opacity', 1)
-
-
-
-	            // // Append axes
-	            // // ------------------------------
-	            //
-	            // //
-	            // // Left vertical
-	            // //
-	            //
-	            svg.append("g")
-	                .attr("class", "d3-axis d3-axis-left d3-axis-solid")
-	                .call(yAxis.orient("left"));
-
-	            // // Hide first tick
-	            d3.select(svg.selectAll('.d3-axis-left .tick text')[0][0])
-	                .style("visibility", "hidden");
-
-	            //
-	            // //
-	            // // Right vertical
-	            // //
-	            //
-	            svg.append("g")
-	                .attr("class", "d3-axis d3-axis-right d3-axis-solid")
-	                .attr("transform", "translate(" + width + ", 0)")
-	                .call(yAxis2.orient("right"));
-
-	            // // Hide first tick
-	            d3.select(svg.selectAll('.d3-axis-right .tick text')[0][0])
-	                .style("visibility", "hidden");
-
-
-	            // //
-	            // // Horizontal
-	            // //
-	            //
-	            var xaxisg = svg.append("g")
-	                .attr("class", "d3-axis d3-axis-horizontal d3-axis-solid")
-	                .attr("transform", "translate(0," + height + ")")
-	                .call(xAxis);
-
-	            // Add extra subticks for hidden hours
-	            xaxisg.selectAll(".d3-axis-subticks")
-	                .data(x.ticks(d3.time.date), function(d) { return d; })
-	                .enter()
-	                .append("line")
-	                .attr("class", "d3-axis-subticks")
-	                .attr("y1", 0)
-	                .attr("y2", 4)
-	                .attr("x1", x)
-	                .attr("x2", x);
-
-
-
-	            // Add hover line and pointer
-	            // ------------------------------
-
-	            // Append group to the group of paths to prevent appearance outside chart area
-	            var hoverLineGroup = group.append("g")
-	                .attr("class", "hover-line");
-
-	            // Add line
-	            var hoverLine = hoverLineGroup
-	                .append("line")
-	                .attr("y1", 0)
-	                .attr("y2", height)
-	                .style('fill', 'none')
-	                .style('stroke', '#fff')
-	                .style('stroke-width', 1)
-	                .style('pointer-events', 'none')
-	                .style('shape-rendering', 'crispEdges')
-	                .style("opacity", 0);
-
-	            // Add pointer
-	            var hoverPointer = hoverLineGroup
-	                .append("rect")
-	                .attr("x", 2)
-	                .attr("y", 2)
-	                .attr("width", 6)
-	                .attr("height", 6)
-	                .style('fill', '#03A9F4')
-	                .style('stroke', '#fff')
-	                .style('stroke-width', 1)
-	                .style('shape-rendering', 'crispEdges')
-	                .style('pointer-events', 'none')
-	                .style("opacity", 0);
-
-
-
-	            // Append events to the layers group
-	            // ------------------------------
-
-	            layerTransition.each("end", function() {
-	                layer
-	                    .on("mouseover", function (d, i) {
-	                        svg.selectAll(".streamgraph-layer")
-	                            .transition()
-	                            .duration(250)
-	                            .style("opacity", function (d, j) {
-	                                return j != i ? 0.75 : 1; // Mute all except hovered
-	                            });
-	                    })
-
-	                    .on("mousemove", function (d, i) {
-	                        this.mouse = d3.mouse(this);
-	                        this.mousex = this.mouse[0];
-	                        this.mousey = this.mouse[1];
-	                        let datearray = [];
-	                        var invertedx = x.invert(this.mousex);
-	                        invertedx = invertedx.getDate();
-	                        var selected = (d.values);
-	                        for (var k = 0; k < selected.length; k++) {
-	                            datearray[k] = selected[k].date
-	                            datearray[k] = datearray[k].getDate();
-	                        }
-	                        
-	                        let mousedate = datearray.indexOf(invertedx);
-	                        let pro = d.values[mousedate].value;
-
-
-	                        // Display mouse pointer
-	                        hoverPointer
-	                            .attr("x", this.mousex - 3)
-	                            .attr("y", this.mousey - 6)
-	                            .style("opacity", 1);
-
-	                        hoverLine
-	                            .attr("x1", this.mousex)
-	                            .attr("x2", this.mousex)
-	                            .style("opacity", 1);
-
-
-	                        // Tooltip
-
-
-	                        // Tooltip data
-	                        tooltip.html(
-	                            "<ul class='list-unstyled mb-5'>" +
-	                                "<li>" + "<div class='text-size-base mt-5 mb-5'><i class='icon-circle-left2 position-left'></i>" + d.key + "</div>" + "</li>" +
-	                                "<li>" + "Percentage: &nbsp;" + "<span class='text-semibold pull-right'>" + pro + "</span>" + "</li>" +
-	                                "<li>" + "Date: &nbsp; " + "<span class='text-semibold pull-right'>" + format(d.values[mousedate].date) + "</span>" + "</li>" +
-	                            "</ul>"
-	                        )
-	                        .style("display", "block");
-
-	                        // Tooltip arrow
-	                        tooltip.append('div').attr('class', 'd3-tip-arrow');
-	                    })
-
-	                    .on("mouseout", function (d, i) {
-
-	                        // Revert full opacity to all paths
-	                        svg.selectAll(".streamgraph-layer")
-	                            .transition()
-	                            .duration(250)
-	                            .style("opacity", 1);
-
-	                        // Hide cursor pointer
-	                        hoverPointer.style("opacity", 0);
-
-	                        // Hide tooltip
-	                        tooltip.style("display", "none");
-
-	                        hoverLine.style("opacity", 0);
-	                    });
-	                });
-
-
-	            // Append events to the chart container
-	            // ------------------------------
-	/*             d3Container
-	                .on("mousemove", function (d, i) {
-	                    this.mouse = d3.mouse(this);
-	                    this.mousex = this.mouse[0];
-	                    this.mousey = this.mouse[1];
-
-	                    // Display hover line
-	                    // .style("opacity", 1);
-
-
-	                    // Move tooltip vertically
-	                    tooltip.style("top", (this.mousey - ($('.d3-tip').outerHeight() / 2)) - 2 + "px") // Half tooltip height - half arrow width
-
-	                    // Move tooltip horizontally
-	                    if (this.mousex >= ($(element).outerWidth() - $('.d3-tip').outerWidth() - margin.right - (tooltipOffset * 2))) {
-	                        tooltip
-	                            .style("left", (this.mousex - $('.d3-tip').outerWidth() - tooltipOffset) + "px") // Change tooltip direction from right to left to keep it inside graph area
-	                            .attr("class", "d3-tip w");
-	                    }
-	                    else {
-	                        tooltip
-	                            .style("left", (this.mousex + tooltipOffset) + "px" )
-	                            .attr("class", "d3-tip e");
-	                    }
-	                }); */
-
-	        //});
-
-
-
-	        // Resize chart
-	        // ------------------------------
-
-	        // Call function on window resize
-	        $(window).on('resize', resizeStream);
-
-	        // Call function on sidebar width change
-	        // $('.sidebar-control').on('click', resizeStream);
-
-	        // Resize function
-	        //
-	        // Since D3 doesn't support SVG resize by default,
-	        // we need to manually specify parts of the graph that need to
-	        // be updated on window resize
-	        function resizeStream() {
-
-	            // Layout
-	            // -------------------------
-
-	            // Define width
-	            width = d3Container.node().getBoundingClientRect().width - margin.left - margin.right;
-
-	            // Main svg width
-	            container.attr("width", width + margin.left + margin.right);
-
-	            // Width of appended group
-	            svg.attr("width", width + margin.left + margin.right);
-
-	            // Horizontal range
-	            x.range([0, width]);
-
-
-	            // Chart elements
-	            // -------------------------
-
-	            // Horizontal axis
-	            svg.selectAll('.d3-axis-horizontal').call(xAxis);
-
-	            // Horizontal axis subticks
-	            svg.selectAll('.d3-axis-subticks').attr("x1", x).attr("x2", x);
-
-	            // Grid lines width
-	            svg.selectAll(".d3-grid-dashed").call(gridAxis.tickSize(-width, 0, 0))
-
-	            // Right vertical axis
-	            svg.selectAll(".d3-axis-right").attr("transform", "translate(" + width + ", 0)");
-
-	            // Area paths
-	            svg.selectAll('.streamgraph-layer').attr("d", function(d) { return area(d.values); });
-	        }
-	    }
 	}
- </script>
- 
-  <script type="text/javascript" src="assets/vendors/d3/d3.min.js"></script>
- <script type="text/javascript" src="assets/vendors/d3/d3.min.js"></script>
-<script src="assets/vendors/wordcloud/d3.layout.cloud.js"></script>
-<script type="text/javascript" src="assets/vendors/d3/d3_tooltip.js"></script>
-<script type="text/javascript" src="assets/js/jquery.inview.js"></script>
+	
+	draw(elementName, HEIGHT, data) {
+	
+		let chartEngine = d3v4; 
+		
+		// set the dimensions and margins of the graph
+		var margin = {top: 10, right: 10, bottom: 50, left: 55},
+		    width = $(elementName).width() - 25, 
+		    height = HEIGHT;
+		
+		// append the svg object to the body of the page
+		var svg = chartEngine.select(elementName)
+		  .append("svg")
+		    .attr("width", width + margin.left + margin.right)
+		    .attr("height", height + margin.top + margin.bottom)
+		  .append("g")
+		    .attr("transform",
+		          "translate(" + margin.left + "," + margin.top + ")");
+		
+		// Parse the Data
+		chartEngine.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/5_OneCatSevNumOrdered_wide.csv", function(data) {
+			
+		// List of groups = header of the csv files
+		
+		var keys = Object.keys(data[0]); 
+		
+		// Add X axis
+		var x = chartEngine.scaleLinear()
+		  .domain(chartEngine.extent(data, function(d) { return d.year; }))
+		  .range([ 0, width ]);
+		svg.append("g")
+		  .attr("transform", "translate(0," + height + ")")
+		  .call(chartEngine.axisBottom(x).ticks(30));
+		
+		// Add Y axis
+		var y = chartEngine.scaleLinear()
+		  .domain([0, 200000])
+		  .range([ height, 0 ]);
+		svg.append("g")
+		  .call(chartEngine.axisLeft(y));
+		
+		// color palette
+		var color = chartEngine.scaleOrdinal()
+		  .domain(keys)
+		  .range(['#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00','#ffff33','#a65628','#f781bf', '#ffffff', '#000000'])
+		
+		//stack the data?
+		var stackedData = chartEngine.stack()
+		  .keys(keys)
+		  (data)
+		  //console.log("This is the stack result: ", stackedData)
+		
+		// Show the areas
+		svg
+		  .selectAll("mylayers")
+		  .data(stackedData)
+		  .enter()
+		  .append("path")
+		    .style("fill", function(d) { return color(d.key); })
+		    .attr("d", chartEngine.area()
+		      .x(function(d, i) { return x(d.data.year); })
+		      .y0(function(d) { return y(d[0]); })
+		      .y1(function(d) { 
+		    	  return y(d[1]); })
+		  )
+		})
+	}
+}
 
- 
-<script type="text/javascript" src="chartdependencies/keywordtrendd3.js"></script>
+ </script>
 
 <!-- Start for tables  -->
 <script type="text/javascript" src="assets/vendors/DataTables/datatables.min.js"></script>
@@ -2031,18 +1673,19 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	let statsBar = new StatsBar(_blogDistribData, _blogMentionData, _postMentionData, _bloggerData);
 	let blogPosts = new BlogPosts(_blogPostsData);
-	let lineChart = new LineChart(_blogPostsData);
+	let stackedChart = new StackedChart(_blogPostsData);
 	let chordDiagram = new ChordDiagram(_chordDiagramMatrix, 400);
 	let wordCloud = new WordCloud(_wordCloudData);
 	//let topicDataTable = new TopicDataTable();
 	topics = new Topics(_topicNumbers, statsBar, blogPosts, wordCloud, chordDiagram);
 	
 	topics.initialize();
-	lineChart.initialize();
+	stackedChart.initialize();
 	//topicDataTable.initialize(); // DataTable formatting. Triggers error and causes other charts to disappear
 });
 
 </script>
+
 </body>
 <%} %>
 </html>
