@@ -34,6 +34,7 @@ $('#blogger-changed').on("change", function(){
 	
 	$(".active-blog").html(blg[1]);
 	$("#blogger").val(blg[1]);
+	$("#visit_site").attr("href", blg[2]);
 	
 	
 	//loadInfluence(bloog,blg[1]);
