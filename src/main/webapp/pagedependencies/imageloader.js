@@ -1,3 +1,9 @@
+$(window).bind("pageshow", function(event) {
+    if (event.originalEvent.persisted) {
+        window.location.reload(); 
+    }
+});
+
 var baseurl = app_url;
 var requests = new Array();
 var z=0;
@@ -9,7 +15,7 @@ $(document).ready(function() {
     for(i=0; i<img.length; i++){
     	var id = img[i].id;
 		var url = img[i].value;
-		//console.log(id);
+		//console.log(id, url);
 		//scrapeImage(id, "https://www.oodaloop.com/");
 		getImage(id,url);
 		//console.log(url);

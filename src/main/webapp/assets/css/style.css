@@ -3,6 +3,85 @@
   color: green;
 }
 
+.word1 {
+  bottom: 0;
+  color: #fff;
+  font-size: 2.5em;
+  height: 2.5em;
+  left: 0;
+  line-height: 2.5em;
+  margin: auto;
+  right: 0;
+  position: absolute;
+  text-shadow: 0 0 10px rgba(50, 255, 50, 0.5), 0 0 5px rgba(100, 255, 100, 0.5);
+  top: 0
+}
+
+.word1 span {
+  display: inline-block;
+  transform: translateX(100%) scale(0.9);
+  transition: transform 500ms;
+}
+
+.radial_f{
+/* 	background: radial-gradient(#222922, #000500); */
+	background: white;
+  font-family: 'Source Code Pro', monospace;
+  font-weight: 400;
+  overflow: hidden;
+  padding: 30px 0 0 30px;
+  text-align: center;
+}
+
+
+.word1 .done {
+  color: #6f6;
+  transform: translateX(0) scale(1);
+}
+
+.overlay1 {
+  /* background-image: linear-gradient(transparent 0%, rgba(10, 16, 10, 0.5) 50%); */
+  background-size: 1000px 2px;
+  bottom: 0;
+  content: '';
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.selectionactive
+{
+border-radius:15px;
+border: 2px solid #17394C;
+color: #ffffff !important;
+background-color: transparent;	
+
+}
+
+.white_bac
+{
+
+background-color: white !important;	
+
+}
+
+.white_bac:hover
+{
+
+color: black !important;	
+background-color:#0080CC !important;
+border: 2px solid #0080CC;
+}
+
+.selectionactive:hover, .abloggerselected
+{
+background-color:#0080CC;
+border: 2px solid #0080CC;
+color: #ffffff !important;
+}
+
+
 .table_over_cover{
 	width: 100%;
 
@@ -97,6 +176,68 @@ table.dataTable thead .sorting:after, table.dataTable thead .sorting_asc:after, 
     transform: rotateY( 180deg );
 }
 
+
+.location_mecard {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    -webkit-transition: -webkit-transform 1s;
+    -moz-transition: -moz-transform 1s;
+    -o-transition: -o-transform 1s;
+    transition: transform 1s;
+    -webkit-transform-style: preserve-3d;
+    -moz-transform-style: preserve-3d;
+    -o-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+    -webkit-transform-origin: 50% 50%;
+}
+
+.jvectormap-zoomin{
+	 width: unset !important;
+}
+
+.jvectormap-zoomout{
+	 width: unset !important;
+}
+
+
+.location_mecard div {
+    display: block;
+   /*  height: 100%; */
+    width: 100%;
+    /* background:inherit; */
+   /*  line-height: 260px; */
+   /*  color: white; */
+   /*  text-align: center;
+    font-weight: bold;
+    font-size: 140px; */
+    /* position: absolute; */
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+    -o-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+.location_mecard .front {
+   background: white; 
+   position: absolute; 
+    border-radius:3px;
+}
+.location_mecard .back {
+	 position: absolute;
+	  background: white; 
+	  border-radius:3px;
+    /* background: blue; */
+    -webkit-transform: rotateY( 180deg );
+    -moz-transform: rotateY( 180deg );
+    -o-transform: rotateY( 180deg );
+    transform: rotateY( 180deg );
+}
+.location_mecard.flipped {
+    -webkit-transform: rotateY( 180deg );
+    -moz-transform: rotateY( 180deg );
+    -o-transform: rotateY( 180deg );
+    transform: rotateY( 180deg );
+}
 /* Flip effect end  */
 
 

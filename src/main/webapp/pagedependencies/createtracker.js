@@ -92,7 +92,12 @@ $(document).ready(function(){
 	        success: function(response)
 	        {	
 	        console.log(response);
+	        //alert(response)
+	        
 	        if(response!="error creating tracker" && response!="tracker already exist"){
+	        	uploadTerms(response, 'create')
+	        	uploadClusters(response)
+	        		
 	        	var prev= parseInt($("#tracker-total").html());
     			prev++;
     			$("#tracker-total").html(prev);
@@ -200,4 +205,49 @@ $(document).ready(function(){
 		  });
 
 		};
+		
+		function uploadTerms(tid, type){
+			$.ajax({
+				url: app_url+'tracker',
+				method: 'POST',
+				data: {
+					action:"uploadTerms",
+					tracker_id:tid,
+					type:type,
+					
+				},
+				error: function(response)
+				{
+					//alert(tid)
+					//alert(type)
+					//alert('could not compute terms')
+					console.log('could not compute terms')
+				},
+				success: function(response)
+				{
+					console.log('term response',response);
+				}
+			});
+		}
+		function uploadClusters(tid){
+			$.ajax({
+				url: app_url+'tracker',
+				method: 'POST',
+				data: {
+					action:"uploadClusters",
+					tracker_id:tid,
+					
+					
+				},
+				error: function(response)
+				{
+					//alert('could not compute terms')
+					console.log('could not compute terms')
+				},
+				success: function(response)
+				{
+					console.log('cluster response',response);
+				}
+			});
+		}
 });

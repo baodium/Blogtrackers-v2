@@ -43,7 +43,9 @@ ArrayList allentitysentiments = new ArrayList();
 
 
 userinfo = new DbConnection().query("SELECT * FROM usercredentials where Email = '"+email+"'");
-if (userinfo.size()<1) {
+
+if (user == null || user == "") {
+	System.out.println("user--"+user);
 	response.sendRedirect("index.jsp");
 }
 else{
@@ -119,7 +121,7 @@ userinfo = (ArrayList<?>)userinfo.get(0);
 	}
 	}catch(Exception e){}
 	
-	}
+	
 
 	ArrayList detail =new ArrayList();
 	if (tid != "") {
@@ -517,9 +519,9 @@ userinfo = (ArrayList<?>)userinfo.get(0);
   <div class="card-body  p30 pt5 pb5 mb20">
     <h5 class="mt20 mb20">Bloggers</h5>
     <div style="padding-right:10px !important;">
-      <input type="search" class="form-control stylesearch mb20 searchbloggers" placeholder="Search Bloggers" 
-       
-      /></div>
+      <input id="searchInput" type="search" class="form-control stylesearch mb20 searchbloggers inputportfolio2 searchkeywords" placeholder="Search Bloggers" />  
+      <!-- <i class="fas fa-times searchiconinputclose cursor-pointer resetsearch"></i>  -->
+     </div>
       	
       	<div style="height: 250px; padding-right: 10px !important;" id="scroll_list_loader" class="">
 			<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />
@@ -531,7 +533,10 @@ userinfo = (ArrayList<?>)userinfo.get(0);
 					String dselected = "";
 					String selectedid="";
 					String activew = "";
+					String post_counter = "";
 					String pids = null;
+					int total = 0;
+					
 					if (bloggerPostFrequency.size() > 0) {
 						int p = 0;
 						for (int m = 0; m < bloggerPostFrequency.size(); m++) {
@@ -540,21 +545,39 @@ userinfo = (ArrayList<?>)userinfo.get(0);
 							String bloggerPostFreq = bloggerFreq.get(1).toString();
 							String blogsiteId = bloggerFreq.get(2).toString();
 								if (p < 10) {
-									p++;		
+									p++;
+									
+									
+									//total += Integer.parseInt(bloggerPostFreq);
+									post_counter = post._searchRangeTotalByBlogger("date", dt, dte, bloggerName);
+									total +=  Integer.parseInt(post_counter);
+									
+									String formatedtotalpost_counter = NumberFormat.getNumberInstance(Locale.US).format(Integer.parseInt(post_counter));
+									
 										if(m==0){
 												dselected = "abloggerselected";
 												activew = "thanks";
 												mostactiveblogger = bloggerName;
-												//pids = post._getPostIdsByBloggerName("date",dt, dte,"'"+bloggerName+"'","date","DESC");
+												pids = post._getPostIdsByBloggerName("date",dt, dte,"'"+bloggerName+"'","date","DESC");
 												//allterms = term._searchByRange("blogsiteid", dt, dte, blogsiteId);//_searchByRange("blogpostid",dt, dte,postids);
-												System.out.println("Most active blogger:"+mostactiveblogger);
-												//allentitysentiments = blogpostsentiment._searchByRange("date", dt, dte, pids);
+												//System.out.println("Most active blogger:"+mostactiveblogger);
+												try{
+													allentitysentiments = blogpostsentiment._searchByRange("date", dt, dte, pids);
+													
+												}catch(Exception e){
+													
+												}
+												
+												//System.out.println("entity--" + allentitysentiments.size());
+												//System.out.println("pids--" + pids);
 												selectedid=blogsiteId; 
 												
 												
 												//allposts = post._getBloggerByBloggerName("date",dt, dte,bloggerName,"date","DESC");	
 												allposts = post._newGetBloggerByBloggerName("date", dt, dte, bloggerName, "DESC");
-												System.out.println("date---"+dt+ dte+bloggerName+"date"+"DESC"+blogsiteId);
+												//System.out.println("date---"+allposts+ dte+bloggerName+"date"+"DESC"+blogsiteId);
+												
+												
 										}else{
 												dselected = "";
 												activew = "";
@@ -562,9 +585,9 @@ userinfo = (ArrayList<?>)userinfo.get(0);
 			    	%>
 					<input type="hidden" id="postby<%=bloggerName.replaceAll(" ","__")%>" value="" 
 					/>
-	    			<a name="<%=bloggerName%>"
+	    			<a name="<%=bloggerName%>" value="<%=post_counter %>"
 	    			data-toggle="tooltip" data-placement="top" data-original-title="<%=bloggerName%>"
-	    			 class="topics topics1 blogger-select btn btn-primary form-control bloggerinactive mb20 <%=activew %> <%=dselected%>" style="overflow:hidden;"  id="<%=blogsiteId%>" ><b><%=bloggerName%></b></a>
+	    			 class="topics topics1 blogger-select btn btn-primary select-term form-control bloggerinactive mb20 <%=activew %> <%=dselected%>" style="overflow:hidden;"  id="<%=blogsiteId%>" ><b><%=bloggerName%></b></a>
 	    			<% 
 					//JSONObject jsonObj = bloggersort.getJSONObject(m);
 				}
@@ -689,7 +712,9 @@ else if(sentimentval.equalsIgnoreCase("positive"))
 }
 
 totalpost =  post._searchRangeTotalByBlogger("date", dt, dte, mostactiveblogger);
-String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Integer.parseInt(totalpost));
+
+//String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format((Integer.parseInt(totalpost)/total) * 100);
+String formatedtotalpost = String.format("%.0f",(Double.parseDouble(totalpost)/(double)total) * 100) + "%";
 %>
 
 <div class="col-md-9">
@@ -717,7 +742,7 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
     <div class="card-body  p30 pt20 pb20">
       <div class="row">
      <div class="col-md-3 mt5 mb5">
-       <h6 class="card-title mb0">Total Posts</h6>
+       <h6 class="card-title mb0">Total Post</h6>
        <h3 class="mb0 bold-text total-post"><%=formatedtotalpost%></h3>
        <!-- <small class="text-success">+5% from <b>Last Week</b></small> -->
      </div>
@@ -731,7 +756,7 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
 
      <div class="col-md-3 mt5 mb5">
        <h6 class="card-title mb0">Top Post Location</h6>
-       <h3 class="mb0 bold-text top-location"><%=toplocation%></h3>
+       <h3 class="mb0 bold-text top-location"><%=(null == toplocation || toplocation == "") ? "N/A" : toplocation%></h3> 
        <!-- <small class="text-success">+5% from <b>Last Week</b></small> -->
      </div>
 
@@ -779,13 +804,13 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
                 
                   </div> 
                   <div id="entity_table">
-                        <table id="DataTables_Table_1_wrapper" class="display" style="width:100%">
+                        <table id="DataTables_Table_1_wrapper" class="display table_over_cover" style="width:100%">
                                 <thead>
                                     <tr>
                                         <th>Entity</th>
                                         <th>Type</th>
                                       <!--   <th>Frequency</th> -->
-                                        <th>Sentiment</th>
+                                       <!--   <th>Sentiment</th> -->
 
                                     </tr>
                                 </thead>
@@ -807,7 +832,7 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
                                         <td><%=tobj.get("entity").toString()%></td>
                                         <td><%=tobj.get("type").toString()%></td>
                                    <!--      <td></td> -->
-                                        <td><%=tobj.get("sentiment").toString() %></td>
+                                          <%-- <td><%=tobj.get("sentiment").toString() %></td>  --%>
                                     </tr>
                                     <% }} %>
                                 </tbody>
@@ -1011,6 +1036,7 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
 		<input type="hidden" name="date_start" id="date_start" value="<%=dt%>" /> 
 		<input type="hidden" name="date_end" id="date_end" value="<%=dte%>" />
 		<input type="hidden" name="all_blog_ids" id="all_blog_ids" value="<%=ids%>" />
+		<input type="hidden" name="total_post_count" id="total_post_count" value="<%=total%>" />
 			
 	</form>
 
@@ -1061,48 +1087,48 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
      
     
 
-    function color1(i, id, name){
+  function color1(i, id, name){
     	
     	var t = parseFloat(i);
 
-    switch(t) {
+    	switch(t) {
 
-      //case 0:
-        //var hex = 'yellow';
-      case 1:
-        var hex = '#5de6f8'; 
-        break;
-      case 2:
-        var hex = '#ed9dfb';
-        break;
-      case 3:
-        var hex = '#b1fcdf';
-        break;
-      case 4:
-        var hex = '#eefcb1';
-        break;
-      case 5:
-        var hex = '#fccfb1';
-        break;
-      case 6:
-        var hex = '#b770e1';
-        break;
-      case 7:
-        var hex = '#1fa701';
-        break;
-      case 8:
-        var hex = '#011aa7';
-        break;
-      case 9:
-        var hex = '#a78901';
-        break;
-      case 10:
-        var hex = '#981010';
-        break;
-      default:
-        var hex = '#8088fa';
+        //case 0:
+          //var hex = 'yellow';
+        case 1:
+          var hex = '#e50471'; 
+          break;
+        case 2:
+          var hex = '#0571a0';
+          break;
+        case 3:
+          var hex = '#038a2c';
+          break;
+        case 4:
+          var hex = '#6b8a03';
+          break;
+        case 5:
+          var hex = '#a02f05';
+          break;
+        case 6:
+          var hex = '#b770e1';
+          break;
+        case 7:
+          var hex = '#1fa701';
+          break;
+        case 8:
+          var hex = '#011aa7';
+          break;
+        case 9:
+          var hex = '#a78901';
+          break;
+        case 10:
+          var hex = '#981010';
+          break;
+        default:
+          var hex = '#6b085e';
 
-    }
+      }
 
 
     
@@ -1112,6 +1138,9 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
     	
         if ( $(this).attr('name') == ''+name+'' ) {
         	$(this).css('background-color', hex);
+        	$(this).removeClass('bloggerinactive ');
+        	$(this).addClass('selectionactive');
+        	$(this).css('font-weight', 'bold');
         };
         
     });
@@ -1128,12 +1157,8 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
     	$('.line_graph').addClass('hidden');
         $('#line_graph_loader').removeClass('hidden');
         
-        
-    	  setTimeout(
-     			  function() 
-     			  { 
-           finalGraph();
-        }, 1000)
+        finalGraph();
+    	 // setTimeout(function()  {  finalGraph();}, 1000)
     });
     
     
@@ -1151,27 +1176,30 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
        $('#chart').html('');
 
        if ( $(this).hasClass("thanks") ) {
-            
-          $(this).removeClass("thanks"); 
+           
+           $(this).removeClass("thanks"); 
 
-          $(this).addClass('nobccolor');
+           $(this).addClass('white_bac');
+ 		
+           $(this).addClass("bloggerinactive"); 
+           
+           $(this).removeClass('selectionactive');
+           
+           $(this).css('font-weight', 400);
 
+         }else{
 
-        }else{
+        	 $(this).removeClass("white_bac");
+        	 
+           $(this).removeClass('nobccolor');
 
-          $(this).removeClass('nobccolor');
+           $(this).addClass("thanks"); 
+           
 
-          $(this).addClass("thanks"); 
-          
+         }
 
-        }
-
-      	
-       setTimeout(
- 			  function() 
- 			  { 
        finalGraph();
-    }, 2000)
+       //setTimeout(function() {  finalGraph(); }, 2000)
       
       
 
@@ -1200,6 +1228,8 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
     
     	 
     	 if(count > 0){
+    		 
+    		 var t = 0;
     		
     		 $( ".thanks" ).each(function( index ) {
     			 
@@ -1214,6 +1244,7 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
     		    ////start ajax
     		    	
     		    	$.ajax({
+    		    		
     		  			url: app_url + "PostingFrequencyTest",
     		  			method: 'POST',
     		  			dataType: 'json',
@@ -1270,48 +1301,36 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
     				  		});
     		  				
     		  				
-    		  				data1.push(
-    		  						      
-    		  						      {
-    		  						        name: response.name,
-    		  						      	identify: response.identify,
-    		  						        values: 
-    		  						          
-    		  						        	  arr1
-    		  						        	
-    		  						      }
-    		  						    );
+    		  				data1.push({name: response.name,identify: response.identify,values:  arr1 });
     		  				
-    		    	
+    		  				t++;
+    	    		    	
+    			    		if(count == t){
+    			    			data1.forEach((arrayItem) => {data.push(arrayItem) });
+    		  					beginBuilder(data)
+    		  				}
+    		  				
+    		  				
     				  			}
-    		  			
-    		  			
-    		  			
+    		  			//end ajax success
     				  		});
-    		    	
-    		  
     		    ///////end ajax
     		    		
-    		    		});
-    		 
+    		    	
+    		    
+    		    
+    		    });
+    		 /////end for each for active 
     		 
     		 
     		 
     	    	
-    	    	
-    	    	  setTimeout(
-    	    			  function() 
-    	    			  {
-    	    					
-    	    				  data1.forEach((arrayItem) => {
-    	    				    data.push(arrayItem)
-    	    				  });
-    	    				  
+    	    		///start begin builder function
+    	    		    function beginBuilder(data){
+    			 
     	    			/////////start graph stuff
     	    				indexy = data.findIndex(x => x.name === highest_date_name);
   	    				   
-  	    				    
-    	    			
   				 			//var width = 750;
   				 			var width = $('#chart-container').width();
   				 		    var height = 200;
@@ -1435,18 +1454,56 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
   				 		      
   				 		      
   				 		      .on("click",function(d){
+  				 		    	  
   				 		    	 
   				 		       var tempYear = convertTime(d.date);
                         	   var d1 = 	  tempYear + "-01-01";
                         	   var d2 = 	  tempYear + "-12-31";
                         	 
                         	   bloog = d.name.replaceAll("__"," ");
+                        	   
+                 ///////////////start collecting names
+                        		 var count = $('.thanks').length;
+                        		 
+                        		 if(count > 0){
+                        			 
+                        			 var all_selected_names = '';
+                        			 var all_selected_names1 = '';
+                        			 var i = 1;
+                        			 var total_post_counter = 0;
+                        			 $( ".thanks" ).each(function( index ) {
+                        				 
+                        				 
+                        				 if(i > 1){
+                        					 all_selected_names += ' , ';
+                        					 all_selected_names1 += ' , ';
+                        				 }
+                        				 
+                        		    	blog_name = 	$(this).attr('name');
+                        		    	
+                        		    	blog_id = 	this.id;
+                        		    	
+                        		    	all_selected_names += '"'+blog_name+'"';
+                        		    	all_selected_names1 += blog_name;
+                        		    		
+                        		    	i++;
+                        		    	
+                        		    	//getting total post count from each blogger
+                        		    	total_post_counter+=parseInt($(this).attr('value'));
+                        		    	
+                        			});
+                        			 
+                        			 
+                        		 }
+                        		////////////end collecting names
                         		
                         	   $('.activeblogger').html(bloog);
-                        	
+                        	   
+                        	   var temp_blog = '"'+bloog+'"';
                         	   getTopLocation(bloog,$("#all_blog_ids").val(),d1,d2);
-                        	   loadTerms(bloog,$("#all_blog_ids").val(),d1,d2);	
-                        		loadSentiments(bloog,$("#all_blog_ids").val(),d1,d2);
+                        	   
+                        	   loadTerms(temp_blog,$("#blogid").val(),d1,d2);	
+                        		loadSentiments(all_selected_names,$("#all_blog_ids").val(),d1,d2);
                         		getTotalPost(bloog,"",d1,d2);
                         	  // loadInfluence(d1,d2); 
                         	   
@@ -1571,24 +1628,19 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
 			                  .attr("fill", "black")
 			              	  .text("Total values");
 			              
-			                  
-  				 		    
-  				 		    
-  				 		    
-  				 		    
-  				 		    
+			                
   				 		
   				 	/////////end graph stuff	
     	    				  
-    	    				 		   $('.line_graph').removeClass('hidden');
-    	    				 	       $('#line_graph_loader').addClass('hidden');
-    	    				 	       
-    	    				 	      $("#scroll_list_loader").addClass("hidden");
-    	    				 	   	   $("#scroll_list").removeClass("hidden");
+   				 		   $('.line_graph').removeClass('hidden');
+   				 	       $('#line_graph_loader').addClass('hidden');
+   				 	       
+   				 	      $("#scroll_list_loader").addClass("hidden");
+   				 	   	   $("#scroll_list").removeClass("hidden");
     	    				  
     	    				  
-    	    			  }, 3000)
-    	    			  
+    	    			  }
+    	    			  //end begiBuilder function
     		 
     		 
     		 
@@ -1809,7 +1861,10 @@ String formatedtotalpost = NumberFormat.getNumberInstance(Locale.US).format(Inte
  <script>
  
 $(document).ready(function(){
-	loadTerms("<%=mostactiveblogger%>",$("#blogid").val(),"<%=dt%>","<%=dte%>");
+	var blogger = "<%=mostactiveblogger%>"
+	var temp_blog = '"'+blogger+'"';
+	
+	loadTerms(temp_blog,$("#blogid").val(),"<%=dt%>","<%=dte%>");
 })
 	
 	//console.log(word_count2);
@@ -1848,3 +1903,5 @@ $(document).ready(function(){
 
 </body>
 </html>
+
+<%} %>

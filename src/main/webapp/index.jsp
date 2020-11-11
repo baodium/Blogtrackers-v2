@@ -18,6 +18,7 @@ String pi = request.getScheme() + "://" + request.getServerName() + ":" + reques
 
 
 System.out.println("INDEX--" + request.getHeader("referer"));
+//request.getHeader("referer").toString();
 
 /*  if(request.getHeader("referer").equals(null)){
 	session.invalidate();
@@ -192,7 +193,7 @@ try{
   --%> <a class="cursor-pointer profilemenulink" href="<%=request.getContextPath()%>/addblog.jsp"><h6 class="text-primary">Add Blog</h6></a>
   <a class="cursor-pointer profilemenulink" href="<%=request.getContextPath()%>/profile.jsp"><h6 class="text-primary">Profile</h6></a>
   <a
-						class="cursor-pointer profilemenulink"
+						class="cursor-pointer profilemenulink" target="_blank"
 						href="https://addons.mozilla.org/en-US/firefox/addon/blogtrackers/"><h6
 							class="text-primary">Plugin</h6></a>
   <a class="cursor-pointer profilemenulink" href="<%=request.getContextPath()%>/logout"><h6 class="text-primary">Log Out</h6></a>
@@ -682,7 +683,7 @@ Design is not just what it looks like and feels like. Design is how it works.
 </div>
 </div> -->
 <div class="bgwhite">
-<a href="http://cosmos.ualr.edu/">
+<a target="_blank" href="http://cosmos.ualr.edu/">
 <div class="container-fluid pb50 pt50" id="testimonials">
 <p class="text-center mb0 copyrighttext">Developed By</p>
 

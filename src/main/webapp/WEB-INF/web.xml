@@ -79,6 +79,12 @@
 			<description></description>
 			<servlet-class>util.Clustering</servlet-class>
 		</servlet>
+		<servlet>
+			<servlet-name>Narrative</servlet-name>
+			<display-name>Narrative</display-name>
+			<description></description>
+			<servlet-class>util.Narrative</servlet-class>
+		</servlet>
 	<servlet-mapping>
 		<servlet-name>AddBlog</servlet-name>
 		<url-pattern>/AddBlog</url-pattern>
@@ -110,6 +116,10 @@
 	<servlet-mapping>
 		<servlet-name>Clustering</servlet-name>
 		<url-pattern>/Clustering</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>Narrative</servlet-name>
+		<url-pattern>/Narrative</url-pattern>
 	</servlet-mapping>
 	<error-page>
 		<error-code>404</error-code>

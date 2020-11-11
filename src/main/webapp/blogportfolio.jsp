@@ -277,7 +277,8 @@ import java.io.OutputStreamWriter; -->
 			totalpost = post._searchRangeTotal("date", dt, dte, selectedblogid);
 			//termss = term._searchByRange("blogsiteid", dt, dte, selectedblogid);
 			
-			outlinks = outl._searchByRange("date", dt, dte, selectedblogid);
+			
+			System.out.println("onload --"+"date"+ dt+ dte+ selectedblogid);
 			
 			//String totalinfluence = post._searchRangeMaxByBlogId("date", dt, dte, selectedblogid);
 			String totalinfluence = post._searchRangeMaxByBlogId("date", dt, dte, selectedblogid);
@@ -351,6 +352,7 @@ import java.io.OutputStreamWriter; -->
 			ArrayList<String> years = new ArrayList<String>();
 			int year_start_ = Integer.parseInt(dt.substring(0,4));
 			int year_end_ = Integer.parseInt(dte.substring(0,4));
+			
 			
 			for(int i = year_start_; i < year_end_; i++){
 				years.add(Integer.toString(i));
@@ -548,7 +550,7 @@ import java.io.OutputStreamWriter; -->
 			String mostactiveblogurl ="";
 			JSONObject outerlinks = new JSONObject();
 			ArrayList outlinklooper = new ArrayList();
-			
+			outlinks = outl._searchByRange("date", dt, dte, mostactiveblogid);
 			if (outlinks.size() > 0) {
 				int mm=0;
 				for (int p = 0; p < outlinks.size(); p++) {
@@ -922,7 +924,7 @@ import java.io.OutputStreamWriter; -->
 
 <div class="col-md-2 text-right">
 <!-- <small class="text-primary cursor-pointer"><a href="">Visit Blog</a></small> --><br/>
-<a id="blog_url_link" href="http://<%=mostactiveblogurl%>" target="_blank"><button class="btn buttonportfolio"><b class="float-left active-blog styleactiveblog"><%=mostactiveblog %></b> <b class="fas fa-location-arrow float-right iconportfolio"></b></button></a>
+<a id="blog_url_link" href="http://<%=mostactiveblogurl%>" target="_blank"><button class="btn buttonportfolio"><b style="text-transform: none;" class="float-left active-blog styleactiveblog"><%=mostactiveblog %></b> <b class="fas fa-location-arrow float-right iconportfolio"></b></button></a>
 </div>
  <!--  <div class="col-md-3">
   <small class="text-primary">Find Blog</small>
@@ -1089,6 +1091,8 @@ import java.io.OutputStreamWriter; -->
 											String tresu = null;
 											JSONObject tobj = null;
 											String date =null;
+											String activeDef = "";
+											String activeDefLink = "";
 											int j=0;
 											int k=0;
 											
@@ -1106,11 +1110,20 @@ import java.io.OutputStreamWriter; -->
 												DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");
 												date = dtf.format(datee);
 												
+												if (i == 0) {
+													activeDefLink = "";
+													activeDef = "activeselectedblog";
+												}else{
+												
+													activeDefLink = "makeinvisible";
+													activeDef = "";
+												}
+												
 												
 									%>
                                     <tr>
-                                   <td><a class="blogpost_link cursor-pointer" id="<%=tobj.get("blogpost_id")%>" ><%=tobj.get("title") %></a><br/>
-								<a class="mt20 viewpost makeinvisible" href="<%=tobj.get("permalink") %>" target="_blank"><buttton class="btn btn-primary btn-sm mt10 visitpost">Visit Post &nbsp;<i class="fas fa-external-link-alt"></i></buttton></a></td>
+                                   <td><a class="blogpost_link cursor-pointer <%=activeDef %>" id="<%=tobj.get("blogpost_id")%>" ><%=tobj.get("title") %></a><br/>
+								<a id="viewpost_<%=tobj.get("blogpost_id")%>" class="mt20 viewpost <%=activeDefLink %>" href="<%=tobj.get("permalink") %>" target="_blank"><buttton class="btn btn-primary btn-sm mt10 visitpost">Visit Post &nbsp;<i class="fas fa-external-link-alt"></i></buttton></a></td>
 								<td align="center"><%=date %></td>
                                      </tr>
                                     <% }
@@ -1186,7 +1199,7 @@ import java.io.OutputStreamWriter; -->
 											<button class="btn stylebuttonnocolor nocursor"><%=date %></button>
 									
 											<button class="btn stylebuttonnocolor nocursor">
-												<b class="float-left ultra-bold-text"><%=tobj.get("num_comments")%> comments</b><i
+												<b class="float-left ultra-bold-text"><%=tobj.get("num_comments")%> comments</b> &nbsp; <i
 													class="far fa-comments float-right blogcontenticon"></i>
 											</button>
 										</div>
@@ -1234,17 +1247,22 @@ import java.io.OutputStreamWriter; -->
                         </thead>
                         <tbody>
                             <%
+                            System.out.println("outlinklooper----"+outlinklooper.size());
 										if (outlinklooper.size() > 0) {
 													//System.out.println(bloggers);
 													for (int y = 0; y < outlinklooper.size(); y++) {
 														String key = outlinklooper.get(y).toString();
 														JSONObject resu = outerlinks.getJSONObject(key);
+														if(resu.get("domain") != ""){
+															
+														
 									%>
 									<tr>
 										<td class=""><a href="http://<%=resu.get("domain")%>" target="_blank"><%=resu.get("domain")%></a></td>
 										<td><%=resu.get("value")%></td>
 									</tr>
 									<%
+														}
 										}
 									}
 									%>                     
@@ -1823,8 +1841,18 @@ import java.io.OutputStreamWriter; -->
                     	  console.log(d.date);
                     	  var d1 = 	  d.date + "-01-01";
                    	      var d2 = 	  d.date + "-12-31";
+                   	      
+                   	   var blogger = $('#blogger-changed').val();
+                   	
+	                   	var blg = blogger.split("_");
+	                   	
+	                   	var blog_id = blg[0];
+	                   	
+	                   	console.log(blog_id, d1,d2)
           				
-                   	      loadUrls(d1,d2);
+                   	    loadUrls(d1,d2);
+                   	   loadYearlyChart(blog_id, d1, d2);
+                   		loadDailyChart(blog_id, d1, d2);
                     	  
                       });
                                          svg.call(tip)

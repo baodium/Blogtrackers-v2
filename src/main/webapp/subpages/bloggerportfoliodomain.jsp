@@ -134,21 +134,34 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <%
+                            <%String temp_domain;
 										if (outlinklooper.size() > 0) {
 													//System.out.println(bloggers);
 													for (int y = 0; y < outlinklooper.size(); y++) {
 														String key = outlinklooper.get(y).toString();
 														JSONObject resu = outerlinks.getJSONObject(key);
+														
+														
 									%>
+									
+									
+									<% if(listtype.equals("urls") && resu.get("link").toString() != null ){ %>
 									<tr>
-										<td class=""><a href="http://<%=resu.get("domain")%>" target="_blank"><%=resu.get("domain")%></a></td>
+										<td class=""><a href="<%=resu.get("link")%>" target="_blank"><%=resu.get("link")%></a></td>
 										<td><%=resu.get("value")%></td>
-									</tr>
-									<%
-										}
-									}
-									%>                     
+										</tr>
+									<% }else{ temp_domain = resu.get("domain").toString().trim(); if( temp_domain.trim().length() > 0){%>
+										<tr>
+										<td class=""><a href="<%=resu.get("domain")%>" target="_blank"><%=temp_domain%></a> </td>
+										<td><%=resu.get("value")%></td>
+										</tr>
+									<% }} %>
+									
+									
+									
+									
+									
+									<%}}%>                     
                         </tbody>
 
 </table>

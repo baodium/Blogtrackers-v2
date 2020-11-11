@@ -172,22 +172,7 @@ public class ElasticSearch {
 	     if(null!=myResponse.get("hits")) {
 		     String res = myResponse.get("hits").toString();
 		     return res;
-		    // System.out.println(res);
-		     /*JSONObject myRes1 = new JSONObject(res);
-		      String total = myRes1.get("total").toString();
-		      JSONObject totalTmp = new JSONObject(total);
-		      totalpost = totalTmp.get("value").toString();
-		      
-		 
-		    
-		     JSONArray jsonArray = new JSONArray(myRes1.get("hits").toString()); 
-		     
-		     if (jsonArray != null) { 
-		        int len = jsonArray.length();
-		        for (int i=0;i<len;i++){ 
-		         list.add(jsonArray.get(i).toString());
-		        } 
-		     }*/
+		   
 	     }
 		}catch(Exception ex) {}
 		return url;

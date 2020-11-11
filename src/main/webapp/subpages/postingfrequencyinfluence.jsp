@@ -99,6 +99,8 @@ allauthors = post._newGetBloggerByBloggerName("date", dt, dte, blogger.toString(
 											String tresu = null;
 											JSONObject tobj = null;
 											String date =null;
+											String activeDef = "";
+											String activeDefLink = "";
 											int j=0;
 											int k=0;
 											
@@ -115,10 +117,19 @@ allauthors = post._newGetBloggerByBloggerName("date", dt, dte, blogger.toString(
 												LocalDate datee = LocalDate.parse(dat);
 												DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");
 												date = dtf.format(datee);
+												
+												if (i == 0) {
+													activeDefLink = "";
+													activeDef = "activeselectedblog";
+												}else{
+												
+													activeDefLink = "makeinvisible";
+													activeDef = "";
+												}
 									%>
                                     <tr>
-                                        <td><a  class="blogpost_link cursor-pointer" id="<%=tobj.get("blogpost_id")%>" ><%=tobj.get("title") %><br/>
-                                        <a class="mt20 viewpost makeinvisible" href="<%=tobj.get("permalink") %>" target="_blank"><buttton class="btn btn-primary btn-sm mt10 visitpost">Visit Post &nbsp;<i class="fas fa-external-link-alt"></i></button></buttton></a></a></td>
+                                        <td><a  class="blogpost_link cursor-pointer <%=activeDef %>" id="<%=tobj.get("blogpost_id")%>" ><%=tobj.get("title") %><br/>
+                                        <a id="viewpost_<%=tobj.get("blogpost_id")%>" class="mt20 viewpost <%=activeDefLink %>" href="<%=tobj.get("permalink") %>" target="_blank"><buttton class="btn btn-primary btn-sm mt10 visitpost">Visit Post &nbsp;<i class="fas fa-external-link-alt"></i></button></buttton></a></a></td>
                                        
                                         <td align="center">
                                         <% if(sort.toString().equals("date")){ %> <%=date %><% }else{ %><%=tobj.get("influence_score") %><% }  %>

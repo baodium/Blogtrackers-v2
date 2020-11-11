@@ -7,6 +7,15 @@
 	Object success_message = (null == session.getAttribute("success_message")) ? "" : session.getAttribute("success_message");
 	String p = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
 
+	
+	String previous_page = request.getHeader("referer").toString();
+	String [] prev_page_split = previous_page.split("/");
+	if(!prev_page_split[prev_page_split.length -1].equals("forgotpassword.jsp")){
+		error_message =  "";
+		success_message = "";
+	}
+	System.out.println(prev_page_split[prev_page_split.length -1]);
+	
 	System.out.println("FORGOT--" + request.getHeader("referer"));
 %>
 <!DOCTYPE html>
@@ -135,7 +144,7 @@
 	 System.out.println(session.getId());
 	/* response.sendRedirect("profile.jsp");  */
 	%>
-alert('this is you')
+<%-- alert("<%=success_message%>") --%>
 toastr.success('<%=success_message%>','Success','hideDuration:10000');
 <%} else if(!error_message.equals("")) {%>
 //alert('this is you2')

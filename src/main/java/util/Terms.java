@@ -248,8 +248,8 @@ public class Terms extends HttpServlet implements Runnable {
 
 		// jsonObj = new JSONObject(que3);
 		String url = base_url + "_search";
-		System.out.println("term_url" + url);
-		System.out.println("term_jsonobj" + jsonObj);
+		//System.out.println("term_url" + url);
+		//System.out.println("term_jsonobj" + jsonObj);
 		return this._getResult(url, jsonObj);
 
 	}
@@ -665,24 +665,26 @@ public class Terms extends HttpServlet implements Runnable {
 	public JSONObject _makeElasticRequest(JSONObject query, String requestType, String endPoint) throws Exception {
 
 		JSONObject myResponse = new JSONObject();
+		RestClient esClient = RestClient.builder(new HttpHost(elasticUrl, 9200, "http"), new HttpHost(elasticUrl, 9201, "http")).build();
 		try {
 
-			RestClient esClient = RestClient.builder(new HttpHost(elasticUrl, 9200, "http")).build();
-
+			
 			Request request = new Request(requestType, endPoint);
 			request.setJsonEntity(query.toString());
-
+//System.out.println(request);
 			Response response = esClient.performRequest(request);
-			// System.out.println("=!");
-			// System.out.println("GETTING TERM VECTORS");
+			
 			String jsonResponse = EntityUtils.toString(response.getEntity());
 			myResponse = new JSONObject(jsonResponse);
-
+//			System.out.println("---"+myResponse);
 			esClient.close();
+//			return myResponse;
 
 		} catch (Exception e) {
-			// System.out.println("Error for elastic request -- > "+e);
+			esClient.close();
+			System.out.println("Error for elastic request -- > "+e);
 		}
+		esClient.close();
 		return myResponse;
 
 	}
@@ -698,8 +700,8 @@ public class Terms extends HttpServlet implements Runnable {
 	}
 
 	public synchronized JSONArray merge(JSONArray jsonArray, JSONArray jsonArray1, String type) {
-		List<Tuple2<String, Integer>> returnedData = Collections
-				.synchronizedList(new ArrayList<Tuple2<String, Integer>>());
+//		List<Tuple2<String, Integer>> returnedData = Collections
+//				.synchronizedList(new ArrayList<Tuple2<String, Integer>>());
 		try {
 
 			// check to perform stream or check normal array or check best way to store ES
@@ -709,65 +711,15 @@ public class Terms extends HttpServlet implements Runnable {
 					JSONObject jsonObject = jsonArray1.getJSONObject(i);
 					jsonArray.put(jsonObject);
 				}
-				return jsonArray;
-			} else if (type.contentEquals("terms")) {
-				JSONArray postDataAll = jsonArray1;
-//				RunnableUtil es = new RunnableUtil(returnedData);
-//				es.wrangleDatadata(postDataAll, "terms", 0, postDataAll.length());
-//				jsonArray.put(returnedData);
-//				es.wrangleDatadata(postDataAll, String field, int start, int end);
-//				JSONArray postDataAll = jsonArray1;
-//				System.out.println("postall" + postDataAll.length());
-//
-//				int a = postDataAll.length();
-//				int b = 1000;
-//				int poolsize = ((a / b)) > 0 ? (a / b) + 1 : 1;
-//				System.out.println(poolsize);
-//////			System.out.println(jsonArray.length());
-//				ExecutorService executorServiceSplitLoop = Executors.newFixedThreadPool(poolsize);
-//				System.out.println("1" + executorServiceSplitLoop.isShutdown());
-//		
-//				
-//
-//				Map<String, Integer> d = new HashMap<String, Integer>();
-//
-//				for (int i = 0; i < a; i = i + b) {
-//
-//					int start1 = 0;
-//					int end_ = 0;
-//					start1 = i;
-//
-//					if ((i + b) > a) {
-//						end_ = i + (a % b);
-//					} else {
-//						end_ = i + b;
-//					}
-//					System.out.println(start1 + "--" + end_);
-//					JSONObject q = new JSONObject();
-//					RunnableUtil es = new RunnableUtil(q, postDataAll, start1, end_, returnedData, d, "loop",
-//							"blogpost_terms", "terms");
-//					executorServiceSplitLoop.execute(es);
-//
-//					jsonArray.put(returnedData);
-//				}
-//
-//				
-////				return returnedData;
-//				executorServiceSplitLoop.shutdown();
-//				while (!executorServiceSplitLoop.isTerminated()) {
-//				}
-//
-//				System.out.println("2" + executorServiceSplitLoop.isShutdown());
-//				System.out.println("json array size" + postDataAll.length());
-//				RunnableUtil es = new RunnableUtil();
-//				(în,114787)
+				//return jsonArray;
+			} 
 
-			}
+			
 
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		System.out.println("returned222--" + jsonArray.length());
+		
 		return jsonArray;
 	}
 
@@ -928,6 +880,8 @@ public class Terms extends HttpServlet implements Runnable {
 				Object hits = myResponse.get("count");
 				total = hits.toString();
 			}
+			
+			System.out.println("count query" + query);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1210,14 +1164,27 @@ public class Terms extends HttpServlet implements Runnable {
 
 		Object post_ids = (null == request.getParameter("post_ids")) ? "" : request.getParameter("post_ids");
 		Object ids = (null == request.getParameter("ids")) ? "" : request.getParameter("ids");
+		JSONArray out_ = new JSONArray();
+		JSONObject o = new JSONObject();
 
 		if (action.toString().equals("getkeyworddashboard")) {
 			System.out.println("action is getkeyworddashboard and ids are " + ids.toString());
 			try {
-				output = cluster.getTopTermsFromBlogIds(ids.toString(), date_start.toString(), date_end.toString(),
-						"100");
-				
-				session.setAttribute(ids.toString() + "--" + action.toString(), output);
+				JSONObject output_ = new JSONObject();
+				//o = cluster.getTopTermsFromBlogIds(ids.toString(), date_start.toString(), date_end.toString(),"100");
+				output = cluster.getTopTermsFromBlogIds(ids.toString(), date_start.toString(), date_end.toString(),"100");
+//				out_ = (JSONArray) o.get("output");
+
+//				String result = out_.toString().replaceAll("\"", "");
+//				output_.put(key, value);
+				//JSONObject ttt = (JSONObject) o.get("post_id_term_pair");
+				//System.out.println("keyssssss--" + ttt.keySet());
+				JSONObject pp = (JSONObject)o.get("post_id_post");
+				System.out.println("pp --" + pp.length());
+				if(pp.length() > 0) {
+					
+				session.setAttribute(ids.toString() + "--" + action.toString(), o);
+				}
 //				for (Tuple2<String, Integer> x : data) {
 //					result.put(x._1, x._2);
 //				}
@@ -1225,25 +1192,29 @@ public class Terms extends HttpServlet implements Runnable {
 
 			}
 			System.out.println("dashboard output");
+//			out.write(o.toString());
 			out.write(output.toString());
 		} else if (action.toString().equals("gethighestterms")) {
 			try {
-				output = cluster.getTopTermsFromBlogIds(ids.toString(), date_start.toString(), date_end.toString(),
-						"1");
+//				o = cluster.getTopTermsFromBlogIds(ids.toString(), date_start.toString(), date_end.toString(),"1");
+//				out_ = (JSONArray) o.get("output");
+				output = cluster.getTopTermsFromBlogIds(ids.toString(), date_start.toString(), date_end.toString(),"1");
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			out.write(output.toString());
+//			out.write(out_.toString().replaceAll("\"", ""));
+			out.write(output.toString().replace("\"", ""));
 		}else if (action.toString().equals("getbloggerhighestterms")) {
 			try {
-				output = cluster.getTopTermsBlogger(blogger.toString(), date_start.toString(), date_end.toString(),
-						"1");
+//				output = cluster.getTopTermsBlogger(blogger.toString(), date_start.toString(), date_end.toString(),
+//						"1");
+				output = cluster.getTopTermsFromBlogger(blogger.toString(), date_start.toString(), date_end.toString(), "1");
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			out.write(output.toString());
+			out.write(output.toString().replace("\"", ""));
 		}
 			
 	}

@@ -96,6 +96,12 @@ public class CreateTracker extends HttpServlet {
 	    	pww.write("Error creating tracker");
 	    }
 	}
+	/**
+	 * Insert into tracker
+	 * @param userid user_id
+	 * @param tracker_names tracker_name
+	 * @return tracker_id as string
+	 */
 	public String insertToDB(String userid, String tracker_names) {
 		ArrayList prev = DbConnection.query("SELECT * FROM trackers WHERE tracker_name='"+tracker_names+"' AND userid= '"+userid+"'");
 		

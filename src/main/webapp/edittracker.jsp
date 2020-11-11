@@ -132,6 +132,7 @@ if (detail.size() > 0) {
 boolean status = false;
 if(ids.length()>0 && post._getBlogPostById(ids) !=""){
 	total_post = Integer.parseInt(post._getBlogPostById(ids));
+	
 }else{
 	total_post=0;
 	status = true;
@@ -266,6 +267,7 @@ if(ids.length()>0 && post._getBlogPostById(ids) !=""){
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="<%=request.getContextPath()%>/favorites.jsp">Favorites</a>
+                
               </li>
                 </ul>
         </div>
@@ -327,14 +329,16 @@ if(ids.length()>0 && post._getBlogPostById(ids) !=""){
 									dtmodified = ddtm[0];
 								}
 //u
+
 								if (!query.equals("")) {
 									blogs = blg._fetch(query);
-									System.out.println(blogs);
+									totalblog = query.split(",").length;
+									System.out.println("blogs--"+query);
 									System.out.println(blogs.size());
 									new_results = blg._getPost(query);
 									
 									if (blogs.size() > 0) {
-										totalblog = blogs.size();	
+										totalblog = query.split(",").length;	
 									
 										for (int k = 0; k < blogs.size(); k++) {
 											bres = blogs.get(k).toString();

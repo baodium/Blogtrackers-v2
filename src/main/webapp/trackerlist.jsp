@@ -14,7 +14,7 @@
 <%
 	Object email = (null == session.getAttribute("email")) ? "" : session.getAttribute("email");
 	if (email == null || email == "") {
-		response.sendRedirect("index.jsp");
+		response.sendRedirect("login.jsp");
 	} else {
 		ArrayList<?> userinfo = null;
 		String profileimage = "";
@@ -106,6 +106,7 @@
 				results = tracker._search(term, username);
 			}
 			String total = results.size() + "";//._getTotal();
+			
 			ArrayList test = new ArrayList();
 			//tracker._add("hello",test);
 			//pimage = pimage.replace("build/", "");
@@ -345,10 +346,12 @@ try{
 							for (int i = 0; i < results.size(); i++) {
 								
 								resut = (ArrayList) results.get(i);
-
+								
 								int totalblog = 0;
 								String id = resut.get(0).toString();
 								query = resut.get(5).toString();//obj.get("query").toString();
+								//totalpost = Integer.parseInt(resut.get(8).toString());
+								
 								/*
 								res = results.get(i).toString();
 								resp = new JSONObject(res);
@@ -356,23 +359,29 @@ try{
 								obj = new JSONObject(resu);
 								query = obj.get("query").toString();
 								*/
+								
 								query = query.replaceAll("blogsite_id in ", "");
+								
 								query = query.replaceAll("\\(", "");
 								query = query.replaceAll("\\)", "");
-
+								
 								String dtt = resut.get(3).toString();
-								totalpost = 0;
+								
+								//totalpost = 0;
 								String dt = "";
 								String bloggerCount = "0";
 								if (!dtt.equals("null")) {
 									String[] ddt = dtt.split(" ");
 									dt = ddt[0];
 								}
+								
+								
 								if (!query.equals("")) {
 									String[] blogCount = query.split(",");
 
 									totalblog = blogCount.length;
-									bloggerCount = bloggers._getBloggerById(query); 
+									//bloggerCount = bloggers._getBloggerById(query);
+									bloggerCount = post._getBlogBloggerById(query);
 									/*
 									String stdate = post._getDate(query,"first");
 									String endate = post._getDate(query,"last");
@@ -401,12 +410,13 @@ try{
 									String tot = post._searchRangeTotal("date", dst, dend, query);
 									totalpost = Integer.parseInt(tot);
 									*/
-									System.out.println("quer" + query);
+								 //System.out.println("quer--" + id);
 									if (post._getBlogPostById(query) != "") {
 										totalpost = Integer.parseInt(post._getBlogPostById(query));
 									} else {
 										totalpost = 0;
-									}
+									} 
+									
 								}
 			%>
 

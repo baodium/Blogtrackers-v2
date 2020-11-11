@@ -16,8 +16,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@page import="java.time.*"%>
+<%@page import="java.util.concurrent.ConcurrentHashMap"%>
+<%@page import="com.fasterxml.jackson.databind.ObjectMapper"%>
+
 
 <%
+	Instant start__ = Instant.now();
 	Object email = (null == session.getAttribute("email")) ? "" : session.getAttribute("email");
 	Object tid = (null == request.getParameter("tid")) ? "" : request.getParameter("tid");
 
@@ -55,10 +59,8 @@
 		Outlinks outl = new Outlinks();
 		if (tid != "") {
 			detail = tracker._fetch(tid.toString());
-			//System.out.println(detail);
 		} else {
 			detail = tracker._list("DESC", "", user.toString(), "1");
-			//System.out.println("List:"+detail);
 		}
 
 		boolean isowner = false;
@@ -66,7 +68,6 @@
 		String ids = "";
 		String trackername = "";
 		if (detail.size() > 0) {
-			//String res = detail.get(0).toString();
 			ArrayList resp = (ArrayList<?>) detail.get(0);
 
 			String tracker_userid = resp.get(1).toString();
@@ -75,7 +76,7 @@
 
 			if (tracker_userid.equals(user.toString())) {
 				isowner = true;
-				String query = resp.get(5).toString();//obj.get("query").toString();
+				String query = resp.get(5).toString();
 				query = query.replaceAll("blogsite_id in ", "");
 				query = query.replaceAll("\\(", "");
 				query = query.replaceAll("\\)", "");
@@ -101,52 +102,38 @@
 				profileimage = "images/default-avatar.png";
 				if (userpic.indexOf("http") > -1) {
 					profileimage = userpic;
+					
 				}
 
 				File f = new File(filename);
-
-				//System.out.println("new_pat--"+path_new);
-
 				File path_new = new File(
 						application.getRealPath("/").replace('/', '/') + "images/profile_images");
 				if (f.exists() && !f.isDirectory()) {
 					profileimage = "images/profile_images/" + userinfo.get(2).toString() + ".jpg";
 				} else {
-					/* new File("/path/directory").mkdirs(); */
 					path_new.mkdirs();
-					System.out.println("pathhhhh1--" + path_new);
 				}
 
 				if (path_new.exists()) {
 
 					String t = "/images/profile_images";
 					int p = userpic.indexOf(t);
-					System.out.println(p);
 					if (p != -1) {
-
-						System.out.println("pic path---" + userpic);
-						System.out.println("path exists---" + userpic.substring(0, p));
 						String path_update = userpic.substring(0, p);
 						if (!path_update.equals(path_new.toString())) {
 							profileimage = "images/profile_images/" + userinfo.get(2).toString() + ".jpg";
-							/* profileimage=userpic.replace(userpic.substring(0, p), path_new.toString()); */
 							String new_file_path = path_new.toString().replace("\\images\\profile_images", "")
 									+ "/" + profileimage;
-							System.out.println("ready to be updated--" + new_file_path);
-							/*new DbConnection().updateTable("UPDATE usercredentials SET profile_picture  = '" + pass + "' WHERE Email = '" + email + "'"); */
 						}
 					} else {
 						path_new.mkdirs();
 						profileimage = "images/profile_images/" + userinfo.get(2).toString() + ".jpg";
-						/* profileimage=userpic.replace(userpic.substring(0, p), path_new.toString()); */
 						String new_file_path = path_new.toString().replace("\\images\\profile_images", "") + "/"
 								+ profileimage;
-						System.out.println("ready to be updated--" + new_file_path);
 
 						new DbConnection().updateTable("UPDATE usercredentials SET profile_picture  = '"
 								+ "images/profile_images/" + userinfo.get(2).toString() + ".jpg"
 								+ "' WHERE Email = '" + email + "'");
-						System.out.println("updated");
 					}
 				} else {
 					System.out.println("path doesnt exist");
@@ -162,7 +149,7 @@
 			Blogs blog = new Blogs();
 			Sentiments senti = new Sentiments();
 
-			//Date today = new Date();
+		
 			SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MMM d, yyyy");
 			SimpleDateFormat DATE_FORMAT2 = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -175,20 +162,20 @@
 			String stdate = post._getDate(ids, "first");
 			String endate = post._getDate(ids, "last");
 
-			Date dstart = new Date();//SimpleDateFormat("yyyy-MM-dd").parse(stdate);
-			Date today = new Date();//SimpleDateFormat("yyyy-MM-dd").parse(endate);
+			Date dstart = new Date();
+			Date today = new Date();
 
 			Date nnow = new Date();
 			try {
 				dstart = new SimpleDateFormat("yyyy-MM-dd").parse(stdate);
 			} catch (Exception ex) {
-				dstart = nnow;//new SimpleDateFormat("yyyy-MM-dd").parse(nnow);
+				dstart = nnow;
 			}
 
 			try {
 				today = new SimpleDateFormat("yyyy-MM-dd").parse(endate);
 			} catch (Exception ex) {
-				today = nnow;//new SimpleDateFormat("yyyy-MM-dd").parse(nnow);
+				today = nnow;
 			}
 
 			String day = DAY_ONLY.format(today);
@@ -223,7 +210,6 @@
 				month = MONTH_ONLY.format(nnow);
 				day = DAY_ONLY.format(nnow);
 				year = YEAR_ONLY.format(nnow);
-				//System.out.println("Now:"+month+"small:"+smallmonth);
 				if (month.equals("02")) {
 					ddey = (Integer.parseInt(year) % 4 == 0) ? "28" : "29";
 				} else if (month.equals("09") || month.equals("04") || month.equals("05")
@@ -232,9 +218,6 @@
 				}
 			}
 
-			termss = term._searchByRange("blogsiteid", dt, dte, ids);
-
-			//System.out.println("start date"+date_start+"end date "+date_end);
 			if (!date_start.equals("") && !date_end.equals("")) {
 
 				possentiment = post._searchRangeTotal("sentiment", "0", "10", ids);
@@ -276,9 +259,6 @@
 
 			}
 
-			String test = post._searchTotalByTitleAndBody("war", "date", "2009-01-01", "2009-12-31");//term._searchByRange("date",dt,dte, tm,"term","10");
-			System.out.println("Size=" + test);
-
 			String[] yst = dt.split("-");
 			String[] yend = dte.split("-");
 			year_start = yst[0];
@@ -315,51 +295,9 @@
 
 			JSONArray unsortedterms = new JSONArray();
 			JSONObject termstore = new JSONObject();
-			Map<String, Integer> top_terms = new HashMap<String, Integer>();
-			if (termss.size() > 0) {
-				for (int p = 0; p < termss.size(); p++) {
-					String bstr = termss.get(p).toString();
-					JSONObject bj = new JSONObject(bstr);
-					bstr = bj.get("_source").toString();
-					bj = new JSONObject(bstr);
-					String tm = bj.get("term").toString();
-
-					String frequency = bj.get("frequency").toString();
-					String id = bj.get("id").toString();
-					//String frequency = "10";
-					int frequency2 = Integer.parseInt(frequency);
-					if (top_terms.containsKey(tm)) {
-						top_terms.put(tm, top_terms.get(tm) + frequency2);
-						frequency2 = top_terms.get(tm) + frequency2;
-					} else {
-						top_terms.put(tm, frequency2);
-					}
-					JSONObject cont = new JSONObject();
-					unsortedterms.put(frequency2 + "___" + tm + "___" + id);
-
-				}
-			}
-
-			JSONArray sortedterms = term._sortJson2(unsortedterms);
-
-			if (sortedterms.length() > 0) {
-				for (int i = 0; i < sortedterms.length(); i++) {
-					String[] vals = sortedterms.get(i).toString().split("___");
-					String size = vals[0];
-					String tm = vals[1];
-					String terms_id = vals[2];
-					if (i == 0) {
-						mostactiveterm = tm;
-						mostactiveterm_id = terms_id;
-					}
-
-				}
-			}
+			
 
 			JSONObject termsyears = new JSONObject();
-
-			allterms = term._searchByRange("blogsiteid", dt, dte, ids);//term._searchByRange("date", dt, dte, ids);
-			//termss = term._searchByRange("blogsiteid", dt, dte, ids);
 
 			int postmentioned = 0;
 			int blogmentioned = 0;
@@ -375,144 +313,89 @@
 			JSONObject keys = new JSONObject();
 			JSONObject positions = new JSONObject();
 			int termsposition = 0;
-			if (allterms.size() > 0) {
-				for (int p = 0; p < allterms.size(); p++) {
-					String bstr = allterms.get(p).toString();
-					JSONObject bj = new JSONObject(bstr);
-					bstr = bj.get("_source").toString();
-					bj = new JSONObject(bstr);
-					String frequency = bj.get("frequency").toString();
-					//String frequency = "10";
-					int freq = Integer.parseInt(frequency);
-
-					String tm = bj.get("term").toString();
-					String tmid = bj.get("id").toString();
-					String blogpostid = bj.get("blogpostid").toString();
-					String blogid = bj.get("blogsiteid").toString();
-
-					if (freq > highestfrequency) {
-						highestfrequency = freq;
-						//mostactiveterm = tm;
+			
+			String terms = null;
+			ArrayList<HashMap<String, Integer>> termsJson = new ArrayList<HashMap<String, Integer>>();
+			ArrayList<HashMap<String, Integer>> termsJson1 = new ArrayList<HashMap<String, Integer>>();
+			String mosttermOccurence = null;
+			JSONObject post_id_pair = new JSONObject();
+			JSONObject post_id_post_pair = new JSONObject();
+			
+				JSONArray out_ = new JSONArray();
+				ArrayList response_terms = DbConnection.query("select terms from tracker_keyword where tid = " + tid);
+				ArrayList res = (ArrayList)response_terms.get(0);
+				
+				ArrayList response_terms1 = DbConnection.query("select keyword_trend from tracker_keyword where tid = " + tid);
+				ArrayList res1 = (ArrayList)response_terms1.get(0);
+				
+				String[] termsSplit1 = res1.get(0).toString().split("}, '");
+				
+				HashMap<String, String> map1 = new HashMap<String, String>();
+				for (int i = 0; i < termsSplit1.length; i++) {
+										
+					
+					String[] split1 = termsSplit1[i].split("[{]");
+					String date_details = "";
+					String term1_ = "";
+					
+					if(i == 0){
+						 term1_ = split1[1].replace("\'", "").replace(":", "").trim();
+						date_details = split1[2];
+					}else{
+						 term1_ = split1[0].replace("\'", "").replace(":", "").trim();
+						date_details = split1[1];
+						
 					}
-
-					String postc = "0";
-					String blogc = "0";
-					String bloggerc = "0";
-					String language = "";
-					String leadingblogger = "";
-					String location = "";
-					String leadingblogid = "";
-
-					ArrayList postdetail = post._fetch(blogpostid);
-
-					if (postdetail.size() > 0) {
-						String tres3 = null;
-						JSONObject tresp3 = null;
-						String tresu3 = null;
-						JSONObject tobj3 = null;
-
-						for (int j = 0; j < 1; j++) {
-							tres3 = postdetail.get(j).toString();
-							tresp3 = new JSONObject(tres3);
-							tresu3 = tresp3.get("_source").toString();
-							tobj3 = new JSONObject(tresu3);
-
-							leadingblogger = tobj3.get("blogger").toString();
-							language = tobj3.get("language").toString();
-							leadingblogid = tobj3.get("blogsite_id").toString();
-							location = blog._getTopLocation(leadingblogid);//tobj3.get("location").toString();
-
-						}
-					}
-
-					if (p == 0) {
-						allposts = post._searchByTitleAndBody(tm, "date", dt, dte);//term._searchByRange("date",dt,dte, tm,"term","10");
-						toplocation = location;
-						//mostactiveterm = tm;
-						//mostactiveterm_id = tmid;
-
-						postc = post._searchTotalAndUnique(tm, "date", dt, dte, "blogpost_id");//post._searchTotalByTitleAndBody(tm,"date", dt,dte);
-
-						//System.out.println("postc="+postc);
-						blogc = post._searchTotalAndUnique(tm, "date", dt, dte, "blogsite_id");
-						bloggerc = post._searchTotalAndUnique(tm, "date", dt, dte, "blogger");//post._searchTotalAndUniqueBlogger(tm,"date", dt,dte,"blogger");
-
-						postmentioned += (Integer.parseInt(postc));
-						blogmentioned += (Integer.parseInt(blogc));
-						bloggermentioned += (Integer.parseInt(bloggerc));
-
-						//postm   = post._searchByTitleAndBodyTotal(tm,"date",dt,dte);
-					}
-
-					JSONObject cont = new JSONObject();
-
-					cont.put("key", tm);
-					cont.put("id", tmid);
-					cont.put("frequency", frequency);
-					cont.put("postcount", postc);
-					cont.put("blogcount", blogc);
-					cont.put("bloggercount", bloggerc);
-					cont.put("blogsite_id", blogid);
-					cont.put("leadingblogger", leadingblogger);
-					cont.put("language", language);
-					cont.put("location", location);
-
-					if (keys.has(tm)) {
-						String frequ = keys.get(tm).toString();
-						String pos = positions.get(tm).toString();
-						int fr1 = Integer.parseInt(frequency);
-						int fr2 = Integer.parseInt(frequ);
-
-						cont.put("key", tm);
-						cont.put("frequency", (fr1 + fr2));
-						topterms.put(Integer.parseInt(pos), cont);
-					} else {
-						cont.put("key", tm);
-						cont.put("frequency", frequency);
-						keys.put(tm, frequency);
-						positions.put(tm, termsposition);
-						topterms.put(cont);
-						termscount.put(p, tm);
-					}
-					/*
-					if(!keys.has(tm)){
-						keys.put(tm,tm);
-						topterms.put(cont);
-						termscount.put(p, tm);
-					}
-					*/
+					
+					map1.put(term1_, date_details);
+					
+		
 				}
-			}
+					for (Map.Entry<String, String> entry : map1.entrySet()) {
 
-			if (termscount.length() > 0) {
-				for (int n = 0; n < 1; n++) {
-					int b = 0;
-					JSONObject postyear = new JSONObject();
-					for (int y = ystint; y <= yendint; y++) {
-						String dtu = y + "-01-01";
-						String dtue = y + "-12-31";
-						if (b == 0) {
-							dtu = dt;
-						} else if (b == yendint) {
-							dtue = dte;
-						}
-
-						String totu = post._searchTotalByTitleAndBody(mostactiveterm, "date", dtu, dtue);//term._searchRangeTotal("date",dtu, dtue,termscount.get(n).toString());						   
-
-						System.out.println(mostactiveterm + ":TM:" + dtu + "," + dtue + "=" + totu);
-
-						if (!years.has(y + "")) {
-							years.put(y + "", y);
-							yearsarray.put(b, y);
-							b++;
-						}
-
-						postyear.put(y + "", totu);
 					}
-					termsyears.put(termscount.get(n).toString(), postyear);
+
+
+				String[] termsSplit = res.get(0).toString().replace("\'", "").replace("{", "").replace("}", "").split(",");
+
+				for (int i = 0; i < termsSplit.length; i++) {
+					if (i == 0) {
+						String[] split = termsSplit[i].split(":");
+						String term_ = split[0].replace("\"", "").trim();
+						mosttermOccurence = split[1].trim();
+						mostactiveterm = term_;
+
+					}
+					
+					String[] split = termsSplit[i].split(":");
+					String term_ = split[0].replace("\"", "").trim();
+					
+					int termOccurence = Integer.parseInt(split[1].trim());
+					HashMap<String, Integer> map = new HashMap<String, Integer>();
+					map.put(term_, termOccurence);
+					termsJson.add(map);
+
 				}
-			}
+
+
+				KeywordTrend1 KWT = new KeywordTrend1();
+				Clustering c = new Clustering();
+				String m = "\"" + mostactiveterm + "\"";
+				String top_location = KWT
+						.aggregation(m, ids, dt, dte, "blogposts", "location", "desc", "bucket_highest")
+						.split("___")[0].toUpperCase();
+				String blog_mentioned = KWT.aggregation(m, ids, dt, dte, "blogposts", "blogsite_id", "asc",
+						"bucket_length");
+				String post_mentioned = KWT.getPostsMentioned(m, ids, dt, dte, "blogposts");
+
+				String t = "__TERMS__KEYWORD__" + m;
+				
+				JSONObject termOccurenceInPost = KWT.getBloggerTerms( mostactiveterm,  dt,  dte,  ids,  500);
+				JSONArray occurenceData = termOccurenceInPost.getJSONArray("data");
 %>
+
+
+
 
 <!DOCTYPE html>
 <html>
@@ -544,8 +427,33 @@
 
 <link rel="stylesheet" href="assets/css/daterangepicker.css" />
 <link rel="stylesheet" href="assets/css/style.css" />
+<link rel="stylesheet" href="assets/css/toastr.css" />
+
 
 <link rel="stylesheet" type="text/css" href="multiline.css">
+
+<style>
+.tick line{
+			opacity: 0.2;
+		  }
+		.line{
+		  fill: none;
+		  stroke-width: 1.5px;
+		  pointer-events:visible;
+		}
+		.line:hover{
+			stroke-width:2.5px;
+		}
+		.hover-rect{
+			fill:none; 
+			pointer-events:visibleFill;
+		}
+		.hover-line {
+		  stroke: steelblue;
+		  stroke-width: 1px;
+		  stroke-dasharray: 3,3;
+		}
+</style>
 
 <!--end of bootsrap -->
 <script src="assets/js/jquery-3.2.1.slim.min.js"></script>
@@ -714,10 +622,10 @@
 						href="<%=request.getContextPath()%>/trackerlist.jsp">Trackers</a>
 					<a class="breadcrumb-item text-primary"
 						href="<%=request.getContextPath()%>/edittracker.jsp?tid=<%=tid%>"><%=trackername%></a>
-					<a class="breadcrumb-item active text-primary"
+					<a class="breadcrumb-item  text-primary"
 						href="<%=request.getContextPath()%>/dashboard.jsp?tid=<%=tid%>">Dashboard</a>
 					<a class="breadcrumb-item active text-primary"
-						href="<%=request.getContextPath()%>/postingfrequency.jsp?tid=<%=tid%>">Keyword
+						href="#">Keyword
 						Trend</a>
 				</nav>
 				<!-- <div>
@@ -753,6 +661,7 @@
 					</div>
 
 				</div>
+				
 			</div>
 		</div>
 
@@ -770,128 +679,103 @@
 		<div class="row mt20">
 			<div class="col-md-3">
 
-				<div class="card card-style mt20">
+				<div class="card card-style mt20" style="height: 430px;">
 					<div class="card-body p20 pt5 pb5 mb20">
 
 						<h6 class="mt20 mb20">Top Keywords</h6>
 						<div style="padding-right: 10px !important;">
-							<input type="search"
+								<input id="searchInput" type="search"
 								class="form-control stylesearch mb20 inputportfolio2 searchkeywords"
 								placeholder="Search Keyword" /> <i
 								class="fas fa-search searchiconinputothers"></i> <i
 								class="fas fa-times searchiconinputclose cursor-pointer resetsearch"></i>
 						</div>
+						
 						<!-- <h6 class="card-title mb0">Maximum Influence</h6> -->
 						<!-- <h4 class="mt20 mb0">Technology</h4> -->
 
 						<!-- <small class="text-success pb10 ">+5% from <b>Last Week</b>
 
     </small> -->
-						<div style="height: 250px; padding-right: 10px !important;"
-							id="scroll_list_loader1" class="hidden">
-							<!-- <img style='position: absolute; top: 50%; left: 50%;'
-								src='images/loading.gif' /> -->
-								
+						<div style="height: 270px; padding-right: 10px !important;"
+							id="scroll_list_loader" class="hidden">
+							 <img style='position: absolute; top: 50%; left: 50%;'
+								src='images/loading.gif' /> 
+
 						</div>
 						<div id="scroll_list" class=" scrolly"
-							style="height: 250px; padding-right: 10px !important;">
-
+							style="height: 270px; padding-right: 10px !important;">
+							
+							<div id="new_searched_terms" ></div>
 
 							<%
 								/* 								if (sortedterms.length() > 0) {																	
-																						for (int i=0; i<sortedterms.length(); i++) {
-																							String[] vals = sortedterms.get(i).toString().split("___");
-																							String size = vals[0];
-																							String tm = vals[1];
-																							String terms_id = vals[2];
-																							
-																							if(!termstore.has(tm)){
-																								termstore.put(tm, tm);
-																							
-																								String dselected = "";
-																								if(i==0){
-																									dselected = "abloggerselected";
-																									//mostactiveterm = tm;
-																									selectedkeycount = term.getTermOcuurence(tm, dt, dte);;
-																								} */
+																																																																																																																								for (int i=0; i<sortedterms.length(); i++) {
+																																																																																																																									String[] vals = sortedterms.get(i).toString().split("___");
+																																																																																																																									String size = vals[0];
+																																																																																																																									String tm = vals[1];
+																																																																																																																									String terms_id = vals[2];
+																																																																																																																									
+																																																																																																																									if(!termstore.has(tm)){
+																																																																																																																										termstore.put(tm, tm);
+																																																																																																																									
+																																																																																																																										String dselected = "";
+																																																																																																																										if(i==0){
+																																																																																																																											dselected = "abloggerselected";
+																																																																																																																											//mostactiveterm = tm;
+																																																																																																																											selectedkeycount = term.getTermOcuurence(tm, dt, dte);;
+																																																																																																																										} */
 
-										/* BY SEUN--BEGINNING */
-										Integer keyword_count = null;
-										String top_location = null;
-										Object json_type_2 = null;
-
-										if (null == session.getAttribute(tid.toString())) {
-							%>
-<%-- <script> loadKeywordDashboard(null, "<%=ids%>"); </script> --%>
-							
-							<%
-								} /* else {
-											json_type_2 = (null == session.getAttribute(tid.toString()))
-													? ""
-													: session.getAttribute(tid.toString());
-
-											System.out.println("session obj" + json_type_2);
-
-											Map<String, Integer> json = (HashMap<String, Integer>) json_type_2;
-
-											Map.Entry<String, Integer> entry1 = json.entrySet().iterator().next();
-
-											keyword_count = entry1.getValue();
-											mostactiveterm = entry1.getKey();
-											String dselected = "";
-											String selectedid="";
+											/* BY SEUN--BEGINNING */
+											Integer keyword_count = null;
+											//String top_location = null;
+											Object json_type_2 = null;
 											String activew = "";
-											int k = 1;
-													
 
-											for (Map.Entry<String, Integer> entry : json.entrySet()) {
-												
-											if(k == 1){
-												dselected = "abloggerselected";
-												activew = "thanks";
-											}else{
-												dselected = "";
-												activew = "";
-											} */
+											if (null == session.getAttribute(tid.toString())) {
 							%>
+							<%-- <script> loadKeywordDashboard(null, "<%=ids%>"); </script> --%>
 
-
-
-
-							<%-- <a
-								class="btn btn-primary form-control select-term bloggerinactive mb20 <%=dselected%> size-<%=size%>"
-							id="<%=tm.replaceAll(" ","_")%>***<%=terms_id%>"><b><%=tm%></b></a> --%>
-							<a name="<%-- <%=entry.getKey()%> --%>"
-								class="topics topics1 btn btn-primary form-control select-term bloggerinactive mb20  size-1 <%-- <%=activew%> --%>"
-								value="<%-- <%=entry.getValue()%> --%>"><b> <%-- <%=entry.getKey()%> --%> 
-							</b>SEUN</a> 
-							<a name="<%-- <%=entry.getKey()%> --%>"
-								class="topics topics1 btn btn-primary form-control select-term bloggerinactive mb20  size-1 <%-- <%=activew%> --%>"
-								value="<%-- <%=entry.getValue()%> --%>"><b> <%-- <%=entry.getKey()%> --%> 
-							</b>SEUN</a> 
 							<%
-							/* k++;
 								}
-										} */
-										/* 	}
-										  }
-										}	 */
-
-										/* Integer blog_mentioned = post._getBlogOrPostMentioned("blogsite_id", mostactiveterm, dt, dte, ids);
-										System.out.println(dt + dte + ids);
-
-										try {
-											top_location = post._getMostLocation(mostactiveterm, dt, dte, ids);
-											top_location =(null == top_location || "" == top_location) ? "NOT AVAILABLE" : top_location;
-
-										} catch (Exception e) {
-
-										}
-										top_location =(null == top_location || "" == top_location) ? "NOT AVAILABLE" : top_location; */
-										/* Integer post_mentioned=post._getBlogOrPostMentioned("post","care",dt, dte,ids); */
+											for (int i = 0; i < termsJson.size(); i++) {
+												if (i == 0) {
+													String dselected = "abloggerselected thanks";
+													String size = "1";
+													HashMap<String, Integer> kys = termsJson.get(i);
+													String tm = kys.keySet().toArray()[0].toString();
+													String v = kys.get(tm).toString();
+													String terms_id = "1";
+													mostactiveterm = tm;
+													activew = "thanks";
 							%>
-							<!-- BY SEUN--ENDING -->
+							<a name="<%=tm %>" value=" <%=v%>"
+								class="topics topics1 btn btn-primary form-control select-term bloggerinactive mb20 <%=dselected%>  <%=activew%>  size-<%=size%>"
+								id="<%=tm.replaceAll(" ", "_")%>***<%=terms_id%>"><b><%=tm%></b></a>
+							<%
+								} else {
+													String size = "1";
+													activew = "";
+													HashMap<String, Integer> kys = termsJson.get(i);
+													String tm = kys.keySet().toArray()[0].toString();
+													String v = kys.get(tm).toString();
+													String terms_id = "1";
+							%>
 
+
+
+
+							<%--   --%>
+							<a name="<%=tm %>"
+								class="topics topics1 btn btn-primary form-control select-term bloggerinactive mb20 <%=activew%>  size-1 <%-- <%=activew%> --%>"
+								value=" <%=v%>"><b> <%-- <%=entry.getKey()%> --%>
+							</b><%=tm%></a>
+
+							<%
+								}
+											}
+											
+							%>
 						</div>
 					</div>
 				</div>
@@ -914,14 +798,10 @@
 							<div id="main-chart">
 								<div id="chart-container">
 									<div class="chart-container">
-										<!-- <div class="chart" id="d3-line-basic"></div>  -->
-
 										<div id="line_graph_loader" class="hidden">
 											<img style='position: absolute; top: 50%; left: 50%;'
 												src='images/loading.gif' />
 										</div>
-
-
 										<div class="chart line_graph" id="chart"></div>
 									</div>
 								</div>
@@ -936,22 +816,26 @@
 								<h6 class="card-title mb0">Blog Mentioned</h6>
 								<%-- <h2 class="mb0 bold-text blog-mentioned"><%=NumberFormat.getNumberInstance(Locale.US).format(new Integer(blogmentioned))%>
 								</h2> --%>
-								<h2 class="mb0 bold-text blog-mentioned"><%=NumberFormat.getNumberInstance(Locale.US).format(new Integer(1/* blog_mentioned */))%></h2>
+								<h2 class="mb0 bold-text blog-mentioned"><%=NumberFormat.getNumberInstance(Locale.US).format(new Integer(blog_mentioned))%></h2>
 								<!-- <small class="text-success">+5% from <b>Last Week</b></small> -->
 							</div>
 
 							<div class="col-md-3 mt5 mb5">
 								<h6 class="card-title mb0">Keyword Count</h6>
-								
-								<%System.out.println(keyword_count); %>
-								<h2 class="mb0 bold-text keyword-count"><%=(null == keyword_count) ? "0" : NumberFormat.getNumberInstance(Locale.US).format(new Integer(keyword_count)) %></h2>
+
+								<%
+								%>
+								<h2 class="mb0 bold-text keyword-count"><%=(null == mosttermOccurence)
+								? "0"
+								: NumberFormat.getNumberInstance(Locale.US).format(new Integer(mosttermOccurence))%></h2>
 								<!-- <small class="text-success">+5% from <b>Last Week</b></small> -->
 							</div>
 
 							<div class="col-md-3 mt5 mb5">
 								<h6 class="card-title mb0">Posts Mentioned</h6>
 								<h2 class="mb0 bold-text post-mentioned">
-									<%-- <%=post_mentioned%> --%>100
+								
+									<%=NumberFormat.getNumberInstance(Locale.US).format(new Integer(post_mentioned))%>
 								</h2>
 								<!-- <small class="text-success">+5% from <b>Last Week</b></small> -->
 							</div>
@@ -959,8 +843,8 @@
 							<div class="col-md-3 mt5 mb5">
 								<h6 class="card-title mb0">Top Posting Location</h6>
 
-								<h3 class="mb0 bold-text top-location">LAGOS<%-- <%=(null == top_location || "" == top_location) ? "NOT AVAILABLE" : top_location%> --%></h3>
-								<!-- <small class="text-success">+5% from <b>Last Week</b></small> -->
+								<h3 class="mb0 bold-text top-location"><%=(null == top_location || "" == top_location) ? "NOT AVAILABLE" : top_location%>
+								</h3>
 							</div>
 
 
@@ -994,30 +878,15 @@
 					id="post-list">
 					<div class="card-body p0 pt20 pb20" style="min-height: 420px;">
 						<p>
-							Posts that mentioned <b class="text-green active-term">SEUN<%-- <%=mostactiveterm%> --%></b>
+							Posts that mentioned <b class="text-green active-term"><%=m.replace("\"", "")%></b> <span id="year_mentioned"></span>
 						</p>
 						<!--  <div class="p15 pb5 pt0" role="group">
           Export Options
           </div> -->
 						<%
-							System.out.println("values1--" + mostactiveterm + "NOBLOGGER" + "," + dt + "," + dte + "," + ids);
-									/* JSONObject sql = post._getBloggerPosts(mostactiveterm, "NOBLOGGER", dt, dte, ids);
-
-									JSONObject firstpost = new JSONObject(); */
-									/*if(allposts.size()>0){ */
-
-									/* if (sql.getJSONArray("data").length() > 0) {
-										String perma_link = null;
-										String j = null;
-										String title = null;
-										String blogpost_id = null;
-										String date = null;
-										String num_comments = null;
-										String blogger = null;
-										String posts = null;
-										Integer occurence = null; */
+							
 						%>
-						<table id="DataTables_Table_2_wrapper" class="display"
+						<table id="DataTables_Table_2_wrapper" class="table_over_cover display"
 							style="width: 100%">
 							<thead>
 								<tr>
@@ -1045,7 +914,7 @@
 												//String sql_ = sql.get("data").toString();
 												/* for (int i = 0; i < sql.getJSONArray("data").length(); i++) {
 													Object jsonArray = sql.getJSONArray("data").get(i);
-
+												
 													j = jsonArray.toString();
 													JSONObject j_ = new JSONObject(j);
 													perma_link = j_.get("permalink").toString();
@@ -1056,7 +925,7 @@
 													blogger = j_.get("blogger").toString();
 													posts = j_.get("post").toString();
 													occurence = (Integer) j_.get("occurence");
-
+												
 													DateTimeFormatter inputFormatter = DateTimeFormatter
 															.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH);
 													DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("dd-MM-yyy",
@@ -1064,53 +933,126 @@
 													LocalDate date_ = LocalDate.parse(date, inputFormatter);
 													Integer d = date_.getYear();
 													/* String formattedDate = outputFormatter.format(date); */
-													/* System.out.println(d.toString());
+												/* System.out.println(d.toString());
+												
+												String replace = "<span style=background:red;color:#fff>" + mostactiveterm + "</span>";
+												String active2 = mostactiveterm.substring(0, 1).toUpperCase()
+														+ mostactiveterm.substring(1, mostactiveterm.length());
+												String active3 = mostactiveterm.toUpperCase();
+												
+												System.out.println("mostactiveterms--="+mostactiveterm);
+												
+												posts = posts.replace(mostactiveterm, replace);
+												posts = posts.replace(active2, replace);
+												posts = posts.replace(active3, replace);
+												
+												title = title.replace(mostactiveterm, replace);
+												title = title.replace(active2, replace);
+												title = title.replace(active3, replace);
+												
+												if(i == 0){
+													activeDef = "activeselectedblog";
+													activeDefLink = "";
+												}else{
+													activeDefLink = "makeinvisible";
+													activeDef = "";
+												} */
 
-													String replace = "<span style=background:red;color:#fff>" + mostactiveterm + "</span>";
-													String active2 = mostactiveterm.substring(0, 1).toUpperCase()
-															+ mostactiveterm.substring(1, mostactiveterm.length());
-													String active3 = mostactiveterm.toUpperCase();
-
-													System.out.println("mostactiveterms--="+mostactiveterm);
-													
-													posts = posts.replace(mostactiveterm, replace);
-													posts = posts.replace(active2, replace);
-													posts = posts.replace(active3, replace);
-
-													title = title.replace(mostactiveterm, replace);
-													title = title.replace(active2, replace);
-													title = title.replace(active3, replace);
-													
-													if(i == 0){
-														activeDef = "activeselectedblog";
-														activeDefLink = "";
+												/* 	LocalDate datee = LocalDate.parse(date);
+													DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");
+													date = dtf.format(datee); */
+												String singlePost = null;
+												String singleTitle = null;
+												String singleBlogger = null;
+												String singleComments = null;
+												String singleDate = null;
+												String replace = "<span style=background:red;color:#fff>" + mostactiveterm + "</span>";
+												//JSONObject p = post_id_post_pair;
+												String occurence = null;
+												//Iterator<String> iter = p.keys();
+												String post_id = null;
+												String title = null;
+												String post_ = null;
+												int count = 0;
+												JSONObject lineGraph = new JSONObject();
+												JSONArray lineValues = new JSONArray();
+												int occurenceTotal = 0;
+												String date = null;
+												int max_occurence = 0;
+												String max_occurence_post = "";
+												String max_occurence_post_date = "";
+												String max_occurence_post_title = "";
+												String max_occurence_post_blogger = "";
+												String max_occurence_id = "";
+												HashMap<String,String> values = new HashMap<String,String>();
+												int i_found = 0;
+												//int i = 0;
+												
+												
+												for (int i = 0; i < occurenceData.length(); i++) {
+													JSONObject j = new JSONObject(occurenceData.get(i).toString());
+													occurence = j.get("occurence").toString();
+													title = j.get("title").toString();
+												
+													if (i == 0) {
+														
+														//System.out.println("STARTED HERE"+j);
+														max_occurence = Integer.parseInt(occurence);
+														//System.out.println(max_occurence);
 													}else{
+														
+														//System.out.println("ENDED HERE");
 														activeDefLink = "makeinvisible";
 														activeDef = "";
-													} */
 
-													/* 	LocalDate datee = LocalDate.parse(date);
-														DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");
-														date = dtf.format(datee); */
-
-													/* BY SEUN ENDING */
+													}
+													
+													if(max_occurence < Integer.parseInt(occurence)){
+														//System.out.println("GUESS HERE");
+														//System.out.println(j1);
+														//System.out.println("HERE");
+													
+														//System.out.println("ENTERED HERE");
+														max_occurence = Integer.parseInt(occurence);
+														max_occurence_id = j.get("blogpost_id").toString();
+														max_occurence_post = j.get("post").toString();
+														max_occurence_post_blogger = j.get("blogger").toString();
+														max_occurence_post_date = j.get("date").toString();
+														max_occurence_post_title = j.get("title").toString();
+														//max_occurence_post_perma_link = j1.get("permalinks").toString();
+														//max_occurence_post_title = j1.get("title").toString();
+														//JSONObject j1 = new JSONObject(max_occurence_id);
+														max_occurence_post = max_occurence_post.toLowerCase().replace(mostactiveterm, replace);
+														
+														//singleTitle = title;
+													} 
+													
 								%>
+								
 								<tr>
-									<td><a class="blogpost_link cursor-pointer blogpost_link <%=activeDef %>"
-										id="<%-- <%=tobj.get("blogpost_id")%> --%><%-- <%=blogpost_id%> --%> 1">
-											<%-- <%=tobj.get("title") %> --%><%-- <%=title%> --%> TESTING</a><br /> <a
-										class="mt20 viewpost <%=activeDefLink %>"
+									<td><a
+										class="blogpost_link cursor-pointer <%=activeDef %>"
+										id="<%-- <%=tobj.get("blogpost_id")%> --%><%=j.get("blogpost_id").toString()%>">
+											<%-- <%=tobj.get("title") %> --%> <%=title%>
+									</a><br /> <a class="mt20 viewpost <%=activeDefLink%>"
+									id="viewpost_<%=post_id%>"
 										href="<%-- <%=tobj.get("permalink") %> --%><%-- <%=perma_link%> --%> XXX"
 										target="_blank"> <buttton
 												class="btn btn-primary btn-sm mt10 visitpost">Visit
 											Post &nbsp;<i class="fas fa-external-link-alt"></i></buttton>
 									</a></td>
-									<td align="center">
-									1
-										<%-- <%=(bodyoccurencece) %> --%><%-- <%=occurence%> --%></td>
+									<td align="center"><%=occurence%> <%-- <%=(bodyoccurencece) %> --%>
+										<%-- <%=occurence%> --%></td>
 								</tr>
 								<%
-									//}
+									}
+
+																		
+								%>
+								
+								<%
+															
+												/* BY SEUN ENDING */
 								%>
 								</tr>
 							</tbody>
@@ -1125,73 +1067,49 @@
 
 					<div style="" class="pt20" id="blogpost_detail">
 						<%
-							/* JSONObject tobj = firstpost;
-													String title = tobj.get("title").toString().replaceAll("[^a-zA-Z]", " ");
-													String body = tobj.get("post").toString().replaceAll("[^a-zA-Z]", " ");
-													String dat = tobj.get("date").toString().substring(0,10);
-													LocalDate datee = LocalDate.parse(dat);
-													DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");
-													String date = dtf.format(datee);
-													String replace = 	"<span style=background:red;color:#fff>"+mostactiveterm+"</span>";
-													String link = tobj.get("permalink").toString();
-													
-													String maindomain="";
-													try {
-														URI uri = new URI(link);
-														String domain = uri.getHost();
-														if (domain.startsWith("www.")) {
-															maindomain = domain.substring(4);
-														} else {
-															maindomain = domain;
-														}
-													} catch (Exception ex) {}
-													System.out.println("dd--"+title+blogpost_id+date+num_comments+blogger);
-													
-													title = title.replaceAll(mostactiveterm,replace);
-													String active2 = mostactiveterm.substring(0,1).toUpperCase()+mostactiveterm.substring(1,mostactiveterm.length());
-													String active3= mostactiveterm.toUpperCase();
-													
-													
-													title = title.replaceAll(mostactiveterm,replace);
-													title = title.replaceAll(active2,replace);
-													title = title.replaceAll(active3,replace);
-													
-													
-													body = body.replaceAll(mostactiveterm,replace);
-													body = body.replaceAll(active2,replace);
-													body = body.replaceAll(active3,replace); */
+							
 						%>
 						<h5 class="text-primary p20 pt0 pb0">
-							<%-- <%=title%> --%><%-- <%=title%> --%> TESTING</h5>
+							<%-- <%=title%> --%>
+							<%-- <%=title%> --%>
+							<%=max_occurence_post_title%>
+						</h5>
 						<div class="text-center mb20 mt20">
 							<%-- <a href="<%=request.getContextPath()%>/bloggerportfolio.jsp?tid=<%=tid.toString()%>&blogger=<%=tobj.get("blogger")%>">
 							<button class="btn stylebuttonblue">
 								--%>
 							<button class="btn stylebuttonblue"
-								onclick="window.location.href = '<%=request.getContextPath()%>/bloggerportfolio.jsp?tid=<%=tid%>&blogger=<%-- <%=tobj.get("blogger")%> --%><%-- <%=blogger%> --%> BLOGGER SEUN'">
-								<b class="float-left ultra-bold-text"> <%-- <%=tobj.get("blogger")%> --%><%-- <%=blogger%> --%>BLOGGER SEUN</b>
-								<i class="far fa-user float-right blogcontenticon"></i>
+								onclick="window.location.href = '<%=request.getContextPath()%>/bloggerportfolio.jsp?tid=<%=tid%>&blogger= <%=singleBlogger%>'">
+								<b class="float-left ultra-bold-text"> <%-- <%=tobj.get("blogger")%> --%>
+									<%=max_occurence_post_blogger%>
+								</b> <i class="far fa-user float-right blogcontenticon"></i>
 							</button>
 							</a>
 							<button class="btn stylebuttonnocolor nocursor">
-								<%-- <%=date %> --%><%-- <%=date%> --%>2000</button>
+								<%-- <%=date %> --%>
+								<%=max_occurence_post_date%>
+
+							</button>
 							<button class="btn stylebuttonnocolor nocursor">
-								<b class="float-left ultra-bold-text"> <%-- <%=tobj.get("num_comments")%> --%><%-- <%=num_comments%> --%>6000
-									comments
-								</b><i class="far fa-comments float-right blogcontenticon"></i>
+								<b class="float-left ultra-bold-text"> <%-- <%=tobj.get("num_comments")%> --%>
+									<%=singleComments%> comments
+								</b> &nbsp; <i class="far fa-comments float-right blogcontenticon"></i>
 							</button>
 						</div>
 						<div style="height: 600px;">
 							<div class="p20 pt0 pb20  text-primary"
 								style="height: 550px; overflow-y: scroll;">
 								<%-- <%=body%> --%>
-								<p><%-- <%=posts%> --%> TESTING THE POSTS</p>
+								<p>
+									<%=max_occurence_post%>
+
+								</p>
 							</div>
 						</div>
 						<%
 							/* System.out
-												.println("dd--" + title + blogpost_id + date + num_comments + blogger + mostactiveterm); */
-									//}
+																																																																																																														.println("dd--" + title + blogpost_id + date + num_comments + blogger + mostactiveterm); */
+										//}
 						%>
 
 					</div>
@@ -1209,7 +1127,7 @@
 							<!-- <div class="p15 pb5 pt0" role="group">
           Export Options
               </div> -->
-							<table id="DataTables_Table_1_wrapper" class="display"
+							<table id="DataTables_Table_1_wrapper" class="display table_over_cover"
 								style="width: 100%">
 								<thead>
 									<tr>
@@ -1226,56 +1144,32 @@
 								</thead>
 								<tbody id="tbody" class="termtable">
 									<%
-										if (null != session.getAttribute(tid.toString())) {
-													/* for (int i = 0; i < topterms.length(); i++) {
-														JSONObject jsonObj = topterms.getJSONObject(i);
-														int size = 10;
-														/* int size = Integer.parseInt(jsonObj.getString("frequency")); */
-													/*String terms = jsonObj.getString("key");
-													String postcount = post._searchTotalByTitleAndBody(terms,"date", dt,dte);
-													String blogcount = post._searchTotalAndUnique(terms,"date", dt,dte,"blogsite_id");
-													String bloggercount = post._searchTotalAndUnique(terms,"date", dt,dte,"blogger");
-													String language = jsonObj.getString("language");//jsonObj.getString("language");
-													String location = jsonObj.getString("location");
-													String blogger = jsonObj.getString("leadingblogger");										
-													int keycount = term.getTermOcuurence(terms, dt, dte); */
+										
 
-													//mostactiveterm = keys_.next();
-													String t_ = null;
-													Integer blog_mentioned_ = null;
-
-													//System.out.println("keys2--"+keys_.hasNext());
-
-													for (int i = 0; i < 50; i++) {
-														/* while(keys_.hasNext()) { */
-
-														//System.out.println("values2--"+key+"NOBLOGGER"+","+json.get(key)+","+dt+","+ dte+","+ids);
-														/* try{
-															JSONObject t = post._getBloggerPosts(key,"NOBLOGGER",dt, dte,ids);
-															t_ = t.get("total").toString();
-															blog_mentioned_ = post._getBlogOrPostMentioned("blogsite_id",key,dt, dte,ids);
-															top_location=post._getMostLocation(key,dt, dte,ids);
-														}
-														catch(Exception e){
-															
-														} */
+													for (int j = 0; j < 10; j++) {
+												
+														HashMap<String, Integer> kys = termsJson.get(j);
+														String tm = kys.keySet().toArray()[0].toString();
+														String v = kys.get(tm).toString();
+														String m_ = "\"" + tm + "\"";
+														String blog_mentioned_ = KWT.aggregation(m_, ids, dt, dte, "blogposts", "blogsite_id",
+																"asc", "bucket_length");
+														String post_mentioned_ = KWT.getPostsMentioned(m_, ids, dt, dte, "blogposts");
 									%>
 									<tr>
-										<td>
-											<%-- <%=terms%> --%> <%-- <%=key %> --%>
-										</td>
+										<td><%=tm%> <%-- <%=key %> --%></td>
 										<%-- <td><%=NumberFormat.getNumberInstance(Locale.US).format(size)%></td> --%>
 										<td>
 											<%-- <%=NumberFormat.getNumberInstance(Locale.US).format(Integer.parseInt(postcount)) %>--%>
-											<%-- <%=json.get(key) %> --%> <%-- <sub>of <%=postcount%></sub> --%>
+											<%=v%> <%-- <sub>of <%=postcount%></sub> --%>
 										</td>
 										<td>
 											<%-- <%=NumberFormat.getNumberInstance(Locale.US).format(Integer.parseInt(blogcount))%> --%>
-											<%-- <%=t_ %> --%> <%-- <sub>of <%=blogcount%></sub> --%>
+											<%=post_mentioned_%> <%-- <sub>of <%=blogcount%></sub> --%>
 										</td>
 										<td>
 											<%-- <%=NumberFormat.getNumberInstance(Locale.US).format(keycount)%> --%>
-											<%-- <%=blog_mentioned_ %> --%> <%-- <sub>of <%=bloggercount%></sub> --%>
+											<%=blog_mentioned_%> <%-- <sub>of <%=bloggercount%></sub> --%>
 										</td>
 										<%-- <td><%=blogger%></td>
 										<td><%=language%></td>
@@ -1284,7 +1178,7 @@
 									</tr>
 									<%
 										}
-												}
+													
 									%>
 
 
@@ -1314,7 +1208,10 @@
 
 
 
+<!-- <input id="myInput" value="Some text..">
+<button id="myBtn" onclick="javascript:alert('Hello World!')">Button</button>
 
+ -->
 
 	</div>
 
@@ -1349,11 +1246,15 @@
 		src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.html5.min.js"></script>
 	<script
 		src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.print.min.js"></script>
+		<script type="text/javascript" src="assets/js/toastr.js"></script>
 	<script src="pagedependencies/baseurl.js?v=38"></script>
 
 	<script>
 $(document).ready(function() {
-	<%-- loadMostPost("<%=mostactiveterm%>"); --%>
+	
+	
+	finalGraph();
+	
 });
 
 
@@ -1362,12 +1263,12 @@ $(document).ready(function() {
 		  // keywords have not been computed.
 		/* loadtermTableBulk(); */
 		<%} else {
-			
-									Object data_table = (null == session.getAttribute(tid.toString() + "_termtable"))
-								? ""
-								: session.getAttribute(tid.toString() + "_termtable");
 
-						System.out.println("session obj" + data_table);%>
+							Object data_table = (null == session.getAttribute(tid.toString() + "_termtable"))
+									? ""
+									: session.getAttribute(tid.toString() + "_termtable");
+
+							//System.out.println("session obj" + data_table);%>
 		  // Keywords have been computed
 		  <%-- updateTable(<%=data_table%>); --%>
 		  /* no active selection */
@@ -1379,6 +1280,23 @@ $(document).ready(function() {
 	<script>
 		$(document).ready(function () {
 			
+			$('#DataTables_Table_1_wrapper').DataTable({
+				"scrollY": 430,
+
+				"pagingType": "simple"
+				/*   ,
+			 dom: 'Bfrtip'
+		   ,
+		 buttons:{
+		   buttons: [
+			   { extend: 'pdfHtml5',orientation: 'potrait', pageSize: 'LEGAL', className: 'btn-primary stylebutton1'},
+			   {extend:'csv',className: 'btn-primary stylebutton1'},
+			   {extend:'excel',className: 'btn-primary stylebutton1'},
+			  // {extend:'copy',className: 'btn-primary stylebutton1', text: 'Copy to Clipboard'},
+			   {extend:'print',className: 'btn-primary stylebutton1'},
+		   ]
+		 } */
+			});
 
 			$('#DataTables_Table_0_wrapper').DataTable({
 				"scrollY": 430,
@@ -1399,6 +1317,9 @@ $(document).ready(function() {
 			});
 
 			$('#DataTables_Table_2_wrapper').DataTable({
+				"columnDefs": [
+	    		    { "width": "70%", "targets": 0 }
+	    		  ],
 				"scrollY": 480,
 
 				"pagingType": "simple",
@@ -1416,6 +1337,14 @@ $(document).ready(function() {
 		   ]
 		 } */
 			});
+			
+			 ///getting post with highest distance
+		    id = <%=max_occurence_id %>
+			$(".viewpost").addClass("makeinvisible");
+		  	$('.blogpost_link').removeClass("activeselectedblog");
+		 	$('#'+id).addClass("activeselectedblog");
+		  	$("#viewpost_"+id).removeClass("makeinvisible");
+		  	
 		});
 	</script>
 	<!--end for table  -->
@@ -1563,14 +1492,18 @@ $(document).ready(function() {
 
 
 
-
-
-
 	<script>
     
- /////////////////////////////////////////////////////
- 
- 
+ ///////////////////////////////////////////////////// 
+ var overal_holder = [];
+	
+	<% int pj = 0; 
+	for (Map.Entry<String, String> entry : map1.entrySet()) { %>
+	overal_holder[<%=pj %>] = { name: "<%=entry.getKey() %>", details: "<%=entry.getValue() %>"};
+		
+		
+	<% pj++; } %>
+	
  //////start time converting function
  	
  function convertTime(str) {
@@ -1578,6 +1511,8 @@ $(document).ready(function() {
   return [date.getFullYear()];
 }
  
+	
+	
  
  ///////end time converting function
     
@@ -1590,42 +1525,44 @@ $(document).ready(function() {
     	
     	var t = parseFloat(i);
 
-    switch(t) {
+    	switch(t) {
 
-    case 1:
-        var hex = '#5de6f8'; 
-        break;
-      case 2:
-        var hex = '#ed9dfb';
-        break;
-      case 3:
-        var hex = '#b1fcdf';
-        break;
-      case 4:
-        var hex = '#eefcb1';
-        break;
-      case 5:
-        var hex = '#fccfb1';
-        break;
-      case 6:
-        var hex = '#b770e1';
-        break;
-      case 7:
-        var hex = '#1fa701';
-        break;
-      case 8:
-        var hex = '#011aa7';
-        break;
-      case 9:
-        var hex = '#a78901';
-        break;
-      case 10:
-        var hex = '#981010';
-        break;
-      default:
-        var hex = '#8088fa';
+        //case 0:
+          //var hex = 'yellow';
+        case 1:
+          var hex = '#e50471'; 
+          break;
+        case 2:
+          var hex = '#0571a0';
+          break;
+        case 3:
+          var hex = '#038a2c';
+          break;
+        case 4:
+          var hex = '#6b8a03';
+          break;
+        case 5:
+          var hex = '#a02f05';
+          break;
+        case 6:
+          var hex = '#b770e1';
+          break;
+        case 7:
+          var hex = '#1fa701';
+          break;
+        case 8:
+          var hex = '#011aa7';
+          break;
+        case 9:
+          var hex = '#a78901';
+          break;
+        case 10:
+          var hex = '#981010';
+          break;
+        default:
+          var hex = '#6b085e';
 
-    }
+      }
 
 
     
@@ -1635,6 +1572,9 @@ $(document).ready(function() {
     	
         if ( $(this).attr('name') == ''+name+'' ) {
         	$(this).css('background-color', hex);
+        	$(this).removeClass('bloggerinactive ');
+        	$(this).addClass('selectionactive');
+        	$(this).css('font-weight', 'bold');
         };
         
     });
@@ -1651,18 +1591,13 @@ $(document).ready(function() {
     	$('.line_graph').addClass('hidden');
         $('#line_graph_loader').removeClass('hidden');
         
-        
-    	  setTimeout(
-     			  function() 
-     			  { 
-           finalGraph();
-        }, 1000)
+        finalGraph();
+    	
     });
     
-    
-    $(document).delegate('.topics1', 'click', function(){
-
-        var id = this.id;
+    /////
+    $(document).delegate('.topics1', 'click', function(){ 
+    	var id = this.id;
         var name = $(this).attr('name');
         
        $('.line_graph').addClass('hidden');
@@ -1677,11 +1612,18 @@ $(document).ready(function() {
             
           $(this).removeClass("thanks"); 
 
-          $(this).addClass('nobccolor');
-
+          $(this).addClass('white_bac');
+		
+          $(this).addClass("bloggerinactive"); 
+          
+          $(this).removeClass('selectionactive');
+          
+          $(this).css('font-weight', 400);
 
         }else{
-
+		
+        	$(this).removeClass("white_bac"); 
+        	
           $(this).removeClass('nobccolor');
 
           $(this).addClass("thanks"); 
@@ -1689,19 +1631,12 @@ $(document).ready(function() {
 
         }
 
-      	
-       setTimeout(
- 			  function() 
- 			  { 
-       finalGraph();
-    }, 2000)
       
-      
-
-      })
-      
+    	finalGraph();
+    })
+    /////  
     
-      
+   
     
    function finalGraph(){
     	
@@ -1711,17 +1646,17 @@ $(document).ready(function() {
     	
     	var highest_date_index = 0;
    		var highest_price_index = 0;
+   		var lowest_date_index = 0;
    		
    		var highest_date_name = '';
    		var highest_price_name = '';
-    		
+   		var lowest_date_name = '';
+    	
+   		var lowest_date = 0;
   		var highest_date = 0;
   		var highest_price = 0;
   		
-    	
     	 var count = $('.thanks').length;
-    	 
-   
     	 
     	 if(count > 0){
     		
@@ -1729,12 +1664,13 @@ $(document).ready(function() {
 ///////////////start collecting names
     		 var county = $('.thanks').length;
     		 
+    		 //console.log("oga county",county)
+    		 
     		 if(county > 0){
     			 
     			 var all_selected_names = '';
     			 var i = 1;
     			 $( ".thanks" ).each(function( index ) {
-    				 
     				 
     				 if(i > 1){
     					 all_selected_names += ' , ';
@@ -1742,12 +1678,7 @@ $(document).ready(function() {
     				 
     		    	blog_name = $(this).attr('name');
     		    	
-    		    	
     		    	all_selected_names += '"'+blog_name+'"';
-    		    	
-/*     		    	all_selected_names += '"'+blog_name+'"';
-    		    	all_selected_names1 += blog_name; */
-    		    	
     		    		
     		    	i++;
     			    		
@@ -1759,427 +1690,551 @@ $(document).ready(function() {
     		 
     		 
     		 
+    		 /////start for each loop for active class
+    		 var t = 0;
     		 
-    		 $( ".thanks" ).each(function( index ) {g
+    		 $( ".thanks" ).each(function( index ) {
     			 
        		  		var ind = index;
-       		  		
+       		  		var arr1 = [];
+	    		  	var total_count = 0;
     		    	name = 	$(this).attr('name');
     		    	
     		    	id = 	$(this).attr('value');
+    		    	////start new stuff
+    		    	holder_index = overal_holder.findIndex(x => x.name === name);
+    				
+    				let temp_dates_values = overal_holder[holder_index]['details']
+    				
+    				temp_details = temp_dates_values.split(",");
+    				//start for loop here
+    				flag = 0;
+    				for (m = 0; m < temp_details.length; m++) {
+    				    holder = temp_details[m];
+    				    
+    				    holder_details = holder.split(":");
+    				    temp_year = holder_details[0].replace("'", "").trim();
+    				    temp_year = temp_year.replace("'", "").trim();
+    				    temp_year = parseInt(temp_year);
+    				    temp_count = holder_details[1].trim();
+    				    temp_count = parseInt(temp_count);
+    				    total_count = total_count + temp_count;
+    				    let current_year = new Date().getFullYear();
+    				    let last_year_check = 1999;
+    				    
+    				    if((temp_year <= current_year) && (temp_year >= last_year_check)){
+    				    	flag++;
+    				    	if((flag == 1) && (t == 0) ){
+        				    	lowest_date = temp_year;
+        				    	highest_date = temp_year;
+        				    	highest_price = temp_count;
+        				    }
+        				    
+        				    //start checks
+        				    
+    	  					if(temp_year < lowest_date){
+    	  						lowest_date = temp_year;
+    	  						lowest_date_index = m;
+    	  						lowest_date_name = name;
+    	  					}
+    	  					
+    	  					if(temp_year > highest_date){
+    	  						highest_date = temp_year;
+    	  						highest_date_index = m;
+    	  						highest_date_name = name;
+    	  					}
+    	  					
+    	  					if(temp_count > highest_price){
+    	  						highest_price = temp_count;
+    	  						highest_price_index = m;
+    	  						highest_price_name = name;
+    	  					}
+        				    
+        				    //end checks
+        				    var string2 = temp_year.toString();
+        		  			
+        		  			var string3 = temp_count.toString();
+        				    arr1.push({date: string2 ,close: string3, name:name});
+    				    
+    				    	
+    				    }
+    				    
+    				    //end year 2020 check
+    				    
+    				    
+    				}
+    				//end for loop here
+    				//sorting function
+    				function compare( a, b ) {
+					  if ( a.date < b.date ){
+					    return -1;
+					  }
+					  if ( a.date > b.date ){
+					    return 1;
+					  }
+					  return 0;
+					}
+					//end sorting function
+					
+					arr1.sort( compare );
+    				
+    				data1.push({name: name, identify: total_count, values:arr1 });
+    				
+    				
+    		    	///end new stuff
+    		    		t++;
     		    	
-    		    	
-    		    		
-    		    		
-    		    ////start ajax
-    		    	
-    		    	$.ajax({
-    		    		url : app_url + "KeywordTrend1",
-    					method : 'POST',
-    					dataType:'json',
-    					data : {
-    						action : "line_graph",
-    						term : name,
-    						all_selected_names : all_selected_names,
-    						index:ind,
-    						async: false,
-    						all_blog_ids : $("#all_blog_ids").val(),
-    						date_start : $("#date_start").val(),
-    						date_end : $("#date_end").val(),
-    					},
-    		  			error: function(response)
-    		  			{						
-    		  				alert('error');
-    		  				console.log(response);
-    		  			//	$("#chart-container").html(response);
-    		  			},
-    		  			success: function(response)
-    		  			{   
-    		  				console.log('before response');
-    		  				console.log(response)
-    		  				var arr1 = [];
-    		    		  	
-    		  				$.each(response.values, function( key, value ) {
-    		  					
-        		  				
-    		  					var d = parseFloat(key);
-    		  					var p = parseFloat(value);
-    		  					
-    		  					if(d > highest_date){
-    		  						highest_date = key;
-    		  						highest_date_index = response.index;
-    		  						highest_date_name = response.name;
-    		  						
-    		  						
-    		  						
-    		  					}
-    		  					
-    		  					if(p > highest_price){
-    		  						highest_price = value;
-    		  						highest_price_index = response.index;
-    		  						highest_price_name = response.name;
-    		  						
-    		  					}
-    		  					
-    		  					
-    		  					var string2 = key.toString();
-    		  				
-    		  					var string3 = value.toString();
-    		  				
-    		  					arr1.push({date: string2 ,close: string3, name:response.name});
-    		  					
-    			  				
-    				  		});
-    		  				
-    		  				
-    		  				data1.push(
-		  						      
-		  						      {
-		  						    	name: response.name,
-		  						      	identify: id,
-		  						        values: 
-		  						          
-		  						        	  arr1
-		  						        	
-		  						      }
-		  						    );
-    		  				
-    		  				
-    						
-    						/* console.log("arr--"+d+"--"+JSON.parse(JSON.stringify(array))); */
-    						/* d=response; */
-    						//for(var key in response){
-    							
-    							//var dic = Object.create(null);
-
-    						//	dic.date=key;
-    						//	dic.close=response[key];
-    						//	dic.name=name;
-
-    						//	array.push(dic);
-
-    						//}
-    						//array_2=[];
-    						//array_2.push(array);
-    						//console.log("ddddddd");
-    						//console.log(array_2);
-    						
-    		  				
-    		    	
-    				  			}
-    		  			
-    		  			
-    		  			
-    				  		});
-    		    	
-    		  
-    		    ///////end ajax
-    		    		
+    		    		if(county == t){
+    		    			
+    		    			
+    		    			data1.forEach((arrayItem) => {data.push(arrayItem) });
+    		  				  
+    		  				// console.log(data);
+		  					
+		  					beginBuilder(data)
+		  				}
+    		   
     		    		});
-    		 
+    		 ///////end for each loop of active classes
     		 
     		 	
     		 
-    	    	var longt = 0;
-    	    	
-    	    	  setTimeout(
-    	    			  function() 
-    	    			  {
-    	    				  console.log('check this ');
-    	    	    		 	console.log(data1);
-    	    	    		 	
-    	    				  data1.forEach((arrayItem) => {
-    	    				    data.push(arrayItem)
-    	    				    
-    	    				    
-    	    				    
+    		 ///start begin builder function
+    		 function beginBuilder(data){
+    		 		
+  				////start Timeout to display Graph
+  	    	    	var longt = 0;
+  	    	    	 	
+    				  //data1.forEach((arrayItem) => {data.push(arrayItem) });
+    				
+    				  
+    			/////////start graph stuff
+    			$('#chart').html('');
+    			$('#chart').empty();
+    				indexy = data.findIndex(x => x.name === highest_date_name);
+    				
+	 			//var width = 750;
+	 			var width = $('#chart-container').width();
+	 		    var height = 200;
+	 		    var margin = 30;
+	 		    var duration = 250;
+	 		    
+	 		   var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"]
 
-    	    				    
-    	    				  });
-    	    				  
-    	    			/////////start graph stuff
-    	    				indexy = data.findIndex(x => x.name === highest_date_name);
-	    				    
-	    				    console.log(data);
-      	    				
-  				 			//var width = 750;
-  				 			var width = $('#chart-container').width();
-  				 		    var height = 200;
-  				 		    var margin = 30;
-  				 		    var duration = 250;
+	 		    var lineOpacity = "0.25";
+	 		    var lineOpacityHover = "0.85";
+	 		    var otherLinesOpacityHover = "0.1";
+	 		    var lineStroke = "1.5px";
+	 		    var lineStrokeHover = "2.5px";
 
-  				 		    var lineOpacity = "0.25";
-  				 		    var lineOpacityHover = "0.85";
-  				 		    var otherLinesOpacityHover = "0.1";
-  				 		    var lineStroke = "1.5px";
-  				 		    var lineStrokeHover = "2.5px";
-
-  				 		    var circleOpacity = '0.85';
-  				 		    var circleOpacityOnLineHover = "0.25"
-  				 		    var circleRadius = 3;
-  				 		    var circleRadiusHover = 6;
+	 		    var circleOpacity = '0.85';
+	 		    var circleOpacityOnLineHover = "0.25"
+	 		    var circleRadius = 3;
+	 		    var circleRadiusHover = 6;
 
 
-  				 		    /* Format Data */
-  				 		    var parseDate = d3.time.format("%Y").parse;
-  				 		    data.forEach(function(d, i) {
-  				 		    	
-  				 		      d.values.forEach(function(d) {
-  				 		        d.date = parseDate(d.date);
-  				 		        d.close = +d.close;    
-  				 		      });
-  				 		      
-  				 		    });
+	 		    /* Format Data */
+	 		   var parseDate = d3.time.format("%Y").parse;
+	 		    data.forEach(function(d, i) {
+	 		    	
+	 		      d.values.forEach(function(d) {
+	 		        d.date = parseDate(d.date);
+	 		        d.close = +d.close;    
+	 		      });
+	 		      
+	 		    });
 
 
-  				 		    /* Scale */
-  				 		    var xScale = d3.time.scale()
-  				 		   // var xScale = d3.scaleTime()
-  				 		      .domain(d3.extent(data[indexy].values, d => d.date))
-  				 		      .range([0, width-margin]);
+	 		    /* Scale */
+	 		    var mindate = new Date(lowest_date,0,1);
+	 		   
+            maxdate = new Date(highest_date,0,31);
+	 		    var xScale = d3.time.scale()
+	 		   // var xScale = d3.scaleTime()
+	 		     .domain([mindate, maxdate]) 
+	 		     // .domain(d3.extent(data[indexy].values, d => d.date))
+	 		      .range([0, width-margin]);
+		
+	 		   //var yScale = d3.scaleLinear()
+		      //.domain([0, d3.max(data[highest_price_index].values, d => d.price)])
+		     // .range([height-margin, 0]);
+	 		   
+	 		    var yScale = d3.scale.linear()
+	 		      .domain([0, highest_price])
+	 		      .range([height-margin, 0]);
+	 		  
+	 		     
 
-  				 		   //var yScale = d3.scaleLinear()
-				 		      //.domain([0, d3.max(data[highest_price_index].values, d => d.price)])
-				 		     // .range([height-margin, 0]);
-  				 		   
-  				 		    var yScale = d3.scale.linear()
-  				 		      .domain([0, highest_price])
-  				 		      .range([height-margin, 0]);
-  				 		  
-  				 		     
+	 		    var color = d3.scale.ordinal(d3.schemeCategory10);
 
-  				 		    var color = d3.scale.ordinal(d3.schemeCategory10);
+	 		    /* Add SVG */
+	 		    var svg = d3.select("#chart").append("svg")
+	 		      .attr("width", (width+margin)+"px")
+	 		      .attr("height", (height+margin)+"px")
+	 		      .style("overflow", "visible")
+	 		      .append('g')
+	 		      .attr("transform", `translate(${margin}, ${margin})`);
 
-  				 		    /* Add SVG */
-  				 		    var svg = d3.select("#chart").append("svg")
-  				 		      .attr("width", (width+margin)+"px")
-  				 		      .attr("height", (height+margin)+"px")
-  				 		      .style("overflow", "visible")
-  				 		      .append('g')
-  				 		      .attr("transform", `translate(${margin}, ${margin})`);
-
-
-  				 		    /* Add line into SVG */
-  				 		    var line = d3.svg.line()
-  				 		      .x(d => xScale(d.date))
-  				 		      .y(d => yScale(d.close));
-
-  				 		    let lines = svg.append('g')
-  				 		      .attr('class', 'lines');
-
-
-  				 		    lines.selectAll('.line-group')
-  				 		      .data(data).enter()
-  				 		      .append('g')
-  				 		      .attr('class', 'line-group')  
-  				 		      .on("mouseover", function(d, i) {
-  				 		    	  
-  				 		          svg.append("text")
-  				 		            .attr("class", "title-text")
-  				 		            .style("fill", color1(i, d.identify, d.name))        
-  				 		            .text(d.name)
-  				 		            .attr("text-anchor", "middle")
-  				 		            .attr("x", (width-margin)/2)
-  				 		            .attr("y", 5);
-  				 		        })
-  				 		      .on("mouseout", function(d) {
-  				 		          svg.select(".title-text").remove();
-  				 		        })
-  				 		      .append('path')
-  				 		      .attr('class', 'line')  
-  				 		      .attr('d', d => line(d.values))
-  				 		      .style('stroke', (d, i) => color1(i, d.identify, d.name))
-  				 		      .style('opacity', lineOpacity)
-  				 		      .on("mouseover", function(d) {
-  				 		          d3.selectAll('.line')
-  				 		              .style('opacity', otherLinesOpacityHover);
-  				 		          d3.selectAll('.circle')
-  				 		              .style('opacity', circleOpacityOnLineHover);
-  				 		          d3.select(this)
-  				 		            .style('opacity', lineOpacityHover)
-  				 		            .style("stroke-width", lineStrokeHover)
-  				 		            .style("cursor", "pointer");
-  				 		        })
-  				 		      .on("mouseout", function(d) {
-  				 		          d3.selectAll(".line")
-  				 		              .style('opacity', lineOpacity);
-  				 		          d3.selectAll('.circle')
-  				 		              .style('opacity', circleOpacity);
-  				 		          d3.select(this)
-  				 		            .style("stroke-width", lineStroke)
-  				 		            .style("cursor", "none");
-  				 		        });
-
-
-  				 		    /* Add circles in the line */
-  				 		    lines.selectAll("circle-group")
-  				 		      .data(data).enter()
-  				 		      .append("g")
-  				 		      .style("fill", (d, i) => color1(i, d.identify, d.name))
-  				 		     
-  				 		      .selectAll("circle")
-  				 		       
-  				 		      .data(d => d.values).enter()
-  				 		      .append("g")
-  				 		      .attr("class", "circle") 
-  				 		      
-  				 		      
-  				 		      .on("click",function(d){
-  				 		    	 
-  				 		       var tempYear = convertTime(d.date);
-                        	   var d1 = 	  tempYear + "-01-01";
-                        	   var d2 = 	  tempYear + "-12-31";
-                        	 
-                        	   bloog = d.name.replaceAll("__"," ");
-                        		
-                        	   $('.activeblogger').html(bloog);
-                        	
-                        	   getTopLocation(bloog,$("#all_blog_ids").val(),d1,d2);
-                        	   loadTerms(bloog,$("#all_blog_ids").val(),d1,d2);	
-                        		loadSentiments(bloog,$("#all_blog_ids").val(),d1,d2);
-                        		
-                        	  // loadInfluence(d1,d2); 
-                        	   
-                           })
-                           
-                           
-  				 		      .on("mouseover", function(d) {
-  				 		          d3.select(this)     
-  				 		            .style("cursor", "pointer")
-  				 		            .append("text")
-  				 		            .attr("class", "text d3-tip")
-  				 		            .text(function(d) {
-  				 		                if(d.close === 0)
-  				 		                {
-  				 		                  return "No Information Available";
-  				 		                }
-  				 		                else if(d.close !== 0) {
-  				 		                 return d.close+"(Click for more information)";
-  				 		                  }
-  				 		                // return "here";
-  				 		                })
-  				 		            .attr("x", d => xScale(d.date) + 5)
-  				 		            .attr("y", d => yScale(d.close) - 10);
-  				 		        })
-  				 		      .on("mouseout", function(d) {
-  				 		          d3.select(this)
-  				 		            .style("cursor", "none")  
-  				 		            .transition()
-  				 		            .duration(duration)
-  				 		            .selectAll(".text").remove();
-  				 		        })
-  				 		      .append("circle")
-  				 		      .attr("cx", d => xScale(d.date))
-  				 		      .attr("cy", d => yScale(d.close))
-  				 		      .attr("r", circleRadius)
-  				 		      .style('opacity', circleOpacity)
-  				 		      .on("mouseover", function(d) {
-  				 		            d3.select(this)
-  				 		              .transition()
-  				 		              .duration(duration)
-  				 		              .attr("r", circleRadiusHover);
-  				 		          })
-  				 		        .on("mouseout", function(d) {
-  				 		            d3.select(this) 
-  				 		              .transition()
-  				 		              .duration(duration)
-  				 		              .attr("r", circleRadius);  
-  				 		          });
-
-
-  				 		    /* Add Axis into SVG */
-  				 		    //var xAxis = d3.svg.axis(xScale).ticks(9);
-  				 		    //var yAxis = d3.svg.axis(yScale).ticks(6);
-  				 		    
-  				 		    
-  				 		     // Construct scales
-				          // ------------------------------
-				
-				          // Horizontal
-				          var x = d3.scale.ordinal()
-				              .rangeRoundBands([0, width]);
-				
-				          // Vertical
-				          var y = d3.scale.linear()
-				              .range([height, 0]);
 				
 				
-				          // Create axes
-				          // ------------------------------
 				
-				          // Horizontal
-				          var xAxis = d3.svg.axis()
-				              .scale(xScale)
-				              .orient("bottom")
-				             .ticks(5)
-				
-				            // .tickFormat(formatPercent);
-				
-				
-				          // Vertical
-				          var yAxis = d3.svg.axis()
-				              .scale(yScale)
-				              .orient("left")
-				              .ticks(5);
-				          
-				          
-				          ///////////////////
+	 		    /* Add line into SVG */
+	 		    var line = d3.svg.line()
+	 		      .x(d => xScale(d.date))
+	 		      .y(d => yScale(d.close));
 
-  				 		 //   svg.append("g")
-  				 		    //  .attr("class", "x axis")
-  				 		   //   .attr("transform", `translate(0, ${height-margin})`)
-  				 		    //  .call(xAxis);
+	 		    let lines = svg.append('g')
+	 		      .attr('class', 'lines');
 
-  				 		   // svg.append("g")
-  				 		     // .attr("class", "y axis")
-  				 		    //  .call(yAxis)
-  				 		    //  .append('text')
-  				 		     // .attr("y", 15)
-  				 		     // .attr("transform", "rotate(-90)")
-  				 		     // .attr("fill", "black")
-  				 		     // .text("Total values");
-  				 		    
-  				 		    //////////////
-  				 		    
-  				 		    
-  				 		    
-  				 		    // Append axes
-			              // ------------------------------
-			
-			              // Horizontal
-			              svg.append("g")
-			                  .attr("class", "x axis d3-axis d3-axis-horizontal d3-axis-strong")
-			                  .attr("transform", `translate(0, ${height-margin})`)
-			                  .call(xAxis);
-			
-			              // Vertical
-			               svg.append("g")
-			                  .attr("class", "y axis d3-axis d3-axis-vertical d3-axis-strong")
-			                  .call(yAxis)
-			                  .append('text')
-			                  .attr("y", 15)
-			                  .attr("fill", "black")
-			              	  .text("Total values");
-			              
-			                  
-  				 		    
-  				 		    
-  				 		    
-  				 		    
-  				 		    
-  				 		
-  				 	/////////end graph stuff	
-    	    				  
-    	    				 		   $('.line_graph').removeClass('hidden');
-    	    				 	       $('#line_graph_loader').addClass('hidden');
-    	    				  		
-    	    				 	      $("#scroll_list_loader").addClass("hidden");
-    	    				 	 	$("#scroll_list").removeClass("hidden");
-    	    				 	       
-    	    				  
-    	    			  }, 3000)
-    	    			  
+
+	 		    lines.selectAll('.line-group')
+	 		      .data(data).enter()
+	 		      .append('g')
+	 		      .attr('class', 'line-group')  
+	 		      .on("mouseover", function(d, i) {
+	 		    	  
+	 		          svg.append("text")
+	 		            .attr("class", "title-text")
+	 		            .style("fill", color1(i, d.identify, d.name))        
+	 		            .text(d.name)
+	 		            .attr("text-anchor", "middle")
+	 		            .attr("x", (width-margin)/2)
+	 		            .attr("y", 5);
+	 		        })
+	 		      .on("mouseout", function(d) {
+	 		          svg.select(".title-text").remove();
+	 		        })
+	 		      .append('path')
+	 		      .attr('class', 'line')  
+	 		      .attr('d', d => line(d.values))
+	 		      .style('stroke', (d, i) => color1(i, d.identify, d.name))
+	 		      .style('opacity', lineOpacity)
+	 		      .on("mouseover", function(d) {
+	 		          d3.selectAll('.line')
+	 		              .style('opacity', otherLinesOpacityHover);
+	 		          d3.selectAll('.circle')
+	 		              .style('opacity', circleOpacityOnLineHover);
+	 		          d3.select(this)
+	 		            .style('opacity', lineOpacityHover)
+	 		            .style("stroke-width", lineStrokeHover)
+	 		            .style("cursor", "pointer");
+	 		        })
+	 		      .on("mouseout", function(d) {
+	 		          d3.selectAll(".line")
+	 		              .style('opacity', lineOpacity);
+	 		          d3.selectAll('.circle')
+	 		              .style('opacity', circleOpacity);
+	 		          d3.select(this)
+	 		            .style("stroke-width", lineStroke)
+	 		            .style("cursor", "none");
+	 		        });
+				
+	 		 
+
+	 		    /* Add circles in the line */
+	 		    lines.selectAll("circle-group")
+	 		      .data(data).enter()
+	 		      .append("g")
+	 		      .style("fill", (d, i) => color1(i, d.identify, d.name))
+	 		     
+	 		      .selectAll("circle")
+	 		       
+	 		      .data(d => d.values).enter()
+	 		      .append("g")
+	 		      .attr("class", "circle")
+	 		      
+	 		      
+	 		      .on("click",function(d){
+	 		    	 
+	 		       var tempYear = convertTime(d.date);
+                   	   var d1 = 	  tempYear + "-01-01";
+                   	   var d2 = 	  tempYear + "-12-31";
+                   	 
+                   	   bloog = d.name.replaceAll("__"," ");
+                   	   
+                   	   //$('.activeblogger').html(bloog);
+                   	   //$(".active-term").html(bloog);
+                   	   
+                   	 ///////////////start collecting names
+	                	 var count = $('.thanks').length;
+	                	 
+	                	 if(count > 0){
+	                		 
+	                		 var all_selected_names = '';
+	                		 var all_selected_names1 = '';
+	                		 var all_selected_id = '';
+	                		 var i = 1;
+	                		 $( ".thanks" ).each(function( index ) {
+	                			 
+	                			 
+	                			 if(i > 1){
+	                				 all_selected_names += ' , ';
+	                				 all_selected_names1 += ' , ';
+	                				 all_selected_id += ' , ';
+	                			 }
+	                			 
+	                	    	blog_name = 	$(this).attr('name');
+	                	    	
+	                	    	blog_id = 	this.id;
+	                	    	
+	                	    	all_selected_names += '"'+blog_name+'"';
+	                	    	all_selected_names1 += blog_name;
+	                	    	
+	                	    	all_selected_id += blog_id;
+	                	    		
+	                	    	i++;
+	                		    		
+	                		});
+	                		 
+	                		 
+	                	 }
+	                	////////////end collecting names
+	              
+                   		$(".active-term").html(all_selected_names1);
+                   		$("#term").val(all_selected_names);
+                   		
+						loadBlogMentioned($("#term").val(),d1,d2);
+                   		loadMostLocation($("#term").val(), d1,d2);
+                   		loadMostPost($("#term").val(), d1,d2);
+                   		loadTable($("#term").val(), d1,d2, all_selected_names1, parseInt(tempYear));
+                   		
+                   		
+                   		
+                   	   
+                      })
+                      
+                      
+	 		      .on("mouseover", function(d) {
+	 		          d3.select(this)     
+	 		            .style("cursor", "pointer")
+	 		            .append("text")
+	 		            .attr("class", "text d3-tip")
+	 		            .text(function(d) {
+	 		                if(d.close === 0)
+	 		                {
+	 		                  return "No Information Available";
+	 		                }
+	 		                else if(d.close !== 0) {
+	 		                 return d.close+"(Click for more information)";
+	 		                  }
+	 		                // return "here";
+	 		                })
+	 		            .attr("x", d => xScale(d.date) + 5)
+	 		            .attr("y", d => yScale(d.close) - 10);
+	 		        })
+	 		      .on("mouseout", function(d) {
+	 		          d3.select(this)
+	 		            .style("cursor", "none")  
+	 		            .transition()
+	 		            .duration(duration)
+	 		            .selectAll(".text").remove();
+	 		        })
+	 		      .append("circle")
+	 		      .attr("cx", d => xScale(d.date))
+	 		      .attr("cy", d => yScale(d.close))
+	 		      .attr("class", function(d) { temp_det = convertTime(d.date); return temp_det +""; })
+	 		      .attr("r", circleRadius)
+	 		      .style('opacity', circleOpacity)
+	 		      .on("mouseover", function(d) {
+	 		    	 temp_detail = convertTime(d.date);
+	 		    	 $('.'+temp_detail).attr("r", circleRadiusHover)
+	 		            d3.select(this)
+	 		              .transition()
+	 		              .duration(duration)
+	 		              .attr("r", circleRadiusHover);
+	 		          })
+	 		        .on("mouseout", function(d) {
+	 		        	temp_detail = convertTime(d.date);
+		 		    	$('.'+temp_detail).attr("r", circleRadius)
+	 		            d3.select(this) 
+	 		              .transition()
+	 		              .duration(duration)
+	 		              .attr("r", circleRadius);  
+	 		          });
+	 		    
+	 		  //start
+		 	/* 	   var mouseG = svg.append("g")
+	      .attr("class", "mouse-over-effects");
+
+	    mouseG.append("path") // this is the black vertical line to follow mouse
+	      .attr("class", "mouse-line")
+	      .style("stroke", "black")
+	      .style("stroke-width", "1px")
+	      .style("opacity", "0")
+	    .style("max-height", "100px");
+	    
+	     lines = document.getElementsByClassName('line');
+	    
+	    var mousePerLine = mouseG.selectAll('.mouse-per-line')
+	    .data(data)
+	    .enter()
+	    .append("g")
+	    .attr("class", "mouse-per-line");
+	    
+	    mousePerLine.append("circle")
+	    .attr("r", 7)
+	    .style("stroke", function(d) {
+	      return color(d.name);
+	    })
+	    .style("fill", "none")
+	    .style("stroke-width", "1px")
+	    .style("opacity", "0");
+	    
+	    mousePerLine.append("text")
+	    .attr("transform", "translate(10,3)");
+	    
+	    mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
+	    .attr('width', width) // can't catch mouse events on a g element
+	    .attr('height', (height+margin)+"px")
+	    .attr('fill', 'none')
+	    .attr('pointer-events', 'all')
+	    .on('mouseout', function() { // on mouse out hide line, circles and text
+	      d3.select(".mouse-line")
+	        .style("opacity", "0");
+	      d3.selectAll(".mouse-per-line circle")
+	        .style("opacity", "0");
+	      d3.selectAll(".mouse-per-line text")
+	        .style("opacity", "0");
+	    })
+	    .on('mouseover', function() { // on mouse in show line, circles and text
+	        d3.select(".mouse-line")
+	          .style("opacity", "1");
+	        d3.selectAll(".mouse-per-line circle")
+	          .style("opacity", "1");
+	        d3.selectAll(".mouse-per-line text")
+	          .style("opacity", "1");
+	      })
+	      .on('mousemove', function() { // mouse moving over canvas
+	        var mouse = d3.mouse(this);
+	        d3.select(".mouse-line")
+	          .attr("d", function() {
+	            var d = "M" + mouse[0] + "," + height;
+	            d += " " + mouse[0] + "," + 0;
+	            return d;
+	          });
+
+	        d3.selectAll(".mouse-per-line")
+	          .attr("transform", function(d, i) {
+	            //console.log(width/mouse[0])
+	            var xDate = xScale.invert(mouse[0]),
+	                bisect = d3.bisector(function(d) { return d.date; }).right;
+	                idx = bisect(d.values, xDate);
+	            
+	            var beginning = 0,
+	                end = lines[i].getTotalLength(),
+	                target = null;
+
+	            while (true){
+	              target = Math.floor((beginning + end) / 2);
+	              pos = lines[i].getPointAtLength(target);
+	              if ((target === end || target === beginning) && pos.x !== mouse[0]) {
+	                  break;
+	              }
+	              if (pos.x > mouse[0])      end = target;
+	              else if (pos.x < mouse[0]) beginning = target;
+	              else break; //position found
+	            }
+	            
+	            d3.select(this).select('text')
+	              .text(y.invert(pos.y).toFixed(2));
+	              
+	            return "translate(" + mouse[0] + "," + pos.y +")";
+	          });
+	      }); */
+	    
+		 		   
+		 		   ///ender 
+
+
+	 		    /* Add Axis into SVG */
+	 		    //var xAxis = d3.svg.axis(xScale).ticks(9);
+	 		    //var yAxis = d3.svg.axis(yScale).ticks(6);
+	 		    
+	 		    
+	 		     // Construct scales
+         // ------------------------------
+
+         // Horizontal
+         var x = d3.scale.ordinal()
+             .rangeRoundBands([0, width]);
+
+         // Vertical
+         var y = d3.scale.linear()
+             .range([height, 0]);
+
+
+         // Create axes
+         // ------------------------------
+
+         // Horizontal
+         var xAxis = d3.svg.axis()
+             .scale(xScale)
+             .orient("bottom")
+            .ticks(5)
+
+           // .tickFormat(formatPercent);
+
+
+         // Vertical
+         var yAxis = d3.svg.axis()
+             .scale(yScale)
+             .orient("left")
+             .ticks(5);
+         
+         
+         ///////////////////
+
+	 		 //   svg.append("g")
+	 		    //  .attr("class", "x axis")
+	 		   //   .attr("transform", `translate(0, ${height-margin})`)
+	 		    //  .call(xAxis);
+
+	 		   // svg.append("g")
+	 		     // .attr("class", "y axis")
+	 		    //  .call(yAxis)
+	 		    //  .append('text')
+	 		     // .attr("y", 15)
+	 		     // .attr("transform", "rotate(-90)")
+	 		     // .attr("fill", "black")
+	 		     // .text("Total values");
+	 		    
+	 		    //////////////
+	 		    
+	 		    
+	 		    
+	 		    // Append axes
+            // ------------------------------
+
+            // Horizontal
+            svg.append("g")
+                .attr("class", "x axis d3-axis d3-axis-horizontal d3-axis-strong")
+                .attr("transform", `translate(0, ${height-margin})`)
+                .call(xAxis);
+
+            // Vertical
+             svg.append("g")
+                .attr("class", "y axis d3-axis d3-axis-vertical d3-axis-strong")
+                .call(yAxis)
+                .append('text')
+                .attr("y", 15)
+                .attr("fill", "black")
+            	  .text("Total values");
+            
+	 	/////////end graph stuff	
+    				  
+    				 		   $('.line_graph').removeClass('hidden');
+    				 	       $('#line_graph_loader').addClass('hidden');
+    				  		
+    				 	      $("#scroll_list_loader").addClass("hidden");
+    				 	 	$("#scroll_list").removeClass("hidden");
+    				 	 
+    			  ////end Timeout to display Graph
+  	    		 
+    		 }
+    		 //end begin builder function
     		 
+    	    	
+    	    	
     		 
     		 
     		 
@@ -2188,24 +2243,13 @@ $(document).ready(function() {
     	 }else{
     		 console.log("no active selection");
     	 }
-    	
-    	
-    	
-    	
-    	
-    	
-    	
-    	
-    	
-    	
-    	
-    	
-
-    	
+    		
     	
     }
     
     </script>
+	
+
 
 
 
@@ -2235,12 +2279,18 @@ $(document).ready(function() {
 	<script>
 		$(".blogger-mentioned").html("<%=alloccurence%>");
 	</script>
-
+	<%
+		Instant end__ = Instant.now();
+					Duration timeElapsed = Duration.between(start__, end__);
+					System.out.println("Time taken: " + timeElapsed.getSeconds() + " seconds");
+	%>
 </body>
 
 </html>
 
 <%
-	}
-	}
+				}
+													}									
+										
 %>
+

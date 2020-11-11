@@ -30,6 +30,34 @@ $(document).ready(function() {
 
 })
 
+///////
+$("body").delegate(".blogPostClickListener", "click", function() {
+	
+	$("#posts_details").addClass("hidden");
+	$("#posts_details_loader").removeClass("hidden");
+	
+	let arr_count = $(this).attr("arr_count");
+
+	id = blog_post_data[arr_count]['_source'].blogpost_id
+	
+	$(".viewpost").addClass("makeinvisible");
+	$('.blogpost_link').removeClass("activeselectedblog");
+	$('#blog_'+id).addClass("activeselectedblog");
+	$("#viewpost_"+id).removeClass("makeinvisible");
+
+	$('#titleContainer').html(blog_post_data[arr_count]['_source'].title);
+	$('#authorContainer').html(blog_post_data[arr_count]['_source'].blogger);
+	$('#dateContainer').html(blog_post_data[arr_count]['_source'].date);
+	$('#postContainer').html(blog_post_data[arr_count]['_source'].post);
+	$('#numCommentsContainer').html(blog_post_data[arr_count]['_source'].numComments + " comments");
+	
+	$("#posts_details").removeClass("hidden");
+	$("#posts_details_loader").addClass("hidden");
+	
+});
+
+//////
+
 
 
 
@@ -111,6 +139,8 @@ function loadbloggersmentioned(clusterid){
 		},
 		error: function(response)
 		{						
+			
+			
 			//console.log(response);
 			$("#bloggersmentioned").html(response);
 		},
@@ -176,8 +206,7 @@ function loadtitletable(clusterid){
 		},
 		success: function(response)
 		{   
-			console.log('post details')
-			console.log(response['post_data']);
+			console.log("response", response);
 			blog_post_data = response['post_data']
 			var arrayLength = response['post_data'].length;
 			$("#posts_display").addClass("hidden");
@@ -189,19 +218,22 @@ function loadtitletable(clusterid){
 			$("#posts_display").html("");
 			$('#posts_display').empty();
 			
+			$("#cluster_post_body2").html("");
+			$("#cluster_post_body2").empty();
+			
+			if ( $.fn.DataTable.isDataTable('#DataTables_Table_20_wrapper') ) {
+				// alert("already");
+				 $('#DataTables_Table_20_wrapper').DataTable().clear();
+				 $('#DataTables_Table_20_wrapper').DataTable().destroy();
+				} 
+			
+			
 			
 			if(arrayLength > 0){
 				
-				
-				var details = "<table id='DataTables_Table_10_wrapper' class='display' style='width: 100%;'>";
-				details += '<thead>';
-				details += '<tr>';
-				details += '<th >Post title</th>';
-				details += '<th >Cluster Distance</th>';
-				details += '</tr>';
-				details += '</thead>';
-				details += '<tbody id="blogPostsContainer1">';
-				
+				details1 = '';
+				max_post_id = parseFloat(0.00);
+				max_disatance_id = parseFloat(0.00);
 				
 				//end if empty length check
 		
@@ -209,92 +241,90 @@ function loadtitletable(clusterid){
 					
 					
 					var post_identify = response['post_data'][i]['_source'].blogpost_id;
+					if(i === 0){
+						max_post_id = post_identify;
+						max_distance_id = parseFloat(response['distances'][post_identify]);
+						console.log(max_distance_id)
+						temporary = i
+					}
 					
-					details += '<tr>';
-					details += '<td ><a blogid='+post_identify+' id="blog_'+post_identify+'" arr_count="'+i+'" class="blogPostClickListener blogpost_link cursor-pointer">'+response['post_data'][i]['_source'].title+'</a>  <br/>';
-					details += '<a id="viewpost_'+post_identify+'" class="mt20 viewpost makeinvisible" href="'+response['post_data'][i]['_source'].permalink+'" target="_blank"><buttton class="btn btn-primary btn-sm mt10 visitpost">Visit Post &nbsp;<i class="fas fa-external-link-alt"></i></buttton></a></td>';
-					details += '<td>'+response['distances'][post_identify]+'%</td>';
-					details += '</tr>';
+					a = parseFloat(max_distance_id)
+					b = parseFloat(response['distances'][post_identify])
+					
+					
+					
+					if(parseFloat(b) < parseFloat(a)){
+						max_post_id = post_identify;
+						max_distance_id = parseFloat(response['distances'][post_identify]);
+						temporary = i
+					}
+					
+					details1 += '<tr>';
+					details1 += '<td ><a blogid='+post_identify+' id="blog_'+post_identify+'" arr_count="'+i+'" class="blogPostClickListener blogpost_link cursor-pointer">'+response['post_data'][i]['_source'].title+'</a>  <br/>';
+					details1 += '<a id="viewpost_'+post_identify+'" class="mt20 viewpost makeinvisible" href="'+response['post_data'][i]['_source'].permalink+'" target="_blank"><buttton class="btn btn-primary btn-sm mt10 visitpost">Visit Post &nbsp;<i class="fas fa-external-link-alt"></i></buttton></a></td>';
+					details1 += '<td>'+parseFloat(response['distances'][post_identify])+'</td>';
+					details1 += '</tr>';
+					
+					
 					
 				}
 				
-				
-				details += '</tbody>';
-				details += '</table>';
-				
-				$("#posts_display").html(details);
+				$("#cluster_post_body2").html(details1);
 				
 				
-				
-				// $('#DataTables_Table_0_wrapper').DataTable().destroy();
+				 $('#DataTables_Table_0_wrapper').DataTable().destroy();
+				 $('#DataTables_Table_20_wrapper').DataTable().destroy();
 				// table set up datatable for blog posts
-				  $('#DataTables_Table_10_wrapper').DataTable( {
-				         "scrollY": 430,
-				         "scrollX": true,
-				         "order": [],
-				          "pagingType": "simple",
-				        	  "columnDefs": [
-				        	      { "width": "65%", "targets": 0 },
-				        	      { "width": "25%", "targets": 0 }
-				        	    ]
-				     } );
+				 
 				  
-				  
-				  
-				  
+				 console.log('sfddfsdfsdfsfsdfs')
+				 console.log(max_post_id)
+				 console.log(temporary)
+				  console.log(max_distance_id)
+				 console.log('sfddfsdfsdfsfsdfs')
 					
 					let arr_count = $(this).attr("arr_count");
 				
-					id = blog_post_data[0]['_source'].blogpost_id
+					id = blog_post_data[temporary]['_source'].blogpost_id
 					
 					$(".viewpost").addClass("makeinvisible");
 			    	$('.blogpost_link').removeClass("activeselectedblog");
 			    	$('#blog_'+id).addClass("activeselectedblog");
 			    	$("#viewpost_"+id).removeClass("makeinvisible");
 				
-					$('#titleContainer').html(blog_post_data[0]['_source'].title);
-			    	$('#authorContainer').html(blog_post_data[0]['_source'].blogger);
-			    	$('#dateContainer').html(blog_post_data[0]['_source'].date);
-			    	$('#postContainer').html(blog_post_data[0]['_source'].post);
-			    	$('#numCommentsContainer').html(blog_post_data[0]['_source'].numComments + " comments");
+					$('#titleContainer').html(blog_post_data[temporary]['_source'].title);
+			    	$('#authorContainer').html(blog_post_data[temporary]['_source'].blogger);
+			    	$('#dateContainer').html(blog_post_data[temporary]['_source'].date);
+			    	$('#postContainer').html(blog_post_data[temporary]['_source'].post);
+			    	$('#numCommentsContainer').html(blog_post_data[temporary]['_source'].numComments + " comments");
+			    	
+			    	 $('#DataTables_Table_20_wrapper').DataTable( {
+				         "scrollY": 430,
+				         "scrollX": true,
+				         "order": [[ 1, "asc" ]],
+				         "pagingType": "simple",
+				         "columnDefs": [
+			        	      { "width": "65%", "targets": 0 },
+			        	      { "width": "25%", "targets": 0 }
+			        	    ]
+				        	 
+				     } );
 			    	
 			    	$("#posts_details").removeClass("hidden");
 					$("#posts_details_loader").addClass("hidden");
 			     
 			     ///end instantiating datatable
-			     $("#posts_display").removeClass("hidden");
+					
+					  
+					  $("#posts_display").empty()
+			     $("#posts_display2").removeClass("hidden");
+				$(".posts_display2").removeClass("hidden");
 				$("#posts_display_loader").addClass("hidden");
 				
 				
 				
 				
-				///////
-				$("body").delegate(".blogPostClickListener", "click", function() {
-					
-					$("#posts_details").addClass("hidden");
-					$("#posts_details_loader").removeClass("hidden");
-					
-					let arr_count = $(this).attr("arr_count");
 				
-					id = blog_post_data[arr_count]['_source'].blogpost_id
-					
-					$(".viewpost").addClass("makeinvisible");
-			    	$('.blogpost_link').removeClass("activeselectedblog");
-			    	$('#blog_'+id).addClass("activeselectedblog");
-			    	$("#viewpost_"+id).removeClass("makeinvisible");
-				
-					$('#titleContainer').html(blog_post_data[arr_count]['_source'].title);
-			    	$('#authorContainer').html(blog_post_data[arr_count]['_source'].blogger);
-			    	$('#dateContainer').html(blog_post_data[arr_count]['_source'].date);
-			    	$('#postContainer').html(blog_post_data[arr_count]['_source'].post);
-			    	$('#numCommentsContainer').html(blog_post_data[arr_count]['_source'].numComments + " comments");
-			    	
-			    	$("#posts_details").removeClass("hidden");
-					$("#posts_details_loader").addClass("hidden");
-			    	
-				});
-				
-				//////
 				
 				
 				
@@ -316,7 +346,7 @@ function loadkeywords(clusterid){
 	$.ajax({
 		url: "CLUSTERING",
 		method: 'POST',
-		/*dataType:'json',*/
+		dataType:'json',
 		data: {
 			action:"loadkeywords",
 			cluster:clusterid,
@@ -342,14 +372,15 @@ function loadkeywords(clusterid){
 //			
 //			$("#keyword_display").html(build);
 			
-			var terms = response;
-			var new_dd = terms.replace('[','{').replace(']','}').replace(/\),/g,'-').replace(/\(/g,'').replace(/,/g,':').replace(/-/g,',').replace(/\)/g,'').replace(/'/g,"");
-			var newjson = new_dd.replace(/\s+/g,'').replace(/{/g,'{"').replace(/:/g,'":"').replace(/,/g,'","').replace(/}/g,'"}')
-			var jsondata = JSON.parse(newjson)
-			
+			//var terms = response;
+			//var new_dd = terms.replace('[','{').replace(']','}').replace(/\),/g,'-').replace(/\(/g,'').replace(/,/g,':').replace(/-/g,',').replace(/\)/g,'').replace(/'/g,"");
+			//var newjson = new_dd.replace(/\s+/g,'').replace(/{/g,'{"').replace(/:/g,'":"').replace(/,/g,'","').replace(/}/g,'"}')
+			//var newjson = terms.replace(/"/g,"");
+			//var jsondata = JSON.parse(terms)
+			var jsondata =response;
 			
 			console.log('trtrtrtrtrtrtrtrtrtr')
-			console.log(jsondata)
+			console.log('data',jsondata)
 			
 			elem = '#tagcloudcontainer1';
 			
@@ -409,7 +440,7 @@ function drawChord(container, options, matrix, array) {
 	var elem = container;
     var config = {
         width: 500,
-        height: 450,
+        height: 470,
         rotation: 0,
         textgap: 40,
         colors: ["#C4C4C4", "#69B40F", "#EC1D25", "#C8125C", "#008FC8", "#10218B", "#134B24", "#737373", "#ffff00", "#ff79c5"]
@@ -546,13 +577,13 @@ var svg = container
         
       .append("svg:title")
         .text(function(d) { 
-            return  d.source.value + " posts from " + gnames[d.source.index] + " in " + gnames[d.target.index]; 
+            return  d.source.value + " terms from " + gnames[d.source.index] + " in " + gnames[d.target.index]; 
         });
     
 ////////////////////////////////////////////////////////////
 //////////////////Append Ticks ////////////////////////////
 ////////////////////////////////////////////////////////////
-    
+    //console.log('chord', chord.chords.source.value)
     var ticks = svg.append("svg:g").selectAll("g.ticks")
      .data(chord.groups)
      .enter().append("svg:g").selectAll("g.ticks")
@@ -576,7 +607,7 @@ ticks.append("svg:text")
 .attr("dy", ".35em")
 .attr("transform", function(d) { return d.angle > Math.PI ? "rotate(180)translate(-16)" : null; })
 .style("text-anchor", function(d) { return d.angle > Math.PI ? "end" : null; })
-.text(function(d) { return d.label; });
+.text(function(d) { console.log('ddd',d); return d.label; });
 
 
     

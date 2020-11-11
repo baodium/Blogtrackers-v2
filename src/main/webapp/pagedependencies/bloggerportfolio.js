@@ -6,6 +6,8 @@ $(document).ready(function(){
 	var blogger = $('#blogger-changed').val();
 	var blg = blogger.split("______");
 	var blog_id = blg[0];
+	var date_start = $("#date_start").val();
+	var date_end = $("#date_end").val();
 	
 	var all_ids = $("#id__").val();
 	
@@ -13,7 +15,7 @@ $(document).ready(function(){
 	$("#blogger").val(blg[1]);
 	console.log('blogger ', blg[1]);
 	
-	loadStat(blg[1], all_bloggers,all_ids);
+	loadStat(blg[1], all_bloggers,all_ids, date_start, date_end);
 	loadtermss(blg[1]);
 })
 
@@ -27,9 +29,8 @@ $('#blogger-changed').on("change", function(){
 	var blogger = $(this).val();
 	var blg = blogger.split("______");
 	
-	
-	
 	var blog_id = blg[0];
+	//alert(blog_id)
 	
 	$(".active-blog").html(blg[1]);
 	$("#blogger").val(blg[1]);
@@ -44,10 +45,10 @@ $('#blogger-changed').on("change", function(){
 	
 	
 
-	loadStat(blg[1], all_bloggers,all_ids);
-	loadChart(blg[1],all_ids);
-	loadYearlyChart(blg[1],all_ids);
-	loadDailyChart(blg[1],all_ids);
+	loadStat(blg[1], all_bloggers,all_ids, date_start, date_end);
+	loadChart(blg[1],all_ids, date_start, date_end);
+	loadYearlyChart(blg[1],all_ids, date_start, date_end);
+	loadDailyChart(blg[1],all_ids, date_start, date_end);
 	loadUrls(date_start,date_end,all_ids, blog_id);
 	
 	loadInfluence(blg[1],date_start,date_end);
@@ -180,7 +181,7 @@ function loadSinglePost(blogger,blog_id,start_date,end_date){
 
 
 
-function loadStat(blogger, all_bloggers,ids){
+function loadStat(blogger, all_bloggers,ids, date_start, date_end){
 	
 
 	
@@ -196,8 +197,8 @@ function loadStat(blogger, all_bloggers,ids){
 			blogger:blogger,
 			ids:ids,
 			all_bloggers:all_bloggers,
-			date_start:$("#date_start").val(),
-			date_end:$("#date_end").val(),
+			date_start:date_start,
+			date_end:date_end,
 		},
 		error: function(response)
 		{						
@@ -211,7 +212,7 @@ function loadStat(blogger, all_bloggers,ids){
 		$(".total-influence").html(data.totalinfluence);
 //		$(".total-influence").html(parseInt(data.totalinfluence).toLocaleString('en'));
 		$(".total-post").html(parseInt(data.totalpost).toLocaleString('en'));
-		$(".total-sentiment").html(parseInt(data.totalsentiment).toLocaleString('en'));
+		$(".total-sentiment").html(data.totalsentiment);
 	
 		/*$(".top-keyword").html(data.topterm);*/
 		//$("#overall-chart").delay(3000).html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />").delay(2000).html(response);
@@ -255,7 +256,7 @@ $('.blogpost_link').on("click", function(){
 	
 });
 
-function loadChart(blogger,ids){
+function loadChart(blogger,ids, date_start, date_end){
 	$("#overall-chart").html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />");
 	$.ajax({
 		url: app_url+"subpages/bloggerportfoliochart.jsp",
@@ -264,8 +265,8 @@ function loadChart(blogger,ids){
 			action:"getchart",
 			blogger:blogger,
 			ids:ids,
-			date_start:$("#date_start").val(),
-			date_end:$("#date_end").val(),
+			date_start:date_start,
+			date_end:date_end,
 		},
 		error: function(response)
 		{						
@@ -282,7 +283,7 @@ function loadChart(blogger,ids){
 	});
 }
 
-function loadYearlyChart(blogger,ids){
+function loadYearlyChart(blogger,ids, date_start, date_end){
 	$("#year-chart").html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />");
 	$.ajax({
 		url: app_url+"subpages/bloggerportfoliochart.jsp",
@@ -291,8 +292,8 @@ function loadYearlyChart(blogger,ids){
 			action:"getdailychart",
 			blogger:blogger,
 			ids:ids,
-			date_start:$("#date_start").val(),
-			date_end:$("#date_end").val(),
+			date_start:date_start,
+			date_end:date_end,
 		},
 		error: function(response)
 		{						
@@ -309,7 +310,9 @@ function loadYearlyChart(blogger,ids){
 	});
 }
 
-function loadDailyChart(blogger,ids){
+
+function loadDailyChart(blogger,ids, date_start, date_end){
+	console.log(blogger,'/////////',ids)
 	$("#day-chart").html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />");
 	$.ajax({
 		url: app_url+"subpages/bloggerportfoliochart.jsp",
@@ -318,8 +321,8 @@ function loadDailyChart(blogger,ids){
 			action:"getdayonlychart",
 			blogger:blogger,
 			ids:ids,
-			date_start:$("#date_start").val(),
-			date_end:$("#date_end").val(),
+			date_start:date_start,
+			date_end:date_end,
 		},
 		error: function(response)
 		{						
@@ -335,6 +338,7 @@ function loadDailyChart(blogger,ids){
 		}
 	});
 }
+
 
 
 

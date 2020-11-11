@@ -415,7 +415,7 @@ $('.tracksection').show();
 
 // call to action to start tracking blogs
 $('#initiatetrack').on("click",function(e){
-	
+	//alert('i am here')
 $('.trackinitiated, .modalbackdrop').removeClass("hidden");
 
 $('.trackinitiated, .modalbackdrop').show();

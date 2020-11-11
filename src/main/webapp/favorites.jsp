@@ -339,7 +339,7 @@ if(blogpostid.length > 0 && !allreturnedblog.equalsIgnoreCase("") )
 for(int k=0; k<blogpostid.length; k++)
 {
 List<String> test = new ArrayList<String>();	
-test = new DbConnection().query2("select * from blogposts where blogpost_id="+blogpostid[k]);
+test = new DbConnection().query("select * from blogposts where blogpost_id="+blogpostid[k]);
 //System.out.println(test);
 //System.out.println(test.get(0));
 //String allblogstring = test.get(0).toString().replaceAll("\\[","").replaceAll("\\]","");

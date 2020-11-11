@@ -37,14 +37,41 @@ Instant start = Instant.now();
 	
 
 	userinfo = new DbConnection().query("SELECT * FROM usercredentials where Email = '" + email + "'");
+	String trackername = "";
 	//System.out.println(userinfo);
 	if (userinfo.size() < 1) {
 		//response.sendRedirect("login.jsp");
 	} else {
 		userinfo = (ArrayList<?>) userinfo.get(0);
+		ArrayList detail = new ArrayList();
+		Object user = (null == session.getAttribute("username")) ? "" : session.getAttribute("username");
+		Trackers tracker = new Trackers();
 		try {
+			
+			if (tid != "") {
+				detail = tracker._fetch(tid.toString());
+				//System.out.println(detail);
+			} else {
+				detail = tracker._list("DESC", "", user.toString(), "1");
+				//System.out.println("List:"+detail);
+			}
+			
+			if (detail.size() > 0) {
+				//String res = detail.get(0).toString();
+				ArrayList resp = (ArrayList<?>) detail.get(0);
+
+				String tracker_userid = resp.get(1).toString();
+
+				trackername = resp.get(2).toString();
+
+				
+			}
+			
+			
 			username = (null == userinfo.get(0)) ? "" : userinfo.get(0).toString();
 
+			
+			
 			name = (null == userinfo.get(4)) ? "" : (userinfo.get(4).toString());
 
 			email = (null == userinfo.get(2)) ? "" : userinfo.get(2).toString();
@@ -144,14 +171,17 @@ Instant start = Instant.now();
 	String tracker_id = tid.toString();
 	//get postids from each cluster in tracker and save in JSONObject
 	ArrayList result = cluster._getClusters(tracker_id);
+	System.out.println("done with clusters");
 
 	JSONObject res = new JSONObject(result.get(0).toString());
+	System.out.println("done with res");
+	
 	JSONObject source = new JSONObject(res.get("_source").toString());
-
+	System.out.println("done with source");
 	//			ArrayList R2 = (ArrayList)result.get(0);
 	//for()
 	//			System.out.println(source.get("cluster_3"));
-	HashMap<Pair<String, String>, JSONArray> clusterResult = new HashMap<Pair<String, String>, JSONArray>();
+	HashMap<Pair<String, String>, ArrayList<JSONObject>> clusterResult = new HashMap<Pair<String, String>, ArrayList<JSONObject>>();
 	//JSONObject key_val = new JSONObject();
 	Pair<String, String> key_val = new Pair<String, String>(null, null);
 
@@ -164,53 +194,87 @@ Instant start = Instant.now();
 	String find = "";
 	int [][] termsMatrix = new int[10][10];
 	//int count = 0;
-	
+	JSONArray links_centroids = new JSONArray();
+	JSONArray nodes_centroids = new JSONArray();
+	//start main foor loop
 	for (int i = 1; i < 11; i++) {
 
 		String cluster_ = "cluster_" + String.valueOf(i);
 		String centroids = "C" + String.valueOf(i) + "xy";
 		JSONObject cluster_data = new JSONObject(source.get(cluster_).toString());
-		
+		//Map s = new LinkedHashMap();
+		//System.out.println(source.get(cluster_).toString());
+		//System.out.println(cluster_data);
 		String post_ids = cluster_data.get("post_ids").toString();
+		System.out.println("done with postsids --");
 		///break;
 		
 		String centroid = source.get(centroids).toString().replace("[", "").replace("]", "");
 		String centroid_x = centroid.split(",")[0].trim();
 		String centroid_y = centroid.split(",")[1].trim();
+		System.out.println("done with centroid --");
 		//System.out.println(centroid);
 		
-		ArrayList svd = cluster._getSvd(post_ids);
+		//ArrayList svd = cluster._getSvd(post_ids);
+		
+		JSONObject data_centroids_ = new JSONObject();
+		
+		data_centroids_.put("id","Cluster_" + i);
+	   	data_centroids_.put("group", i);
+	   	data_centroids_.put("label","CLUSTER_" + i);
+	   	data_centroids_.put("level",post_ids.split(",").length);
+	
+	   	nodes_centroids.put(data_centroids_);
+		
+		for(int k = 1; k < 11; k++){
+			if(k != i){
+				String centroids_ = "C" + String.valueOf(k) + "xy";
+				String centroid_ = source.get(centroids_).toString().replace("[", "").replace("]", "");
+				String centroid_x_ = centroid_.split(",")[0].trim();
+				String centroid_y_ = centroid_.split(",")[1].trim();
+				
+				JSONObject data_centroids = new JSONObject();
+				data_centroids.put("target","Cluster_" + i);
+				data_centroids.put("source","Cluster_" + k);
+				
+				double left_ = Math.pow((double)Double.parseDouble(centroid_x_) - (double)Double.parseDouble(centroid_x), 2);
+				double right_ = Math.pow((double)Double.parseDouble(centroid_y_) - (double)Double.parseDouble(centroid_y), 2);
+				String distance_ = String.valueOf(Math.pow((left_ + right_), 0.5));
+				 
+				data_centroids.put("strength", 50 - Double.parseDouble(distance_));
+				links_centroids.put(data_centroids);
+				
+			}
+			
+		}
+		
+		JSONObject svd_ = new JSONObject(source.get("svd").toString());
+		//System.out.println("svd---"+svd_);
 		int counter = 0;
-		for(int j = 0; j < svd.size(); j++){
+		String [] post_split = post_ids.split(",");
+		
+		for(int j = 0; j < post_split.length; j++){
+			
+			
 			
 			JSONObject scatter_plot = new JSONObject();
-			JSONObject source_ = new JSONObject(svd.get(j).toString());
-			Object x_y = source_.getJSONObject("_source").get("svd");
-			Object p_id = source_.getJSONObject("_source").get("post_id");
-			x_y = x_y.toString().replaceAll("\\s+", " ");
+			String p_id = post_split[j];
+			Object x_y = svd_.get(p_id);
+					
+			x_y = x_y.toString().replace("[","").replace("]","").trim().replaceAll("\\s+", " ");
 			
 			String x = x_y.toString().split(" ")[0];
 			String y = x_y.toString().split(" ")[1];
 			
-			//System.out.println(x_y.toString());
-			//System.out.println(x +"--"+ y);
-			
-			//System.out.println(svd);
 			String postid = p_id.toString();
-			/* if(p_id.toString().equals("62675")){
-				find = x_y.toString() + "--" + x + "--" + y;
 			
-				
-			} */
 			scatter_plot.put("cluster",String.valueOf(i));
+			
 			scatter_plot.put("",String.valueOf(counter));
 			scatter_plot.put("new_x",x);
 			scatter_plot.put("new_y",y);
-			//scatter_plot.put("post_id",postid);
-			
 			counter++;
 			
-			//Double.parseDouble(s)
 			double left = Math.pow((double)Double.parseDouble(x) - (double)Double.parseDouble(centroid_x), 2);
 			double right = Math.pow((double)Double.parseDouble(y) - (double)Double.parseDouble(centroid_y), 2);
 			String distance = String.valueOf(Math.pow((left + right), 0.5));
@@ -219,25 +283,15 @@ Instant start = Instant.now();
 			
 		}
 		
-		//scatterplotfinaldata.add(new JSONObject("{columns:['','new_x','new_y','cluster']}"));
-		//System.out.println(svd);
-		
-		JSONArray postDataAll = cluster.getPosts(post_ids, "", "", "__ONLY__POST__ID__","blogposts");
-
-		//String terms = cluster.getTopTerms(post_ids);
-		//System.out.println(terms);
-		//System.out.println("done");
-
-		
+		ArrayList<JSONObject> postDataAll = DbConnection.queryJSON("select date,post,num_comments, blogger,permalink, title, blogpost_id, location, blogsite_id from blogposts where blogpost_id in ("+post_ids+") limit 500" );
+		System.out.println("done with query --");
 		
 		String terms = cluster_data.get("topterms").toString();
 		String str1 = null;
 		str1 = terms.replace("),", "-").replace("(", "").replace(")", "").replaceAll("[0-9]","").replace("-", "");
 		List<String> t1 = Arrays.asList(str1.replace("[","").replace("]","").split(","));
 		termsMatrix[i - 1][i - 1] = t1.size();
-		//String terms = cluster.getTopTerms(post_ids);
-		System.out.println(terms);
-
+		
 		//CREATING CHORD MATRIX
 		
 		String str2 = null;
@@ -248,15 +302,10 @@ Instant start = Instant.now();
 		JSONObject cluster_data_matrix = new JSONObject(source.get(cluster_matrix).toString());
 		String terms_matrix = cluster_data_matrix.get("topterms").toString();
 		
-		
 		str2 = terms_matrix.replace("),", "-").replace("(", "").replace(")", "").replaceAll("[0-9]","").replace("-", "");
-		//JSONArray terms_array = new JSONArray(str);
-		
-		
+	
 		List<String> t2 = Arrays.asList(str2.replace("[","").replace("]","").split(","));
-		//System.out.println(t1);
-		//System.out.println(t2);
-//		System.out.println("ttt"+t1.retainAll(t2));
+	
 		int count = 0;
 		for (int i_ = 0; i_ < t1.size(); i_++)
         {
@@ -272,29 +321,27 @@ Instant start = Instant.now();
 		
 		termsMatrix[i-1][k-1] = count;
 		termsMatrix[k-1][i-1] = count;
-		}
+		 }
 		//DONE CREATING CHORD MATRIX
 		
 		topterms.put(cluster_,terms);
 		
 		key_val = new Pair<String, String>(cluster_, post_ids);
-		//key_val.put(cluster_,post_ids);
-		System.out.println("clusters --" + cluster_);
-
-		/* for(int j = 0; j < postDataAll.length(); j++){
-			
-		} */
+		
 		key_val_posts.put(cluster_, post_ids);
+		
 		clusterResult.put(key_val, postDataAll);
 		
 		
 
 	}
+//end main for loop
 
-	//System.out.println(topterms.size());
-	/* for(int i = 0; i < termsMatrix.length; i++){
-		System.out.println("termsMatrix --" + Arrays.toString(termsMatrix[i]));
-	} */
+	
+	JSONObject final_centroids = new JSONObject();
+	final_centroids.put("nodes",nodes_centroids);
+	final_centroids.put("links",links_centroids);
+
 	
 	session.setAttribute(tid.toString() + "cluster_terms", topterms);
 	session.setAttribute(tid.toString() + "cluster_distances", distances);
@@ -343,6 +390,35 @@ Instant start = Instant.now();
 //console.log('scatter data');
 
 </script>
+
+<style>
+.karat{
+	 bottom: 0 !important;
+ height: 100% !important;
+}
+.overlay1 {
+ position: absolute;
+ bottom: 100%;
+ left: 0;
+ right: 0;
+ background-color: #008CBA;
+ overflow: hidden;
+ width: 100%;
+ height:0;
+ transition: .5s ease;
+}
+.text1 {
+ color: white;
+ font-size: 20px;
+ position: absolute;
+ top: 50%;
+ left: 50%;
+ -webkit-transform: translate(-50%, -50%);
+ -ms-transform: translate(-50%, -50%);
+ transform: translate(-50%, -50%);
+ text-align: center;
+}
+</style>
 
 </head>
 <body>
@@ -497,11 +573,15 @@ Instant start = Instant.now();
 		<div class="row bottom-border pb20">
 			<div class="col-md-6 paddi">
 				<nav class="breadcrumb">
-					<a class="breadcrumb-item text-primary" href="trackerlist.html">MY
-						TRACKER</a> <a class="breadcrumb-item text-primary" href="#">Second
-						Tracker</a> <a class="breadcrumb-item active text-primary"
-						href="postingfrequency.html">Clustering</a>
-
+					<a class="breadcrumb-item text-primary"
+						href="<%=request.getContextPath()%>/trackerlist.jsp">Trackers</a>
+					<a class="breadcrumb-item text-primary"
+						href="<%=request.getContextPath()%>/edittracker.jsp?tid=<%=tid%>"><%=trackername%></a>
+					<a class="breadcrumb-item  text-primary"
+						href="<%=request.getContextPath()%>/dashboard.jsp?tid=<%=tid%>">Dashboard</a>
+					<a class="breadcrumb-item active text-primary"
+						href="#">Clustering Analysis
+						</a>
 				</nav>
 				<div>
 					Tracking:
@@ -548,7 +628,7 @@ Instant start = Instant.now();
 		<div class="row mt20">
 			<div class="col-md-3">
 
-				<div class="card card-style mt50" style="height: 450px;">
+				<div class="card card-style mt25" style="height: 700px; margin-top: 20px">
 					<div class="card-body  p30 pt5 pb5 mb40">
 						<h5 class="mt20 mb20">Clusters</h5>
 						<!-- <div style="padding-right: 10px !important;">
@@ -556,7 +636,7 @@ Instant start = Instant.now();
 								placeholder="Search " />
 						</div> -->
 						<div class="scrolly"
-							style="height: 350px; padding-right: 10px !important;">
+							style="height: 600px; padding-right: 10px !important;">
 							<%
 								String bloggersMentioned = null;
 								String currentPostIdsCount = null;
@@ -566,14 +646,43 @@ Instant start = Instant.now();
 								String total = source.get("total").toString();
 								session.setAttribute(tid.toString() + "clusters_total", total);
 								String blogdistribution = null;
-								JSONArray postData = new JSONArray();
+								//JSONArray postData = new JSONArray();
+								ArrayList postData;
 
-								String[] colors = {"green", "red", "blue", "orange", "purple", "pink", "black", "grey", "brown", "yellow"};
+								String[] colors = {"#E377C2","#8C564B", "#9467BD", "#D62728", "#2CA02C", "#FF7F0E", "#1F77B4", "#7F7F7F","#17B890", "#D35269"};
 								int i = 0;
 								Pair<String, String> currentKey = new Pair<String, String>(null, null);
 
-								for (Map.Entry<Pair<String, String>, JSONArray> entry : clusterResult.entrySet()) {
+								for (Map.Entry<Pair<String, String>, ArrayList<JSONObject>> entry : clusterResult.entrySet()) {
 									Pair<String, String> key = entry.getKey();
+									
+									//String temp_terms = topterms.get("cluster_" + (i + 1));
+									//System.out.println("terms ---" + terms);
+									String word_build = "";
+									
+									//System.out.println("terms ---" + terms);
+									String [] splitted = source.get("cluster_" + (i + 1)).toString().split("\'topterms\':");
+											//System.out.println("terms ---" + terms);
+											//terms = terms.replace("{","").replace("}","").replace("[","").replace("]", "").replace("),", "-").replace("(", "").replace("\'", "").replace("\"", "");
+											//String [] splitted2 = splitted[1].replace("{","").replace("}","").split(",");
+											//List<String> termlist = Arrays.asList(terms.split(","));
+									List<String> termlist = Arrays.asList(splitted[1].replace("{","").replace("}","").split(","));
+									//max = Integer.parseInt(termlist.get(k).split(":")[1].trim());
+									//temp_terms = temp_terms.replace("{","").replace("}", "").replace("[","").replace("]", "").replace("),", "-").replace("(", "").replace("\'", "").replace("\"", "");;
+									//List<String> termlist = Arrays.asList(temp_terms.split(","));
+									
+									for(int m = 0; m < 10; m++){
+										if(m > 0){
+											word_build += ", ";
+										}
+										if(m < termlist.size()){
+										word_build += termlist.get(m).split(":")[0].replace("\'","");
+										}
+										//System.out.println("original--" + termlist.get(m));
+										//System.out.println("building--" + termlist.get(m).split(":")[0]);
+									
+									}
+									//System.out.println("original--" + word_build);
 
 									if (key.getKey().equals("cluster_1")) {
 
@@ -597,15 +706,15 @@ Instant start = Instant.now();
 										/* postData = cluster.getPosts(currentPostIds, "", "", "__ONLY__POST__ID__");
 										System.out.println(postData.length()); */
 							%>
-							<a class="clusters_ btn  form-control stylebuttonactive mb20 "
+							<a cluster_number="<%=i + 1%>" loaded_color="<%=colors[i]%>"  cluster_id="CLUSTER_<%=i + 1%>"  data-toggle="tooltip" data-placement="top" title="<%=word_build%>" class="clusters_ btn  form-control stylebuttonactive mb20 cluster_visual"
 								id="cluster_<%=i + 1%>" counter_value="<%=i  +1%>"
 								style="background-color: <%=colors[i]%>;"> <b>Cluster <%=i + 1%></b>
 							</a>
 							<%
 								} else {
 							%>
-							<a
-								class="clusters_ btn form-control stylebuttoninactive text-primary mb20 "
+							<a cluster_number="<%=i + 1%>" loaded_color="<%=colors[i]%>" cluster_id="CLUSTER_<%=i + 1%>" data-toggle="tooltip" data-placement="top" title="<%=word_build%>"
+								class="clusters_ btn form-control stylebuttoninactive text-primary mb20 cluster_visual"
 								id="cluster_<%=i + 1%>" counter_value="<%=i+1 %>"
 								style="background-color: <%=colors[i]%>;"> <b>Cluster <%=i + 1%></b>
 							</a>
@@ -638,19 +747,38 @@ Instant start = Instant.now();
 			</div>
 
 			<div class="col-md-9">
-				<div class="card card-style mt20">
+				<div class="card card-style mt20" style="height: 570px;">
 					<div class="card-body  p30 pt5 pb5">
 						<div style="min-height: 250px;">
 							<div>
 								<p class="text-primary mt10">Cluster Map</p>
 							</div>
 
-							<div class="chart-container">
+							<div id="chart-container1" class="chart-container" style="min-height: 500px;">
 								<div class="chart" id="clusterdiagram"></div>
+								<div id="parentdivy"></div>
+								
+								<% for(int c=1; c<=10; c++){ %>
+									
+									<div id="CLUSTER_<%=c %>" class="overlay1 "> CLUSTER_<%=c %>
+									  <div style="min-height: 400px; width: 1000px;" class="text1 card card-style ">
+											<div class="clusterdiagram_<%=c %>" class="card-body p30 pt5 pb5 container1">
+												<div class="hidden" id="clusterdiagram_<%=c %>" load_status="0" ></div>
+												
+												<div id="clusterdiagram_loader_<%=c %>" class="">
+													<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />
+												</div>
+											</div>
+										</div>
+									 </div>
+									 
+								 <% } %>
+								
+								
 								
 								<div id="clusterdiagram_loader" class="hidden">
-								<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />
-							</div>
+									<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />
+								</div>
 							</div>
 							
 						</div>
@@ -697,8 +825,7 @@ Instant start = Instant.now();
 					<div class="card-body  p20 pt5 pb5">
 						<div>
 							<p class="text-primary mt10">
-								Keywords of <b class="text-blue activeblog">Cluster 1</b> of
-								Past <b class="text-success">Week</b>
+								Keywords of <b class="text-blue activeblog">Cluster 1</b> 
 							</p>
 							
 						</div>
@@ -710,7 +837,7 @@ Instant start = Instant.now();
 						
 						
 						<div class="chart-container keyword_display" id="keyword_display">
-							<div id="tagcloudcontainer" style="min-height: 300px;"></div>
+							<div id="tagcloudcontainer" style="min-height: 480px;"></div>
 						</div>
 						
 						
@@ -728,14 +855,16 @@ Instant start = Instant.now();
 					<div class="card-body p20 pt0 pb20" style="min-height: 300px;">
 						<div>
 							<p class="text-primary mt10">
-								<b class="text-blue activeblog">Cluster 1</b> of Past <b
-									class="text-success">Week</b>
+								<b class="text-blue activeblog">Cluster 1</b><b
+									class="text-success"> Common Terms</b>
 							</p>
 						</div>
 						<div class="chart-container">
-							<div class="chart svg-center" id="chorddiagram"></div>
+							<div class="chart svg-center " id="chorddiagram"></div>
 
-
+							<div id="chorddiagram_loader" class="">
+								<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />
+							</div>
 						</div>
 					</div>
 
@@ -744,7 +873,7 @@ Instant start = Instant.now();
 
 		</div>
 
-		<div class="row m0 mt20 mb20 d-flex align-items-stretch">
+		<div class="row m0 mt20 mb20 d-flex align-items-stretch" id="post_detail_row">
 			<div
 				class="col-md-6 mt20 card card-style nobordertopright noborderbottomright">
 				<div class="card-body p0 pt20 pb20" style="min-height: 420px;">
@@ -754,6 +883,25 @@ Instant start = Instant.now();
 					<!-- <div class="p15 pb5 pt0" role="group">
           Export Options
           </div> -->
+          
+          <div id="posts_display2 hidden">
+          			
+          				<table id="DataTables_Table_20_wrapper" class="display posts_display2 hidden"
+						style="width: 100%">
+						<thead>
+							<tr>
+								<th>Post title</th>
+								<th>Cluster distance</th>
+
+
+							</tr>
+						</thead>
+						<tbody id="cluster_post_body2">
+						
+						</tbody>
+					</table>
+          
+         			</div>
           
           			<div id="posts_display">
           			
@@ -767,34 +915,71 @@ Instant start = Instant.now();
 
 							</tr>
 						</thead>
-						<tbody>
+						<tbody id="">
 							<%
 								String currentTitle = null;
 								String currentBlogger = null;
 								String currentPost = null;
 								String currentDate = null;
 								String currentNumComment = null;
+								String activeDef = "";
+								String activeDefLink = "";
+								
+								float max_distance_id = 0;
+								String max_post_id = "";
 
 								postData = clusterResult.get(currentKey);
+								
 								/* System.out.println("This is key--" + key); */
 
-								for (int j = 0; j < postData.length(); j++) {
+
+								for (int j = 0; j < postData.size(); j++) {
+									JSONObject p = new JSONObject(postData.get(j).toString());
+									Object blog_post_id = p.getJSONObject("_source").get("blogpost_id");
+									Object title = p.getJSONObject("_source").get("title");
+									Object permalink = p.getJSONObject("_source").get("permalink");
+								
+									
+									
 									if (j == 0) {
-										Object title = postData.getJSONObject(0).getJSONObject("_source").get("title");
+										max_distance_id = (float)Float.parseFloat(distances.get(blog_post_id.toString()).toString());
+									}else{
+										activeDefLink = "makeinvisible";
+										activeDef = "";
+									}
+									
+									if(max_distance_id > (float)Float.parseFloat(distances.get(blog_post_id.toString()).toString())){
+										
+										max_distance_id = (float)Float.parseFloat(distances.get(blog_post_id.toString()).toString());
+										max_post_id = blog_post_id.toString();
+										
 										currentTitle = title.toString();
 
-										Object blogger = postData.getJSONObject(0).getJSONObject("_source").get("blogger");
+										Object blogger = p.getJSONObject("_source").get("blogger");
 										currentBlogger = blogger.toString();
 
-										Object comments = postData.getJSONObject(0).getJSONObject("_source").get("num_comments");
-										currentNumComment = comments.toString();
+										try {
+											Object comments = p.getJSONObject("_source").get("num_comments");
+											currentNumComment = comments.toString();
+										}catch(Exception e){
+											currentNumComment = "0";
+											
+										}
+										
 
-										Object post = postData.getJSONObject(0).getJSONObject("_source").get("post");
+										Object post = p.getJSONObject("_source").get("post");
 										currentPost = post.toString();
+										activeDef = "activeselectedblog";
+										activeDefLink = "";
 									}
 
-									Object title = postData.getJSONObject(j).getJSONObject("_source").get("title");
-									Object blog_post_id = postData.getJSONObject(j).getJSONObject("_source").get("blogpost_id");
+
+									
+									 //}
+									
+									
+									
+
 
 									//String distances = source.get("distances").toString();
 									//ObjectMapper mapper = new ObjectMapper();
@@ -806,12 +991,15 @@ Instant start = Instant.now();
 									//System.out.println(post_distances.get(blog_post_id.toString()));
 							%>
 							<tr>
-
-								<td><%=title.toString()%></td>
+							
+								<td><a class="blogpost_link cursor-pointer <%=activeDef %>" id="<%=blog_post_id.toString()%>" ><%=title.toString()%></a><br/>
+								<a id="viewpost_<%=blog_post_id.toString()%>" class="mt20 viewpost <%=activeDefLink %>" href="<%=permalink.toString()%>" target="_blank"><buttton class="btn btn-primary btn-sm mt10 visitpost">Visit Post &nbsp;<i class="fas fa-external-link-alt"></i></buttton></a></td>
 								<%-- <td><%=(double) Math.round(Double.parseDouble(distances.get(blog_post_id.toString()))) / 100000%></td> --%>
 								<td><%=String.format("%.5f", (float)Float.parseFloat(distances.get(blog_post_id.toString()).toString()))%></td>
 
 							</tr>
+							
+					
 							<%
 								}
 							%>
@@ -852,10 +1040,13 @@ Instant start = Instant.now();
 				<div id="posts_details" style="" class="pt20">
 					<h5 id="titleContainer" class="text-primary p20 pt0 pb0"><%=currentTitle%></h5>
 					<div class="text-center mb20 mt20">
-						<button class="btn stylebuttonblue">
+					<button class="btn stylebuttonblue" onclick="window.location.href = '<%=request.getContextPath()%>/bloggerportfolio.jsp?tid=<%=tid%>&blogger=<%=currentBlogger%>'">
+						<%-- <button class="btn stylebuttonblue">
 							<b id="authorContainer" class="float-left ultra-bold-text"><%=currentBlogger%></b> <i
-								class="far fa-user float-right blogcontenticon"></i>
-						</button>
+								class="far fa-user float-right blogcontenticon"></i>--%>
+						<b class="float-left ultra-bold-text"><%=currentBlogger%></b> <i
+													class="far fa-user float-right blogcontenticon"></i>
+											</button>
 						<button id="dateContainer" class="btn stylebuttonnocolor">02-01-2018, 5:30pm</button>
 						<button class="btn stylebuttonorange">
 							<b id="numCommentsContainer" class="float-left ultra-bold-text"><%=currentNumComment%>
@@ -883,12 +1074,13 @@ Instant start = Instant.now();
 						<div style="min-height: 420px;">
 							<!-- <p class="text-primary">Top keywords of <b>Past Week</b></p> -->
 							<div class="p15 pb5 pt0" role="group"></div>
-							<table id="DataTables_Table_3_wrapper" class="display"
+							<table id="DataTables_Table_3_wrapper" class="display table_over_cover"
 								style="width: 100%">
 								<thead>
 									<tr>
 										<%
 											JSONObject toptermsjson = new JSONObject();
+											ArrayList <List<String>> all_terms = new ArrayList<List<String>>();
 											for (int k = 0; k < clusterResult.size(); k++) {
 												//Object terms = result.getJSONArray(String.valueOf(i)).getJSONObject(0).getJSONObject("cluster_" + String.valueOf((i+1))).get("topterms");
 												//toptermsjson.put(String.valueOf((i+1)),terms);
@@ -903,32 +1095,42 @@ Instant start = Instant.now();
 									</tr>
 								</thead>
 								<tbody>
-								<%for(int j = 0; j < topterms.size(); j++) {
-									String terms = topterms.get("cluster_" + (j + 1));
-									//System.out.println("terms ---" + terms);
-									terms = terms.replace("[","").replace("]", "").replace("),", "-").replace("(", "").replace("\'", "");
-									List<String> termlist = Arrays.asList(terms.split("-"));
-									//System.out.println(ssssss);
-									//System.out.println(Arrays.asList(ssssss.split("-")).get(0));
-								%>
-									
+								
+								<% 
+								
+								
+								for(int k = 0; k < topterms.size(); k++){ %>
+								
 									<tr>
 										
-										<%
-										for(int k = 0; k < 10; k++){
-											//JSONArray test = (JSONArray)toptermsjson.get("1");
-											//for(int i = 0; i < test.length(); i++) {
+										<% 
+										int max = 0;
+										for(int m = 0; m < 10; m++){
+											
+											//String terms = topterms.get("cluster_" + (m + 1));
+											String [] splitted = source.get("cluster_" + (m + 1)).toString().split("\'topterms\':");
+											//System.out.println("terms ---" + terms);
+											//terms = terms.replace("{","").replace("}","").replace("[","").replace("]", "").replace("),", "-").replace("(", "").replace("\'", "").replace("\"", "");
+											//String [] splitted2 = splitted[1].replace("{","").replace("}","").split(",");
+											//List<String> termlist = Arrays.asList(terms.split(","));
+											List<String> termlist = Arrays.asList(splitted[1].replace("{","").replace("}","").split(","));
+											
+											
+											if(k < termlist.size()){
+											max = Integer.parseInt(termlist.get(k).split(":")[1].trim());
+											
+											
 										%>
+										
 										<td>
-											<%=termlist.get(k).split(",")[0]%>
+											<%=termlist.get(k).split(":")[0].replace("\'","")%>
 										</td>
 
-										<%} %>
+										<%}} %>
 									</tr>
 									
-
-
-								<% }%>
+								<%} %>
+								
 								</tbody>
 							</table>
 						</div>
@@ -960,7 +1162,7 @@ Instant start = Instant.now();
 	<script src="assets/js/jquery.min.js"></script>
 
 
-
+ <script src="pagedependencies/baseurl.js?v=93"></script>
 	<script type="text/javascript" src="assets/js/jquery-1.11.3.min.js"></script>
 	<script src="assets/bootstrap/js/bootstrap.js">
  </script>
@@ -1026,16 +1228,37 @@ Instant start = Instant.now();
        // }
      } ); */
      
+    
+     
      $('#DataTables_Table_0_wrapper').DataTable( {
          "scrollY": 430,
          "scrollX": true,
-         "order": [],
+         "order": [[ 1, "asc" ]],
           "pagingType": "simple",
         	  "columnDefs": [
         	      { "width": "65%", "targets": 0 },
         	      { "width": "25%", "targets": 0 }
         	    ]
      } );
+     
+     $('#DataTables_Table_3_wrapper').DataTable( {
+         "scrollY": 430,
+         "scrollX": true,
+         "targets": 'no-sort',
+         "bSort": false
+        	 
+     } );
+     
+    
+     
+     ///getting post with highest distance
+     id = <%=max_post_id %>
+					
+	$(".viewpost").addClass("makeinvisible");
+   	$('.blogpost_link').removeClass("activeselectedblog");
+   	$('#'+id).addClass("activeselectedblog");
+   	$("#viewpost_"+id).removeClass("makeinvisible");
+
  } );
  </script>
 	<!--end for table  -->
@@ -1171,6 +1394,525 @@ Instant start = Instant.now();
  });
  </script>
  <script type="text/javascript" src="assets/vendors/d3/d3.v4_new.min.js" ></script> 
+ 
+ <script>
+	////start cluster graph clicks
+		$("body").delegate(".cluster_visual", "click", function() {
+			$('.overlay1').removeClass('karat');
+			loaded_color = $(this).attr('loaded_color');
+			cluster_id = $(this).attr('cluster_id');
+			cluster_number = $(this).attr('cluster_number');
+			
+			if( $('#clusterdiagram_'+cluster_number).attr('load_status') == 0  ){
+				getClusterPoints(cluster_number)
+			}
+			
+			$('#'+cluster_id).css("backgroundColor", loaded_color);
+			$('#'+cluster_id).addClass('karat');
+			
+		})
+		$("body").delegate(".overlay1", "click", function() {
+			//$(this).removeClass('karat');
+		})
+		////end cluster graph clicks
+		
+		
+		
+		////start get clusterPoint function
+		function getClusterPoints(cluster_id){
+		
+			 id = <%=tid %>
+			 cluster_number = cluster_id
+			 $.ajax({
+					//url: app_url+"subpages/cluster_posts_chart.jsp",
+					url: "CLUSTERING",
+					method: 'POST',
+					/* dataType: 'json', */
+					data: {
+						action:"fetch_graph",
+						tid:id,
+						cluster_number:cluster_number,
+						cluster:"cluster_"+cluster_number
+					},
+					error: function(response)
+					{		console.log("error")				
+						console.log(response);
+						//$("#blogpost_detail").html(response);
+					},
+					success: function(response)
+					{   
+						//console.log("succcccccc")
+						//console.log(cluster_number);
+						//console.log(response);
+						var data = JSON.parse(response);
+						//$(".char19").html(data.status_percentage);
+						//$(".status").html(data.status);
+						///console.log(data.cluster_id)
+						console.log("BIG",data)
+						//console.log(data.final_data)
+						clusterdiagram3('#clusterdiagram_'+data.cluster_number, 500,data.final_data, data.cluster_number);
+						//$(".clusterdiagram_"+).html(response).hide();
+						//$("#posts_details").fadeIn(700);
+					}
+				});
+		
+		}
+		///end get ClusterPoint function
+		
+		
+		
+		
+		//nodes = []
+ var d3v4 = window.d3;
+ var plot_width = $('#chart-container1').width();
+var plot_height = $('#chart-container1').outerHeight() - 25;
+//console.log("plot_height",plot_height)
+ //console.log("plot_width",plot_width)
+ // Chart setup
+clusterdiagram5('#parentdivy', plot_height, plot_width);
+
+ var max_post_count = 0;
+ var min_post_count = 0
+ function clusterdiagram3(element, height, dataset, identify) {
+		 console.log("this is dataset1",dataset)
+		 
+		 	 //console.log("this is dataset2",dataset)
+		 	 
+		 	//console.log("normalized_value",normalized_radius )
+		 	//start get normalized array for radius values
+	  /* var nodes = [
+	   { id: "mammal", group: 0, label: "Mammals", level: 2 },
+	   { id: "dog"  , group: 0, label: "Dogs"  , level: 2 },
+	   { id: "cat"  , group: 0, label: "Cats"  , level: 2 },
+	   { id: "fox"  , group: 0, label: "Foxes" , level: 2 },
+	   { id: "elk"  , group: 0, label: "Elk"  , level: 2 },
+	   { id: "insect", group: 1, label: "Insects", level: 2 },
+	   { id: "ant"  , group: 1, label: "Ants"  , level: 2 },
+	   { id: "bee"  , group: 1, label: "Bees"  , level: 2 },
+	   { id: "fish" , group: 2, label: "Fish"  , level: 2 },
+	   { id: "carp" , group: 2, label: "Carp"  , level: 2 },
+	   { id: "pike" , group: 2, label: "Pikes" , level: 2 }
+	  ] */
+		 
+	var nodes = dataset.nodes
+	//console.log('nodes', nodes)
+	//console.log('nodes',nodes)
+	  /* var links = [
+	  	{ target: "mammal", source: "dog" , strength: 3.0 },
+	  	{ target: "bee", source: "cat" , strength: 3.0 }
+	   /* { target: "mammal", source: "fox" , strength: 3.0 },
+	   { target: "insect", source: "ant" , strength: 0.7 },
+	   { target: "insect", source: "bee" , strength: 0.7 },
+	   { target: "fish" , source: "carp", strength: 0.7 },
+	   { target: "fish" , source: "pike", strength: 0.7 },
+	   { target: "cat"  , source: "elk" , strength: 0.1 },
+	   { target: "carp" , source: "ant" , strength: 0.1 },
+	   { target: "elk"  , source: "bee" , strength: 0.1 },
+	   { target: "dog"  , source: "cat" , strength: 0.1 },
+	   { target: "fox"  , source: "ant" , strength: 0.1 },
+	  	{ target: "pike" , source: "cat" , strength: 0.1 } */
+	  /* ] */
+	  var links = dataset.links
+	//console.log('links', links)
+		  //console.log('links',links)
+		  //var width = $('#clusterdiagram').width();
+		//var height = $('#clusterdiagram').height();
+	   // Define main variables
+	   var d3Container = d3v4.select(element),
+	     margin = {top: 0, right: 50, bottom: 0, left: 50},
+	     width = 960,
+	     height = 550;
+				radius = 6;
+		
+	   var colors = d3v4.scaleOrdinal(d3v4.schemeCategory10);
+	   // Add SVG element
+	   var container = d3Container.append("svg");
+	   // Add SVG group
+	   var svg = container
+	     .attr("width", width + margin.left + margin.right)
+	     .attr("height", height + margin.top + margin.bottom)
+	   .attr("overflow", "visible");
+	     //.append("g")
+	    //  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+	    // simulation setup with all forces
+	  var linkForce = d3v4
+	  .forceLink()
+	  .id(function (link) { return link.id })
+	  .strength(function (link) { return link.strength })
+	    // simulation setup with all forces
+	     var simulation = d3v4
+	     .forceSimulation()
+	     .force('link', d3v4.forceLink().id(d =>d.id).distance(-20))
+	     .force('charge', d3v4.forceManyBody())
+	     /* .force('center', d3v4.forceCenter(width, height ))  */
+	     .force('center', d3v4.forceCenter())  
+	     .force("collide",d3v4.forceCollide().strength(-5)) 
+	     /* simulation.force("center")
+	    .x(width * forceProperties.center.x)
+	    .y(height * forceProperties.center.y); */
+	     /* var simulation = d3.forceSimulation()
+	       .force('x', d3.forceX().x(d => d.x))
+	       .force('y', d3.forceY().y(d => d.y))
+	       .force("charge",d3.forceManyBody().strength(-20))
+	       .force("link", d3.forceLink().id(d =>d.id).distance(20)) 
+	       .force("collide",d3.forceCollide().radius(d => d.r*10)) 
+	       .force('center', d3v4.forceCenter(width, height )) */
+				
+				simulation.force("center")
+			  .x(width / 2)
+			  .y(height / 2)
+			   
+			  	simulation.force("charge")
+	    .strength(-2000 * true)
+	    .distanceMin(1)
+	    .distanceMax(100);
+			  /* .x(width * 0.5) */
+				
+				simulation.alpha(1).restart(); 
+	     var linkElements = svg.append("g")
+	      .attr("class", "links")
+	      .selectAll("line")
+	      .data(links)
+	      .enter().append("line")
+	       .attr("stroke-width", 0)
+	     	 .attr("stroke", "rgba(50, 50, 50, 0.2)")
+	    function getNodeColor(node) {
+	     return node.level === 1 ? 'red' : 'gray'
+	    }
+	    var nodeElements = svg.append("g")
+	     .attr("class", "nodes")
+	     .selectAll("circle")
+	     .data(nodes)
+	     .enter().append("circle")
+	     /* .attr(circleAttrs) */
+	     // .attr("r", function (d, i) {return d.level})
+	      .attr("r", 5)
+	      .attr("fill", function (d, i) {return colors(d.group);})
+	      .attr("class", "cluster_visual cursor-pointer cluster_point_detail")
+		  .attr("loaded_color",function (d) {return colors(d.group); })
+		  .attr("cluster_id", function(node){return node.label})
+		  .attr("data-toggle", "tooltip")
+	      .attr("data-placement", "top")
+	      .attr("title", function(node){return node.title})
+	      .attr("blogpost_id", function(node){return node.id})
+	     // .attr("text",function (node) { return node.label })
+	      
+           
+	      //.on("mouseover", function (node) { return node.label });
+	    var textElements = svg.append("g")
+	     .attr("class", "texts")
+	     .selectAll("text")
+	     .data(nodes)
+	     .enter().append("text")
+	      //.text(function (node) { return node.label })
+	    	 .attr("font-size", 15)
+	    	 .attr("dx", 15)
+	      .attr("dy", 4) 
+	     simulation.nodes(nodes).on('tick', () => {
+	      nodeElements
+	       .attr('cx', function (node) { return node.x })
+	       .attr('cy', function (node) { return node.y })
+	       textElements  
+	       .attr('x', function (node) { return node.x })
+	       .attr('y', function (node) { return node.y })
+	       linkElements
+	   .attr('x1', function (link) { return link.source.x })
+	   .attr('y1', function (link) { return link.source.y })
+	   .attr('x2', function (link) { return link.target.x })
+	   .attr('y2', function (link) { return link.target.y })
+	   
+	   
+	     })
+	    $('[data-toggle="tooltip"]').tooltip();
+	function handleMouseOver(d, i) { // Add interactivity
+	      // Use D3 to select element, change color and size
+	      d3.select(this).attr({
+	       fill: "orange",
+	       r: radius * 2
+	      });
+	      // Specify where to put label of text
+	      svg.append("text").attr({
+	        id: "t" + d.x + "-" + d.y + "-" + i, // Create an id for text so we can select it later for removing on mouseout
+	        x: function() { return xScale(d.x) - 30; },
+	        y: function() { return yScale(d.y) - 15; }
+	      })
+	      .text(function() {
+	       return [d.x, d.y]; // Value of the text
+	      });
+	     }
+	 simulation.force("link").links(links)
+	 
+	 ///view loaded chart and update loaad status
+	 
+	 $('#clusterdiagram_loader_'+identify).addClass('hidden')
+	 $('#clusterdiagram_'+identify).removeClass('hidden')
+	 $('#clusterdiagram_'+identify).attr('load_status', 1)
+	 ///end view loaded chart and update oad status
+	 
+	 
+	 }
+ ////end clustering3 function 
+ 	 
+$("body").delegate(".cluster_point_detail", "click", function() {
+    $('html,body').animate({
+        scrollTop: $("#post_detail_row").offset().top},
+        'slow');
+    
+    ////
+    var post_id = $(this).attr("blogpost_id");
+    $("body").addClass("loaded");
+	//alert(post_id);
+	//console.log(post_id);
+	$("#posts_details").html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />");
+	$(".viewpost").addClass("makeinvisible");
+	$('.blogpost_link').removeClass("activeselectedblog");
+	$('#'+post_id).addClass("activeselectedblog");
+	$(this).parent().children(".viewpost").removeClass("makeinvisible");
+	//grab all id of blog and perform an ajax request
+	$.ajax({
+		url: app_url+"subpages/influencedetail.jsp",
+		method: 'POST',
+		data: {
+			action:"fetchpost",
+			post_id:post_id,
+			tid:$("#alltid").val()
+		},
+		error: function(response)
+		{						
+			//console.log(response);
+			//$("#blogpost_detail").html(response);
+		},
+		success: function(response)
+		{   
+			//console.log(response);
+			$("#posts_details").html(response).hide();
+			$("#posts_details").fadeIn(700);
+		}
+	});
+	
+    ////
+});
+ 
+ 
+ ///start clustering5 funtion
+ function clusterdiagram5(element, height, plot_width) {
+	// console.log("this is dataset1",dataset)
+	 
+	 var final_centroids = {};
+	 dataset = <%=final_centroids %>
+	 	 //console.log("this is dataset2",dataset)
+	 	 
+	 	 //start getting max and min posts numbers
+	 	for(var i = 0; i < dataset.nodes.length; i++){
+	 		// console.log("this is dataset4",dataset.nodes[i].level)
+	 		 if(i == 0){
+	 			min_post_count = dataset.nodes[i].level
+	 			max_post_count = dataset.nodes[i].level
+	 		 }
+	 		 
+	 		 if(dataset.nodes[i].level < min_post_count){
+	 			min_post_count = dataset.nodes[i].level
+	 		 }
+	 		 
+	 		if(dataset.nodes[i].level > max_post_count){
+	 			max_post_count = dataset.nodes[i].level
+	 		 }
+	 		 
+	 	}
+	 	//end getting max and min posts numbers
+	 	
+	 	//start get normalized array for radius values
+	 	normalized_radius = [];
+	 	for(var i = 0; i < dataset.nodes.length; i++){
+	 		
+	 		normalized_value = ( (dataset.nodes[i].level - min_post_count)/(max_post_count - min_post_count));
+	 		
+	 		range = 2 - 1;
+	 		normalized_value = (normalized_value * range) + 1;
+	 		
+	 		temp = normalized_value * 25;
+	 		normalized_radius[i] = temp;
+	 		
+	 		 //console.log("normalized_value",dataset.nodes[i].level,normalized_value )
+	 		
+	 		 
+	 	}
+	 	//console.log("normalized_value",normalized_radius )
+	 	//start get normalized array for radius values
+  /* var nodes = [
+   { id: "mammal", group: 0, label: "Mammals", level: 2 },
+   { id: "dog"  , group: 0, label: "Dogs"  , level: 2 },
+   { id: "cat"  , group: 0, label: "Cats"  , level: 2 },
+   { id: "fox"  , group: 0, label: "Foxes" , level: 2 },
+   { id: "elk"  , group: 0, label: "Elk"  , level: 2 },
+   { id: "insect", group: 1, label: "Insects", level: 2 },
+   { id: "ant"  , group: 1, label: "Ants"  , level: 2 },
+   { id: "bee"  , group: 1, label: "Bees"  , level: 2 },
+   { id: "fish" , group: 2, label: "Fish"  , level: 2 },
+   { id: "carp" , group: 2, label: "Carp"  , level: 2 },
+   { id: "pike" , group: 2, label: "Pikes" , level: 2 }
+  ] */
+	 
+var nodes = dataset.nodes
+//console.log('nodes', nodes)
+//console.log('nodes',nodes)
+  /* var links = [
+  	{ target: "mammal", source: "dog" , strength: 3.0 },
+  	{ target: "bee", source: "cat" , strength: 3.0 }
+   /* { target: "mammal", source: "fox" , strength: 3.0 },
+   { target: "insect", source: "ant" , strength: 0.7 },
+   { target: "insect", source: "bee" , strength: 0.7 },
+   { target: "fish" , source: "carp", strength: 0.7 },
+   { target: "fish" , source: "pike", strength: 0.7 },
+   { target: "cat"  , source: "elk" , strength: 0.1 },
+   { target: "carp" , source: "ant" , strength: 0.1 },
+   { target: "elk"  , source: "bee" , strength: 0.1 },
+   { target: "dog"  , source: "cat" , strength: 0.1 },
+   { target: "fox"  , source: "ant" , strength: 0.1 },
+  	{ target: "pike" , source: "cat" , strength: 0.1 } */
+  /* ] */
+  var links = dataset.links
+
+	  //console.log('links',links)
+	  //var width = $('#clusterdiagram').width();
+	//var height = $('#clusterdiagram').height();
+   // Define main variables
+  
+   var d3Container = d3v4.select(element),
+     margin = {top: 0, right: 50, bottom: 0, left: 50},
+     width = plot_width,
+     height = height;
+			radius = 6;
+			
+			
+	
+   var colors = d3v4.scaleOrdinal().range(["#E377C2","#8C564B", "#9467BD", "#D62728", "#2CA02C", "#FF7F0E", "#1F77B4", "#7F7F7F","#17B890", "#D35269"]);;
+   // Add SVG element
+   var container = d3Container.append("svg");
+   // Add SVG group
+   var svg = container
+     .attr("width", width + margin.left + margin.right)
+     .attr("height", height + margin.top + margin.bottom)
+   .attr("overflow", "visible");
+     //.append("g")
+    //  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    // simulation setup with all forces
+  var linkForce = d3v4
+  .forceLink()
+  .id(function (link) { return link.id })
+  .strength(function (link) { return link.strength })
+    // simulation setup with all forces
+     var simulation = d3v4
+     .forceSimulation()
+     .force('link', d3v4.forceLink().id(d =>d.id).distance(-20))
+     .force('charge', d3v4.forceManyBody())
+     /* .force('center', d3v4.forceCenter(width, height ))  */
+     .force('center', d3v4.forceCenter())  
+     .force("collide",d3v4.forceCollide().strength(-5)) 
+     /* simulation.force("center")
+    .x(width * forceProperties.center.x)
+    .y(height * forceProperties.center.y); */
+     /* var simulation = d3.forceSimulation()
+       .force('x', d3.forceX().x(d => d.x))
+       .force('y', d3.forceY().y(d => d.y))
+       .force("charge",d3.forceManyBody().strength(-20))
+       .force("link", d3.forceLink().id(d =>d.id).distance(20)) 
+       .force("collide",d3.forceCollide().radius(d => d.r*10)) 
+       .force('center', d3v4.forceCenter(width, height )) */
+			
+			simulation.force("center")
+		  .x(width / 2)
+		  .y(height / 2)
+		   
+		  	simulation.force("charge")
+    .strength(-2000 * true)
+    .distanceMin(1)
+    .distanceMax(1000);
+		  /* .x(width * 0.5) */
+			
+			simulation.alpha(1).restart(); 
+     var linkElements = svg.append("g")
+      .attr("class", "links")
+      .selectAll("line")
+      .data(links)
+      .enter().append("line")
+       .attr("stroke-width", 0)
+     	 .attr("stroke", "rgba(50, 50, 50, 0.2)")
+    function getNodeColor(node) {
+     return node.level === 1 ? 'red' : 'gray'
+    }
+    var nodeElements = svg.append("g")
+     .attr("class", "nodes")
+     .selectAll("circle")
+     .data(nodes)
+     .enter().append("circle")
+     /* .attr(circleAttrs) */
+     // .attr("r", function (d, i) {return d.level})
+      .attr("r", function (d, i) {return normalized_radius[d.group-1]})
+      .attr("cluster_number", function (d, i) {return d.group})
+      .attr("fill", function (d, i) {return colors(d.group);})
+      .attr("class", "cluster_visual")
+		  .attr("loaded_color",function (d) {return colors(d.group); })
+		  .attr("cluster_id", function(node){return node.label})
+		  
+      //.attr("text",function (node) { return node.label })
+      /* .on("mouseover", function (node) { return node.label }); */
+    var textElements = svg.append("g")
+     .attr("class", "texts")
+     .selectAll("text")
+     .data(nodes)
+     .enter().append("text")
+      .text(function (node) { return node.label })
+    	 .attr("font-size", 15)
+    	 .attr("dx", 15)
+      .attr("dy", 4) 
+     simulation.nodes(nodes).on('tick', () => {
+      nodeElements
+       .attr('cx', function (node) { return node.x })
+       .attr('cy', function (node) { return node.y })
+       textElements  
+       .attr('x', function (node) { return node.x })
+       .attr('y', function (node) { return node.y })
+       linkElements
+   .attr('x1', function (link) { return link.source.x })
+   .attr('y1', function (link) { return link.source.y })
+   .attr('x2', function (link) { return link.target.x })
+   .attr('y2', function (link) { return link.target.y })
+     })
+function handleMouseOver(d, i) { // Add interactivity
+      // Use D3 to select element, change color and size
+      d3.select(this).attr({
+       fill: "orange",
+       r: radius * 2
+      });
+      // Specify where to put label of text
+      svg.append("text").attr({
+        id: "t" + d.x + "-" + d.y + "-" + i, // Create an id for text so we can select it later for removing on mouseout
+        x: function() { return xScale(d.x) - 30; },
+        y: function() { return yScale(d.y) - 15; }
+      })
+      .text(function() {
+       return [d.x, d.y]; // Value of the text
+      });
+     }
+ simulation.force("link").links(links)
+ }
+ ///end clustering5 function
+ 
+ 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+	</script>
  <script>
     var d3v4_ = window.d3;
     //console.log(d3v4_.version)
@@ -1178,7 +1920,7 @@ Instant start = Instant.now();
 </script>
 <script>
 	//var d3 = d3v4_;
-	console.log("cluster",d3.version)
+	//console.log("cluster",d3.version)
 	
 	
 	$(document).ready(function() {
@@ -1186,7 +1928,7 @@ Instant start = Instant.now();
 	$('#clusterdiagram').addClass('hidden');
 	$('#clusterdiagram_loader').removeClass('hidden');
 	
-	loadscatter(1);
+	//loadscatter(1);
 	
 	$('#clusterdiagram').removeClass('hidden');
 	$('#clusterdiagram_loader').addClass('hidden');
@@ -1203,8 +1945,7 @@ Instant start = Instant.now();
 		
 		 counter_value = $(this).attr("counter_value");
 		//alert(counter_value)
-		loadscatter(counter_value);
-		
+		//loadscatter(counter_value);
 		//loadtitletable(counter_value+1);
 		
 		$('#clusterdiagram').removeClass('hidden');
@@ -1229,12 +1970,13 @@ Instant start = Instant.now();
 	
 	
 	function loadscatter(clusterid){
+		var lengthy = $('#chart-container').width();
 		var margin = {
 				top : 10,
 				right : 30,
 				bottom : 30,
 				left : 60
-			}, width = 1000 - margin.left - margin.right, height = 300 - margin.top
+			}, width = lengthy - margin.left - margin.right, height = 300 - margin.top
 					- margin.bottom;
 
 			//append the SVG object to the body of the page
@@ -1246,7 +1988,7 @@ Instant start = Instant.now();
 
 			//Read the data
 			d3v4_.csv("test_data2.csv", function(data) {
-				console.log(data)
+				//console.log(data)
 			})
 
 			/* var data2 = []; */
@@ -1303,7 +2045,7 @@ Instant start = Instant.now();
 					.attr("x", 0).attr("y", 0);
 
 			var color = d3v4_.scaleOrdinal().domain(["1", "2","3","4","5","6","7","8","9","10" ]).range(
-					[ 'green', 'red', 'blue', 'orange', 'purple','pink', 'black', 'grey', 'brown','yellow'])
+					["#E377C2","#8C564B", "#9467BD", "#D62728", "#2CA02C", "#FF7F0E", "#1F77B4", "#7F7F7F","#17B890", "#D35269"])
 			/* .domain(["0", "1", "2","3","4","5","6","7","8","9" ]) */
 			/* .range([ 'red', 'green', 'blue', 'orange', 'purple','pink', 'black', 'grey', 'brown','yellow']) */
 
@@ -1353,11 +2095,47 @@ Instant start = Instant.now();
 	}
 </script>
 
-<script type="text/javascript" src="assets/vendors/d3/d3.min.js" ></script>
+ <script type="text/javascript" src="assets/vendors/d3/d3.min.js" ></script> 
  <script src="assets/vendors/wordcloud/d3.layout.cloud.js" ></script>
  <script type="text/javascript" src="assets/vendors/d3/d3_tooltip.js" ></script>
  <script type="text/javascript"
 		src="chartdependencies/keywordtrendd3.js"></script>
+		
+<script>
+$('.blogpost_link').on("click", function(){
+	$("body").addClass("loaded");
+	var post_id = $(this).attr("id");
+	//alert(post_id);
+	//console.log(post_id);
+	$("#posts_details").html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />");
+	$(".viewpost").addClass("makeinvisible");
+	$('.blogpost_link').removeClass("activeselectedblog");
+	$('#'+post_id).addClass("activeselectedblog");
+	$(this).parent().children(".viewpost").removeClass("makeinvisible");
+	//grab all id of blog and perform an ajax request
+	$.ajax({
+		url: app_url+"subpages/influencedetail.jsp",
+		method: 'POST',
+		data: {
+			action:"fetchpost",
+			post_id:post_id,
+			tid:$("#alltid").val()
+		},
+		error: function(response)
+		{						
+			//console.log(response);
+			//$("#blogpost_detail").html(response);
+		},
+		success: function(response)
+		{   
+			//console.log(response);
+			$("#posts_details").html(response).hide();
+			$("#posts_details").fadeIn(700);
+		}
+	});
+	
+});
+</script>
  
 <script>
     var d3v3_ = window.d3;
@@ -1382,16 +2160,17 @@ Instant start = Instant.now();
 			
 		}
 	
-	var terms = "<%=topterms.get("cluster_1")%>";
-	console.log('terms', terms);
-	var new_dd = terms.replace('[','{').replace(']','}').replace(/\),/g,'-').replace(/\(/g,'').replace(/,/g,':').replace(/-/g,',').replace(/\)/g,'').replace(/'/g,"");
-	var newjson = new_dd.replace(/\s+/g,'').replace(/{/g,'{"').replace(/:/g,'":"').replace(/,/g,'","').replace(/}/g,'"}')
-	var jsondata = JSON.parse(newjson)
+	var jsondata = <%=topterms.get("cluster_1").toString().trim()%>;
+	//console.log('terms', terms);
+	//var new_dd = terms.replace('[','{').replace(']','}').replace(/\),/g,'-').replace(/\(/g,'').replace(/,/g,':').replace(/-/g,',').replace(/\)/g,'').replace(/'/g,"");
+	//var newjson = new_dd.replace(/\s+/g,'').replace(/{/g,'{"').replace(/:/g,'":"').replace(/,/g,'","').replace(/}/g,'"}')
+	//var newjson = terms.replace(/"/g,"");
+	//var jsondata = JSON.parse(terms);
 	
 	/* data = [];
 	for (var key in jsondata) {var dic = {}; dic["text"] = key; dic["size"] = jsondata[key]; data.push(dic);} */
-	console.log('weeweweweewewewewewewew')
-	console.log(jsondata)
+	//console.log('weeweweweewewewewewewew')
+	//console.log(jsondata)
 	elem = '#tagcloudcontainer';
 	
 	
@@ -1501,60 +2280,94 @@ Instant start = Instant.now();
 }); --%>
 
  </script>
+
  <!-- <script type="text/javascript"></script>
 	<script type="text/javascript" src="assets/vendors/d3/d3.min.js"></script>
 	<script src="assets/vendors/wordcloud/d3.layout.cloud.js"></script>
 	<script type="text/javascript" src="assets/vendors/d3/d3_tooltip.js"></script> -->
 	<script src="pagedependencies/clustering.js"></script>
 	<script >
-	 /* d3version3 = d3
-	   // window.d3 = null
-	    // test it worked
-	    console.log('v3', d3version3.version)
-	    d3 = d3version3 */
-	    var rotation = 0;
-	 	var names = ["Cluster 1", "Cluster 2", "Cluster 3", "Cluster 4", "Cluster 5", "Cluster 6", "Cluster 7", "Cluster 8", "Cluster 9", "Cluster 10"];
-	 	var colors = ["green", "red", "blue", "orange", "purple", "pink", "black", "grey", "brown", "yellow"];
-	    var chord_options = {
-    		    "gnames": names,
-    		    "rotation": rotation,
-    		    "colors": colors
-    		};
-	    /* clusterMatrix = [
-	    	[0 , 3, 4, 0, 2 , 4 ,5 , 6, 0, 7],
-	    	[0 , 0, 4, 0, 2 , 4 ,5 , 6, 0, 0],
-	    	[1 , 3, 0, 0, 2 , 4 ,5 , 6, 0, 6],
-	    	[0 , 3, 4, 0, 2 , 4 ,0 , 6, 0, 0],
-	    	[0 , 3, 4, 7, 0 , 4 ,5 , 6, 0, 9],
-	    	[0 , 3, 4, 0, 2 , 0 ,5 , 0, 0, 7],
-	    	[0 , 0, 4, 0, 2 , 4 ,0 , 6, 0, 8],
-	    	[0 , 3, 4, 8, 2 , 4 ,5 , 0, 0, 4],
-	    	[0 , 3, 4, 3, 2 , 4 ,5 , 6, 0, 7],
-	    	[0 , 5, 4, 0, 2 , 4 ,5 , 6, 0, 0]
-	    ] */
-	    
-	    var cluster = 1
-	    var clusterMatrix = []
-	     <%for(int j = 0; j < termsMatrix.length; j++){%>
+	buildAndDisplayChord(0);
+	
+	///Onclick Handling
+	$("body").delegate(".clusters_", "click", function() {
+		
+		$('#chorddiagram').html('');
+		$('#chorddiagram').empty();
+		
+		 counter_value = $(this).attr("counter_value");
+		 
+		 cluster_index = counter_value-1;
+		console.log(cluster_index, 'cluster_index')
+		buildAndDisplayChord(cluster_index)
+		
+		
+	});
+	
+	//end onCliocik handling
+	
+	//start buildAndDisplayChord function
+	function buildAndDisplayChord(cluster_number){
+		console.log(cluster_number, 'cluster_number')
+		$('#chorddiagram_loader').removeClass('hidden');
+		/* d3version3 = d3
+		   // window.d3 = null
+		    // test it worked
+		    console.log('v3', d3version3.version)
+		    d3 = d3version3 */
+		    var rotation = 0;
+		 	var names = ["Cluster 1", "Cluster 2", "Cluster 3", "Cluster 4", "Cluster 5", "Cluster 6", "Cluster 7", "Cluster 8", "Cluster 9", "Cluster 10"];
+		 	var colors = ["#E377C2","#8C564B", "#9467BD", "#D62728", "#2CA02C", "#FF7F0E", "#1F77B4", "#7F7F7F","#17B890", "#D35269"];
+		    var chord_options = {
+	    		    "gnames": names,
+	    		    "rotation": rotation,
+	    		    "colors": colors
+	    		};
+		    /* clusterMatrix = [
+		    	[0 , 3, 4, 0, 2 , 4 ,5 , 6, 0, 7],
+		    	[0 , 0, 4, 0, 2 , 4 ,5 , 6, 0, 0],
+		    	[1 , 3, 0, 0, 2 , 4 ,5 , 6, 0, 6],
+		    	[0 , 3, 4, 0, 2 , 4 ,0 , 6, 0, 0],
+		    	[0 , 3, 4, 7, 0 , 4 ,5 , 6, 0, 9],
+		    	[0 , 3, 4, 0, 2 , 0 ,5 , 0, 0, 7],
+		    	[0 , 0, 4, 0, 2 , 4 ,0 , 6, 0, 8],
+		    	[0 , 3, 4, 8, 2 , 4 ,5 , 0, 0, 4],
+		    	[0 , 3, 4, 3, 2 , 4 ,5 , 6, 0, 7],
+		    	[0 , 5, 4, 0, 2 , 4 ,5 , 6, 0, 0]
+		    ] */
+		    
+		    var cluster_numy = cluster_number
+		    var clusterMatrix = []
+		     <%
+		     int cluster_num = 4;
+		     for (int j = 0; j < termsMatrix.length; j++) {%>
+		    	var temparr = []
+		    	<%for (int k = 0; k < termsMatrix.length; k++) {%>
+		    		temp = <%=k %>
+		    	if( temp == cluster_numy){ temparr.push(<%=termsMatrix[j][k]%>);}
+		    	else{temparr.push(0);}
+		    	
+		    	<%}%>
+		    	clusterMatrix.push(temparr);
+			<%}%> 
+			
+			//console.log('matirx', clusterMatrix)
+			<%-- <%for(int j = 0; j < termsMatrix.length; j++){%>
 	    	var temparr = []
+	    	<%System.out.println("items--"+termsMatrix[0][j]);%>
 	    	<%for(int k = 0; k < termsMatrix.length; k++){%>
 	    		
-	    		temparr.push(<%=termsMatrix[j][k]%>);
+	    		
 	    	<%}%>
 	    	clusterMatrix.push(temparr);
-		<%}%>  
-		<%-- <%for(int j = 0; j < termsMatrix.length; j++){%>
-    	var temparr = []
-    	<%System.out.println("items--"+termsMatrix[0][j]);%>
-    	<%for(int k = 0; k < termsMatrix.length; k++){%>
-    		
-    		
-    	<%}%>
-    	clusterMatrix.push(temparr);
-    	temparr.push(<%=termsMatrix[0][j]%>);
-	<%}%>  --%>
-	    drawChord("#chorddiagram", chord_options, clusterMatrix, names); 
- 
+	    	temparr.push(<%=termsMatrix[0][j]%>);
+		<%}%>  --%>
+		    drawChord("#chorddiagram", chord_options, clusterMatrix, names); 
+		    $('#chorddiagram').removeClass('hidden');
+			$('#chorddiagram_loader').addClass('hidden');
+		
+	}
+	 ///end buildAndDisplayChord function
  </script>
 
 

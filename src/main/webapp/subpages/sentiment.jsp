@@ -57,6 +57,13 @@
 	int anger=0;
 	int anx=0;
 	int sad=0;
+	
+	int sexually_explicit = 0;
+	int threat = 0;
+	int insult = 0;
+	int profanity = 0;
+	int identity_attack = 0;
+	
 	try {
 		ArrayList posts = bp._getPost(key,value);
 		if(posts.size()>0){
@@ -110,6 +117,12 @@
 							anger+=Integer.parseInt(bj.get("anger").toString());
 							anx+=Integer.parseInt(bj.get("anx").toString());
 							sad+=Integer.parseInt(bj.get("sad").toString());
+							
+							sexually_explicit += Integer.parseInt(bj.get("sexually_explicit").toString());
+							threat += Integer.parseInt(bj.get("threat").toString());
+							insult += Integer.parseInt(bj.get("insult").toString());
+							profanity += Integer.parseInt(bj.get("profanity").toString());
+							identity_attack += Integer.parseInt(bj.get("identity_attack").toString());
 						}
 					}
 					
@@ -164,6 +177,9 @@
 							<li data-target="#carouselExampleIndicators" data-slide-to="5"
 								data-toggle="tooltip" data-placement="top"
 								title="Sentiment/Emotion"></li>
+							<li data-target="#carouselExampleIndicators" data-slide-to="6"
+								data-toggle="tooltip" data-placement="top"
+								title="Toxicity"></li>
 
 						</ol>
 						<div class="carousel-inner" id="carouseller">
@@ -212,6 +228,15 @@
 									style="height: 586px;">
 									<h5 class="text-primary p20 pt0 pb0 text-center">Sentiment/Emotion - Post #<%=postno%></h5>
 									<div class="sentimentemotion2"></div>
+								</div>
+							</div>
+							
+							<div class="carousel-item">
+								<div class="p20 pt0 pb20 text-blog-content text-primary"
+									style="height: 586px;">
+									<h5 class="text-primary p20 pt20 pb0 text-center">Toxicity
+										- Post #<%=postno%></h5>
+									<div class="toxicity"></div>
 								</div>
 							</div>
 						</div>
@@ -309,6 +334,16 @@ $(function () {
                               {axis:"Anxiety",value:<%=anx%>}
                               ]
                             ];
+                        
+                        var toxicity = [
+                            [//iPhone
+                            {axis:"Sexually Explicit",value:<%=sexually_explicit%>},
+                            {axis:"Identity Attack",value:<%=identity_attack%>},
+                            {axis:"Profanity",value:<%=profanity%>},
+                            {axis:"Insult",value:<%=insult%>},
+                            {axis:"Threat",value:<%=threat%>}
+                            ]
+                          ];
     //////////////////////////////////////////////////////////////
     //////////////////// Draw the Chart //////////////////////////
     //////////////////////////////////////////////////////////////
@@ -372,6 +407,16 @@ $(function () {
       roundStrokes: true,
       color: color
     };
+    
+    var radarChartOptions7 = {
+    	      w: width,
+    	      h: height,
+    	      margin: margin,
+    	      maxValue: 0.5,
+    	      levels: 5,
+    	      roundStrokes: true,
+    	      color: color
+    	    };
     //Call function to draw the Radar chart
 
       RadarChart(".personalcontent2", personalcontent, radarChartOptions1);
@@ -380,6 +425,7 @@ $(function () {
       RadarChart(".cognitiveprocess2", cognitiveprocess, radarChartOptions4);
       RadarChart(".summaryvariable2", summaryvariable, radarChartOptions5);
       RadarChart(".sentimentemotion2", sentimentemotion, radarChartOptions6);
+      RadarChart(".toxicity", toxicity, radarChartOptions7);
 
 });
   </script>

@@ -163,6 +163,7 @@ $('.trackerindividual').on("click",function(e){
     	    removeTracker(info,"removeblogset");
     	    trackerselectedcount--;
     	    console.log("not"+trackerselectedcount);
+    	    // alert(info)
     	    // increase count of selected tracker
     	    $('.selectedtrackercount').html(trackerselectedcount);
 	     
@@ -300,7 +301,7 @@ $('.deleteblog').on("click",function()
 // end
 
   
-//$('#closetracks').on("click",function(){
+// $('#closetracks').on("click",function(){
 $( "body" ).delegate( "#closetracks", "click", function() {
 $(this).parent().toggle();	
 });
@@ -451,7 +452,7 @@ $.ajax({
 
 
 // select a blog to track
-$(document).on("click",".trackblog",function(e){
+$(document).on("click",".trackblog99",function(e){
 // check the status if the blog is tracked
 var blog_id = "";
 classes = $(this).attr('class').split(/\s+/);
@@ -633,6 +634,27 @@ $('.tracksection').show();
 	}
 });
 
+/*function uploadTerms(tid, type){
+	$.ajax({
+		url: app_url+'tracker',
+		method: 'POST',
+		data: {
+			action:"uploadTerms",
+			tracker_id:tid,
+			type:type,
+			
+		},
+		error: function(response)
+		{
+			alert('could not compute terms')
+			console.log('could not compute terms')
+		},
+		success: function(response)
+		{
+			console.log('term response',response);
+		}
+	});
+}*/
 
 function removeBlog(element,blog_id,selected_blogs){
 	blog_id = "";
@@ -672,7 +694,7 @@ function removeBlog(element,blog_id,selected_blogs){
 
 // call to action to start tracking blogs
 $('#initiatetrack').on("click",function(e){
-	
+	// alert('i am here')
 $('.trackinitiated, .modalbackdrop').removeClass("hidden");
 
 $('.trackinitiated, .modalbackdrop').show();
@@ -765,6 +787,8 @@ else
 	   // console.log("Allblogs here:"+all_blogs);return false;
 	   	$('.trackercreatebutton').val("creating tracker");
 	   	$('.trackercreatebutton').attr("disabled",true);
+	   	
+	   	all_blogs = $('#selected_blogs_').val();
    	 // If at least a tracker is selected, update tracker else create tracker
 		$.ajax({
 			url: app_url+'tracker',
@@ -781,17 +805,26 @@ else
 			},
 			success: function(response)
 			{   
-				console.log(response);
+				// alert(response)
+				//alert(reponse);
+				//alert(all_blogs);
+				
+				// console.log('first succcess',response);
 				// if(response.indexOf("success")>-1){
 				if(response!="error creating tracker" && response!="tracker already exist"){
-					toastr.success('Tracker successfully created and Updated!','Success');
+					//console.log('maya',response)
+					//console.log('maya2',all_blogs)
+					uploadTerms(response,"create")
+					uploadClusters(response)
+					
+					toastr.success('Tracker2222 successfully created and Updated!','Success');
 					$('#newtracker_name').html('');
 					$('#newtracker_description').html('');
 					$('.trackcreationsection2').addClass("hidden");
 					$('.trackcreationsection1').removeClass('hidden');
 					$('.trackinitiated, .modalbackdrop').hide();
 					
-					window.location.href = 'edittracker.jsp?tid='+response;
+					//window.location.href = 'edittracker.jsp?tid='+response;
 					
 					console.log(app_url)
 					$.ajax({
@@ -803,7 +836,8 @@ else
 					},
 					success: function(response)
 					{
-						console.log(response);		
+						// console.log('second success',response);
+						// alert('second succcess',response)
 					$('.trackerlist').html(response);
 					}
 					});
@@ -840,7 +874,7 @@ function updateTracker(element,type){
 	var all_trackers ="";
 	var blogs = selected_blogs;
     var allblogs = [] ;
-
+    
     var blogs = $(".blogselection");
 
     var allblogs = [] ;    
@@ -862,8 +896,12 @@ function updateTracker(element,type){
 	     });
 	   	 
 	  
-	   		id = $(element).attr('id');	   		
-	   		
+	   		id = $(element).attr('id');	  
+	   		all_blogs = $('#selected_blogs_').val();
+	   		/*
+			 * console.log(element) console.log(type) console.log(all_blogs)
+			 * console.log(blogs)
+			 */
 	   	
 		    $.ajax({
 				url: app_url+'tracker',
@@ -880,13 +918,19 @@ function updateTracker(element,type){
 				success: function(response)
 				{   
 					console.log(response);
+					uploadTerms(id+"******"+all_blogs,"update");
+					uploadClusters(id)
+					
 					if(response.indexOf("success")>-1){
+						
+						console.log('passing', id+"******"+all_blogs)
+						
 						Cookies.set('selectedblogs', "", {path : '/'});
 						toastr.success('Tracker successfully updated!','Success');
 
 						$("#added-info").removeClass("no-display");
 						
-						window.location.href = 'edittracker.jsp?tid='+id;
+						// window.location.href = 'edittracker.jsp?tid='+id;
 						
 						// setTimeout(function(){location.href =
 						// "edittracker.jsp?tid="+id ;},2000);
@@ -933,7 +977,7 @@ function removeTracker(element,type){
 	   		 }
 	     });
 	   	 
-	 
+	   	all_blogs = $('#selected_blogs_').val();
 	   		id = $(element).attr('id');	   		 
 		    $.ajax({
 				url: app_url+'tracker',
@@ -951,6 +995,8 @@ function removeTracker(element,type){
 				{   
 					console.log(response);
 					if(response.indexOf("success")>-1){
+						//alert(id)
+						//uploadTerms(id,"update");
 						Cookies.set('selectedblogs', "", {path : '/'});
 						toastr.success('Blogs successfully removed!','Success');
 
@@ -961,19 +1007,61 @@ function removeTracker(element,type){
 
 						// location.href=app_url+"blogbrowser.jsp";
 					}else{
-//						if(type=="update"){
-//							Cookies.clear('selectedblogs', "", {path : '/'});
-//							toastr.error('Blog already exist in tracker','Error');
-//						}else{
-//							toastr.error('Blog already exist in tracker','Error');
-//						}
+// if(type=="update"){
+// Cookies.clear('selectedblogs', "", {path : '/'});
+// toastr.error('Blog already exist in tracker','Error');
+// }else{
+// toastr.error('Blog already exist in tracker','Error');
+// }
 					}
 				}
 			});
 }
 
 
+function uploadTerms(tid, type){
+	$.ajax({
+		url: app_url+'tracker',
+		method: 'POST',
+		data: {
+			action:"uploadTerms",
+			tracker_id:tid,
+			type:type,
+			
+		},
+		error: function(response)
+		{
+			//alert(tid)
+			//alert(type)
+			//alert('could not compute terms')
+			console.log('could not compute terms')
+		},
+		success: function(response)
+		{
+			console.log('term response',response);
+		}
+	});
+}
 
+function uploadClusters(tid){
+	$.ajax({
+		url: app_url+'tracker',
+		method: 'POST',
+		data: {
+			action:"uploadClusters",
+			tracker_id:tid,		
+		},
+		error: function(response)
+		{
+			//alert('could not compute terms')
+			console.log('could not compute terms')
+		},
+		success: function(response)
+		{
+			console.log('cluster response',response);
+		}
+	});
+}
 
 function setSelected(all_blogs){
 	$.ajax({

@@ -1,4 +1,5 @@
 <%@page import="java.util.stream.Collectors"%>
+<%@page import="com.fasterxml.jackson.databind.ObjectMapper"%>
 <%@page import="authentication.*"%>
 <%@page import="java.util.*"%>
 <%@page import="util.*"%>
@@ -11,6 +12,8 @@
 <%@page import="java.util.Date"%>
 <%@page import="java.io.*"%>
 <%@page import="java.util.logging.Logger"%>
+
+<%@page import="javafx.util.Pair"%>
 <%-- <%@ page buffer="none" %> --%>
 
 <%@ page language="java" contentType="text/html; charset=UTF-8"
@@ -23,11 +26,14 @@
 	Object user = (null == session.getAttribute("username")) ? "" : session.getAttribute("username");
 	Object date_start = (null == request.getParameter("date_start")) ? "" : request.getParameter("date_start");
 	Object date_end = (null == request.getParameter("date_end")) ? "" : request.getParameter("date_end");
+	Object date_set = (null == request.getParameter("date_set")) ? "" : request.getParameter("date_set");
 	Object single = (null == request.getParameter("single_date")) ? "" : request.getParameter("single_date");
 	String sort = (null == request.getParameter("sortby"))
 			? "blog"
 			: request.getParameter("sortby").toString().replaceAll("[^a-zA-Z]", " ");
 	System.out.println("email--" + email);
+	
+	System.out.println("valueeeeee"+date_set);
 	
 	if (user == null || user == "") {
 		response.sendRedirect("index.jsp");
@@ -36,6 +42,7 @@
 		ArrayList<?> userinfo = null;
 		String profileimage = "";
 		String username = "";
+		
 		String name = "";
 		String phone = "";
 		String date_modified = "";
@@ -254,15 +261,20 @@
 
 			//Our New Code
 			Liwc liwc = new Liwc();
-			System.out.println("COMI----" + request.getHeader("referer"));
+			
+			
+			//System.out.println("COMI----" + request.getHeader("referer"));
 			String totalbloggers = bloggerss._getBloggerById(ids);
 
-			System.out.println("Total bloggers----" + totalbloggers);
+			//System.out.println("Total bloggers----" + totalbloggers);
 
 			ArrayList locations = blog._getLocation(ids);
+			
+			ArrayList locations_usage = blog._getLocationUsage(ids);
+			
 			//System.out.println("all blog location");
 			ArrayList languages = blog._getLanguage(ids);
-			System.out.println(languages);
+			//System.out.println(languages);
 			//System.out.println("all blog language");
 			ArrayList bloggerPostFrequency = bloggerss._getBloggerPostFrequency(ids);
 			//System.out.println("all blogger post frequency");
@@ -306,6 +318,7 @@
 			dispto = DATE_FORMAT.format(new SimpleDateFormat("yyyy-MM-dd").parse(dte));
 			//totalpost = post._searchRangeTotal("date", dt, dte, ids);
 
+			//System.out.println("idsss"+ids);
 			totalpost = post._getBlogPostById(ids);
 
 			/* outlinks = outl._searchByRange("date", dt, dte, ids); */
@@ -314,8 +327,8 @@
 				totalpost = post._searchRangeTotal("date", dt, dte, ids); // To be modified later
 			}
 			//System.out.println("termss start");
-			termss = term._searchByRange("blogsiteid", dt, dte, ids);
-			System.out.println("terms---" + termss);
+			//termss = term._searchByRange("blogsiteid", dt, dte, ids);
+			//System.out.println("terms---" + termss);
 			session.setAttribute("terms", termss);
 			//System.out.println("termss end");
 			//System.out.println("outlinks start");
@@ -456,6 +469,228 @@
 
 				}
 			}
+			
+			
+			ArrayList details = DbConnection.query("select status, status_percentage from tracker_keyword where tid = " + tid);
+			ArrayList res = (ArrayList)details.get(0);
+			
+			String status = res.get(0).toString();
+			String status_percentage = res.get(1).toString();
+			
+			JSONObject final_result = new JSONObject();
+			final_result.put("status_percentage",status_percentage);
+			final_result.put("status",status);
+			
+			
+			
+			///start clusering check
+			ArrayList cluster_details = DbConnection.query("select status, status_percentage from clusters where tid = " + tid);
+			ArrayList cluster_res = new ArrayList<>();
+			String cluster_status = "";
+			String cluster_status_percentage = "";
+			if(cluster_details.size() > 0){
+				cluster_res = (ArrayList)cluster_details.get(0);
+				cluster_status = cluster_res.get(0).toString();
+				cluster_status_percentage = cluster_res.get(1).toString();
+			}
+			
+			JSONObject cluster_final_result = new JSONObject();
+			cluster_final_result.put("status_percentage",status_percentage);
+			cluster_final_result.put("status",status);
+			
+			JSONObject final_centroids = new JSONObject();
+			JSONObject source = new JSONObject();
+			
+			if(cluster_status.equals("1")){
+				
+				//System.out.println("IT IS ONE!!!!!!");
+			//start clustering data gathering
+			Clustering cluster = new Clustering();
+				String tracker_id = tid.toString();
+	//get postids from each cluster in tracker and save in JSONObject
+	ArrayList result = cluster._getClusters(tracker_id);
+	System.out.println("done with clusters");
+	
+	
+try{
+	JSONObject ress = new JSONObject(result.get(0).toString());
+	System.out.println("done with res");
+	
+	
+	source = new JSONObject(ress.get("_source").toString());
+	
+	HashMap<Pair<String, String>, ArrayList<JSONObject>> clusterResult = new HashMap<Pair<String, String>, ArrayList<JSONObject>>();
+
+	Pair<String, String> key_val = new Pair<String, String>(null, null);
+
+	HashMap<String, String> key_val_posts = new HashMap<String, String>();
+	ArrayList<JSONObject> scatterplotfinaldata = new ArrayList<JSONObject>();
+	
+	JSONObject distances = new JSONObject();
+	HashMap<String, String> topterms = new HashMap<String, String>();
+			String find = "";
+	int [][] termsMatrix = new int[10][10];
+	//int count = 0;
+	JSONArray links_centroids = new JSONArray();
+	JSONArray nodes_centroids = new JSONArray();
+	//start main foor loop
+	for (int i = 1; i < 11; i++) {
+
+		String cluster_ = "cluster_" + String.valueOf(i);
+		String centroids = "C" + String.valueOf(i) + "xy";
+		JSONObject cluster_data = new JSONObject(source.get(cluster_).toString());
+		
+		String post_ids = cluster_data.get("post_ids").toString();
+	
+		String centroid = source.get(centroids).toString().replace("[", "").replace("]", "");
+		String centroid_x = centroid.split(",")[0].trim();
+		String centroid_y = centroid.split(",")[1].trim();
+		
+		JSONObject data_centroids_ = new JSONObject();
+		
+		data_centroids_.put("id","Cluster_" + i);
+	   	data_centroids_.put("group", i);
+	   	data_centroids_.put("label","CLUSTER_" + i);
+	   	data_centroids_.put("level",post_ids.split(",").length);
+	
+	   	nodes_centroids.put(data_centroids_);
+		
+		for(int k = 1; k < 11; k++){
+			if(k != i){
+				String centroids_ = "C" + String.valueOf(k) + "xy";
+				String centroid_ = source.get(centroids_).toString().replace("[", "").replace("]", "");
+				String centroid_x_ = centroid_.split(",")[0].trim();
+				String centroid_y_ = centroid_.split(",")[1].trim();
+				
+				JSONObject data_centroids = new JSONObject();
+				data_centroids.put("target","Cluster_" + i);
+				data_centroids.put("source","Cluster_" + k);
+				
+				double left_ = Math.pow((double)Double.parseDouble(centroid_x_) - (double)Double.parseDouble(centroid_x), 2);
+				double right_ = Math.pow((double)Double.parseDouble(centroid_y_) - (double)Double.parseDouble(centroid_y), 2);
+				String distance_ = String.valueOf(Math.pow((left_ + right_), 0.5));
+				 
+				data_centroids.put("strength", 50 - Double.parseDouble(distance_));
+				links_centroids.put(data_centroids);
+				
+			}
+			
+		}
+		
+		/* JSONObject svd_ = new JSONObject(source.get("svd").toString());
+		
+		int counter = 0;
+		String [] post_split = post_ids.split(",");
+		
+		for(int j = 0; j < post_split.length; j++){
+			
+			
+			
+			JSONObject scatter_plot = new JSONObject();
+			String p_id = post_split[j];
+			Object x_y = svd_.get(p_id);
+					
+			x_y = x_y.toString().replace("[","").replace("]","").trim().replaceAll("\\s+", " ");
+			
+			String x = x_y.toString().split(" ")[0];
+			String y = x_y.toString().split(" ")[1];
+			
+			String postid = p_id.toString();
+			
+			scatter_plot.put("cluster",String.valueOf(i));
+			
+			scatter_plot.put("",String.valueOf(counter));
+			scatter_plot.put("new_x",x);
+			scatter_plot.put("new_y",y);
+			counter++;
+			
+			double left = Math.pow((double)Double.parseDouble(x) - (double)Double.parseDouble(centroid_x), 2);
+			double right = Math.pow((double)Double.parseDouble(y) - (double)Double.parseDouble(centroid_y), 2);
+			String distance = String.valueOf(Math.pow((left + right), 0.5));
+			distances.put(postid, distance); 
+			scatterplotfinaldata.add(scatter_plot);
+			
+		}
+		
+		ArrayList<JSONObject> postDataAll = DbConnection.queryJSON("select date,post,num_comments, blogger,permalink, title, blogpost_id, location, blogsite_id from blogposts where blogpost_id in ("+post_ids+") limit 500" );
+		System.out.println("done with query --"); */
+		
+		String terms = cluster_data.get("topterms").toString();
+		String str1 = null;
+		str1 = terms.replace("),", "-").replace("(", "").replace(")", "").replaceAll("[0-9]","").replace("-", "");
+		List<String> t1 = Arrays.asList(str1.replace("[","").replace("]","").split(","));
+		termsMatrix[i - 1][i - 1] = t1.size();
+		
+		//CREATING CHORD MATRIX
+		
+		String str2 = null;
+		
+		for(int k = (i + 1); k < 11; k++)
+		{
+		String cluster_matrix  = "cluster_" + String.valueOf(k);
+		JSONObject cluster_data_matrix = new JSONObject(source.get(cluster_matrix).toString());
+		String terms_matrix = cluster_data_matrix.get("topterms").toString();
+		
+		str2 = terms_matrix.replace("),", "-").replace("(", "").replace(")", "").replaceAll("[0-9]","").replace("-", "");
+	
+		List<String> t2 = Arrays.asList(str2.replace("[","").replace("]","").split(","));
+	
+		int count = 0;
+		for (int i_ = 0; i_ < t1.size(); i_++)
+        {
+            for (int j_ = 0; j_ < t2.size(); j_++)
+            {
+                if(t1.get(i_).contentEquals(t2.get(j_)))
+                {
+                 
+                 count ++;
+                 }
+            }
+        }
+		
+		termsMatrix[i-1][k-1] = count;
+		termsMatrix[k-1][i-1] = count;
+		 }
+		//DONE CREATING CHORD MATRIX
+		
+		/* topterms.put(cluster_,terms);
+		
+		key_val = new Pair<String, String>(cluster_, post_ids);
+		
+		key_val_posts.put(cluster_, post_ids);
+		
+		clusterResult.put(key_val, postDataAll); */
+		
+		
+
+	}
+//end main for loop
+
+	
+	
+	final_centroids.put("nodes",nodes_centroids);
+	final_centroids.put("links",links_centroids);
+			
+			//end clustering data ghathering
+
+}catch (Exception e){
+	
+}
+//end try catch
+
+			
+}else if(cluster_status.equals("0")){
+	System.out.println("IT IS zERO!!!!!!");
+	
+	
+}
+
+
+///end clustering check
+
+			
+
+			
 %>
 <!DOCTYPE html>
 <html>
@@ -501,28 +736,79 @@
 <script src="pagedependencies/googletagmanagerscript.js"></script>
 
 <script src="pagedependencies/baseurl.js"></script>
+
+<!-- Start scatter plot css  -->
+<style>
+.node {
+	cursor: pointer;
+}
+
+.node:hover {
+	stroke: #000;
+	stroke-width: 1.5px;
+}
+
+.node--leaf {
+	fill: white;
+}
+
+.label {
+	font: 11px "Helvetica Neue", Helvetica, Arial, sans-serif;
+	text-anchor: middle;
+	text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff, 0 -1px 0 #fff;
+}
+
+.label, .node--root, .node--leaf {
+	pointer-events: none;
+}
+
+.meter-background {
+	fill: #DFEAFD;
+}
+
+.meter-foreground {
+	fill: #2E7AF9;
+}
+</style>
+<!-- End scatter plot css -->
+
+<style>
+.node circle {
+	fill: #fff;
+	/*   stroke: steelblue; */
+	stroke-width: 3px;
+}
+
+.node text {
+	font: 12px sans-serif;
+}
+
+.link {
+	fill: none;
+	stroke: #ccc;
+	/*   stroke-width: 2px; */
+}
+</style>
+
 <!-- start sample chord css -->
 <style>
-
- 
 #circle circle {
-fill: none;
-pointer-events: all;
+	fill: none;
+	pointer-events: all;
 }
- 
+
 .group path {
-fill-opacity: .5;
+	fill-opacity: .5;
 }
- 
+
 path.chord {
-stroke: #000;
-stroke-width: .25px;
+	stroke: #000;
+	stroke-width: .25px;
 }
- 
+
 #circle:hover path.fade {
-display: none;
+	display: none;
 }
- 
 </style>
 <!-- end sample chord css -->
 </head>
@@ -615,8 +901,8 @@ display: none;
 					<li class="dropdown dropdown-user cursor-pointer float-right">
 						<a class="dropdown-toggle " id="profiletoggle"
 						data-toggle="dropdown"> <!-- <i class="fas fa-circle"
-							id="notificationcolor"> --></i> <img src="<%=profileimage%>"
-							width="50" height="50"
+							id="notificationcolor"> -->
+							</i> <img src="<%=profileimage%>" width="50" height="50"
 							onerror="this.src='images/default-avatar.png'" alt="" class="" />
 							<span class="bold-text"><%=user_name[0]%></span> <!-- <ul class="profilemenu dropdown-menu dropdown-menu-left">
               <li><a href="#"> My profile</a></li>
@@ -739,7 +1025,13 @@ display: none;
 						<h5 class="text-primary mb0">
 							<i class="fas fa-comment icondash"></i>Comments
 						</h5>
-						<h3 class="text-blue mb0 countdash dash-label"><%=NumberFormat.getNumberInstance(Locale.US).format(new Double(totalcomment).intValue())%></h3>
+						<%
+						String numcomments = totalcomment;
+						if(numcomments == null || numcomments == ""){
+							numcomments = "0";
+						}
+						%>
+						<h3 class="text-blue mb0 countdash dash-label"><%=NumberFormat.getNumberInstance(Locale.US).format(new Double(numcomments).intValue())%></h3>
 					</div>
 				</div>
 			</div>
@@ -763,25 +1055,100 @@ display: none;
 		<div class="row mb0">
 			<div class="col-md-6 mt20 zoom">
 				<div class="card card-style mt20">
-					<div class="card-body  p15 pt15 pb15">
-						<div>
-							<p class="text-primary mt0 float-left">
-								Most Active Location
-								<!-- <select
-									class="text-primary filtersort sortbyblogblogger"><option
-										value="blogs">Blogs</option>
-									<option value="bloggers">Bloggers</option></select>  -->
-								<%-- for Past <select
-									class="text-primary filtersort sortbytimerange">
-									<option value="" >All</option>
-									<option value="week" <%=(single.equals("week"))?"selected":"" %>>Week</option>
-									<option value="month" <%=(single.equals("month"))?"selected":"" %>>Month</option>
-									<option value="year" <%=(single.equals("year"))?"selected":"" %>>Year</option></select> --%>
-							</p>
+					<div class="card-body mt0 pt0 pl0" style="min-height: 520px;">
+
+						<div class="location_mecard">
+
+							<div class="front p30 pt5 pb5">
+
+								<div>
+									<p class="text-primary mt0 float-left">
+										Most Active Location
+										<!-- <select
+										class="text-primary filtersort sortbyblogblogger"><option
+											value="blogs">Blogs</option>
+										<option value="bloggers">Bloggers</option></select>  -->
+										<%-- for Past <select
+										class="text-primary filtersort sortbytimerange">
+										<option value="" >All</option>
+										<option value="week" <%=(single.equals("week"))?"selected":"" %>>Week</option>
+										<option value="month" <%=(single.equals("month"))?"selected":"" %>>Month</option>
+										<option value="year" <%=(single.equals("year"))?"selected":"" %>>Year</option></select> --%>
+									</p>
+									<button style="right: 10px; position: absolute" id="flip"
+										type="button" onclick="location_flip()"
+										class="btn btn-sm btn-primary float-right"
+										data-toggle="tooltip" data-placement="top"
+										title="Flip to view location usage" aria-expanded="false">
+										<i class="fas fa-exchange-alt" aria-hidden="true"></i>
+									</button>
+								</div>
+								<div style="min-height: 490px;">
+									<div class="map-container map-choropleth"></div>
+								</div>
+
+
+							</div>
+							<!-- end front -->
+							<div class="back p30 pt5 pb5">
+
+								<div>
+									<p class="text-primary mt10 float-left">Location Usage</p>
+									<button style="right: 10px; position: absolute" id="flip"
+										type="button" onclick="location_flip()"
+										class="btn btn-sm btn-primary float-right"
+										data-toggle="tooltip" data-placement="top"
+										title="Flip to view location usage" aria-expanded="false">
+
+										<i class="fas fa-exchange-alt" aria-hidden="true"></i>
+									</button>
+								</div>
+
+								<div class="min-height-table">
+									<table id="DataTables_Table_19_wrapper" class="display"
+										style="width: 100%">
+										<thead>
+											<tr>
+												<th>Blogs</th>
+												<th>Location</th>
+
+											</tr>
+										</thead>
+										<tbody>
+
+											<%if (locations_usage.size() > 0) {
+						for (int i = 0; i < locations_usage.size(); i++) {
+							ArrayList<?> loca = (ArrayList<?>) locations_usage.get(i);
+							String loc = loca.get(0).toString();
+							String size = loca.get(1).toString();
+							String blogsite_name = loca.get(2).toString();
+							
+							%>
+
+											<tr>
+												<td class=""><%=blogsite_name%></td>
+												<td><%=loc%></td>
+												<!-- <td class="">j.get("letter")</td>
+												<td>j.get("frequency")</td> -->
+											</tr>
+
+											<%}
+					}%>
+
+										</tbody>
+									</table>
+
+
+								</div>
+
+							</div>
+							<!-- end back -->
+
 						</div>
-						<div style="min-height: 490px;">
-							<div class="map-container map-choropleth"></div>
-						</div>
+						<!--end location mecard -->
+
+
+
 					</div>
 				</div>
 			</div>
@@ -794,7 +1161,7 @@ display: none;
 							<div class="front p30 pt5 pb5">
 								<div>
 									<p class="text-primary mt10 float-left">Language Usage</p>
-									<button style="right: 10px; position: absolute" id="flip"
+									<button style="right: 10px; position: absolute" id="flip1"
 										type="button" onclick="flip()"
 										class="btn btn-sm btn-primary float-right"
 										data-toggle="tooltip" data-placement="top"
@@ -822,7 +1189,7 @@ display: none;
 
 								<div>
 									<p class="text-primary mt10 float-left">Language Usage</p>
-									<button style="right: 10px; position: absolute" id="flip"
+									<button style="right: 10px; position: absolute" id="flip1"
 										type="button" onclick="flip()"
 										class="btn btn-sm btn-primary float-right"
 										data-toggle="tooltip" data-placement="top"
@@ -853,33 +1220,38 @@ display: none;
 											System.out.println("--->"+res);
 											 --%>
 											<%
-											JSONArray language_data=new JSONArray();
+											JSONArray result_language = new JSONArray();
+											ArrayList language_data=new ArrayList();
 											try{
-												language_data= post._getMostLanguage(dt, dte, ids, 10);
+												language_data = DbConnection.query("SELECT language, sum(language_count) c FROM blogtrackers.language where blogsite_id in ("+ids+") and language is not null or language != 'null' group by language order by c desc limit 10");
+												//language_data= post._getMostLanguage(dt, dte, ids, 10);
 											}catch(Exception e){
 												System.out.println("Language error--"+e);
 											}
-														if (language_data.length() > 0) {
+														
+											
+											
+											if (language_data.size() > 0) {
 															JSONObject lang_total = new JSONObject();
 
-															for (int y = 0; y < language_data.length(); y++) {
-																String a = language_data.get(y).toString();
-																lang_total = new JSONObject(a);
-																//System.out.println(j.get("letter"));
-																/* 	ArrayList<?> langu = (ArrayList<?>) languages.get(y);
-																	String languag = langu.get(0).toString();
+															for (int y = 0; y < language_data.size(); y++) {
+																ArrayList x = (ArrayList) language_data.get(y);
+																JSONObject a = new JSONObject();
+																if(x.get(0) != "null" && x.get(0) != "" && x.get(0) != null){
+																	a.put("letter", x.get(0));
+																	a.put("frequency", x.get(1));
+																	result_language.put(a);
 																
-																	String languag_freq = NumberFormat.getNumberInstance(Locale.US)
-																			.format(new Double(langu.get(1).toString()).intValue()); */
 											%>
 											<tr>
-												<td class=""><%=lang_total.get("letter")%></td>
-												<td><%=lang_total.get("frequency")%></td>
+												<td class=""><%=x.get(0)%></td>
+												<td><%=x.get(1)%></td>
 												<!-- <td class="">j.get("letter")</td>
 												<td>j.get("frequency")</td> -->
 											</tr>
 											<%
 												}
+															}
 														}
 											%>
 
@@ -953,31 +1325,23 @@ display: none;
 		</div>
 
 		<div class="row mb0">
+
 			<div class="col-md-6 mt20 zoom">
-				<div class="card card-style mt20">
+				<div id="keyword_card_div" class="card card-style mt20 radial_f">
 					<div class="card-body  p30 pt5 pb5">
 						<div>
-							<p class="text-primary mt10">
-								Top Keywords
-								<!-- <select
-									class="text-primary filtersort sortbyblogblogger"><option
-										value="blogs">Blogs</option>
-									<option value="bloggers">Bloggers</option></select>  -->
-
-								<%-- for Past <select
-									class="text-primary filtersort sortbytimerange"><option
-										value="week" <%=(single.equals("week"))?"selected":"" %>>Week</option>
-									<option value="month" <%=(single.equals("month"))?"selected":"" %>>Month</option>
-									<option value="year" <%=(single.equals("year"))?"selected":"" %>>Year</option></select> --%>
-							</p>
+							<p class="text-primary mt10">Top Keywords</p>
 						</div>
-						<!-- <div class="tagcloudcontainer" style="min-height: 420px;"></div> -->
 
-
-
-						<div style="min-height: 420px;">
-							<div class="chart-container word-cld">
-								<div class="chart" id="tagcloudcontainer">
+						<div align="center" class="" style="min-height: 420px;">
+							<div align="center" class="chart-container word-cld">
+								<div class="hidden" id="keyword_computing_loaader">
+									<div align="center" class=" word1">
+										COMPUTING-TERMS...<span id="keyword_percentage"><%=status_percentage %>%</span>
+									</div>
+									<div align="center" class=" overlay1"></div>
+								</div>
+								<div class="chart hidden" id="tagcloudcontainer99">
 									<div class="jvectormap-zoomin zoombutton" id="zoom_in">+</div>
 									<div class="jvectormap-zoomout zoombutton" id="zoom_out">−</div>
 								</div>
@@ -988,9 +1352,9 @@ display: none;
 				<div class="float-right">
 					<a id="hrefkeyword"
 						href="<%=request.getContextPath()%>/keywordtrend.jsp?tid=<%=tid%>"><button
-							class="btn buttonportfolio2 mt10" id = "keywordbtn">
-							<b class="float-left semi-bold-text ">Keyword Trend Analysis </b>
-							<b class="fas fa-search float-right icondash2 "></b>
+							class="btn buttonportfolio2 mt10" id="keywordbtn">
+							<b class="float-left semi-bold-text ">Keyword Trend Analysis
+							</b> <b class="fas fa-search float-right icondash2 "></b>
 						</button></a>
 				</div>
 			</div>
@@ -1096,7 +1460,7 @@ display: none;
 		</div>
 
 		<div class="row mb0">
-			
+
 
 			<div class="col-md-6 mt20 zoom">
 				<div class="card card-style mt20">
@@ -1136,9 +1500,9 @@ display: none;
 				</div>
 
 			</div>
-			
-			
-								<!-- <div style="min-height: 420px;">
+
+
+			<!-- <div style="min-height: 420px;">
 							<div class="chart-container word-cld">
 								<div class="chart" id="tagcloudcontainer">
 									<div class="jvectormap-zoomin zoombutton" id="zoom_in">+</div>
@@ -1146,14 +1510,15 @@ display: none;
 								</div>
 							</div>
 						</div> -->
-			
-			
+
+
 			<div class="col-md-6 mt20 zoom">
 				<div class="card card-style mt20">
 					<div class="card-body   p30 pt5 pb5">
 						<div>
-							  <p class="text-primary mt10 float-left">
-								Topic Model <!-- <select id="swapBlogger"
+							<p class="text-primary mt10 float-left">
+								Topic Model
+								<!-- <select id="swapBlogger"
 									class="text-primary filtersort sortbyblogblogger">
 									<option value="blogs">Blogs</option>
 
@@ -1165,15 +1530,16 @@ display: none;
 									<option value="month" <%=(single.equals("month"))?"selected":"" %>>Month</option>
 									<option value="year" <%=(single.equals("year"))?"selected":"" %>>Year</option></select> --%>
 							</p>
-						</div> 
-						 <div class="min-height-table" style="min-height: 500px;">
-							<div align="center" class="chart-container chord_body" id="postingfrequencycontainer">
+						</div>
+						<div class="min-height-table" style="min-height: 500px;">
+							<div align="center" class="chart-container chord_body"
+								id="postingfrequencycontainer">
 								<!-- <div class="chart" id="postingfrequencybar"></div>-->
-								<div align="center" class="chart" id="chord_body" ></div>
+								<div align="center" class="chart" id="chord_body"></div>
 							</div>
 
 						</div>
-						
+
 					</div>
 				</div>
 				<!--  <div class="float-right">
@@ -1185,22 +1551,128 @@ display: none;
 				</div>
 				-->
 				<div class="float-right">
-					<a id = "hreftopicmodels" href="topic_distribution.jsp?tid=<%=tid%>"><button disabled 
-							class="btn buttonportfolio2 buttonTopicModelling mt10">
+					<a id="hreftopicmodels" href="topic_distribution.jsp?tid=<%=tid%>"><button
+							disabled class="btn buttonportfolio2 buttonTopicModelling mt10">
 							<b class="float-left semi-bold-text">Topic Modelling </b> <b
 								class="fas fa-comment-alt float-right icondash2"></b>
 						</button></a>
 				</div>
 
 			</div>
-			
-			
+
+
+		</div>
+
+
+		<div class="row mb0">
+
+
+			<div class="col-md-6 mt20 zoom">
+				<div id="cluster_card_div" class="card card-style mt20 radial_f">
+					<div class="card-body p30 pt5 pb5">
+						<div>
+							<p class="text-primary mt10 float-left">
+
+								Clustering Analysis
+								<%-- 
+						   of Past <select
+									class="text-primary filtersort sortbytimerange"><option
+										value="week" <%=(single.equals("week"))?"selected":"" %>>Week</option>
+									<option value="month" <%=(single.equals("month"))?"selected":"" %>>Month</option>
+									<option value="year" <%=(single.equals("year"))?"selected":"" %>>Year</option></select>  --%>
+							</p>
+						</div>
+						<div id="scatter-container1" class="min-height-table"
+							style="min-height: 500px;">
+							<div class="hidden" id="cluster_computing_loaader">
+								<div align="center" class=" word1">
+									COMPUTING-CLUSTERS...<span id="cluster_percentage"><%=cluster_status_percentage %>%</span>
+								</div>
+								<div align="center" class=" overlay1"></div>
+							</div>
+							<div class="chart-container" id="scatter-container">
+								<div class="chart" id="dataviz_axisZoom"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="float-right">
+					<a href="clustering.jsp?tid=<%=tid%>"><button id="clusterbtn"
+							class="btn buttonportfolio2 mt10">
+							<b class="float-left semi-bold-text">Clustering Analysis </b> <b
+								class="fas fa-exchange-alt float-right icondash2"></b>
+						</button></a>
+				</div>
+
+			</div>
+
+
+			<!-- <div style="min-height: 420px;">
+							<div class="chart-container word-cld">
+								<div class="chart" id="tagcloudcontainer">
+									<div class="jvectormap-zoomin zoombutton" id="zoom_in">+</div>
+									<div class="jvectormap-zoomout zoombutton" id="zoom_out">−</div>
+								</div>
+							</div>
+						</div> -->
+
+
+			<div class="col-md-6 mt20 zoom">
+				<div class="card card-style mt20">
+					<div class="card-body   p30 pt5 pb5">
+						<div>
+							<p class="text-primary mt10 float-left">
+								Narrative Analysis
+								<!-- <select id="swapBlogger"
+									class="text-primary filtersort sortbyblogblogger">
+									<option value="blogs">Blogs</option>
+
+									<option value="bloggers">Bloggers</option>
+								</select> -->
+								<%-- 		of Past <select
+									class="text-primary filtersort sortbytimerange" id="active-sortdate"><option
+										value="week" <%=(single.equals("week"))?"selected":"" %>>Week</option>
+									<option value="month" <%=(single.equals("month"))?"selected":"" %>>Month</option>
+									<option value="year" <%=(single.equals("year"))?"selected":"" %>>Year</option></select> --%>
+							</p>
+						</div>
+						<div class="min-height-table" style="min-height: 500px;">
+							<div align="center" class="chart-container " id="">
+								<!-- <div class="chart" id="postingfrequencybar"></div>-->
+								<div align="center" class="chart" id="narrative_analysis"></div>
+							</div>
+
+						</div>
+
+					</div>
+				</div>
+				<!--  <div class="float-right">
+					<a id = "hreftopicmodels" href="topic_distribution.jsp?tid=<%=tid%>"><button
+							class="btn buttonTopicModelling mt10">
+							<b class="float-left semi-bold-text">Topic Modelling
+								Analysis</b> <b class="fas fa-comment-alt float-right icondash2"></b>
+						</button></a>
+				</div>
+				-->
+				<div class="float-right">
+				<!-- <a id="" target="_blank" href="http://haydex.com/narrative/"><button -->
+					<a id="" target="_blank" href="narrative.jsp?tid=<%=tid%>"><button
+							disabled class="btn buttonportfolio2 buttonTopicModelling mt10">
+							<b class="float-left semi-bold-text">Narrative Analysis </b> <b
+								class="fas fa-comment-alt float-right icondash2"></b>
+						</button></a>
+				</div>
+
+			</div>
+
+
 		</div>
 
 		<div class="row mb50">
 			<div class="col-md-12 mt20 zoom">
 				<div class="card card-style mt20">
 					<div class="card-body  p5 pt10 pb10">
+
 
 						<div style="min-height: 420px;">
 							<div>
@@ -1224,8 +1696,8 @@ display: none;
           Export Options
           </div> -->
 							<div id="top-domain-box">
-								<table id="DataTables_Table_0_wrapper" class="display table_over_cover"
-									style="width: 100%">
+								<table id="DataTables_Table_0_wrapper"
+									class="display table_over_cover" style="width: 100%">
 									<thead>
 										<tr>
 											<th>Domain</th>
@@ -1321,7 +1793,8 @@ display: none;
 	<form action="" name="customform" id="customform" method="post">
 		<input type="hidden" name="tid" value="<%=tid%>" /> <input
 			type="hidden" name="date_start" id="date_start" value="" /> <input
-			type="hidden" name="date_end" id="date_end" value="" />
+			type="hidden" name="date_end" id="date_end" value="" /> <input
+			type="hidden" name="date_set" id="date_set" value="0" />
 		<textarea style="display: none" name="blogs" id="blogs">
 			<%
 				if (blogPostFrequency.size() > 0) {
@@ -1428,6 +1901,1089 @@ display: none;
 
 
 	<script type="text/javascript" src="assets/js/jquery-1.11.3.min.js"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/lettering.js/0.6.1/jquery.lettering.min.js"></script>
+	<script src="pagedependencies/imageloader.js?v=09"></script>
+	<script>
+		
+		function matrix_loader(){
+			
+			
+			function Ticker( elem ) {
+				elem.lettering();
+				this.done = false;
+				this.cycleCount = 5;
+				this.cycleCurrent = 0;
+				this.chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()-_=+{}|[]\\;\':"<>?,./`~'.split('');
+				this.charsCount = this.chars.length;
+				this.letters = elem.find( 'span' );
+				this.letterCount = this.letters.length;
+				this.letterCurrent = 0;
+
+				this.letters.each( function() {
+					var $this = $( this );
+					$this.attr( 'data-orig', $this.text() );
+					$this.text( '-' );
+				});
+			}
+
+			Ticker.prototype.getChar = function() {
+				return this.chars[ Math.floor( Math.random() * this.charsCount ) ];
+			};
+
+			Ticker.prototype.reset = function() {
+				this.done = false;
+				this.cycleCurrent = 0;
+				this.letterCurrent = 0;
+				this.letters.each( function() {
+					var $this = $( this );
+					$this.text( $this.attr( 'data-orig' ) );
+					$this.removeClass( 'done' );
+				});
+				this.loop();
+			};
+
+			Ticker.prototype.loop = function() {
+				var self = this;
+
+				this.letters.each( function( index, elem ) {
+					var $elem = $( elem );
+					if( index >= self.letterCurrent ) {
+						if( $elem.text() !== ' ' ) {
+							$elem.text( self.getChar() );
+							$elem.css( 'opacity', Math.random() );
+						}
+					}
+				});
+
+				if( this.cycleCurrent < this.cycleCount ) {
+					this.cycleCurrent++;
+				} else if( this.letterCurrent < this.letterCount ) {
+					var currLetter = this.letters.eq( this.letterCurrent );
+					this.cycleCurrent = 0;
+					currLetter.text( currLetter.attr( 'data-orig' ) ).css( 'opacity', 1 ).addClass( 'done' );
+					this.letterCurrent++;
+				} else {
+					this.done = true;
+				}
+
+				if( !this.done ) {
+					requestAnimationFrame( function() {
+						self.loop();
+					});
+				} else {
+					setTimeout( function() {
+						self.reset();
+					}, 750 );
+				}
+			};
+
+			$words = $( '.word1' );
+
+			$words.each( function() {
+				var $this = $( this ),
+					ticker = new Ticker( $this ).reset();
+				$this.data( 'ticker', ticker  );
+			});
+			
+			
+			
+		}
+		//end matrix_loader
+		
+		//matrix_loader();
+		//call matrix_loader
+		</script>
+
+
+
+	<!-- Start scatter plot js -->
+	<script type="text/javascript" src="assets/vendors/d3/d3.v4_new.min.js"></script>
+
+	<script>
+
+var treeData =
+  {
+  "name": "Root_Level",
+  "value": 75,
+  "type": "black",
+  "level": "red",
+  "male": 51,
+  "female": 24,
+  "children":[
+{
+    "name": "Operation",
+    "value": 40,
+    "type": "black",
+    "level": "green",
+    "male": 23,
+    "female": 17,
+    "children": [
+      {
+        "name": "Top Management",
+        "value": 3,
+        "type": "grey",
+        "level": "red",
+        "male": 3,
+        "female": 0,
+        "children": [
+          {
+            "name": "Operation Manager",
+            "value": 1,
+            "type": "steelblue",
+            "level": "orange",
+            "male": 1,
+            "female": 0
+          },
+          {
+            "name": "Account Strategist",
+            "value": 1,
+            "type": "steelblue",
+            "level": "red",
+            "male": 1,
+            "female": 0
+          },
+          {
+            "name": "Product Management Executive",
+            "value": 1,
+            "type": "steelblue",
+            "level": "red",
+            "male": 1,
+            "female": 0
+          }
+        ]
+      },
+      {
+        "name": "Junior Level",
+        "value": 23,
+        "type": "grey",
+        "level": "green",
+        "male": 10,
+        "female": 13,
+        "children": [
+          {
+            "name": "Analyst",
+            "value": 10,
+            "type": "steelblue",
+            "level": "orange",
+            "male": 7,
+            "female": 3
+          },
+          {
+            "name": "Intern",
+            "value": 5,
+            "type": "steelblue",
+            "level": "red",
+            "male": 0,
+            "female": 5
+          },
+          {
+            "name": "Research Associate",
+            "value": 1,
+            "type": "steelblue",
+            "level": "red",
+            "male": 0,
+            "female": 1
+          },
+          {
+            "name": "Search Marketing Analyst",
+            "value": 1,
+            "type": "steelblue",
+            "level": "red",
+            "male": 1,
+            "female": 0
+          },
+          {
+            "name": "Search Marketing Associate",
+            "value": 6,
+            "type": "steelblue",
+            "level": "red",
+            "male": 2,
+            "female": 4
+          }
+        ]
+      },
+      {
+        "name": "Middle Management",
+        "value": 14,
+        "type": "grey",
+        "level": "green",
+        "male": 10,
+        "female": 4,
+        "children": [
+          {
+            "name": "Account Manager",
+            "value": 1,
+            "type": "steelblue",
+            "level": "orange",
+            "male": 1,
+            "female": 0
+          },
+          {
+            "name": "Account Planner",
+            "value": 8,
+            "type": "steelblue",
+            "level": "red",
+            "male": 6,
+            "female": 2
+          },
+          {
+            "name": "Senior Analyst",
+            "value": 5,
+            "type": "steelblue",
+            "level": "red",
+            "male": 3,
+            "female": 2
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Technology",
+    "value": 32,
+    "type": "black",
+    "level": "red",
+    "male": 26,
+    "female": 6,
+    "children":[
+      {
+        "name": "Top Management",
+        "value": 6,
+        "type": "grey",
+        "level": "red",
+        "male": 6,
+        "female": 0,
+        "children": [
+          {
+            "name": "Engineering Manager",
+            "value": 1,
+            "type": "grey",
+            "level": "red",
+            "male": 1,
+            "female": 0
+          },
+          {
+            "name": "Product Manager",
+            "value": 1,
+            "type": "grey",
+            "level": "red",
+            "male": 1,
+            "female": 0
+          },
+          {
+            "name": "Associate Product Lead",
+            "value": 1,
+            "type": "grey",
+            "level": "red",
+            "male": 2,
+            "female": 0
+          },
+          {
+            "name": "Associate Architect",
+            "value": 1,
+            "type": "grey",
+            "level": "red",
+            "male": 1,
+            "female": 0
+          },
+          {
+            "name": "Principal Consultant",
+            "value": 1,
+            "type": "grey",
+            "level": "red",
+            "male": 1,
+            "female": 0
+          }
+        ]
+      },
+      {
+        "name": "Junior Level",
+        "value": 21,
+        "type": "grey",
+        "level": "red",
+        "male": 16,
+        "female": 5,
+        "children":[
+          {
+            "name": "System Administrator",
+            "value": 1,
+            "type": "grey",
+            "level": "red",
+            "male": 1,
+            "female": 0
+          },
+          {
+            "name": "Support Engineer",
+            "value": 1,
+            "type": "grey",
+            "level": "red",
+            "male": 1,
+            "female": 0
+          },
+          {
+            "name": "Software Enginner",
+            "value": 6,
+            "type": "grey",
+            "level": "red",
+            "male": 6,
+            "female": 0
+          },
+          {
+            "name": "Associate Software Enginner",
+            "value": 13,
+            "type": "grey",
+            "level": "red",
+            "male": 8,
+            "female": 5
+          },
+        ]
+      },
+      {
+        "name": "Middle Management",
+        "value": 6,
+        "type": "grey",
+        "level": "red",
+        "male": 4,
+        "female": 1,
+        "children":[
+          {
+            "name": "Database Administrator",
+            "value": 1,
+            "type": "grey",
+            "level": "red",
+            "male": 0,
+            "female": 1
+          },
+          {
+            "name": "Quality Assurance Lead",
+            "value": 1,
+            "type": "grey",
+            "level": "red",
+            "male": 1,
+            "female": 0
+          },
+          {
+            "name": "Senior Software Engineer",
+            "value": 2,
+            "type": "grey",
+            "level": "red",
+            "male": 2,
+            "female": 0
+          },
+          {
+            "name": "UX Designer",
+            "value": 1,
+            "type": "grey",
+            "level": "red",
+            "male": 1,
+            "female": 0
+          },
+        ]
+      }
+    ]
+  },
+  {
+    "name": "HR & Admin",
+    "value": 3,
+    "type": "black",
+    "level": "red",
+    "male": 2,
+    "female": 1,
+    "children":[
+      {
+        "name": "Top Management",
+        "value": 2,
+        "type": "black",
+        "level": "red",
+        "male": 2,
+        "female": 0,
+        "children":[
+          {
+            "name": "Director",
+            "value": 1,
+            "type": "black",
+            "level": "red",
+            "male": 1,
+            "female": 0
+          },
+          {
+            "name": "HR Manager",
+            "value": 1,
+            "type": "black",
+            "level": "red",
+            "male": 1,
+            "female": 0
+          }
+        ]
+      },
+      {
+        "name": "Middle Management",
+        "value": 1,
+        "type": "black",
+        "level": "red",
+        "male": 0,
+        "female": 1,
+        "children":[
+          {
+            "name": "Front Office Executive",
+            "value": 1,
+            "type": "black",
+            "level": "red",
+            "male": 0,
+            "female": 1
+          }
+        ]
+      }
+    ]
+  }
+]
+};
+
+// Set the dimensions and margins of the diagram
+var margin = {top: 50, right: 90, bottom: 25, left: 90},
+    width =  $('#scatter-container').width() - margin.left - margin.right,
+    height = $('#scatter-container1').height() - 25;
+	
+//var plot_width = $('#scatter-container').width();
+//var height = $('#scatter-container1').height() - 25;
+	
+var colorScale = d3.scaleLinear()
+    .domain([0, 1])
+		.range(['red', 'green']);
+var widthScale = d3.scaleLinear()
+		.domain([1,80])
+		.range([1, 10]);
+
+// append the svg object to the body of the page
+// appends a 'group' element to 'svg'
+// moves the 'group' element to the top left margin
+var svg = d3.select("#narrative_analysis").append("svg")
+    .attr("width", width + margin.right + margin.left)
+    .attr("height", height - 40)
+  .append("g")
+    .attr("transform", "translate("
+          + margin.left + "," + margin.top + ")");
+
+var i = 0,
+    duration = 750,
+    root;
+
+// declares a tree layout and assigns the size
+var treemap = d3.tree().size([height, width]);
+
+// Assigns parent, children, height, depth
+root = d3.hierarchy(treeData, function(d) { return d.children; });
+root.x0 = height / 2;
+root.y0 = 0;
+
+// Collapse after the second level
+root.children.forEach(collapse);
+
+update(root);
+
+// Collapse the node and all it's children
+function collapse(d) {
+  if(d.children) {
+    d._children = d.children
+    d._children.forEach(collapse)
+    d.children = null
+  }
+}
+
+function update(source) {
+
+  // Assigns the x and y position for the nodes
+  var treeData = treemap(root);
+
+  // Compute the new tree layout.
+  var nodes = treeData.descendants(),
+      links = treeData.descendants().slice(1);
+
+  // Normalize for fixed-depth.
+  nodes.forEach(function(d){ d.y = d.depth * 180});
+
+  // ****************** Nodes section ***************************
+
+  // Update the nodes...
+  var node = svg.selectAll('g.node')
+      .data(nodes, function(d) {return d.id || (d.id = ++i); });
+
+  // Enter any new modes at the parent's previous position.
+  var nodeEnter = node.enter().append('g')
+      .attr('class', 'node')
+      .attr("transform", function(d) {
+        return "translate(" + source.y0 + "," + source.x0 + ")";
+    })
+    .on('click', click);
+
+  // Add Circle for the nodes
+  nodeEnter.append('circle')
+      .attr('class', 'node')
+      .attr('r', 1e-6)
+      .style("fill", function(d) {
+          return d._children ? "lightsteelblue" : "#fff";
+      })
+  		.style("stroke", function(d){return colorScale(d.data.female/(d.data.female + d.data.male))});
+
+  // Add labels for the nodes
+  nodeEnter.append('text')
+      .attr("dy", ".35em")
+      .attr("x", function(d) {
+          return d.children || d._children ? -13 : 13;
+      })
+      .attr("text-anchor", function(d) {
+          return d.children || d._children ? "end" : "start";
+      })
+      .text(function(d) { return d.data.name; })
+  		.style("fill", function(d){return colorScale(d.data.female/(d.data.value))});
+
+  // UPDATE
+  var nodeUpdate = nodeEnter.merge(node);
+
+  // Transition to the proper position for the node
+  nodeUpdate.transition()
+    .duration(duration)
+    .attr("transform", function(d) { 
+        return "translate(" + d.y + "," + d.x + ")";
+     });
+
+  // Update the node attributes and style
+  nodeUpdate.select('circle.node')
+    .attr('r', 10)
+    .style("fill", function(d) {
+        return d._children ? "lightsteelblue" : "#fff";
+    })
+    .attr('cursor', 'pointer');
+
+
+  // Remove any exiting nodes
+  var nodeExit = node.exit().transition()
+      .duration(duration)
+      .attr("transform", function(d) {
+          return "translate(" + source.y + "," + source.x + ")";
+      })
+      .remove();
+
+  // On exit reduce the node circles size to 0
+  nodeExit.select('circle')
+    .attr('r', 1e-6);
+
+  // On exit reduce the opacity of text labels
+  nodeExit.select('text')
+    .style('fill-opacity', 1e-6);
+
+  // ****************** links section ***************************
+
+  // Update the links...
+  var link = svg.selectAll('path.link')
+      .data(links, function(d) { return d.id; })
+  		.style('stroke-width', function(d){
+        return widthScale(d.data.value)
+      });
+
+  // Enter any new links at the parent's previous position.
+  var linkEnter = link.enter().insert('path', "g")
+      .attr("class", "link")
+      .attr('d', function(d){
+        var o = {x: source.x0, y: source.y0}
+        return diagonal(o, o)
+      })
+  		.style('stroke-width', function(d){
+        return widthScale(d.data.value)
+      });
+
+  // UPDATE
+  var linkUpdate = linkEnter.merge(link);
+
+  // Transition back to the parent element position
+  linkUpdate.transition()
+      .duration(duration)
+      .attr('d', function(d){ return diagonal(d, d.parent) });
+
+  // Remove any exiting links
+  var linkExit = link.exit().transition()
+      .duration(duration)
+      .attr('d', function(d) {
+        var o = {x: source.x, y: source.y}
+        return diagonal(o, o)
+      })
+  		.style('stroke-width', function(d){
+        return widthScale(d.data.value)
+      })
+      .remove();
+
+  // Store the old positions for transition.
+  nodes.forEach(function(d){
+    d.x0 = d.x;
+    d.y0 = d.y;
+  });
+
+  // Creates a curved (diagonal) path from parent to the child nodes
+  function diagonal(s, d) {
+
+    path = `M ${s.y} ${s.x}
+            C ${(s.y + d.y) / 2} ${s.x},
+              ${(s.y + d.y) / 2} ${d.x},
+              ${d.y} ${d.x}`
+
+    return path
+  }
+
+  // Toggle children on click.
+  function click(d) {
+    if (d.children) {
+        d._children = d.children;
+        d.children = null;
+      } else {
+        d.children = d._children;
+        d._children = null;
+      }
+    update(d);
+    
+  }
+}
+
+</script>
+
+	<script>
+		 var d3v4 = window.d3;
+		
+		
+		//var margin = {
+		//	top : 10,
+		//	right : 30,
+		//	bottom : 30,
+		//	left : 60
+		//}, 
+		//width = plot_width - margin.left - margin.right, 
+		//height = plot_height - margin.top - margin.bottom;
+		
+		
+		///start clustering5 funtion
+		 function clusterdiagram5(element, dataset) {
+			 var final_centroids = {};
+			 var plot_width = $('#scatter-container').width();
+			var height = $('#scatter-container1').height() - 25;
+			 trending_words = [];
+				
+				<% 
+				String word_build = "";
+			 	for(int k = 0; k < 10; k++){
+			 		 word_build = "";
+			 		 if(source.length() > 0){ 
+					String [] splitted = source.get("cluster_" + (k + 1)).toString().split("\'topterms\':");
+							
+					List<String> termlist = Arrays.asList(splitted[1].replace("{","").replace("}","").split(","));
+					
+					for(int m = 0; m < 4; m++){
+						if(m > 0){
+							word_build += ", ";
+						}
+						word_build += termlist.get(m).split(":")[0].replace("\'","");
+					}
+					%>
+					trending_words[<%=k %>] = "<%=word_build %>";
+			 	<% } }%>
+			 	 
+			 	 //start getting max and min posts numbers
+			 	for(var i = 0; i < dataset.nodes.length; i++){
+			 		 if(i == 0){
+			 			min_post_count = dataset.nodes[i].level
+			 			max_post_count = dataset.nodes[i].level
+			 		 }
+			 		 
+			 		 if(dataset.nodes[i].level < min_post_count){
+			 			min_post_count = dataset.nodes[i].level
+			 		 }
+			 		 
+			 		if(dataset.nodes[i].level > max_post_count){
+			 			max_post_count = dataset.nodes[i].level
+			 		 }
+			 		 
+			 	}
+			 	//end getting max and min posts numbers
+			 	
+			 	//start get normalized array for radius values
+			 	normalized_radius = [];
+			 	for(var i = 0; i < dataset.nodes.length; i++){
+			 		
+			 		normalized_value = ( (dataset.nodes[i].level - min_post_count)/(max_post_count - min_post_count));
+			 		
+			 		range = 2 - 1;
+			 		normalized_value = (normalized_value * range) + 1;
+			 		
+			 		temp = normalized_value * 20;
+			 		normalized_radius[i] = temp;
+			 		
+			 	}
+			 	
+			 	//start get normalized array for radius values
+		  
+			 
+		var nodes = dataset.nodes
+		 var links = dataset.links
+		
+		   // Define main variables
+		   var d3Container = d3v4.select(element),
+		     margin = {top: 0, right: 50, bottom: 0, left: 50},
+		     width = plot_width,
+		     height = height;
+					radius = 6;
+					
+					
+		
+		   //var colors = d3v4.scaleOrdinal().range(["#6b085e", "#e50471", "#0571a0", "#038a2c", "#6b8a03", "#a02f05", "#b770e1", "#fc8f82 ", "#011aa7", "#a78901"]);
+		   var colors = d3v4.scaleOrdinal().range(["#E377C2","#8C564B", "#9467BD", "#D62728", "#2CA02C", "#FF7F0E", "#1F77B4", "#7F7F7F","#17B890", "#D35269"]);
+		   // Add SVG element
+		   var container = d3Container.append("svg");
+		   // Add SVG group
+		   var svg = container
+		     .attr("width", width + margin.left + margin.right)
+		     .attr("height", height + margin.top + margin.bottom)
+		     .call(responsivefy) // tada!
+		   .attr("overflow", "visible");
+		     //.append("g")
+		    //  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+		    // simulation setup with all forces
+		  var linkForce = d3v4
+		  .forceLink()
+		  .id(function (link) { return link.id })
+		  .strength(function (link) { return link.strength })
+		    // simulation setup with all forces
+		     var simulation = d3v4
+		     .forceSimulation()
+		     .force('link', d3v4.forceLink().id(d =>d.id).distance(-20))
+		     .force('charge', d3v4.forceManyBody())
+		     /* .force('center', d3v4.forceCenter(width, height ))  */
+		     .force('center', d3v4.forceCenter())  
+		     .force("collide",d3v4.forceCollide().strength(-5)) 
+		     /* simulation.force("center")
+		    .x(width * forceProperties.center.x)
+		    .y(height * forceProperties.center.y); */
+		     /* var simulation = d3.forceSimulation()
+		       .force('x', d3.forceX().x(d => d.x))
+		       .force('y', d3.forceY().y(d => d.y))
+		       .force("charge",d3.forceManyBody().strength(-20))
+		       .force("link", d3.forceLink().id(d =>d.id).distance(20)) 
+		       .force("collide",d3.forceCollide().radius(d => d.r*10)) 
+		       .force('center', d3v4.forceCenter(width, height )) */
+					
+					simulation.force("center")
+				  .x(width / 2)
+				  .y(height / 2)
+				   
+				  	simulation.force("charge")
+		    .strength(-2000 * true)
+		    .distanceMin(1)
+		    .distanceMax(1000);
+				  /* .x(width * 0.5) */
+					
+					simulation.alpha(1).restart(); 
+		     var linkElements = svg.append("g")
+		      .attr("class", "links")
+		      .selectAll("line")
+		      .data(links)
+		      .enter().append("line")
+		       .attr("stroke-width", 0)
+		     	 .attr("stroke", "rgba(50, 50, 50, 0.2)")
+		    function getNodeColor(node) {
+		     return node.level === 1 ? 'red' : 'gray'
+		    }
+		    var nodeElements = svg.append("g")
+		     .attr("class", "nodes")
+		     .selectAll("circle")
+		     .data(nodes)
+		     .enter().append("circle")
+		     /* .attr(circleAttrs) */
+		     // .attr("r", function (d, i) {return d.level})
+		      .attr("r", function (d, i) {return normalized_radius[d.group-1]})
+		      .attr("cluster_number", function (d, i) {return d.group})
+		      .attr("data-toggle", "tooltip")
+		      .attr("data-placement", "top")
+		      .attr("title", function (d, i) {return trending_words[d.group-1]})
+		      .attr("fill", function (d, i) {return colors(d.group);})
+		      .attr("class", "cluster_visual")
+				  .attr("loaded_color",function (d) {return colors(d.group); })
+				  .attr("cluster_id", function(node){return node.label})
+		      //.attr("text",function (node) { return node.label })
+		      /* .on("mouseover", function (node) { return node.label }); */
+		    var textElements = svg.append("g")
+		     .attr("class", "texts")
+		     .selectAll("text")
+		     .data(nodes)
+		     .enter().append("text")
+		      .text(function (node) { return node.label })
+		    	 .attr("font-size", 15)
+		    	 .attr("dx", 15)
+		      .attr("dy", 4) 
+		     simulation.nodes(nodes).on('tick', () => {
+		      nodeElements
+		       .attr('cx', function (node) { return node.x })
+		       .attr('cy', function (node) { return node.y })
+		       textElements  
+		       .attr('x', function (node) { return node.x })
+		       .attr('y', function (node) { return node.y })
+		       linkElements
+		   .attr('x1', function (link) { return link.source.x })
+		   .attr('y1', function (link) { return link.source.y })
+		   .attr('x2', function (link) { return link.target.x })
+		   .attr('y2', function (link) { return link.target.y })
+		     })
+		function handleMouseOver(d, i) { // Add interactivity
+		      // Use D3 to select element, change color and size
+		      d3.select(this).attr({
+		       fill: "orange",
+		       r: radius * 2
+		      });
+		      // Specify where to put label of text
+		      svg.append("text").attr({
+		        id: "t" + d.x + "-" + d.y + "-" + i, // Create an id for text so we can select it later for removing on mouseout
+		        x: function() { return xScale(d.x) - 30; },
+		        y: function() { return yScale(d.y) - 15; }
+		      })
+		      .text(function() {
+		       return [d.x, d.y]; // Value of the text
+		      });
+		     }
+		 simulation.force("link").links(links)
+		 
+		 function responsivefy(svg) {
+  // container will be the DOM element the svg is appended to
+  // we then measure the container and find its aspect ratio
+  const container = d3.select(svg.node().parentNode),
+      width = parseInt(svg.style('width'), 10),
+      height = parseInt(svg.style('height'), 10),
+      aspect = width / height;
+
+  // add viewBox attribute and set its value to the initial size
+  // add preserveAspectRatio attribute to specify how to scale
+  // and call resize so that svg resizes on inital page load
+  svg.attr('viewBox', `0 0 ${width} ${height}`)
+      .attr('preserveAspectRatio', 'xMinYMid')
+      .call(resize);
+
+  // add a listener so the chart will be resized when the window resizes
+  // to register multiple listeners for same event type,
+  // you need to add namespace, i.e., 'click.foo'
+  // necessary if you invoke this function for multiple svgs
+  // api docs: https://github.com/mbostock/d3/wiki/Selections#on
+  d3.select(window).on('resize.' + container.attr('id'), resize);
+
+  // this is the code that actually resizes the chart
+  // and will be called on load and in response to window resize
+  // gets the width of the container and proportionally resizes the svg to fit
+  function resize() {
+      const targetWidth = parseInt(container.style('width'));
+      svg.attr('width', targetWidth);
+      svg.attr('height', Math.round(targetWidth / aspect));
+  }
+}
+		 
+		
+		 
+		 }
+		 ///end clustering5 function
+		 
+	</script>
+
+
+	<!-- End Scatter plot JS -->
+
+	<script>
+		
+		
+function cluster_matrix_loader(){
+			
+			
+			function Ticker( elem ) {
+				elem.lettering();
+				this.done = false;
+				this.cycleCount = 5;
+				this.cycleCurrent = 0;
+				this.chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()-_=+{}|[]\\;\':"<>?,./`~'.split('');
+				this.charsCount = this.chars.length;
+				this.letters = elem.find( 'span' );
+				this.letterCount = this.letters.length;
+				this.letterCurrent = 0;
+
+				this.letters.each( function() {
+					var $this = $( this );
+					$this.attr( 'data-orig', $this.text() );
+					$this.text( '-' );
+				});
+			}
+
+			Ticker.prototype.getChar = function() {
+				return this.chars[ Math.floor( Math.random() * this.charsCount ) ];
+			};
+
+			Ticker.prototype.reset = function() {
+				this.done = false;
+				this.cycleCurrent = 0;
+				this.letterCurrent = 0;
+				this.letters.each( function() {
+					var $this = $( this );
+					$this.text( $this.attr( 'data-orig' ) );
+					$this.removeClass( 'done' );
+				});
+				this.loop();
+			};
+
+			Ticker.prototype.loop = function() {
+				var self = this;
+
+				this.letters.each( function( index, elem ) {
+					var $elem = $( elem );
+					if( index >= self.letterCurrent ) {
+						if( $elem.text() !== ' ' ) {
+							$elem.text( self.getChar() );
+							$elem.css( 'opacity', Math.random() );
+						}
+					}
+				});
+
+				if( this.cycleCurrent < this.cycleCount ) {
+					this.cycleCurrent++;
+				} else if( this.letterCurrent < this.letterCount ) {
+					var currLetter = this.letters.eq( this.letterCurrent );
+					this.cycleCurrent = 0;
+					currLetter.text( currLetter.attr( 'data-orig' ) ).css( 'opacity', 1 ).addClass( 'done' );
+					this.letterCurrent++;
+				} else {
+					this.done = true;
+				}
+
+				if( !this.done ) {
+					requestAnimationFrame( function() {
+						self.loop();
+					});
+				} else {
+					setTimeout( function() {
+						self.reset();
+					}, 750 );
+				}
+			};
+
+			$words = $( '.word1' );
+
+			$words.each( function() {
+				var $this = $( this ),
+					ticker = new Ticker( $this ).reset();
+				$this.data( 'ticker', ticker  );
+			});
+			
+			
+			
+		}
+		//end matrix_loader
+		
+		//java check
+		<% if(cluster_status.equals("1")){ 
+			
+			//ArrayList response_terms = DbConnection.query("select terms from tracker_keyword where tid = " + tid);
+			//ArrayList terms_result = (ArrayList)response_terms.get(0);
+			//System.out.println("terms_result" + res.get(0));
+			//JSONObject final_terms = new JSONObject(terms_result.get(0).toString());
+			//final_result.put("final_terms",final_terms);
+		%>	
+		console.log('cluster is 1')
+			$('#clusterbtn').prop("disabled", false);
+			$('#scatter-container').removeClass('hidden');
+			$('#cluster_card_div').removeClass('radial_f')
+			
+			
+			dataset = <%=final_centroids %>
+			clusterdiagram5('#dataviz_axisZoom', dataset);
+			
+			
+	<%	}else{
+			
+			final_result.put("final_terms","");
+			
+		 %>
+		 console.log('cluster is 0')
+		 $('#clusterbtn').prop("disabled", true);
+		 $('#cluster_computing_loaader').removeClass('hidden');
+		 var cluster_refreshIntervalId = setInterval(function(){ cluster_refresh();    }, 15000);
+		 cluster_matrix_loader();
+		<% }%>
+		//end java check
+		
+		//setInterval(function(){ refresh();    }, 10000);
+		//var refreshIntervalId = setInterval(function(){ refresh();    }, 10000);
+
+		//start refresh function
+		function cluster_refresh(){
+			
+			$.ajax({
+				url: app_url+"subpages/cluster_dashboardcard.jsp",
+				method: 'POST',
+	            /* dataType: 'json', */
+				data: {
+					action:"getkeywordstatus",
+					tid:"<%=tid%>"
+				},
+				error: function(response)
+				{	console.log("This is failure"+response);
+
+				},
+				success: function(response)
+				{   				  
+				 //console.log("This is success"+response)
+				 var data = JSON.parse(response);
+					//$(".char19").html(data.status_percentage);
+					//$(".status").html(data.status);
+					//console.log(data.status_percentage)
+					console.log(data.status)
+					console.log(data.final_terms)
+					
+					if(parseInt(data.status) == 1){
+						//wordtagcloud("#tagcloudcontainer99",450,data.final_terms); 
+						//$('#keyword_computing_loaader').addClass('hidden');
+						//$('#tagcloudcontainer99').removeClass('hidden');
+						$('#scatter-container').removeClass('hidden');
+						
+						//$('#keyword_computing_loaader').html('');
+						$('#cluster_computing_loaader').addClass('hidden');
+						$('#clusterbtn').prop("disabled", false);
+						//matrix_loader1();
+						clearInterval(cluster_refreshIntervalId);
+						$('#cluster_card_div').removeClass('radial_f')
+						//wordtagcloud("#tagcloudcontainer99",450,data.final_terms); 
+						clusterdiagram5('#dataviz_axisZoom', data.final_terms);
+					}else{
+						
+						var build = '<div align="center" class=" word1">COMPUTING-CLUSTERS...<span id="cluster_percentage">'+data.status_percentage+'%</span></div>';
+						build += '<div align="center" class=" overlay1"></div>';
+						
+						$('#cluster_computing_loaader').html(build);
+						
+						//wordtagcloud("#tagcloudcontainer99",450,data.final_terms); 
+						//clearInterval(refreshIntervalId);
+						cluster_matrix_loader();
+						
+					}
+					
+					
+				}
+			});
+			//end ajax
+			
+			
+		}
+		//end refresh function
+		</script>
+
+
+
+
+
+
+
+
+
+
 	<script src="assets/bootstrap/js/bootstrap.js">
 </script>
 	<script src="assets/js/generic.js">
@@ -1452,15 +3008,31 @@ display: none;
 		src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.html5.min.js"></script>
 	<script
 		src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.print.min.js"></script>
-		
-		
-	
+
+
 
 	<script>
 	function flip() {
 	    $('.mecard').toggleClass('flipped');
 	}
+	
+	function location_flip() {
+	    $('.location_mecard').toggleClass('flipped');
+	}
 $(document).ready(function() {
+	
+	
+	 $('#DataTables_Table_19_wrapper').DataTable( {
+	        "scrollY": 380,
+	        "scrollX": true,
+	         "pagingType": "simple",
+	        	 "bLengthChange": false,
+	        	 "bFilter":false,
+	        	 "bPaginate":false,
+	        	 "bInfo":false,
+	        	 "order": [[ 1, "desc" ]]
+	  
+	    } );
 	
 	
   // datatable setup
@@ -1616,10 +3188,13 @@ $(document).ready(function() {
             	
             	var start = picker.startDate.format('YYYY-MM-DD');
             	var end = picker.endDate.format('YYYY-MM-DD');
+            	var set = 1;
             	//console.log("End:"+end);
             	
             	$("#date_start").val(start);
             	$("#date_end").val(end);
+            	$("#date_set").val(set);
+            	
             	//toastr.success('Date changed!','Success');
             	$("form#customform").submit();
          });
@@ -1746,7 +3321,7 @@ $(function () {
 					}%>
 	 ];  --%>
 	 
-	  data = <%=language_data%> 
+	  data = <%=result_language%> 
 	 
 	 <%-- console.log("langdata-->"+"<%=language_data%>"); --%>
      data.sort(function(a, b){
@@ -2019,11 +3594,13 @@ $(function () {
 						for (int y = 0; y < influenceBlog.size(); y++) {
 							ArrayList<?> blogInfluence = (ArrayList<?>) influenceBlog.get(y);
 							String blogInf = blogInfluence.get(0).toString();
-							String blogInfFreq = blogInfluence.get(1).toString();
+							String blogInfFreq = (null == blogInfluence.get(1).toString()) ? "0" : blogInfluence.get(1).toString();
 							if (p < 10) {
 								p++;%>
 		{letter:"<%=blogInf%>", frequency:<%=blogInfFreq%>, name:"<%=blogInf%>", type:"blogger"},
-		 <%}
+		 <%}else{
+			 break;
+		 }
 						}
 					}%>    
         ];
@@ -2085,6 +3662,10 @@ $(function () {
               .selectAll("text")
               .style("font-size",12)
               .style("text-transform","capitalize")
+              .attr("data-toggle", "tooltip")
+		      .attr("data-placement", "top")
+		      .attr("title", function (d) {  return d; })
+		      
    			/* .attr("y", -25)
     		.attr("x", 20)
     		.attr("dy", ".75em")
@@ -2216,7 +3797,7 @@ $(function () {
 </script>
 
 	<!--  End of influence bar -->
-	
+
 	<!-- start sample graph script -->
 	<script>
  
@@ -2602,21 +4183,34 @@ $(function () {
 	  $(function () {
 	
 	 <%String pos = "";
+	 
 					String neg = "";
 					for (int i = 0; i < getPositiveEmotion.size(); i++) {
 						ArrayList<?> posi = (ArrayList<?>) getPositiveEmotion.get(i);
-						pos = posi.get(0).toString();
+						//System.out.println(posi.get(0));
+						if(posi.get(0) == null){
+							pos = "0";
+						}else{
+							pos = posi.get(0).toString();
+						}
+						//pos = () ? "" : posi.get(0).toString();
+						
 					}
 					for (int i = 0; i < getNegativeEmotion.size(); i++) {
 						ArrayList<?> nega = (ArrayList<?>) getNegativeEmotion.get(i);
-						neg = nega.get(0).toString();
+						if(nega.get(0) == null){
+							neg = "0";
+						}else{
+							neg = nega.get(0).toString();
+						}
+						
 
 					}%>
       sentimentdata = [
-            {label:"Negative", value:<%=Integer.parseInt(pos)%>},
-            {label:"Positive", value:<%=Integer.parseInt(neg)%>}
+            {label:"Negative", value:<%=Integer.parseInt(neg)%>},
+            {label:"Positive", value:<%=Integer.parseInt(pos)%>}
         ];
-      
+      console.log("here---",sentimentdata);
       pieChartAnimation("#sentimentpiechart",180,sentimentdata);
 	  });
         
@@ -2874,7 +4468,40 @@ var gdpData = {
     
     */ 
 <%JSONObject location = new JSONObject();
-					location.put("Vatican City", "41.90, 12.45");
+    
+    String csvFile = application.getRealPath("/").replace('/', '/') + "lat_long.csv";
+    BufferedReader br = null;
+    String line = "";
+    String cvsSplitBy = ",";
+    
+    try {
+
+        br = new BufferedReader(new FileReader(csvFile));
+        while ((line = br.readLine()) != null) {
+
+            // use comma as separator
+            String[] country = line.split(cvsSplitBy);
+
+            //System.out.println("Country [code= " + country[4] + " , name=" + country[5] + "]");
+           
+            location.put(country[1].substring(0,2) , country[3] + ","+ country[2]);
+
+        }
+
+    } catch (FileNotFoundException e) {
+        e.printStackTrace();
+    } catch (IOException e) {
+        e.printStackTrace();
+    } finally {
+        if (br != null) {
+            try {
+                br.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    } 
+					/* location.put("Vatican City", "41.90, 12.45");
 					location.put("Monaco", "43.73, 7.41");
 					location.put("Salt Lake City", "40.726, -111.778");
 					location.put("Kansas City", "39.092, -94.575");
@@ -2891,6 +4518,9 @@ var gdpData = {
 					
 					location.put("CA", "36.7783, -119.4179");
 					location.put("BG", "42.7339, 25.4858");
+					location.put("BE", "50.503887, 4.469936");
+					location.put("DK", "56.263920, 9.501785");
+					location.put("SE", "60.128162, 18.643501");
 					
 					location.put("TR", "38.9637, 35.2433");
 					location.put("FR", "46.2276, 2.2137");
@@ -2907,7 +4537,7 @@ var gdpData = {
 					location.put("IS", "64.147209,-21.942400");
 					location.put("NO", "59.913818,10.738740");
 					location.put("RO", "45.943161,24.966761");
-					location.put("RS", "44.815071,20.460480");
+					location.put("RS", "44.815071,20.460480"); */
 					
 					
 					%>
@@ -2935,7 +4565,7 @@ var mymarker = [
 		src="assets/vendors/maps/vector_maps_demo.js"></script>
 	<script type="text/javascript"
 		src="chartdependencies/keywordtrendd3.js"></script>
-		<script type="text/javascript" src="chartdependencies/chord.js"></script>
+	<script type="text/javascript" src="chartdependencies/chord.js"></script>
 	<!--word cloud  -->
 	<script>
 	
@@ -2948,33 +4578,92 @@ var mymarker = [
 		
 		
 		$(document).ready(function(){
-			 <%if (null == session.getAttribute(tid.toString())) {%>
+			 <%-- <%if (null == session.getAttribute(ids + "--getkeyworddashboard")) {%>
 			  // keywords have not been computed.
 			loadKeywordDashboard(null, "<%=ids%>")
 
 			<%} else {
-							 /* Object json_type_2 = (null == session.getAttribute(tid.toString()))
-									? ""
-									: session.getAttribute(tid.toString());
+				
+				Object dashboardWordCloudObject = (null == session.getAttribute(ids + "--getkeyworddashboard")) ? "": session.getAttribute(ids + "--getkeyworddashboard");
+				JSONObject o = new JSONObject(dashboardWordCloudObject.toString());
+				JSONArray out_ = new JSONArray();
+
+				//HashMap<String, String> post_id_pair = new HashMap<String, String>();
+				/* String terms = dashboardWordCloudObject.toString().replace("{","[").replace("}","]").replace("),","-").replace("(","").replace(",",":").replace("-",",").replace(")","").replace("'","").replaceAll("[0-9]", "").replace(":", ""); */
+				out_ = (JSONArray) o.get("output");
+				/*
 							Map<String, Integer> json = (HashMap<String, Integer>)json_type_2;
 							JSONObject d = new JSONObject(json);
 							String s = json_type_2.toString();
 						
 							JSONObject o = new JSONObject(json_type_2); */
 							//System.out.println("testing w" + d);%>
-			  		<%-- <wordtagcloud("#tagcloudcontainer",450,<%=d%>);   --%>
-			<%}%> 
+							var terms = "<%=out_.toString().replace("\"","")%>";
+				 var new_dd = terms.replace('[','{').replace(']','}').replace(/\),/g,'-').replace(/\(/g,'').replace(/,/g,':').replace(/-/g,',').replace(/\)/g,'').replace(/'/g,"");
+					var newjson = new_dd.replace(/\s+/g,'').replace(/{/g,'{"').replace(/:/g,'":"').replace(/,/g,'","').replace(/}/g,'"}')
+					var jsondata = JSON.parse(newjson)
+					
+					/* data = [];
+					for (var key in jsondata) {var dic = {}; dic["text"] = key; dic["size"] = jsondata[key]; data.push(dic);} */
+					console.log("this is the response dashboard from session",new_dd);
+					wordtagcloud("#tagcloudcontainer",450,jsondata); 
+			  		<wordtagcloud("#tagcloudcontainer",450,<%=d%>);  
+			<%}%>  --%>
+			<%
+			if(status.equals("1") && date_set.toString().equals("1")){%>
 			
-			
-			
-			loadChordDashboard();
-			
+			$(".word-cld").html("<img src='images/loading.gif' /> COMPUTING TERMS FOR <b style='color : blue;  font-size: 20px;'><%=NumberFormat.getNumberInstance(Locale.US).format(new Double(totalpost).intValue())%></b> POSTS PLEASE WAIT...."); 
+			 /* $('#keywordbtn').prop("disabled", true);
+			 $("#hrefkeyword").attr("href", ""); */
+			$.ajax({
+				url: app_url+"subpages/dashboardcharts.jsp",
+				method: 'POST',
+	            /* dataType: 'json', */
+				data: {
+					action:"getkeyworddashboard",
+					/* blogger:null, */
+					
+					ids:"<%=ids%>",
+					date_start:"<%=dt%>",
+					date_end:"<%=dte%>"
+				},
+				error: function(response)
+				{		
+					$(".word-cld").html("FAILED TO COMPUTE TERMS.. RETRYING.. PLEASE WAIT.... <img src='images/loading.gif' />g");
+					$(".word-cld").html("<div style='min-height: 420px;'><div class='chart-container word-cld'><div class='chart' id='tagcloudcontainer'><div class='jvectormap-zoomin zoombutton' id='zoom_in'>+</div><div class='jvectormap-zoomout zoombutton' id='zoom_out'>−</div></div></div></div>");
+					wordtagcloud("#tagcloudcontainer99",450,{"NO KEYWORD":1});
+					console.log("This is failure"+response);
 
+				},
+				success: function(response)
+				{   	
+					
+				  $(".word-cld").html("<div id='dummy'></div><div style='min-height: 420px;'><div class='chart-container word-cld'><div class='chart' id='tagcloudcontainer99'><div class='jvectormap-zoomin zoombutton' id='zoom_in'>+</div><div class='jvectormap-zoomout zoombutton' id='zoom_out'>−</div></div></div></div>");
+				 $("#tagcloudcontainer99").html("<img src='images/loading.gif' /> COMPUTING TERMS PLEASE WAIT....").html(response);
+				}
+			});
+			 
 			
-	
-	
+			<%}else if (status.equals("1") && date_set.toString()!= "1" ){
 			
-})
+			//ArrayList response_terms = DbConnection.query("select terms from tracker_keyword where tid = " + tid);
+			//ArrayList resy = (ArrayList)response_terms.get(0);
+			//System.out.println("terms_result" + res.get(0));
+			
+			//JSONObject finalres = new JSONObject(resy.get(0).toString());
+			
+			%>
+			
+			//var response = {'seun':39, 'bola':100}
+			<%-- wordtagcloud("#tagcloudcontainer",450,<%=finalres%>); 
+			
+			console.log('dt',"<%=dt%>");
+			 console.log('dte',"<%=dte%>"); --%>
+			//loadChordDashboard();
+			
+			<%}%>
+		})
+		
 		
 		
 		<%-- function loadKeywordDashboard(blogger,ids){
@@ -3025,7 +4714,7 @@ var mymarker = [
 			$.ajax({
 				url: "Terms",
 				method: 'POST',
-	           /*  dataType: 'json', */
+	           dataType: 'json',
 				data: {
 					action:"getkeyworddashboard",
 					blogger:null,
@@ -3038,7 +4727,7 @@ var mymarker = [
 					$(".word-cld").html("FAILED TO COMPUTE TERMS.. RETRYING.. PLEASE WAIT.... <img src='images/loading.gif' />g");
 					$(".word-cld").html("<div style='min-height: 420px;'><div class='chart-container word-cld'><div class='chart' id='tagcloudcontainer'><div class='jvectormap-zoomin zoombutton' id='zoom_in'>+</div><div class='jvectormap-zoomout zoombutton' id='zoom_out'>−</div></div></div></div>");
 										
-					wordtagcloud("#tagcloudcontainer",450,{"NO KEYWORD":1});
+					wordtagcloud("#tagcloudcontainer",450,{"NO KEYWORD":100});
 					console.log("This is failure dashboard"+response);
 
 				},
@@ -3047,12 +4736,19 @@ var mymarker = [
 				
 					<%-- <%JSONObject d = new JSONObject(response);%> --%>
 				 /* console.log(response) */
-				
+				 console.log('dtajax',"<%=dt%>");
+			 console.log('dteajax',"<%=dte%>");
+				response = response['output'];
+				 console.log('response',response);
 				
 				    $(".word-cld").html("<div style='min-height: 420px;'><div class='chart-container word-cld'><div class='chart' id='tagcloudcontainer'><div class='jvectormap-zoomin zoombutton' id='zoom_in'>+</div><div class='jvectormap-zoomout zoombutton' id='zoom_out'>−</div></div></div></div>");
-				 let terms = response;
-				 var new_dd = terms.replace('[','{').replace(']','}').replace(/\),/g,'-').replace(/\(/g,'').replace(/,/g,':').replace(/-/g,',').replace(/\)/g,'').replace(/'/g,"");
+				 var terms = response.toString()
+				 terms = "{" + terms + "}";
+				 var new_dd = terms.replace('[','{').replace(']','}').replace(/\),/g,'-').replace(/\(/g,'').replace(/,/g,':').replace(/-/g,',').replace(/\)/g,'').replace(/'/g,'');
 					var newjson = new_dd.replace(/\s+/g,'').replace(/{/g,'{"').replace(/:/g,'":"').replace(/,/g,'","').replace(/}/g,'"}')
+					console.log('newjson', newjson);
+					
+					console.log('afternewjson', newjson);
 					var jsondata = JSON.parse(newjson)
 					
 					/* data = [];
@@ -3068,8 +4764,12 @@ var mymarker = [
 		
 	
 	<%-- wordtagcloud("#tagcloudcontainer",450,<%=res%>); --%>
+	
+	
+	
 
 	function loadChordDashboard(){
+		
 		 $(".chord_body").html("<img src='images/loading.gif' /> LOADING CHORD GRAPH FOR <b style='color : blue;  font-size: 20px;'><%=NumberFormat.getNumberInstance(Locale.US).format(new Double(totalpost).intValue())%></b> POSTS PLEASE WAIT...."); 
 		 $('.buttonTopicModelling').prop("disabled", true);
 		 $("#hreftopicmodels").attr("href", "");
@@ -3123,6 +4823,186 @@ var mymarker = [
  </script>
 
 	<!-- End of Tag Cloud  -->
+	<script>
+		
+function matrix_loader1(){
+			
+			
+			function Ticker( elem ) {
+				elem.lettering();
+				this.done = false;
+				this.cycleCount = 5;
+				this.cycleCurrent = 0;
+				this.chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()-_=+{}|[]\\;\':"<>?,./`~'.split('');
+				this.charsCount = this.chars.length;
+				this.letters = elem.find( 'span' );
+				this.letterCount = this.letters.length;
+				this.letterCurrent = 0;
+
+				this.letters.each( function() {
+					var $this = $( this );
+					$this.attr( 'data-orig', $this.text() );
+					$this.text( '-' );
+				});
+			}
+
+			Ticker.prototype.getChar = function() {
+				return this.chars[ Math.floor( Math.random() * this.charsCount ) ];
+			};
+
+			Ticker.prototype.reset = function() {
+				this.done = false;
+				this.cycleCurrent = 0;
+				this.letterCurrent = 0;
+				this.letters.each( function() {
+					var $this = $( this );
+					$this.text( $this.attr( 'data-orig' ) );
+					$this.removeClass( 'done' );
+				});
+				this.loop();
+			};
+
+			Ticker.prototype.loop = function() {
+				var self = this;
+
+				this.letters.each( function( index, elem ) {
+					var $elem = $( elem );
+					if( index >= self.letterCurrent ) {
+						if( $elem.text() !== ' ' ) {
+							$elem.text( self.getChar() );
+							$elem.css( 'opacity', Math.random() );
+						}
+					}
+				});
+
+				if( this.cycleCurrent < this.cycleCount ) {
+					this.cycleCurrent++;
+				} else if( this.letterCurrent < this.letterCount ) {
+					var currLetter = this.letters.eq( this.letterCurrent );
+					this.cycleCurrent = 0;
+					currLetter.text( currLetter.attr( 'data-orig' ) ).css( 'opacity', 1 ).addClass( 'done' );
+					this.letterCurrent++;
+				} else {
+					this.done = true;
+				}
+
+				if( !this.done ) {
+					requestAnimationFrame( function() {
+						self.loop();
+					});
+				} else {
+					setTimeout( function() {
+						self.reset();
+					}, 750 );
+				}
+			};
+
+			$words = $( '.word1' );
+
+			$words.each( function() {
+				var $this = $( this ),
+					ticker = new Ticker( $this ).reset();
+				$this.data( 'ticker', ticker  );
+			});
+			
+			
+			
+		}
+		//end matrix_loader
+		
+		//java check
+		<% if(status.equals("1")){ 
+			
+			ArrayList response_terms = DbConnection.query("select terms from tracker_keyword where tid = " + tid);
+			ArrayList terms_result = (ArrayList)response_terms.get(0);
+			//System.out.println("terms_result" + res.get(0));
+			JSONObject final_terms = new JSONObject(terms_result.get(0).toString());
+			final_result.put("final_terms",final_terms);
+		%>	
+		console.log('it is 1')
+		$('#keywordbtn').prop("disabled", false);
+			$('#tagcloudcontainer99').removeClass('hidden');
+			$('#keyword_card_div').removeClass('radial_f')
+			wordtagcloud("#tagcloudcontainer99",450,<%=final_terms%>); 
+			loadChordDashboard();
+	<%	}else{
+			
+			final_result.put("final_terms","");
+			
+		 %>
+		 console.log('it is 0')
+		 $('#keywordbtn').prop("disabled", true);
+		 $('#keyword_computing_loaader').removeClass('hidden');
+		 var refreshIntervalId = setInterval(function(){ refresh();    }, 15000);
+		 matrix_loader1();
+		<% }%>
+		//end java check
+		
+		//setInterval(function(){ refresh();    }, 10000);
+		//var refreshIntervalId = setInterval(function(){ refresh();    }, 10000);
+
+		//start refresh function
+		function refresh(){
+			
+			$.ajax({
+				url: app_url+"subpages/dashboardcards.jsp",
+				method: 'POST',
+	            /* dataType: 'json', */
+				data: {
+					action:"getkeywordstatus",
+					tid:"<%=tid%>"
+				},
+				error: function(response)
+				{	console.log("This is failure"+response);
+
+				},
+				success: function(response)
+				{   				  
+				 //console.log("This is success"+response)
+				 var data = JSON.parse(response);
+					//$(".char19").html(data.status_percentage);
+					//$(".status").html(data.status);
+					//console.log(data.status_percentage)
+					console.log(data.status)
+					console.log(data.final_terms)
+					
+					if(parseInt(data.status) == 1){
+						//wordtagcloud("#tagcloudcontainer99",450,data.final_terms); 
+						//$('#keyword_computing_loaader').addClass('hidden');
+						//$('#tagcloudcontainer99').removeClass('hidden');
+						$('#tagcloudcontainer99').removeClass('hidden');
+						
+						//$('#keyword_computing_loaader').html('');
+						$('#keyword_computing_loaader').addClass('hidden');
+						$('#keywordbtn').prop("disabled", false);
+						//matrix_loader1();
+						clearInterval(refreshIntervalId);
+						$('#keyword_card_div').removeClass('radial_f')
+						wordtagcloud("#tagcloudcontainer99",450,data.final_terms); 
+						
+					}else{
+						
+						var build = '<div align="center" class=" word1">COMPUTING-TERMS...<span id="keyword_percentage">'+data.status_percentage+'%</span></div>';
+						build += '<div align="center" class=" overlay1"></div>';
+						
+						$('#keyword_computing_loaader').html(build);
+						
+						//wordtagcloud("#tagcloudcontainer99",450,data.final_terms); 
+						//clearInterval(refreshIntervalId);
+						matrix_loader1();
+						
+					}
+					
+					
+				}
+			});
+			//end ajax
+			
+			
+		}
+		//end refresh function
+		</script>
+
 	<!-- Blogger Bubble Chart -->
 	<script>
 $(function () {
@@ -3148,6 +5028,7 @@ $(function () {
             var svg = container
                 .attr("width", diameter + margin.left + margin.right)
                 .attr("height",diameter + margin.top + margin.bottom)
+                .call(responsivefy)
                 .attr("class", "bubble");
         // Create chart
         // ------------------------------
@@ -3196,7 +5077,15 @@ data = {
 						for (int m = 0; m < bloggerPostFrequency.size(); m++) {
 							ArrayList<?> bloggerFreq = (ArrayList<?>) bloggerPostFrequency.get(m);
 							String bloggerName = bloggerFreq.get(0).toString();
-							String bloggerPostFreq = bloggerFreq.get(1).toString();%>
+							String bloggerPostFreq="0";
+							try{
+							bloggerPostFreq = (null ==  bloggerFreq.get(1).toString()) ? "0" :  bloggerFreq.get(1).toString();
+							}
+							catch(Exception e){
+								System.out.println(e);
+							}
+							%>
+							
 							{"label":"<%=bloggerName.trim()%>","name":"<%=bloggerName.trim()%>", "size":<%=Integer.parseInt(bloggerPostFreq)%>},
 <%}
 
@@ -3321,6 +5210,39 @@ data = {
             recurse(null, root);
             return {children: classes};
         }
+        
+        
+        function responsivefy(svg) {
+        	  // container will be the DOM element the svg is appended to
+        	  // we then measure the container and find its aspect ratio
+        	  const container = d3.select(svg.node().parentNode),
+        	      width = parseInt(svg.style('width'), 10),
+        	      height = 495,
+        	      aspect = width / height;
+
+        	  // add viewBox attribute and set its value to the initial size
+        	  // add preserveAspectRatio attribute to specify how to scale
+        	  // and call resize so that svg resizes on inital page load
+        	  svg.attr('viewBox', `0 0 ${width} ${height}`)
+        	      .attr('preserveAspectRatio', 'xMinYMid')
+        	      .call(resize);
+
+        	  // add a listener so the chart will be resized when the window resizes
+        	  // to register multiple listeners for same event type,
+        	  // you need to add namespace, i.e., 'click.foo'
+        	  // necessary if you invoke this function for multiple svgs
+        	  // api docs: https://github.com/mbostock/d3/wiki/Selections#on
+        	  d3.select(window).on('resize.' + container.attr('id'), resize);
+
+        	  // this is the code that actually resizes the chart
+        	  // and will be called on load and in response to window resize
+        	  // gets the width of the container and proportionally resizes the svg to fit
+        	  function resize() {
+        	      const targetWidth = parseInt(container.style('width'));
+        	      svg.attr('width', targetWidth);
+        	      svg.attr('height', Math.round(targetWidth / aspect));
+        	  }
+        	}
     }
 });
 </script>
@@ -3357,6 +5279,7 @@ $(function () {
             var svg = container
                 .attr("width", diameter + margin.left + margin.right)
                 .attr("height",diameter + margin.top + margin.bottom)
+                .call(responsivefy)
                 .attr("class", "bubble");
         // Create chart
         // ------------------------------
@@ -3515,6 +5438,38 @@ data = {
             recurse(null, root);
             return {children: classes};
         }
+        
+        function responsivefy(svg) {
+      	  // container will be the DOM element the svg is appended to
+      	  // we then measure the container and find its aspect ratioF
+      	  const container = d3.select(svg.node().parentNode),
+      	      width = parseInt(svg.style('width'), 10),
+      	      height = 495,
+      	      aspect = width / height;
+
+      	  // add viewBox attribute and set its value to the initial size
+      	  // add preserveAspectRatio attribute to specify how to scale
+      	  // and call resize so that svg resizes on inital page load
+      	  svg.attr('viewBox', `0 0 ${width} ${height}`)
+      	      .attr('preserveAspectRatio', 'xMinYMid')
+      	      .call(resize);
+
+      	  // add a listener so the chart will be resized when the window resizes
+      	  // to register multiple listeners for same event type,
+      	  // you need to add namespace, i.e., 'click.foo'
+      	  // necessary if you invoke this function for multiple svgs
+      	  // api docs: https://github.com/mbostock/d3/wiki/Selections#on
+      	  d3.select(window).on('resize.' + container.attr('id'), resize);
+
+      	  // this is the code that actually resizes the chart
+      	  // and will be called on load and in response to window resize
+      	  // gets the width of the container and proportionally resizes the svg to fit
+      	  function resize() {
+      	      const targetWidth = parseInt(container.style('width'));
+      	      svg.attr('width', targetWidth);
+      	      svg.attr('height', Math.round(targetWidth / aspect));
+      	  }
+      	}
     }
 });
 </script>
@@ -4158,6 +6113,7 @@ $(".option-lable").on("click",function(e){
 			success: function(response)
 			{   
 				$("#influencecontainer").html(response);
+				$('[data-toggle="tooltip"]').tooltip();
 			}
 		});
 		

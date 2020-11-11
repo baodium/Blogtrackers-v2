@@ -29,9 +29,10 @@ $(document).delegate('.topics1', 'click', function(){
 		 var all_selected_names1 = '';
 		 var all_selected_id = '';
 		 var i = 1;
+		 var total_post_county = 0;
 		 $( ".thanks" ).each(function( index ) {
 			 
-			 
+			 console.log('Got here')
 			 if(i > 1){
 				 all_selected_names += ' , ';
 				 all_selected_names1 += ' , ';
@@ -46,7 +47,10 @@ $(document).delegate('.topics1', 'click', function(){
 	    	all_selected_names1 += blog_name;
 	    	
 	    	all_selected_id += blog_id;
-	    		
+	    	
+	    	//getting total post count from each blogger
+	    	total_post_county+=parseInt($(this).attr('total_post_counter'));
+	    	console.log('total_post_counter1',$(this).attr('total_post_counter'))
 	    	i++;
 		    		
 		});
@@ -66,17 +70,74 @@ $(document).delegate('.topics1', 'click', function(){
 	loadTerms(all_selected_names,$("#all_blog_ids").val(),date_start,date_end, all_selected_names1);
 	loadInfluence(all_selected_names,date_start,date_end);
 	/*loadInfluence(date_start,date_end);*/
-	
+	$(".total-post").html(total_post_county);
+	console.log('Finatotal_post_counter',total_post_county)
 	/*loadStat(all_selected_names1,id);*/
 });
 
+$('.resetsearch').on("click", function() {
+	$('.searchkeywords').val("");
+	$('.select-term').css("display", "")
+});
 
+
+$('.searchbloggers').on("keyup", function(e) {
+	var valuetype = e.target.value;
+	if (valuetype === "") {
+		$('.select-term').removeClass("hidesection");
+	}
+	
+	mySearchingFunction()
+})
+
+function mySearchingFunction() {
+    var input, filter, ul, li, a, i, txtValue;
+    input = document.getElementById("searchInput");
+    filter = input.value.toUpperCase();
+    $('.select-term').each(function(el, i) {
+        txtValue = $(this).attr('name');
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            $(this).css("display", "")
+        } else {
+        	$(this).css("display", "none")
+        }
+    })
+}
+
+
+$('.searchbloggers1111').on("keyup",function(e){
+	var valuetype = e.target.value;
+	//console.log(valuetype==="");
+	if(valuetype === "")
+	{
+	$('.blogger-select').removeClass("hidesection");	
+	}
+	$('.blogger-select').removeClass("hidesection")
+	var valuetocheck = new RegExp(valuetype);
+	var checkclass = ""
+	$('.blogger-select').each(function(el,i)
+	{
+	var eachvalue = $(this).children("b").html();
+	//console.log(valuetocheck.test(eachvalue));
+
+		//console.log(typeof eachvalue);
+	if(!valuetocheck.test(eachvalue) && e.target.value !== "")
+	{
+		$(this).addClass("hidesection");	
+	}
+
+	//console.log(el);	
+	})
+	})
+	
+
+$( "body" ).delegate( ".blogpost_link", "click", function() {
 //$('.blogpost_link').on("click", function(){
-$(document).delegate('.blogpost_link', 'click', function(){
+	$("body").addClass("loaded");
 	var post_id = $(this).attr("id");
 	//alert(post_id);
+//	alert($("#alltid").val());
 	//console.log(post_id);
-	//console.log("nddshhfjsdfjhds")
 	$("#blogpost_detail").html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />");
 	$(".viewpost").addClass("makeinvisible");
 	$('.blogpost_link').removeClass("activeselectedblog");
@@ -84,32 +145,27 @@ $(document).delegate('.blogpost_link', 'click', function(){
 	$(this).parent().children(".viewpost").removeClass("makeinvisible");
 	//grab all id of blog and perform an ajax request
 	$.ajax({
-		url: app_url+'tracker',
+		url: app_url+"subpages/influencedetail.jsp",
 		method: 'POST',
 		data: {
 			action:"fetchpost",
-			key:"blogpost_id",
-			value:post_id,
-			source:"influence",
-			sort:"influence_score",
-			section:"detail_table"
+			post_id:post_id,
+			tid:$("#alltid").val()
 		},
 		error: function(response)
-		{						
+		{					
+			alert('error')
 			//console.log(response);
-			$("#blogpost_detail").html(response);
+			//$("#blogpost_detail").html(response);
 		},
 		success: function(response)
 		{   
 			//console.log(response);
 			$("#blogpost_detail").html(response).hide();
 			$("#blogpost_detail").fadeIn(700);
-			
-			/*$.getScript("pagedependencies/influence.js", function(data, textStatus, jqxhr) {
-				
-			});*/
 		}
 	});
+	
 });
 
 
@@ -381,7 +437,7 @@ function getTotalPost(blogger,blog_id){
 		},
 		success: function(response)
 		{   
-			//console.log(response);
+			console.log('RENTERED');
 			$(".total-post").html(response);
 				
 		}
@@ -418,7 +474,7 @@ function getTotalInfluence(blogger,blog_id){
 
 function loadStat(blogger,blog_id){
 	$(".total-influence").html("<img src='images/loading.gif' />");
-	$(".total-post").html("<img src='images/loading.gif' />");
+	//$(".total-post").html("<img src='images/loading.gif' />");
 	$(".total-sentiment").html("<img src='images/loading.gif' />");
 	$(".total-comments").html("<img src='images/loading.gif' />");
 	$.ajax({
@@ -444,7 +500,7 @@ function loadStat(blogger,blog_id){
 		//console.log(response);
 		var data = JSON.parse(response);
 		$(".total-influence").html(data.totalinfluence);
-		$(".total-post").html(data.totalpost);
+		//$(".total-post").html(data.totalpost);
 		$(".total-sentiment").html(data.totalsentiment);
 		$(".total-comments").html(data.totalcomment);
 		//$("#overall-chart").delay(3000).html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />").delay(2000).html(response);

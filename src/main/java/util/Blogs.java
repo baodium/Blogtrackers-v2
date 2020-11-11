@@ -128,7 +128,7 @@ public class Blogs extends DbConnection{
 			}catch(Exception e){
 				return count;
 			}
-			System.out.println(count);
+			//System.out.println(count);
 			return count;
 			
 	}
@@ -161,7 +161,10 @@ public class Blogs extends DbConnection{
 		blog_ids = blog_ids.replaceAll(", $", "");
 		blog_ids = "("+blog_ids+")";
 		try {
-			 response = db.query("select blogsite_id, blogsite_name, totalposts, last_crawled from blogsites where blogsite_id in "+blog_ids);
+			 response = db.query("select blogsite_id, blogsite_name, totalposts, CASE\r\n" + 
+			 		"    WHEN last_crawled is null THEN last_modified_time\r\n" + 
+			 		"    ELSE last_crawled\r\n" + 
+			 		"END last_crawled from blogsites where blogsite_id in "+blog_ids);
 			if(response.size()>0) {
 				return response;
 			}
@@ -236,9 +239,27 @@ public class Blogs extends DbConnection{
 //		System.out.println("testque--"+this._getResult(url, jsonObj).size());
 //		System.out.println("url--"+url);
 //		System.out.println("elasticquery--"+jsonObj);
-		System.out.println("query for fetch in blogs.java "+ jsonObj);
+		//System.out.println("query for fetch in blogs.java "+ jsonObj);
 //		System.out.println("elasticresult--"+this._getResult(url, jsonObj));
 		return this._getResult(url, jsonObj);
+
+	}
+	
+	public ArrayList _getLocationUsage(String blogids) throws Exception {
+		ArrayList result = new ArrayList();
+
+		DbConnection db = new DbConnection();
+		String count = "0";
+		blogids = blogids.replaceAll(",$", "");
+		blogids = blogids.replaceAll(", $", "");
+		blogids = "("+blogids+")";
+		
+		try {
+			result = db.query("SELECT location, count(location), blogsite_name  FROM blogsites WHERE blogsite_id IN "+blogids+" and location is not null group by blogsite_id");		
+			
+		}catch(Exception e){
+		}
+		return result;
 
 	}
 	
@@ -252,7 +273,7 @@ public class Blogs extends DbConnection{
 		blogids = "("+blogids+")";
 		
 		try {
-			result = db.query("SELECT DISTINCT(location), count(location) FROM blogsites WHERE blogsite_id IN "+blogids+" and location is not null group by location");		
+			result = db.query("SELECT DISTINCT(location), count(location), blogsite_name  FROM blogsites WHERE blogsite_id IN "+blogids+" and location is not null group by location");		
 			
 		}catch(Exception e){
 		}
@@ -307,8 +328,8 @@ public class Blogs extends DbConnection{
 		try {
 		result = db.query("select blogger_name, max(influence_score), blogsite_id from blogger where blogsite_id in "+
 				(blogids)+" group by blogger_name order by influence_score desc");		
-		System.out.println("query for _getInfluencialBlogger" + "select blogger_name, max(influence_score), blogsite_id from blogger where blogsite_id in "+
-				(blogids)+" group by blogger_name order by influence_score desc");	
+		//System.out.println("query for _getInfluencialBlogger" + "select blogger_name, max(influence_score), blogsite_id from blogger where blogsite_id in "+
+				//(blogids)+" group by blogger_name order by influence_score desc");	
 		}catch(Exception e){
 		}
 		return result;
@@ -346,7 +367,7 @@ public class Blogs extends DbConnection{
 			
 		}catch(Exception e){
 		}
-		System.out.println("query for _getblogPostFrequency"+"select blogsite_name, totalposts, blogsite_id, blogsite_url from blogsites where blogsite_id in "+blogids+" order by totalposts DESC");
+		//System.out.println("query for _getblogPostFrequency"+"select blogsite_name, totalposts, blogsite_id, blogsite_url from blogsites where blogsite_id in "+blogids+" order by totalposts DESC");
 		return result;
 		
 

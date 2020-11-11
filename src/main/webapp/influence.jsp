@@ -535,8 +535,8 @@ userinfo = (ArrayList<?>)userinfo.get(0);
 					<div class="card-body  p30 pt5 pb5 mb20">
 						<h6 class="mt20 mb20">Top Bloggers</h6>
 						<div style="padding-right: 10px !important;">
-							<input type="search" class="form-control stylesearch mb20"
-								placeholder="Search Bloggers" />
+							<input id="searchInput" type="search" class="form-control stylesearch mb20 searchbloggers" placeholder="Search Bloggers" />
+							<i class="fas fa-times searchiconinputclose cursor-pointer resetsearch"></i> 
 						</div>
 						
 						<div style="height: 250px; padding-right: 10px !important;" id="scroll_list_loader" class="">
@@ -566,7 +566,7 @@ userinfo = (ArrayList<?>)userinfo.get(0);
 								String selectedid="";
 								
 								String postidss = "";
-							
+								String total_post_counter = "";
 							    if (influenceBlogger.size() > 0) {
 									int k = 0;
 									for (int y = 0; y < 10; y++) {
@@ -577,6 +577,7 @@ userinfo = (ArrayList<?>)userinfo.get(0);
 									String bloggerInfFreq = bloggerInfluence.get(1).toString();
 									String blogsiteid = bloggerInfluence.get(2).toString();
 								
+									total_post_counter = post._searchRangeTotalByBlogger("date",dt, dte, bloggerInf);
 									
 									String dselected = "";
 									String activew = "";
@@ -613,8 +614,8 @@ userinfo = (ArrayList<?>)userinfo.get(0);
 												
 											}
 											%>
-											<input type="hidden" id="postby<%=bloggerInf.replaceAll(" ","__")%>" value="<%=postids%>" />
-<a href="javascript:void(0);" name="<%=bloggerInf%>" class="topics topics1 blogger-select btn btn-primary form-control bloggerinactive mb20 <%=dselected%> <%=activew%>"  id="<%=blogsiteid%>" ><b><%=bloggerInf%></b></a>
+											<input type="hidden" id="postby<%=bloggerInf.replaceAll(" ","__")%>" value="<%=postids%>"  />
+<a href="javascript:void(0);" name="<%=bloggerInf%>" total_post_counter="<%=total_post_counter %>"  class="topics topics1 blogger-select btn btn-primary select-term form-control bloggerinactive mb20 <%=dselected%> <%=activew%>"  id="<%=blogsiteid%>" ><b><%=bloggerInf%></b></a>
 					    			
 											<%
 											k++;
@@ -868,7 +869,7 @@ authoryears.put(mostactiveblogger,postyear);
 						</div>
 						<div style="min-height: 420px;">
 							<div class="chart-container">
-								<div class="chart" id="scatterplot"></div>
+								<div class="chart" id="scatterplot" style="padding-left: 20px;"></div>
 							</div>
 						</div>
 					</div>
@@ -886,7 +887,7 @@ authoryears.put(mostactiveblogger,postyear);
           Export Options
           </div> -->
           <div id="influence_table">
-					<table id="DataTables_Table_0_wrapper" class="display"
+					<table id="DataTables_Table_0_wrapper" class="display table_over_cover"
 						style="width: 100%">
 						<thead>
 							<tr>
@@ -924,7 +925,8 @@ authoryears.put(mostactiveblogger,postyear);
 											String date =null;
 											int j=0;
 											int k=0;
-											
+											String activeDef = "";
+											String activeDefLink = "";
 											
 											for(int i=0; i< all.length(); i++){
 												tres = all.get(i).toString();	
@@ -938,10 +940,18 @@ authoryears.put(mostactiveblogger,postyear);
 												LocalDate datee = LocalDate.parse(dat);
 												DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");
 												date = dtf.format(datee);
+												
+												if(i == 0){
+													activeDef = "activeselectedblog";
+													activeDefLink = "";
+												}else{
+													activeDefLink = "makeinvisible";
+													activeDef = "";
+												}
 									%>
                                     <tr>
-                                   <td><a class="blogpost_link cursor-pointer" id="<%=tobj.get("blogpost_id")%>" ><%=tobj.get("title") %></a><br/>
-								<a class="mt20 viewpost makeinvisible" href="<%=tobj.get("permalink") %>" target="_blank"><buttton class="btn btn-primary btn-sm mt10 visitpost">Visit Post &nbsp;<i class="fas fa-external-link-alt"></i></button></buttton></a>
+                                   <td><a class="blogpost_link cursor-pointer <%=activeDef %>" id="<%=tobj.get("blogpost_id")%>" ><%=tobj.get("title") %></a><br/>
+								<a class="mt20 viewpost <%=activeDefLink %>" href="<%=tobj.get("permalink") %>" target="_blank"><buttton class="btn btn-primary btn-sm mt10 visitpost">Visit Post &nbsp;<i class="fas fa-external-link-alt"></i></button></buttton></a>
 								</td>
 								<td align="center"><%=tobj.get("influence_score") %></td>
                                      </tr>
@@ -1011,7 +1021,7 @@ authoryears.put(mostactiveblogger,postyear);
 											</button>
 											<button class="btn stylebuttonnocolor nocursor"><%=date%></button>
 											<button class="btn stylebuttonnocolor nocursor">
-												<b class="float-left ultra-bold-text"><%=tobj.get("num_comments")%> comments</b><i
+												<b class="float-left ultra-bold-text"><%=tobj.get("num_comments")%> comments</b> &nbsp; <i
 													class="far fa-comments float-right blogcontenticon"></i>
 											</button>
 										</div>
@@ -1073,16 +1083,18 @@ authoryears.put(mostactiveblogger,postyear);
 	<script
 		src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.print.min.js"></script>
 		
-		
-		
+	
+
+	<script src="assets/js/generic.js"></script>
+	
 		
 		
 		
 		
  <!--   <script src="https://d3js.org/d3.v5.min.js"></script> -->
- 
+
  <script type="text/javascript" src="assets/vendors/d3/d3.min.js"></script>
- 
+   <script type="text/javascript" src="assets/vendors/d3/d3_tooltip.js" ></script>
   <!--  <script type="text/javascript" src="assets/vendors/d3/d3.v5.min.js"></script> -->
 		
 		<script>
@@ -1104,48 +1116,48 @@ authoryears.put(mostactiveblogger,postyear);
      
     
 
-    function color1(i, id, name){
+function color1(i, id, name){
     	
     	var t = parseFloat(i);
 
-    switch(t) {
+    	switch(t) {
 
-      //case 0:
-        //var hex = 'yellow';
-      case 1:
-        var hex = 'green'; 
-        break;
-      case 2:
-        var hex = '#c18fb6';
-        break;
-      case 3:
-        var hex = '#8fc199';
-        break;
-      case 4:
-        var hex = '#c1958f';
-        break;
-      case 5:
-        var hex = '#e17d70';
-        break;
-      case 6:
-        var hex = '#b770e1';
-        break;
-      case 7:
-        var hex = '#1fa701';
-        break;
-      case 8:
-        var hex = '#011aa7';
-        break;
-      case 9:
-        var hex = '#a78901';
-        break;
-      case 10:
-        var hex = '#981010';
-        break;
-      default:
-        var hex = 'red';
+        //case 0:
+          //var hex = 'yellow';
+        case 1:
+          var hex = '#e50471'; 
+          break;
+        case 2:
+          var hex = '#0571a0';
+          break;
+        case 3:
+          var hex = '#038a2c';
+          break;
+        case 4:
+          var hex = '#6b8a03';
+          break;
+        case 5:
+          var hex = '#a02f05';
+          break;
+        case 6:
+          var hex = '#b770e1';
+          break;
+        case 7:
+          var hex = '#1fa701';
+          break;
+        case 8:
+          var hex = '#011aa7';
+          break;
+        case 9:
+          var hex = '#a78901';
+          break;
+        case 10:
+          var hex = '#981010';
+          break;
+        default:
+          var hex = '#6b085e';
 
-    }
+      }
 
 
     
@@ -1155,6 +1167,9 @@ authoryears.put(mostactiveblogger,postyear);
     	
         if ( $(this).attr('name') == ''+name+'' ) {
         	$(this).css('background-color', hex);
+        	$(this).removeClass('bloggerinactive ');
+        	$(this).addClass('selectionactive');
+        	$(this).css('font-weight', 'bold');
         };
         
     });
@@ -1170,11 +1185,8 @@ authoryears.put(mostactiveblogger,postyear);
     	
     	$('.line_graph').addClass('hidden');
         $('#line_graph_loader').removeClass('hidden');
-    	  setTimeout(
-     			  function() 
-     			  { 
-           finalGraph();
-        }, 1000)
+        finalGraph();
+   	 // setTimeout(function()  {  finalGraph();}, 1000)
     });
     
     
@@ -1192,27 +1204,30 @@ authoryears.put(mostactiveblogger,postyear);
        $('#chart').html('');
 
        if ( $(this).hasClass("thanks") ) {
-            
-          $(this).removeClass("thanks"); 
+           
+           $(this).removeClass("thanks"); 
 
-          $(this).addClass('nobccolor');
+           $(this).addClass('white_bac');
+ 		
+           $(this).addClass("bloggerinactive"); 
+           
+           $(this).removeClass('selectionactive');
+           
+           $(this).css('font-weight', 400);
 
+         }else{
+			
+        	 $(this).removeClass("white_bac");
+        	 
+           $(this).removeClass('nobccolor');
 
-        }else{
+           $(this).addClass("thanks"); 
+           
 
-          $(this).removeClass('nobccolor');
+         }
 
-          $(this).addClass("thanks"); 
-          
-
-        }
-
-      	
-       setTimeout(
- 			  function() 
- 			  { 
-       finalGraph();
-    }, 2000)
+      	finalGraph();
+       //setTimeout(function() { finalGraph();}, 2000)
       
       
 
@@ -1237,7 +1252,7 @@ authoryears.put(mostactiveblogger,postyear);
     	 
     	 if(count > 0){
     		 
-    		 
+    		 var t = 0;
     		 $( ".thanks" ).each(function( index ) {
     			 
        		  		var ind = index;
@@ -1303,44 +1318,33 @@ authoryears.put(mostactiveblogger,postyear);
     				  		});
     		  				
     		  				
-    		  				data1.push(
-    		  						      
-    		  						      {
-    		  						        name: response.name,
-    		  						      	identify: response.identify,
-    		  						        values: 
-    		  						          
-    		  						        	  arr1
-    		  						        	
-    		  						      }
-    		  						    );
+    		  				data1.push({ name: response.name,identify: response.identify,values:  arr1});
+    		  				
+							t++;
+    	    		    	
+    			    		if(count == t){
+    			    			data1.forEach((arrayItem) => {data.push(arrayItem) });
+    		  					beginBuilder(data)
+    		  				}
     		  				
     		    	
-    				  			}
-    		  			
+    				  	}
+    		  			//end success
     		  			
     		  			
     				  		});
-    		    	
-    		  
     		    ///////end ajax
-    		    		
-    		    		
-    		    		
     		    		});
-    		 
+    		 //end for each active class
     		 
     		 
     		 
     	    	
     	    	
-    	    	  setTimeout(
-    	    			  function() 
-    	    			  {
-    	    					
-    	    				  data1.forEach((arrayItem) => {
-    	    				    data.push(arrayItem)
-    	    				  });
+    	    	  
+    	    				  
+    	    				///start begin builder function
+    	    	    function beginBuilder(data){
     	    				  
     	    			/////////start graph stuff
 
@@ -1472,8 +1476,54 @@ authoryears.put(mostactiveblogger,postyear);
 			                        	   bloog = d.name.replaceAll("__"," ");
 			                        	   
 			                        	   $('.activeblogger').html(bloog);
+			                        	  console.log("pppppp",d1,bloog,d2)
 			                        	  
-			                        	   loadInfluence(d1,d2) 
+			                        		
+			                ///////////////start collecting names
+			                	 var count = $('.thanks').length;
+			                	 
+			                	 if(count > 0){
+			                		 
+			                		 var all_selected_names = '';
+			                		 var all_selected_names1 = '';
+			                		 var all_selected_id = '';
+			                		 var i = 1;
+			                		 $( ".thanks" ).each(function( index ) {
+			                			 
+			                			 
+			                			 if(i > 1){
+			                				 all_selected_names += ' , ';
+			                				 all_selected_names1 += ' , ';
+			                				 all_selected_id += ' , ';
+			                			 }
+			                			 
+			                	    	blog_name = 	$(this).attr('name');
+			                	    	
+			                	    	blog_id = 	this.id;
+			                	    	
+			                	    	all_selected_names += '"'+blog_name+'"';
+			                	    	all_selected_names1 += blog_name;
+			                	    	
+			                	    	all_selected_id += blog_id;
+			                	    		
+			                	    	i++;
+			                		    		
+			                		});
+			                		 
+			                		 
+			                	 }
+			                	////////////end collecting names
+			                        	  
+			                        	  
+			                        	   //loadInfluence(d1,d2) 
+			                        	 loadTerms(all_selected_names,$("#all_blog_ids").val(),d1,d2, all_selected_names1);
+			                        	loadInfluence(all_selected_names,d1,d2);
+			                        	   
+			                        	   
+			                        	   
+			                        	   
+			                        	   
+			                        	   
     	    				 		     })
     	    				 		      .attr("class", "circle")  
     	    				 		      .on("mouseover", function(d) {
@@ -1517,7 +1567,20 @@ authoryears.put(mostactiveblogger,postyear);
     	    				 		              .transition()
     	    				 		              .duration(duration)
     	    				 		              .attr("r", circleRadius);  
-    	    				 		          });
+    	    				 		          }).on("click",function(d){
+    	    		                                // console.log(d.date)
+    	    		                                // sconsole.log(d.y);
+    	    		                                var date_split = JSON.stringify(d.date).split('-')
+    	    		                                var yr = date_split[0]
+    	    		                                yr = yr.replace("\"","").replace(" ","")
+    	    		                               var d1 = 	  yr+ "-01-01";
+    	    		                           	   var d2 = 	  yr + "-12-31";
+    	    		                           	   
+    	    		                           	var va = $('.selectionactive').attr('name');
+    	    		                           	   
+    	    		                           	loadTerms(va,$("#blogid").val(),d1,d2);
+    	    		                                
+    	    		                              });
 
 
     	    				 		   /* Add Axis into SVG */
@@ -1614,7 +1677,8 @@ authoryears.put(mostactiveblogger,postyear);
     	    				 	   	   $("#scroll_list").removeClass("hidden");
     	    				  
     	    				  
-    	    			  }, 3000)
+    	    			  }
+    	    			  ///end beginBuilder
     	    			  
     		 
     		 
@@ -1875,7 +1939,9 @@ authoryears.put(mostactiveblogger,postyear);
 
          // Define main variables
          var d3Container = d3.select(element),
-             margin = {top: 5, right: 20, bottom: 20, left: 50},
+             margin = {top: 5, right: 20, bottom: 20, left: 50, lefty:80, righty:80},
+            // width =  $('#scatterplot').width() - margin.lefty - margin.righty,
+           	//width = 300,
              width = d3Container.node().getBoundingClientRect().width - margin.left - margin.right,
              height = height - margin.top - margin.bottom;
 
@@ -1930,8 +1996,11 @@ authoryears.put(mostactiveblogger,postyear);
 
          // Add SVG group
          var svg = container
-             .attr("width", width + margin.left + margin.right)
-             .attr("height", height + margin.top + margin.bottom)
+            // .attr("width", width + margin.left + margin.right)
+           //  .attr("height", height + margin.top + margin.bottom)
+             .attr("width", (width+margin.bottom)+"px")
+    	    .attr("height", (height+margin.bottom)+"px")
+             .style("overflow","visible")
              .append("g")
              // .attr("transform", "translate(0," + y(0) + ")");
                  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
@@ -2004,8 +2073,12 @@ authoryears.put(mostactiveblogger,postyear);
                 }
                 else if(d !== null) {
                 	var ky = d.x+""+d.y;
-                	console.log(ky);
-                 return " ( Influence="+d.x+", Activity="+d.y+".Blogger:"+labels[ky]+" )<br/> Click for more information";
+                	//console.log('////////////////');
+                	//console.log('Influence ='+d.x+', Activity='+d.y+'</br>.Blogger:'+labels[ky]);
+                	//console.log(ky);
+                	return "No Information Available1";
+                	
+                 //return " ( Influence="+d.x+", Activity="+d.y+".Blogger:"+labels[ky]+" )<br/> Click for more information";
                 }
 
                 });
@@ -2171,15 +2244,22 @@ authoryears.put(mostactiveblogger,postyear);
                               .attr("class","circle-point")
                               .attr("r",3.4)
                               // .style("stroke", "#4CAF50")
+                              
+                            .attr("data-toggle", "tooltip")
+					      .attr("data-placement", "top")
+					      .attr("data-html", "true")
+					      .attr("title", function(d) { return 'Influence = '+d.x+', <br> Activity = '+d.y+'. <br> Blogger : '+labels[d.x+''+d.y]; })
                               .style("fill",function(e,i){return color(i)})
                               .attr("cx",function(d) { return x(d.x); })
                               .attr("cy", function(d){return y(d.y)})
-
+								
+    	    				 		       
                               .attr("transform", "translate("+margin.left/4.7+",0)");
 
                               svg.selectAll(".circle-point").data(data[0])
-                              .on("mouseover",tip.show)
-                              .on("mouseout",tip.hide)
+                              
+                              //.on("mouseover",tip.show)
+                              //.on("mouseout",tip.hide)
                               .on("click",function(d){
                                 // console.log(d.date)
                                 // sconsole.log(d.y);
@@ -2213,8 +2293,8 @@ authoryears.put(mostactiveblogger,postyear);
 
                                        .attr("transform", "translate("+margin.left/4.7+",0)");
                                       //  svg.selectAll(".circle-point").data(mergedarray)
-                                      // .on("mouseover",tip.show)
-                                      // .on("mouseout",tip.hide)
+                                       //.on("mouseover",tip.show)
+                                       //.on("mouseout",tip.hide);
                                       // .on("click",function(d){
                                       //   console.log(d.y)});
                                  //                         svg.call(tip)
@@ -2390,7 +2470,8 @@ JSONObject o = new JSONObject(res); */
 
 <%-- wordtagcloud("#tagcloudcontainer",450,<%=d%>);  --%>
 $(document).ready(function(){
-	loadTerms("<%=mostactiveblogger%>",$("#blogid").val(),"<%=dt%>","<%=dte%>");
+	var blogger = "<%=mostactiveblogger%>"
+	loadTerms("\"" + blogger + "\"",$("#blogid").val(),"<%=dt%>","<%=dte%>");
 })
  </script>
 <script src="pagedependencies/baseurl.js"></script>

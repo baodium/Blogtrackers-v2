@@ -42,16 +42,13 @@ import org.json.JSONException;
 import java.io.OutputStreamWriter;
 import static java.util.stream.Collectors.toMap;
 
-
-
 public class Blogposts {
-	
 
-	HashMap<String, String> hm = DbConnection.loadConstant();
+	static HashMap<String, String> hm = DbConnection.loadConstant();
 
 	String base_url = hm.get("elasticIndex") + "blogposts/"; // - For testing server
 
-	String elasticUrl = hm.get("elasticUrl");
+	static String elasticUrl = hm.get("elasticUrl");
 
 	Stopwords stop = new Stopwords();
 
@@ -88,7 +85,7 @@ public class Blogposts {
 		}
 
 		String url = base_url + "_search?size=" + size + "&from=" + fr;
-		System.out.println("ress--" + jsonObj);
+		//System.out.println("ress--" + jsonObj);
 		return this._getResult(url, jsonObj);
 
 	}
@@ -203,7 +200,7 @@ public class Blogposts {
 				+ "									\"filter\":{ \r\n"
 				+ "											\"terms\":{ \r\n"
 				+ "												\r\n"
-				+ "											\"blogpost_id\":" + arg2 + "\r\n"
+				+ "											\"blogsite_id\":" + arg2 + "\r\n"
 				+ "													}\r\n"
 				+ "											}\r\n" + "										} \r\n"
 				+ "						}, \r\n" + "						\r\n" + "	 		        { \r\n"
@@ -225,8 +222,8 @@ public class Blogposts {
 		int size = 50;
 		DbConnection db = new DbConnection();
 		String count = "0";
-		System.out.println("SELECT *  FROM blogposts WHERE blogger = '" + bloggers + "' AND " + field + ">='" + greater
-				+ "' AND " + field + "<='" + less + "' ORDER BY date ASC LIMIT " + size + "");
+		//System.out.println("SELECT *  FROM blogposts WHERE blogger = '" + bloggers + "' AND " + field + ">='" + greater
+				//+ "' AND " + field + "<='" + less + "' ORDER BY date ASC LIMIT " + size + "");
 
 		ArrayList result = new ArrayList();
 		try {
@@ -281,6 +278,28 @@ public class Blogposts {
 		 */
 	}
 
+	public static ArrayList _getBlogPostDetails(String field, String greater, String less, String blogpost_ids, int size)
+			throws Exception {
+		DbConnection db = new DbConnection();
+		String query = null;
+		if(field != null & field == "" & greater != null & less == "" & size != 0) {
+			query = "SELECT * FROM blogposts WHERE blogpost_id in( " + blogpost_ids + ") AND " + field
+					+ ">='" + greater + "' AND " + field + "<='" + less + "'  LIMIT "  + size ;
+		}else {
+			query = "SELECT * FROM blogposts WHERE blogpost_id in( " + blogpost_ids + ")";
+		}
+		//System.out.println(query);
+
+		ArrayList result = new ArrayList();
+		try {
+			result = db.queryJSON(query);
+
+		} catch (Exception e) {
+			return result;
+		}
+		return result;
+	}
+
 	public String _getPostIdsByBloggerName(String field, String greater, String less, String bloggers, String sort,
 			String order) throws Exception {
 		int size = 50;
@@ -295,9 +314,9 @@ public class Blogposts {
 			// result = db.queryJSON("SELECT * FROM blogposts WHERE blogger = '"+bloggers+"'
 			// AND "+field+">="+greater+" AND "+field+"<="+less+" ORDER BY date ASC LIMIT
 			// "+size+"");
-			System.out.println("SELECT1 blogpost_id FROM blogposts WHERE blogger in( " + bloggers + ") AND " + field
-					+ ">='" + greater + "' AND " + field + "<='" + less + "' ORDER BY " + sort + " " + order + " LIMIT "
-					+ size + "");
+//			System.out.println("SELECT1 blogpost_id FROM blogposts WHERE blogger in( " + bloggers + ") AND " + field
+//					+ ">='" + greater + "' AND " + field + "<='" + less + "' ORDER BY " + sort + " " + order + " LIMIT "
+//					+ size + "");
 		} catch (Exception e) {
 
 		}
@@ -446,11 +465,11 @@ public class Blogposts {
 		String count = "0";
 		ArrayList result = new ArrayList();
 		try {
-//			result = db.queryJSON("SELECT *  FROM blogposts WHERE blogger = '" + bloggers + "' AND " + field + ">='"
-//					+ greater + "' AND " + field + "<='" + less + "' ORDER BY " + sort + " " + order + " LIMIT " + size
-//					+ "");
+			result = db.queryJSON("SELECT *  FROM blogposts WHERE blogger = '" + bloggers + "' AND " + field + ">='"
+					+ greater + "' AND " + field + "<='" + less + "' ORDER BY " + sort + " " + order + " LIMIT " + size
+					+ "");
 
-//			return all_data;
+			// return all_data;
 			// result = db.queryJSON("SELECT * FROM blogposts WHERE blogger = '"+bloggers+"'
 			// AND "+field+">="+greater+" AND "+field+"<="+less+" ORDER BY date ASC LIMIT
 			// "+size+"");
@@ -692,9 +711,9 @@ public class Blogposts {
 			ArrayList response = DbConnection
 					.query("SELECT max(influence_score) as total, blogger_name,date FROM blogger WHERE blogger_name = '"
 							+ bloggers + "'  ORDER BY influence_score DESC LIMIT 1");
-			System.out.println("query for _searchRangeMaxTotalByBloggers"
-					+ "SELECT max(influence_score) as total, blogger_name,date FROM blogger WHERE blogger_name = '"
-					+ bloggers + "'  ORDER BY influence_score DESC LIMIT 1");
+//			System.out.println("query for _searchRangeMaxTotalByBloggers"
+//					+ "SELECT max(influence_score) as total, blogger_name,date FROM blogger WHERE blogger_name = '"
+//					+ bloggers + "'  ORDER BY influence_score DESC LIMIT 1");
 			if (response.size() > 0) {
 				ArrayList hd = (ArrayList) response.get(0);
 				count = hd.get(0).toString();
@@ -714,7 +733,7 @@ public class Blogposts {
 			ArrayList response = DbConnection
 					.query("SELECT MAX(influence_score) as total FROM blogposts WHERE blogger='" + bloggers + "' AND "
 							+ field + ">='" + greater + "' AND " + field + " <='" + less + "' ");
-			System.out.println("response--" + response);
+			//System.out.println("response--" + response);
 			if (response.size() > 0) {
 				ArrayList hd = (ArrayList) response.get(0);
 				count = hd.get(0).toString();
@@ -789,7 +808,7 @@ public class Blogposts {
 			val = buckets.toString();
 			JSONObject bucket_ = new JSONObject(val);
 			freq = bucket_.getJSONObject("dat").get("value").toString();
-			System.out.println("DONE GETTING POSTS--" + freq);
+			//System.out.println("DONE GETTING POSTS--" + freq);
 
 		}
 		return freq;
@@ -1127,6 +1146,59 @@ public class Blogposts {
 		return dt;
 	}
 
+	public static String getBlogIdsfromsearch(String term) {
+		String result = "";
+		JSONObject query = new JSONObject("{\r\n" + "	\r\n" + "    \"query\": {\r\n" + "        \"bool\": {\r\n"
+				+ "            \"must\": [\r\n" + "                {\r\n" + "                    \"match\": {\r\n"
+				+ "                        \"post\": \r\n" + "                            \"" + term + "\"\r\n"
+				+ "                        \r\n" + "                    }\r\n" + "                }\r\n"
+				+ "            ]\r\n" + "        }\r\n" + "    },\r\n" + "    \"size\": 0,\r\n"
+				+ "    \"_source\": false,\r\n" + "    \"stored_fields\": \"_none_\",\r\n"
+				+ "    \"aggregations\": {\r\n" + "        \"groupby\": {\r\n" + "            \"composite\": {\r\n"
+				+ "                \"size\": 10000,\r\n" + "                \"sources\": [\r\n"
+				+ "                    {\r\n" + "                        \"dat\": {\r\n"
+				+ "                            \"terms\": {\r\n"
+				+ "                                \"field\": \"blogsite_id\",\r\n"
+				+ "                                \"missing_bucket\": true,\r\n"
+				+ "                                \"order\": \"asc\"\r\n" + "                            }\r\n"
+				+ "                        }\r\n" + "                    }\r\n" + "                ]\r\n"
+				+ "            }\r\n" + "        }\r\n" + "    }\r\n" + "}");
+		//System.out.println("this is the query for _getTotal " + query);
+		try {
+			JSONObject res = _makeElasticRequest(query, "POST", "/blogposts/_search");
+			Object aggregation = res.getJSONObject("aggregations").getJSONObject("groupby").getJSONArray("buckets");
+			JSONArray listofblogs = new JSONArray(aggregation.toString());
+
+			for (Object x : listofblogs) {
+				JSONObject idd = new JSONObject(x.toString());
+				String blog_id = idd.getJSONObject("key").get("dat").toString();
+				result += blog_id + ",";
+//				System.out.println("x---"+x.toString());
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println(result);
+		return result;
+	}
+	
+	public static ArrayList getBlogIdsAndNamesfromsearch(String ids) {
+		
+		DbConnection db = new DbConnection();
+		ArrayList response = new ArrayList();
+		ids = ids.replaceAll(",$", "");
+		ids = ids.replaceAll(", $", "");
+		ids = "(" + ids + ")";
+		try {
+			response = db.queryJSON("SELECT blogsite_id, blogsite_name FROM blogsites WHERE blogsite_id  in " + ids);
+		} catch (Exception e) {
+			return response;
+		}
+
+		return response;
+	}
+
 	public ArrayList _search(String term, String from, String sortby) throws Exception {
 
 		int size = 100;
@@ -1154,7 +1226,7 @@ public class Blogposts {
 					+ "\",\r\n" + "			\"gte\":\"" + 0 + "\"\r\n" + "			}\r\n" + "		}\r\n" + "}");
 		}
 		String url = base_url + "_search?size=" + size + "&from=" + fr;
-		System.out.println("object-----" + jsonObj);
+		// System.out.println("object-----" + jsonObj);
 		return this._getResult(url, jsonObj);
 	}
 
@@ -2101,26 +2173,69 @@ public class Blogposts {
 
 	public String _getBlogPostById(String blog_ids) {
 		String count = "";
-		blog_ids = blog_ids.replaceAll(",$", "");
-		blog_ids = blog_ids.replaceAll(", $", "");
+//		blog_ids = blog_ids.replaceAll(",$", "");
+//		blog_ids = blog_ids.replaceAll(", $", "");
 //		blog_ids = "(" + blog_ids + ")";
 
-		JSONObject query = new JSONObject(
-				"{\r\n" + "    \"query\": {\r\n" + "        \"terms\": {\r\n" + "            \"blogsite_id\": ["
-						+ blog_ids + "],\r\n" + "            \"boost\": 1\r\n" + "        }\r\n" + "    }\r\n" + "}");
+//		JSONObject query = new JSONObject(
+//				"{\r\n" + "    \"query\": {\r\n" + "        \"terms\": {\r\n" + "            \"blogsite_id\": ["
+//						+ blog_ids + "],\r\n" + "            \"boost\": 1\r\n" + "        }\r\n" + "    }\r\n" + "}");
 
 		try {
-//			ArrayList response = DbConnection
-//					.query("select sum(blogpost_count) from blogger where blogsite_id in  " + blog_ids + " ");
-//			if (response.size() > 0) {
-//				ArrayList hd = (ArrayList<?>) response.get(0);
-//				count = hd.get(0).toString();
-//			}
-			count = this._count(query);
+//			ArrayList response = DbConnection.query("select count(*) as count from blogposts where blogsite_id in ("+blog_ids+")");
+			ArrayList response = DbConnection.query("select sum(totalposts) as count from blogsites where blogsite_id in ("+blog_ids+")");
+			if (response.size() > 0) {
+				ArrayList hd = (ArrayList<?>) response.get(0);
+				count = hd.get(0).toString();
+			}
+			
+//			count = this._count(query);
 		} catch (Exception e) {
 			System.out.print("Error in getBlogPostById");
 		}
-		System.out.println("query for elastic _getBlogPostById --> " + query);
+		// System.out.println("query for elastic _getBlogPostById --> " + query);
+		return count;
+	}
+
+//	_getBlogBloggerById
+
+	public String _getBlogBloggerById(String blog_ids) {
+		String count = "";
+//		JSONObject result = new JSONObject();
+//		JSONObject query = new JSONObject("{\r\n" + "    \"size\": 0,\r\n" + "    \"query\": {\r\n"
+//				+ "        \"terms\": {\r\n" + "            \"blogsite_id\": [" + blog_ids + "],\r\n"
+//				+ "            \"boost\": 1.0\r\n" + "        }\r\n" + "    },\r\n" + "    \"_source\": false,\r\n"
+//				+ "    \"stored_fields\": \"_none_\",\r\n" + "    \"aggregations\": {\r\n"
+//				+ "        \"groupby\": {\r\n" + "            \"filters\": {\r\n" + "                \"filters\": [\r\n"
+//				+ "                    {\r\n" + "                        \"match_all\": {\r\n"
+//				+ "                            \"boost\": 1.0\r\n" + "                        }\r\n"
+//				+ "                    }\r\n" + "                ],\r\n"
+//				+ "                \"other_bucket\": false,\r\n"
+//				+ "                \"other_bucket_key\": \"_other_\"\r\n" + "            },\r\n"
+//				+ "            \"aggregations\": {\r\n" + "                \"dat\": {\r\n"
+//				+ "                    \"cardinality\": {\r\n"
+//				+ "                        \"field\": \"blogger.keyword\"\r\n" + "                    }\r\n"
+//				+ "                }\r\n" + "            }\r\n" + "        }\r\n" + "    }\r\n" + "}");
+		
+		
+		try {
+//			result = this._makeElasticRequest(query, "POST", "/blogposts/_search");
+//			Object aggregation = result.getJSONObject("aggregations").getJSONObject("groupby").getJSONArray("buckets")
+//					.getJSONObject(0).getJSONObject("dat").get("value");
+//			count = aggregation.toString();
+//			String q = "select count(distinct blogger) as count from blogposts where blogsite_id in ("+blog_ids+")";
+			String q = "select count(blogger_name) as count from blogger where blogsite_id in ("+blog_ids+")";
+
+			ArrayList response = DbConnection.query(q);
+			if (response.size() > 0) {
+				ArrayList hd = (ArrayList<?>) response.get(0);
+				count = hd.get(0).toString();
+			}
+
+		} catch (Exception e) {
+			System.out.print("Error in _getBlogBloggerById");
+		}
+
 		return count;
 	}
 
@@ -2137,7 +2252,6 @@ public class Blogposts {
 					res = hd.get(0).toString();
 					result.add(res);
 				}
-
 			}
 		} catch (Exception e) {
 			System.out.print("Error in getBlogPostById");
@@ -2158,7 +2272,8 @@ public class Blogposts {
 	 * Calendar.getInstance(); cal.setTime(date); cal.add(Calendar.YEAR, i); return
 	 * cal.getTime(); }
 	 */
-	public JSONObject _makeElasticRequest(JSONObject query, String requestType, String endPoint) throws Exception {
+	public static JSONObject _makeElasticRequest(JSONObject query, String requestType, String endPoint)
+			throws Exception {
 
 		JSONObject myResponse = new JSONObject();
 		try {
@@ -2236,28 +2351,33 @@ public class Blogposts {
 			// jsonArray.put(new JSONArray(source));
 			System.out.println("DONE GETTING POSTS FOR BLOGGER");
 
-			scroll_id = (String) myResponse.get("_scroll_id");
+//			MAKE SCROLL REQUEST
+//			scroll_id = (String) myResponse.get("_scroll_id");
+//
+//			scrollResult = this._scrollRequest(scroll_id);
+//			allhits = scrollResult.getJSONObject("hits").getJSONArray("hits");
+//			source = allhits.toString();
+//			jsonArray = merge(jsonArray, new JSONArray(source));
 
-			scrollResult = this._scrollRequest(scroll_id);
-			allhits = scrollResult.getJSONObject("hits").getJSONArray("hits");
-			source = allhits.toString();
-			jsonArray = merge(jsonArray, new JSONArray(source));
 			// jsonArray.put(new JSONArray(source));
 
-			for (int i = 0; i < 10; i++) {
-				if (allhits.length() <= 0) {
-					break;
-				}
-//			while (allhits.length() > 0) {
-				System.out.println("WHILE ---" + allhits.length());
-				scroll_id = (String) scrollResult.get("_scroll_id");
-				scrollResult = this._scrollRequest(scroll_id);
-				allhits = scrollResult.getJSONObject("hits").getJSONArray("hits");
-				source = allhits.toString();
+			// RECURRINNG SCROLL TILL HITS ARRAY IS EMPTY
 
-				jsonArray = merge(jsonArray, new JSONArray(source));
-				// jsonArray.put(new JSONArray(source));
-			}
+//			for (int i = 0; i < 1; i++) {
+//				if (allhits.length() <= 0) {
+//					break;
+//				}
+////			while (allhits.length() > 0) {
+////			while(jsonArray.length() < 1000) {
+//				System.out.println("WHILE ---" + allhits.length());
+//				scroll_id = (String) scrollResult.get("_scroll_id");
+//				scrollResult = this._scrollRequest(scroll_id);
+//				allhits = scrollResult.getJSONObject("hits").getJSONArray("hits");
+//				source = allhits.toString();
+//
+//				jsonArray = merge(jsonArray, new JSONArray(source));
+//				// jsonArray.put(new JSONArray(source));
+//			}
 
 			all_data.put("total", total.toString());
 			all_data.put("hit_array", jsonArray);
@@ -2310,7 +2430,7 @@ public class Blogposts {
 
 //		this._elastic(que);
 		String url = base_url + "_search";
-		System.out.println(que);
+		System.out.println("test-----" + que);
 //		JSONObject jsonObj = new JSONObject(que);
 		ArrayList result = this._getResult(url, que);
 		return this._getResult(url, que);
@@ -2464,7 +2584,7 @@ public class Blogposts {
 		return res;
 	}
 
-	public JSONArray _getGetDateAggregate(String bloggers, String fieldGroupby, String format, String fieldCount,
+	public static JSONArray _getGetDateAggregate(String bloggers, String fieldGroupby, String format, String fieldCount,
 			String interval, String groupbyType, String date_from, String date_to, String ids_) throws Exception {
 		ArrayList<String> list = new ArrayList<String>();
 		HashMap<String, Integer> hm2 = new HashMap<String, Integer>();
@@ -2538,21 +2658,21 @@ public class Blogposts {
 					+ "    }\r\n" + "}");
 		}
 
-		JSONObject myResponse = this._makeElasticRequest(query, "POST", "/blogposts/_search/?");
+		JSONObject myResponse = _makeElasticRequest(query, "POST", "/blogposts/_search/?");
 		String val = null;
 		Integer freq = null;
 		String idx = null;
 		String language = null;
 		JSONArray jsonArray = new JSONArray();
 
-		System.out.println("query for elastic _getGetDateAggregate --> " + query);
+//		System.out.println("query for elastic _getGetDateAggregate --> " + query);
 
 		if (null != myResponse.get("aggregations")) {
 			jsonArray = myResponse.getJSONObject("aggregations").getJSONObject("groupby").getJSONArray("buckets");
 //			val = buckets.toString();
 //			JSONObject bucket_ = new JSONObject(val);
 //			freq = (Integer) bucket_.getJSONObject("dat").get("value");
-//			System.out.println("DONE GETTING POSTS FOR BLOGGER--" + freq);
+//			System.out.println("DONE GETTING POSoccutTS FOR BLOGGER--" + freq);
 
 		}
 		return jsonArray;
@@ -2659,79 +2779,87 @@ public class Blogposts {
 		return freq;
 	}
 
-	public JSONArray _getMostLanguage(String date_from, String date_to, String ids_, Integer limit) throws Exception {
+	public static ArrayList _getMostLanguage(String date_from, String date_to, String ids_, Integer limit) throws Exception {
 		ArrayList<String> list = new ArrayList<String>();
 		HashMap<String, Integer> hm2 = new HashMap<String, Integer>();
+		
+		String query = "select language, count(language) c from blogposts where blogsite_id in ("+ids_+") and date > \" "+date_from+"\" and date < \""+date_to+"\" and language is not null or language != 'null' group by language order by c desc limit "+limit+"";
+//		System.out.println(query);
+		ArrayList response = DbConnection.query(query);
+		
+		
+		
+		
 
-		JSONArray all = new JSONArray();
-
-		JSONObject query = new JSONObject("{\r\n" + "    \"size\": 0,\r\n" + "    \"query\": {\r\n"
-				+ "        \"bool\": {\r\n" + "            \"must\": [\r\n" + "                {\r\n"
-				+ "                    \"terms\": {\r\n" + "                        \"blogsite_id\": [" + ids_
-				+ "],\r\n" + "                        \"boost\": 1.0\r\n" + "                    }\r\n"
-				+ "                },\r\n" + "                {\r\n" + "                    \"range\": {\r\n"
-				+ "                        \"date\": {\r\n" + "                            \"from\": \"" + date_from
-				+ "\",\r\n" + "                            \"to\": \"" + date_to + "\",\r\n"
-				+ "                            \"include_lower\": true,\r\n"
-				+ "                            \"include_upper\": true,\r\n"
-				+ "                            \"boost\": 1.0\r\n" + "                        }\r\n"
-				+ "                    }\r\n" + "                }\r\n" + "            ],\r\n"
-				+ "            \"adjust_pure_negative\": true,\r\n" + "            \"boost\": 1.0\r\n" + "        }\r\n"
-				+ "    },\r\n" + "    \"_source\": false,\r\n" + "    \"stored_fields\": \"_none_\",\r\n"
-				+ "    \"aggregations\": {\r\n" + "        \"groupby\": {\r\n" + "            \"composite\": {\r\n"
-				+ "                \"size\": 1000,\r\n" + "                \"sources\": [\r\n"
-				+ "                    {\r\n" + "                        \"dat\": {\r\n"
-				+ "                            \"terms\": {\r\n"
-				+ "                                \"field\": \"language.keyword\",\r\n"
-				+ "                                \"missing_bucket\": true,\r\n"
-				+ "                                \"order\": \"asc\"\r\n" + "                            }\r\n"
-				+ "                        }\r\n" + "                    }\r\n" + "                ]\r\n"
-				+ "            },\r\n" + "            \"aggregations\": {\r\n" + "                \"dat\": {\r\n"
-				+ "                    \"filter\": {\r\n" + "                        \"exists\": {\r\n"
-				+ "                            \"field\": \"language\",\r\n"
-				+ "                            \"boost\": 1.0\r\n" + "                        }\r\n"
-				+ "                    }\r\n" + "                }\r\n" + "            }\r\n" + "        }\r\n"
-				+ "    }\r\n" + "}");
-
-		JSONObject myResponse = this._makeElasticRequest(query, "POST", "/blogposts/_search/?");
-		String val = null;
-		Integer freq = null;
-		String idx = null;
-		String language = null;
-		JSONArray jsonArray = new JSONArray();
-		System.out.println("query for elastic _getMostLanguage --> " + query);
-		if (null != myResponse.get("aggregations")) {
-			Object buckets = myResponse.getJSONObject("aggregations").getJSONObject("groupby").getJSONArray("buckets");
-			val = buckets.toString();
-			jsonArray = new JSONArray(val);
-
-			System.out.println("DONE GETTING POSTS FOR BLOGGER");
-
-			if (jsonArray.length() < 10) {
-				limit = jsonArray.length();
-			}
-
-			if (jsonArray != null) {
-				for (int i = 0; i < limit; i++) {
-					JSONObject da = new JSONObject();
-					idx = jsonArray.get(i).toString();
-
-					JSONObject j = new JSONObject(idx);
-					freq = (Integer) j.get("doc_count");
-
-					Object k = j.getJSONObject("key").get("dat");
-					language = k.toString();
-
-					da.put("letter", language);
-					da.put("frequency", freq);
-
-					all.put(da);
-					hm2.put(language, freq);
-				}
-
-			}
-		}
-		return all;
+//		JSONArray all = new JSONArray();
+//
+//		JSONObject query = new JSONObject("{\r\n" + "    \"size\": 0,\r\n" + "    \"query\": {\r\n"
+//				+ "        \"bool\": {\r\n" + "            \"must\": [\r\n" + "                {\r\n"
+//				+ "                    \"terms\": {\r\n" + "                        \"blogsite_id\": [" + ids_
+//				+ "],\r\n" + "                        \"boost\": 1.0\r\n" + "                    }\r\n"
+//				+ "                },\r\n" + "                {\r\n" + "                    \"range\": {\r\n"
+//				+ "                        \"date\": {\r\n" + "                            \"from\": \"" + date_from
+//				+ "\",\r\n" + "                            \"to\": \"" + date_to + "\",\r\n"
+//				+ "                            \"include_lower\": true,\r\n"
+//				+ "                            \"include_upper\": true,\r\n"
+//				+ "                            \"boost\": 1.0\r\n" + "                        }\r\n"
+//				+ "                    }\r\n" + "                }\r\n" + "            ],\r\n"
+//				+ "            \"adjust_pure_negative\": true,\r\n" + "            \"boost\": 1.0\r\n" + "        }\r\n"
+//				+ "    },\r\n" + "    \"_source\": false,\r\n" + "    \"stored_fields\": \"_none_\",\r\n"
+//				+ "    \"aggregations\": {\r\n" + "        \"groupby\": {\r\n" + "            \"composite\": {\r\n"
+//				+ "                \"size\": 1000,\r\n" + "                \"sources\": [\r\n"
+//				+ "                    {\r\n" + "                        \"dat\": {\r\n"
+//				+ "                            \"terms\": {\r\n"
+//				+ "                                \"field\": \"language.keyword\",\r\n"
+//				+ "                                \"missing_bucket\": true,\r\n"
+//				+ "                                \"order\": \"asc\"\r\n" + "                            }\r\n"
+//				+ "                        }\r\n" + "                    }\r\n" + "                ]\r\n"
+//				+ "            },\r\n" + "            \"aggregations\": {\r\n" + "                \"dat\": {\r\n"
+//				+ "                    \"filter\": {\r\n" + "                        \"exists\": {\r\n"
+//				+ "                            \"field\": \"language\",\r\n"
+//				+ "                            \"boost\": 1.0\r\n" + "                        }\r\n"
+//				+ "                    }\r\n" + "                }\r\n" + "            }\r\n" + "        }\r\n"
+//				+ "    }\r\n" + "}");
+//
+//		JSONObject myResponse = this._makeElasticRequest(query, "POST", "/blogposts/_search/?");
+//		String val = null;
+//		Integer freq = null;
+//		String idx = null;
+//		String language = null;
+//		JSONArray jsonArray = new JSONArray();
+//		// System.out.println("query for elastic _getMostLanguage --> " + query);
+//		if (null != myResponse.get("aggregations")) {
+//			Object buckets = myResponse.getJSONObject("aggregations").getJSONObject("groupby").getJSONArray("buckets");
+//			val = buckets.toString();
+//			jsonArray = new JSONArray(val);
+//
+//			System.out.println("DONE GETTING POSTS FOR BLOGGER");
+//
+//			if (jsonArray.length() < 10) {
+//				limit = jsonArray.length();
+//			}
+//
+//			if (jsonArray != null) {
+//				for (int i = 0; i < limit; i++) {
+//					JSONObject da = new JSONObject();
+//					idx = jsonArray.get(i).toString();
+//
+//					JSONObject j = new JSONObject(idx);
+//					freq = (Integer) j.get("doc_count");
+//
+//					Object k = j.getJSONObject("key").get("dat");
+//					language = k.toString();
+//
+//					da.put("letter", language);
+//					da.put("frequency", freq);
+//
+//					all.put(da);
+//					hm2.put(language, freq);
+//				}
+//
+//			}
+//		}
+		return response;
 	}
 
 	public Map<String, Integer> _keywordTermvctors(String data) throws Exception {
@@ -2783,12 +2911,13 @@ public class Blogposts {
 			Integer value = entry.getValue();
 			String highest = entry.getKey();
 
-			System.out.println("HIGHEST TERM IS -- " + source + " OCCURING " + value + " TIMES");
+			// System.out.println("HIGHEST TERM IS -- " + source + " OCCURING " + value + "
+			// TIMES");
 
 			String da = hm1.toString();
 
 			d = new JSONObject(hm1);
-			System.out.println(d);
+			// System.out.println(d);
 
 		} else {
 			source = "Null";
@@ -2801,7 +2930,7 @@ public class Blogposts {
 			throws Exception {
 		//
 //		BloggerName="Stephen Lendman,South Front";
-		System.out.println("postingfreqbloggers" + BloggerName);
+		// System.out.println("postingfreqbloggers" + BloggerName);
 		ArrayList<String> list = new ArrayList<String>();
 		JSONObject query = new JSONObject();
 		String result = null;
@@ -2855,7 +2984,8 @@ public class Blogposts {
 					+ "            }\r\n" + "        }\r\n" + "    ]\r\n" + "}");
 
 		}
-		System.out.println("query for elastic _getMostKeywordDashboard --> " + query);
+		// System.out.println("query for elastic _getMostKeywordDashboard --> " +
+		// query);
 		JSONArray jsonArray = (JSONArray) this._elastic(query).getJSONArray("hit_array");
 
 		System.out.println("DONE GETTING POSTS FOR BLOGGER");
@@ -2870,7 +3000,7 @@ public class Blogposts {
 				list.add(src);
 			}
 
-			System.out.println("DONE and size of list is --" + list.size());
+			// System.out.println("DONE and size of list is --" + list.size());
 			result = String.join(" ", list);
 		}
 
@@ -2936,7 +3066,7 @@ public class Blogposts {
 		String result = null;
 		String source = null;
 		String source_ = null;
-		System.out.println(data.length());
+		// System.out.println(data.length());
 //		data = escape2(data);
 		if (data.length() > 0) {
 //		JSONObject jsonObj = new JSONObject("{\r\n" + "  \"query\": {\r\n" + "    \"constant_score\":{\r\n"
@@ -2949,7 +3079,7 @@ public class Blogposts {
 					+ "      \"max_num_terms\" : 1,\r\n" + "      \"min_term_freq\" : 1,\r\n"
 					+ "      \"min_doc_freq\" : 1,\r\n" + "      \"min_word_length\":1\r\n" + "	\r\n" + "    }\r\n"
 					+ "}");
-			System.out.println("INPROCESS");
+			// System.out.println("INPROCESS");
 //			System.out.println(" _termVectors --- "+ query);
 
 //			try (FileWriter file = new FileWriter("C:\\Users\\oljohnson\\Desktop\\SQL\\file2.json")) {
@@ -2994,16 +3124,17 @@ public class Blogposts {
 
 			}
 
-			System.out.println("2--" + data.length());
+			// System.out.println("2--" + data.length());
 			Map<String, Integer> hm1 = this.sortHashMapByValues(hm2);
 			System.out.println("DONE SORTING OBJECT");
-			System.out.println(" OCCURES-- " + hm1);
+			// System.out.println(" OCCURES-- " + hm1);
 
 			Map.Entry<String, Integer> entry = hm1.entrySet().iterator().next();
 			source = entry.getKey().toUpperCase();
 			Integer value = entry.getValue();
 
-			System.out.println("HIGHEST TERM IS -- " + source + " OCCURING " + value + " TIMES");
+			// System.out.println("HIGHEST TERM IS -- " + source + " OCCURING " + value + "
+			// TIMES");
 
 		} else {
 			source = "Null";
@@ -3013,32 +3144,22 @@ public class Blogposts {
 	}
 
 	public int countOccurences(String str, String word) {
-		/*
-		 * // split the string by spaces in a Pattern pt =
-		 * Pattern.compile("[^a-zA-Z0-9]"); Matcher match = pt.matcher(str);
-		 * 
-		 * while (match.find()) { String s = match.group(); str =
-		 * str.replaceAll("\\" + s, " "); }
-		 */
-		word = word.replaceAll("\"", "");
-		System.out.println("This is the word-" + word);
-		String a[] = str.split("\\W+");
-
-		String wrd[] = word.split(",");
-//		System.out.println("This is the word-" + wrd[1]);
-
-		String str_ = null;
-
-		// search for pattern in a
+		// System.out.println("str-"+str);
 		int count = 0;
-		for (int i = 0; i < a.length; i++) {
-			// if match found increase count
-			str_ = a[i].toLowerCase();
-			for (int j = 0; j < wrd.length; j++) {
-//				System.out.println("This is the splitted word-"+wrd[j]+"--"+str_);
-				if (wrd[j].trim().equals(str_.trim())) {
+		word = word.toLowerCase();
+		word = word.replace("\"", "");
+		String[] word_split = word.split(",");
+
+		for (String w : word_split) {
+			// System.out.println("terms--" + w);
+			String[] postsplit = str.split("\\W+");
+			for (String pst : postsplit) {
+
+				pst = pst.toLowerCase();
+				if (w.trim().equals(pst.trim())) {
+//					System.out.println(pst + "--" + w);
 					count++;
-//					System.out.println("Count =="+count);
+					// title = title_;
 				}
 			}
 		}
@@ -3071,25 +3192,22 @@ public class Blogposts {
 		return result;
 	}
 
-	
-	//SparkConf conf2 = new SparkConf();
+	// SparkConf conf2 = new SparkConf();
 	public ArrayList _selectTest(String id, int index) throws Exception {
 
 		ArrayList result = null;
 
 		try {
-			System.out.println("select * from blogpost_terms where blogsite_id in "
-					+ id +  " ");
-			
-			ArrayList response = DbConnection.query("select * from blogpost_terms where blogsiteid in ("
-					+ id +  ") ");
-			
+			System.out.println("select * from blogpost_terms where blogsite_id in " + id + " ");
+
+			ArrayList response = DbConnection.query("select * from blogpost_terms where blogsiteid in (" + id + ") ");
+
 			if (response.size() > 0) {
-				
+
 				ArrayList hd = response;
-				//result = hd.get(index).toString();
+				// result = hd.get(index).toString();
 				result = hd;
-				//count = hd.get(0).toString();
+				// count = hd.get(0).toString();
 			}
 		} catch (Exception e) {
 			return result;
@@ -3097,35 +3215,36 @@ public class Blogposts {
 
 		return result;
 	}
-	
-	public String mapReduce(List<Tuple2<String,Integer>> data) throws Exception {
+
+	public String mapReduce(List<Tuple2<String, Integer>> data) throws Exception {
 		String result = null;
 		try {
 			SparkConf conf = new SparkConf().setMaster("local[*]").setAppName("Example");
-			
+
 			JavaSparkContext sc = new JavaSparkContext(conf);
 			JavaRDD rdd = sc.parallelize(data);
-			JavaPairRDD <String, Integer> pairRdd = JavaPairRDD.fromJavaRDD(rdd);
+			JavaPairRDD<String, Integer> pairRdd = JavaPairRDD.fromJavaRDD(rdd);
 			ArrayList<Tuple2<String, Integer>> test = new ArrayList<Tuple2<String, Integer>>();
 			/*
 			 * for(Tuple2<String, Integer> x: pairRdd.reduceByKey((a,b) -> (a+
 			 * b)).collect()) { //System.out.println(x); test.add(x); }
 			 */
-			System.out.println(pairRdd.reduceByKey((a,b) -> (a+ b)).max(new DummyComparator()));
+			// System.out.println(pairRdd.reduceByKey((a,b) -> (a+ b)).max(new
+			// DummyComparator()));
 			sc.stop();
-			
+
 		} catch (Exception e) {
 			System.out.println(e);
 		}
 		return result;
-	}	
+	}
 
 	public String countTerms(String path) throws Exception {
 		String result = null;
-		
+
 		try {
 			SparkConf conf = new SparkConf().setMaster("local[10]").setAppName("Example");
-			
+
 //			SparkSession spark = SparkSession
 //				      .builder()
 //				      .appName("Example")
@@ -3143,7 +3262,7 @@ public class Blogposts {
 //		    .getOrCreate();
 			JavaSparkContext sc = new JavaSparkContext(conf);
 			//
-			//JavaSparkContext sc = new JavaSparkContext(conf);
+			// JavaSparkContext sc = new JavaSparkContext(conf);
 			JavaRDD<String> textFile = sc.textFile(path);
 			Tuple2<String, Integer> counts = textFile.flatMap(s -> Arrays.asList(s.split(" ")).iterator())
 					.mapToPair(word -> new Tuple2<>(word, 1)).reduceByKey((a, b) -> a + b).max(new DummyComparator());
@@ -3171,7 +3290,7 @@ public class Blogposts {
 		String source_ = null;
 		data = data.replaceAll("/[^A-Za-z0-9 ]/", "");
 		System.out.println(data.length());
-		//data = this.escape2(data);
+		// data = this.escape2(data);
 		// data = this.escape(data);
 		if (data.length() > 0) {
 //data ="seun seun seun seun";
@@ -3257,8 +3376,8 @@ public class Blogposts {
 //		return source.toUpperCase();
 //	}
 
-	public JSONObject _getBloggerPosts(String term, String bloggerName, String date_from, String date_to, String ids_)
-			throws Exception {
+	public JSONObject _getBloggerPosts(String term, String bloggerName, String date_from, String date_to, String ids_,
+			int limit) throws Exception {
 //	
 		ArrayList<String> list = new ArrayList<String>();
 		ArrayList<String> _idlist = new ArrayList<String>();
@@ -3331,7 +3450,7 @@ public class Blogposts {
 					+ "            \"_doc\": {\r\n" + "                \"order\": \"asc\"\r\n" + "            }\r\n"
 					+ "        }\r\n" + "    ]\r\n" + "}");
 		} else {
-			query = new JSONObject("{\r\n" + "    \"size\": 1000,\r\n" + "    \"query\": {\r\n"
+			query = new JSONObject("{\r\n" + "    \"size\": " + limit + ",\r\n" + "    \"query\": {\r\n"
 					+ "        \"bool\": {\r\n" + "            \"adjust_pure_negative\": true,\r\n"
 					+ "            \"must\": [\r\n" + "                {\r\n" + "                    \"terms\": {\r\n"
 					+ "                        \"post\": [" + term + "]\r\n" + "                    }\r\n"
@@ -3363,7 +3482,7 @@ public class Blogposts {
 		JSONArray jsonArray = (JSONArray) elas.getJSONArray("hit_array");
 		System.out.println("JSON ARR LENGTH" + jsonArray.length());
 		String total = elas.get("total").toString();
-		System.out.println("TOTAL LENGTH" + total);
+		System.out.println("TOTAL LENGTH--" + total);
 		String title = null;
 		String blogpost_id = null;
 		String permalink = null;
@@ -3397,8 +3516,8 @@ public class Blogposts {
 
 				if (bloggerName == "NOBLOGGER" && term != "___NO__TERM___") {
 					if (j.get("title").toString() != null || j.get("title").toString() != "") {
-						//occurence = this.countOccurences(src, term);
-						System.out.println(term + "----------------------" + occurence);
+						occurence = this.countOccurences(src, term);
+						// System.out.println(term + "----------------------" + occurence);
 						title = j.get("title").toString();
 						blogpost_id = j.get("blogpost_id").toString();
 						permalink = j.get("permalink").toString();
@@ -3420,13 +3539,13 @@ public class Blogposts {
 
 				all.put(posts_occured_data);
 
-				list.add(src);
-				_idlist.add("\"" + _ids + "\"");
+//				list.add(src);
+//				_idlist.add("\"" + _ids + "\"");
 			}
 
-			System.out.println("DONE and size of list is --" + list.size());
+//			System.out.println("DONE and size of list is --" + list.size());
 
-			result = String.join(" ", list);
+			// result = String.join(" ", list);
 		}
 
 		System.out.println("Done Escaped the necessary");
@@ -3439,7 +3558,7 @@ public class Blogposts {
 //		result = result.replace("\\", "");
 		// result = this.escape2(result);
 //		result = this.escape2(result);
-		all_data.put("posts", result);
+//		all_data.put("posts", result);
 		all_data.put("data", all);
 
 		return all_data;
@@ -3598,4 +3717,26 @@ public class Blogposts {
 	 * 
 	 * return this._getrawquery(url, jsonObj); }
 	 */
+	public static void main(String[] args) {
+		try {
+			
+			ArrayList res = _getMostLanguage("2000-01-01", "2020-04-15", "63,127,223,224,611,615,617,641,673,720,817,872,874,949,954,957,961,1030,1033,1034,1035,1036,1038,1040,1041,1042,1049,1051,1052,1054,1055,1056,1058,1063,1064,1065,1066,1067,1068,1069,1083,1084,1088,1089,1092,1095,1100,1101,1105,1121,1122,1124,1126,1127,1128,1134,1137,1139,1141,1148,1163,1164,1166,1169,1172,1173,1184,1185,1188,1195,1196,1204,1207,1210,1211,1213,1218,1220,1221,1222,1233,1235,1238,1239,1240,1242,1244,1250,1251,1256,1258,1262,1279,1280,1282,1288,1290,1293,1295,1297,1303,1306,1307,1315,1319,1324,1330,1333,1339,1341,1346,1350,1352,1360,1376,1379,1380,1381,1385,1387,1392,1394,1397,1399,1409,1417,1421,1424,1426,1429,1438,1439,1440,1446,1447,1448,1451,1455,1456,1457,1458,1459,1460,1461,1472,1474,1475,1478,1486,1487,1489,1490,1492,1493,1497,1501,1503,1504,1506,1507,1509,1516,1523,1525,1526,1531,1533,1543,1561,1563,1567,1568,1569,1574,1575,1582,1583,1595,1601,1602,1604,1608,1611,1614,1615,1623,1627,1628,1630,1637,1638,1639,1642,1651,1655,1659,1660,1661,1662,1663,1668,1669,1676,1681,1682,1684,1685,1686,1688,1689,1690,1691,1692,1693,1694,1697,1698,1699,1700,1701,1703,1704,1705,1706,1707,1708,1709,1710,1711,1712,1713,1714,1715,1716,1717,1718,1719,1720,1721,1722,1723,1724,1725,1726,1727,1728,1729,1730,1731,1732,1733,1734,1735,1736,1737,1738,1739,1740,1742", 10);
+			for(int i = 0; i < res.size(); i++) {
+				ArrayList x = (ArrayList) res.get(i);
+				System.out.println(x.get(0));
+			}
+			
+//			System.out.println(_getGetDateAggregate("Conscioslifenews","date","yyyy","post","1y","date_histogram", "2000-01-01", "2020-04-15", "808,62,88,239,641,182,148,109,750,193,1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276, 277, 278, 279, 280, 281, 282, 283, 284, 285, 286, 287, 288, 289, 290, 291, 292, 293, 294, 295, 296, 297, 298, 299, 300, 301, 302, 303, 304, 305, 306, 307, 308, 309, 310, 311, 312, 313, 314, 315, 316, 317, 318, 319, 320, 321, 322, 323, 324, 325, 326, 327, 328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 338, 339, 340, 341, 342, 343, 344, 345, 346, 347, 348, 349, 350, 351, 352, 353, 354, 355, 356, 357, 358, 359, 360, 361, 362, 363, 364, 365, 366, 367, 368, 369, 370, 371, 372, 373, 374, 375, 376, 377, 378, 379, 380, 381, 382, 383, 384, 385, 386, 387, 388, 389, 390, 391, 392, 393, 394, 395, 396, 397, 398, 399"));
+//			System.out.println(_getBlogPostById("7"));
+//			System.out.println();
+			// getBlogIdsfromsearch("care");
+//			_getBlogPostDetails("date", null, null, "1,2,3", 0);
+//String ans = _getBlogPostById("63,127,223,224,611,615,617,641,673,720,817,872,874,949,954,957,961,1030,1033,1034,1035,1036,1038,1040,1041,1042,1049,1051,1052,1054,1055,1056,1058,1063,1064,1065,1066,1067,1068,1069,1083,1084,1088,1089,1092,1095,1100,1101,1105,1121,1122,1124,1126,1127,1128,1134,1137,1139,1141,1148,1163,1164,1166,1169,1172,1173,1184,1185,1188,1195,1196,1204,1207,1210,1211,1213,1218,1220,1221,1222,1233,1235,1238,1239,1240,1242,1244,1250,1251,1256,1258,1262,1279,1280,1282,1288,1290,1293,1295,1297,1303,1306,1307,1315,1319,1324,1330,1333,1339,1341,1346,1350,1352,1360,1376,1379,1380,1381,1385,1387,1392,1394,1397,1399,1409,1417,1421,1424,1426,1429,1438,1439,1440,1446,1447,1448,1451,1455,1456,1457,1458,1459,1460,1461,1472,1474,1475,1478,1486,1487,1489,1490,1492,1493,1497,1501,1503,1504,1506,1507,1509,1516,1523,1525,1526,1531,1533,1543,1561,1563,1567,1568,1569,1574,1575,1582,1583,1595,1601,1602,1604,1608,1611,1614,1615,1623,1627,1628,1630,1637,1638,1639,1642,1651,1655,1659,1660,1661,1662,1663,1668,1669,1676,1681,1682,1684,1685,1686,1688,1689,1690,1691,1692,1693,1694,1697,1698,1699,1700,1701,1703,1704,1705,1706,1707,1708,1709,1710,1711,1712,1713,1714,1715,1716,1717,1718,1719,1720,1721,1722,1723,1724,1725,1726,1727,1728,1729,1730,1731,1732,1733,1734,1735,1736,1737,1738,1739,1740,1742,1743,1744,1745,1746,1747,1749,1750,1751,1752,1753,1754,1755,1756,1757,1759,1761,1762,1763,1764,1765,1766,1767,1768,1769,1770,1771,1772,1773,1774,1775,1776,1777,1778,1779,1780,1781,1782,1783,1784,1786,1787,1788,1790,1791,1792,1793,1794,1795,1796,1797,1798,1799,1800,1801,1802,1803,1804,1806,1807,1808,1809,1810,1811,1812,1813,1814,1815,1816,1817,1818,1822,1823,1824,1825,1826,1827,1829,1830,1831,1833,1834,1835,1836,1837,1838,1839,1840,1841,1842,1843,1844,1845,1846,1848,1849,1850,1851,1852,1853,1854,1856,1857,1858,1859,1860,1861,1862,1863,1864,1865,1866,1867,1868,1869,1870,1871,1872,1873,1874,1875,1876,1878,1886,1907,1927,1929,1934,1940,1943,1944,1952,1957,1961,1963,1964,1965,1966,1968,1971,1973,1974,1977,1978,2050");
+//		System.out.println(ans);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 }

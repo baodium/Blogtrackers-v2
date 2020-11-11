@@ -2,10 +2,6 @@
 package wrapper;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -23,6 +19,7 @@ import org.json.JSONObject;
 
 import util.Trackers;
 import util.Blogposts;
+import util.Clustering;
 import authentication.DbConnection;
 import java.util.*;
 
@@ -35,7 +32,13 @@ import java.util.*;
 @WebServlet("/tracker")
 public class Tracker extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	
+	static HashMap<String, String> hm = DbConnection.loadConstant();
 
+//	String base_url = hm.get("elasticIndex") + "blogposts/"; // - For testing server
+
+	static String apiUrl = hm.get("apiUrl");
+	
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
@@ -71,9 +74,12 @@ public class Tracker extends HttpServlet {
         String description = (null==request.getParameter("description"))?"":request.getParameter("description").replaceAll("\\<.*?\\>", "");
         String blogs = (null==request.getParameter("blogs"))?"":request.getParameter("blogs").replaceAll("\\<.*?\\>", "");
         String tracker_id = (null==request.getParameter("tracker_id"))?"":request.getParameter("tracker_id").replaceAll("\\<.*?\\>", "");
+        String type = (null==request.getParameter("type"))?"":request.getParameter("type").replaceAll("\\<.*?\\>", "");
 		
         String query = "";
 		String action = (null==request.getParameter("action"))?"":request.getParameter("action");
+		//String tracker_id = (null==request.getParameter("tracker_id"))?"":request.getParameter("action");
+		
 		String userid = username;//(String) session.getAttribute("user");
 		
 		if(action.equals("create"))
@@ -150,11 +156,48 @@ public class Tracker extends HttpServlet {
 				response.setContentType("text/html");
 				pww.write("Trackername cannot be empty");
 			}
-		}else if(action.equals("update")) {
+		}
+		else if(action.equals("uploadTerms")) {
+			String url = apiUrl;
+			String str = "{\r\n" + 
+					"	\"tracker_id\":\""+tracker_id+"\",\r\n" + 
+					"	\"type\":\""+type+"\"\r\n" + 
+					"}";
+			System.out.println(str + "--API--" +url);
+			JSONObject js = new JSONObject(str);
+			Clustering c = new Clustering();
+			try {
+				System.out.println(c._getResult(url, js));
+				pww.write(c._getResult(url, js).toString());
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		else if(action.equals("uploadClusters")) {
+			String url = apiUrl + "clusterings";
+			String str = "{\r\n" + 
+					"	\"tracker_id\":\""+tracker_id+"\"\r\n" + 
+					"}";
+			System.out.println(str + "--API--" +url);
+			JSONObject js = new JSONObject(str);
+			Clustering c = new Clustering();
+			try {
+				System.out.println(c._getResult(url, js));
+				pww.write(c._getResult(url, js).toString());
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		else if(action.equals("update")) {
 String[] bloggs = blogs.replaceAll(", $", "").split(",");
 			
 			try {
 				ArrayList tracker =null;
+				ArrayList blogposts =null;
+				
 				
 				DbConnection db = new DbConnection();
 				String addendum="";
@@ -205,9 +248,18 @@ String[] bloggs = blogs.replaceAll(", $", "").split(",");
 							 String[] allblogs = mergedblogs.replaceAll(",$", "").split(",");
 							 int blognum = allblogs.length;
 							// System.out.println("Blog during update ajax request "+  mergedblogs);
-							 addendum = "blogsite_id in ("+mergedblogs+")";//"blogsite_id in ("+addendum+blog_id+")";
+							 addendum = "blogsite_id in ("+mergedblogs.replaceAll(",$", "")+")";//"blogsite_id in ("+addendum+blog_id+")";
 							 
 							 String modifiedDate= getDateTime();
+//							 Blogposts p = new Blogposts();
+//							 String blogpost_num = p._getBlogPostById(que = hd.get(0).toString());
+//							 System.out.println("here with bpnum1" + "SELECT count(*) FROM blogposts WHERE "+addendum);
+//							 blogposts = db.query("SELECT count(*) FROM blogposts WHERE "+addendum);
+//							 ArrayList hd_ = (ArrayList)blogposts.get(0);
+//							 String blogpost_num = hd_.get(0).toString();
+							 
+							 //System.out.println("here with bpnum" + "SELECT count(*) FROM blogposts WHERE "+addendum + blogpost_num);
+							 
 							db.updateTable("UPDATE trackers SET query='"+addendum+"', tracker_name='"+tracker_name+"', description='"+description+"', date_modified='"+modifiedDate+"', blogsites_num = '"+blognum+"' WHERE  tid='"+tracker_id+"'");	
 							pww.write("success");
 					 }else {
@@ -352,9 +404,15 @@ String[] bloggs = blogs.replaceAll(", $", "").split(",");
 //					 pww.write(file); 
 //					 mergedblogs += file;
 	
-					 que =  "blogsite_id in ("+mergers+")";	
+					 que =  "blogsite_id in ("+mergers.replaceAll(",$", "")+")";	
 
 					String modifiedDate= getDateTime();
+//					System.out.println();
+					
+					
+//					 blogposts = db.query("SELECT count(*) FROM blogposts WHERE "+addendum);
+//					 ArrayList hd_ = (ArrayList)blogposts.get(0);
+//					 String blogpost_num = hd_.get(0).toString();
 					
 					db.updateTable("UPDATE trackers SET query='"+que+"', blogsites_num = '"+blogcounter+"', date_modified='"+modifiedDate+"' WHERE  tid='"+tracker_id+"'");	
 					pww.write("success");
@@ -393,6 +451,7 @@ String[] bloggs = blogs.replaceAll(", $", "").split(",");
 			
 //			System.out.println();
 			ArrayList detail = new DbConnection().query("SELECT * FROM trackers WHERE tid='"+tracker_id+"' AND userid='"+userid+"'");
+			ArrayList blogposts = new ArrayList();
         	
 			 if(detail.size()>0){
 				 	ArrayList hd = (ArrayList)detail.get(0);
@@ -428,10 +487,14 @@ String[] bloggs = blogs.replaceAll(", $", "").split(",");
 						 }
 					 }
 					 	//System.out.println(mergedblogs);		
-					que =  "blogsite_id in ("+mergedblogs+")";	
+					que =  "blogsite_id in ("+mergedblogs.replaceAll(",$", "")+")";	
 					String modifiedDate= getDateTime();
+//					System.out.println("here with bpnum5" + "SELECT count(*) FROM blogposts WHERE "+que);
+//					blogposts = db.query("SELECT count(*) FROM blogposts WHERE "+que);
+//					 ArrayList hd_ = (ArrayList)blogposts.get(0);
+//					 String blogpost_num = hd_.get(0).toString();
 					
-					db.updateTable("UPDATE trackers SET query='"+que+"', blogsites_num = '"+blogcounter+"', date_modified='"+modifiedDate+"' WHERE  tid='"+tracker_id+"'");	
+					db.updateTable("UPDATE trackers SET query='"+que+"', blogsites_num = '"+blogcounter+"', date_modified='"+modifiedDate+"'  WHERE  tid='"+tracker_id+"'");	
 					pww.write("success");
 			 }else {
 				 pww.write("false");
@@ -473,7 +536,7 @@ String[] bloggs = blogs.replaceAll(", $", "").split(",");
 									"						</button></a>" + 
 									"						<button class='btn stylebuttonnocolor'>"+date+"</button>" + 
 									"						<button class='btn stylebuttonnocolor'>" + 
-									"							<b class='float-left ultra-bold-text'>"+bj.get("num_comments").toString()+" comments</b><i" + 
+									"							<b class='float-left ultra-bold-text'>"+bj.get("num_comments").toString()+" comments </b> &nbsp; <i" + 
 									"								class='far fa-comments float-right blogcontenticon'></i>" + 
 									"						</button>" + 
 									"					</div>" + 
@@ -506,7 +569,11 @@ String[] bloggs = blogs.replaceAll(", $", "").split(",");
 							String date = dtf.format(datee);
 							
 							String replace = 	"<span style=background:red;color:#fff>"+mostactiveterm+"</span>";
-							
+							for(String s: mostactiveterm.split(",")){
+								String new_s = s.replace("\"","").replace(" ","");
+								replace = "<span style=background:red;color:#fff>" + new_s + "</span>";
+								body = body.toLowerCase().replace(new_s, replace);
+							}
 							
 							output+="<h5 class='text-primary p20 pt0 pb0'>#1: "+title.replaceAll(mostactiveterm,replace)+"</h5>" + 
 									"					<div class='text-center mb20 mt20'>" + 
@@ -516,14 +583,14 @@ String[] bloggs = blogs.replaceAll(", $", "").split(",");
 									"						</button>" + 
 									"						<button class='btn stylebuttonnocolor'>"+date+"</button>" + 
 									"						<button class='btn stylebuttonnocolor'>" + 
-									"							<b class='float-left ultra-bold-text'>"+bj.get("num_comments").toString()+" comments</b><i" + 
+									"							<b class='float-left ultra-bold-text'>"+bj.get("num_comments").toString()+" comments </b> &nbsp; <i" + 
 									"								class='far fa-comments float-right blogcontenticon'></i>" + 
 									"						</button>" + 
 									"					</div>" + 
 									
 									"					<div style=\"height: 600px;\"><div class='p20 pt0 pb20 text-blog-content text-primary'" + 
 									"						style='height: 550px; overflow-y: scroll;'>" + 
-									"						"+body.replaceAll(mostactiveterm,replace)+""+ 
+									"						"+body.toLowerCase().replace(mostactiveterm,replace)+""+ 
 									"						</div></div>";
 									
 							

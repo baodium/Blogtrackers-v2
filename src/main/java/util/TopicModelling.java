@@ -346,6 +346,7 @@ public class TopicModelling {
 				StringTokenizer strTok = new StringTokenizer(line);
 				while (strTok.hasMoreTokens()) {
 					String token = strTok.nextToken();
+					token = token.replaceAll("\\p{Punct}", "");
 					tokens.add(token.toLowerCase().trim());
 				}
 			}
@@ -355,7 +356,7 @@ public class TopicModelling {
 				blog_title = blogpost.title;
 				blog_post = blogpost.post;
 				blog_date = blogpost.date;
-				blog_author= blogpost.blogger;
+				blog_author= blogpost.blogger.split("\n")[0];
 				blog_location = blogpost.location;
 				blog_numComments = blogpost.numComments;
 				//Read file and initialize word index array

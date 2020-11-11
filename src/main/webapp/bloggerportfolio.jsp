@@ -28,8 +28,8 @@
 	
 
 	
-	System.out.println("dateyy---"+date_start);
-	System.out.println("dateyyy---"+date_end);
+	//System.out.println("dateyy---"+date_start);
+	//System.out.println("dateyyy---"+date_end);
 	if (user == null || user == "") {
 		response.sendRedirect("index.jsp");
 	} else {
@@ -73,7 +73,7 @@
 				ids = query;
 			}
 		}
-		System.out.println("id---"+ids);
+		//System.out.println("id---"+ids);
 		userinfo = new DbConnection().query("SELECT * FROM usercredentials where Email = '" + email + "'");
 		if (userinfo.size() < 1 || !isowner) {
 			response.sendRedirect("index.jsp");
@@ -106,7 +106,7 @@
 					}else{
 						/* new File("/path/directory").mkdirs(); */
 						path_new.mkdirs();
-						System.out.println("pathhhhh1--"+path_new);
+						//System.out.println("pathhhhh1--"+path_new);
 					}
 					
 					
@@ -114,17 +114,17 @@
 						
 						String t = "/images/profile_images";
 						int p=userpic.indexOf(t);
-						System.out.println(p);
+						//System.out.println(p);
 						if (p != -1) {
 							
-							System.out.println("pic path---"+userpic);
-							System.out.println("path exists---"+userpic.substring(0, p));
+							//System.out.println("pic path---"+userpic);
+							//System.out.println("path exists---"+userpic.substring(0, p));
 							String path_update=userpic.substring(0, p);
 							if (!path_update.equals(path_new.toString())) {
 								profileimage = "images/profile_images/" + userinfo.get(2).toString() + ".jpg";
 								/* profileimage=userpic.replace(userpic.substring(0, p), path_new.toString()); */
 								String new_file_path = path_new.toString().replace("\\images\\profile_images", "")+"/"+profileimage;
-								System.out.println("ready to be updated--"+ new_file_path);
+								//System.out.println("ready to be updated--"+ new_file_path);
 								/*new DbConnection().updateTable("UPDATE usercredentials SET profile_picture  = '" + pass + "' WHERE Email = '" + email + "'"); */											
 							}
 						}else{
@@ -132,13 +132,13 @@
 							profileimage = "images/profile_images/" + userinfo.get(2).toString() + ".jpg";
 							/* profileimage=userpic.replace(userpic.substring(0, p), path_new.toString()); */
 							String new_file_path = path_new.toString().replace("\\images\\profile_images", "")+"/"+profileimage;
-							System.out.println("ready to be updated--"+ new_file_path);
+							//System.out.println("ready to be updated--"+ new_file_path);
 							
 							new DbConnection().updateTable("UPDATE usercredentials SET profile_picture  = '" + "images/profile_images/" + userinfo.get(2).toString() + ".jpg" + "' WHERE Email = '" + email + "'");
-							System.out.println("updated");
+							//System.out.println("updated");
 						}				
 					}else{
-						System.out.println("path doesnt exist");
+						//System.out.println("path doesnt exist");
 					}
 			} catch (Exception e) {
 			
@@ -197,7 +197,7 @@
 			String test = post._searchRangeTotal("date", "2013-04-01", "2018-04-01", "1");
 			
 			System.out.println(test);  */
-			System.out.println("test here2");
+			//System.out.println("test here2");
 			
 			String totalpost = "0";
 			
@@ -297,7 +297,7 @@
 			
 			ArrayList bloggerPostFrequency = bloggerss._getBloggerPostFrequency(ids);
 			
-			System.out.println("Terms here:"+bloggerPostFrequency);
+			//System.out.println("Terms here:"+bloggerPostFrequency);
 			
 			ArrayList blogs = blog._fetch(ids);
 			
@@ -358,7 +358,7 @@
 				years.add(Integer.toString(i));
 			}
 			
-			System.out.println("year_s"+years);
+			//System.out.println("year_s"+years);
 			
 			JSONObject year_object = new JSONObject();
 			for(int q=0; q<blogPostingFrequency_year.length(); q++){ 
@@ -390,7 +390,7 @@
 			}
 			
 			JSONObject dayJson = post.lineGraphAggregate(items);
-			System.out.println("dayJson --"+dayJson);
+			//System.out.println("dayJson --"+dayJson);
 			
 			for(int i = 0; i < blogPostingFrequency_month.length(); i++){
 				hm3 = new HashMap<String, Integer>();
@@ -407,7 +407,7 @@
 			}
 			
 			JSONObject monthJson = post.lineGraphAggregate(items1);
-			System.out.println("monthJson --"+monthJson);
+			//System.out.println("monthJson --"+monthJson);
 			
 			/* if(activeblogposts.size()>0){
 				String tres = null;
@@ -538,17 +538,17 @@
 			possentiment=new Liwc()._searchRangeAggregate("date", yst[0]+"-01-01", yend[0]+"-12-31", sentimentpost,"posemo");
 			negsentiment=new Liwc()._searchRangeAggregate("date", yst[0]+"-01-01", yend[0]+"-12-31", sentimentpost,"negemo");
 			
-			System.out.println("dddddddddddddddddddde"+possentiment);
-			System.out.println("------------------------"+negsentiment);
+			//System.out.println("dddddddddddddddddddde"+possentiment);
+			//System.out.println("------------------------"+negsentiment);
 			
 			JSONArray sortedyearsarray = yearsarray;//post._sortJson(yearsarray);
 			int highestfrequency = 0;
 			 String blogids = "";
 			 
 outlinks = outl._searchByRange("date", dt, dte, selectedblogid);
-System.out.println("test hereeeeeeeeeeeeeeeeee"+selectedblogid);
-System.out.println("test hereeeeeeeeeeeeeeeeee"+dt);
-System.out.println("test hereeeeeeeeeeeeeeeeee"+dte);
+//System.out.println("test hereeeeeeeeeeeeeeeeee"+selectedblogid);
+//System.out.println("test hereeeeeeeeeeeeeeeeee"+dt);
+//System.out.println("test hereeeeeeeeeeeeeeeeee"+dte);
 JSONObject outerlinks = new JSONObject();
 ArrayList outlinklooper = new ArrayList();
 if (outlinks.size() > 0) {
@@ -596,25 +596,25 @@ if (outlinks.size() > 0) {
 	}
 }
 
-System.out.println("test here4");
+//System.out.println("test here4");
 /* mostactiveterm = term._getMostActiveByBlogger(mostactiveblogger); */
 System.out.println("---''-"+mostactiveblogger+dt+dte+ids);
 //JSONObject sql = post._getBloggerPosts(null,mostactiveblogger,dt,dte,ids);
 //String sql_ = sql.get("posts").toString();
 //mostactiveterm = post._termVectors(sql_); 
 
-System.out.println("test here5");
+//System.out.println("test here5");
 String totalinfluence ="";
 
 
 try{			
 	totalpost = post._searchRangeTotalByBlogger("date", dt, dte, mostactiveblogger);
-	System.out.println("test here5_1");
+	//System.out.println("test here5_1");
 	Double influence =  Double.parseDouble(post._searchRangeMaxByBloggers("date",dt, dte,mostactiveblogger));
-	System.out.println("dt--"+dt+",dte--"+dte+",mstb--"+mostactiveblogger);
-	System.out.println("test here5_2");
+	//System.out.println("dt--"+dt+",dte--"+dte+",mstb--"+mostactiveblogger);
+	//System.out.println("test here5_2");
 	totalinfluence = influence+"";
-	System.out.println("ttl infl"+totalinfluence);
+	//System.out.println("ttl infl"+totalinfluence);
 }
 catch(Exception e){
 	totalinfluence = "0";
@@ -647,7 +647,6 @@ JSONObject allposts = new JSONObject();
 
 <link rel="stylesheet" href="assets/css/daterangepicker.css" />
   <link rel="stylesheet" href="assets/css/style.css" />
-
   <!--end of bootsrap -->
   <script src="assets/js/jquery-3.2.1.slim.min.js" ></script>
 <script src="assets/js/popper.min.js"></script>
@@ -768,7 +767,7 @@ JSONObject allposts = new JSONObject();
 					<a class="breadcrumb-item active text-primary" href="<%=request.getContextPath()%>/dashboard.jsp?tid=<%=tid%>">Dashboard</a>
 					<a class="breadcrumb-item active text-primary" href="<%=request.getContextPath()%>/blogportfolio.jsp?tid=<%=tid%>">Blogger Portfolio</a>
 				</nav>
-<div><button class="btn btn-primary stylebutton1 " id="printdoc">SAVE AS PDF</button></div>
+<!-- <div><button class="btn btn-primary stylebutton1 " id="printdoc">SAVE AS PDF</button></div> -->
 </div>
 
 <div class="col-md-6 text-right mt10">
@@ -1044,6 +1043,8 @@ JSONObject allposts = new JSONObject();
 											String tresu = null;
 											JSONObject tobj = null;
 											String date =null;
+											String activeDef = "";
+											String activeDefLink = "";
 											int j=0;
 											int k=0;
 											
@@ -1060,10 +1061,19 @@ JSONObject allposts = new JSONObject();
 												LocalDate datee = LocalDate.parse(dat);
 												DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");
 												date = dtf.format(datee);
+												
+												if (i == 0) {
+													activeDefLink = "";
+													activeDef = "activeselectedblog";
+												}else{
+												
+													activeDefLink = "makeinvisible";
+													activeDef = "";
+												}
 									%>
                                     <tr>
-                                   <td><a class="blogpost_link cursor-pointer" id="<%=tobj.get("blogpost_id")%>" ><%=tobj.get("title") %></a><br/>
-								<a class="mt20 viewpost makeinvisible" href="<%=tobj.get("permalink") %>" target="_blank"><buttton class="btn btn-primary btn-sm mt10 visitpost">Visit Post &nbsp;<i class="fas fa-external-link-alt"></i></buttton></a></td>
+                                   <td><a class="blogpost_link cursor-pointer <%=activeDef %>" id="<%=tobj.get("blogpost_id")%>" ><%=tobj.get("title") %></a><br/>
+								<a id="viewpost_<%=tobj.get("blogpost_id")%>" class="mt20 viewpost <%=activeDefLink %>" href="<%=tobj.get("permalink") %>" target="_blank"><buttton class="btn btn-primary btn-sm mt10 visitpost">Visit Post &nbsp;<i class="fas fa-external-link-alt"></i></buttton></a></td>
 								<td align="center"><%=date %></td>
                                      </tr>
                                     <% }} %>
@@ -1241,7 +1251,7 @@ JSONObject allposts = new JSONObject();
  $(document).ready(function() {
 	 
 	 $('#printdoc').on('click',function(){
-			print();
+			window.print();
 		}) ;
    // datatable setup
      $('#DataTables_Table_1_wrapper').DataTable( {
@@ -1307,23 +1317,13 @@ JSONObject allposts = new JSONObject();
 // table set up 2
      $('#DataTables_Table_0_wrapper').DataTable( {
          "scrollY": 430,
-         "scrollX": false,
-          "pagingType": "simple"
-     /*      ,
-          dom: 'Bfrtip',
-
-          "columnDefs": [
-       { "width": "80%", "targets": 0 }
-     ],
-       buttons:{
-         buttons: [
-             { extend: 'pdfHtml5',orientation: 'potrait', pageSize: 'LEGAL', className: 'btn-primary stylebutton1'},
-             {extend:'csv',className: 'btn-primary stylebutton1'},
-             {extend:'excel',className: 'btn-primary stylebutton1'},
-            // {extend:'copy',className: 'btn-primary stylebutton1', text: 'Copy to Clipboard'},
-             {extend:'print',className: 'btn-primary stylebutton1'},
-         ]
-       } */
+         "scrollX": true,
+         "order": [],
+          "pagingType": "simple",
+        	  "columnDefs": [
+        	      { "width": "65%", "targets": 0 },
+        	      { "width": "25%", "targets": 0 }
+        	    ]
      } );
  } );
  </script>
@@ -1488,7 +1488,7 @@ JSONObject allposts = new JSONObject();
 
          // Define main variables
          var d3Container = d3.select(element),
-             margin = {top: 10, right: 10, bottom: 20, left: 80},
+             margin = {top: 10, right: 10, bottom: 20, left:80},
              width = d3Container.node().getBoundingClientRect().width - margin.left - margin.right,
              height = height - margin.top - margin.bottom;
 
@@ -1568,14 +1568,7 @@ JSONObject allposts = new JSONObject();
  //   [{"date":"2016","close":1500},{"date":"2017","close":1800}],
  //   [{"date":"2014","close":500},{"date":"2015","close":900},{"date":"2016","close":1200}]
  // ];
-
- <%-- data = [[<% for(int q=0; q<sortedyearsarray.length(); q++){ 
-	  		String yer=sortedyearsarray.get(q).toString(); 
-	  		int vlue = Integer.parseInt(graphyears.get(yer).toString()); %>
-	  			{"date":"<%=yer%>","close":<%=vlue%>},
-	<% } %>]]; --%>
-	
-	data = [[ <% for(String d : years){
+ data = [[ <% for(String d : years){
 	    %>   
 	    <% int freq = 0;try{freq = (int)year_object.get(d);}catch(Exception e){freq =0;}%>
 	    {"date":"<%=d%>","close":<%=freq%>},
@@ -1583,8 +1576,11 @@ JSONObject allposts = new JSONObject();
 	  	<%-- 
 	  			{"date":"<%=yr%>","close":<%=vlue%>}, --%>
 	<% } %> ]];
-
- //console.log(data);
+ 
+ <%-- <%System.out.println(dayJson);%> --%>
+<%-- console.log(<%=dayJson%>); --%>
+ console.log("DATA FOR LINE PUBLISHED");
+ console.log(data);
  // data = [];
 
  // data = [
@@ -1736,6 +1732,7 @@ JSONObject allposts = new JSONObject();
  //console.log(filteredArray.sort());
  // console.log(returnedata);
  x.domain(filteredArray);
+ 
  y.domain([0, d3.max(maxvalue)]);
  }
 
@@ -1764,7 +1761,7 @@ JSONObject allposts = new JSONObject();
                         .attr("d", line)
                         // .style("fill", "rgba(0,0,0,0.54)")
                         .style("stroke-width", 2)
-                        .style("stroke", "0080CC")
+                        .style("stroke", "#0080CC")
 
                // add point
                 circles = svg.append("g").attr("class","circlecontainer").selectAll(".circle-point")
@@ -1793,7 +1790,16 @@ JSONObject allposts = new JSONObject();
                     	  var d1 = 	  d.date + "-01-01";
                    	      var d2 = 	  d.date + "-12-31";
           				
-                   	      loadUrls(d1,d2);
+                   	   var blogger = $('#blogger-changed').val();
+                      	
+	                   	var blg = blogger.split("______");
+	                   	var all_ids = $("#id__").val();
+	                   	var blog_id = blg[1];
+	                	console.log(blog_id, d1,d2)
+                   	      
+                   	   loadUrls(d1,d2);
+                   	   loadYearlyChart(blog_id,all_ids, d1, d2);
+                   		loadDailyChart(blog_id,all_ids, d1, d2);
                     	  
                       });
                                          svg.call(tip)
@@ -1911,11 +1917,39 @@ JSONObject allposts = new JSONObject();
              if(data.length == 1 )
         	 {
         	 var tick = svg.select(".d3-axis-horizontal").select(".tick");
-            transformfirsttick =  tick[0][0].attributes[1].value;
+        	 var transformfirsttick;
+        	 //transformfirsttick =  tick[0][0].attributes[2].value;
+            //console.log(tick[0][0].attributes[2]);
             //transformfirsttick = "translate(31.5,0)"
-            //console.log(transformfirsttick);
+            //console.log(tick[0][0]);
+            // handle based on browser
+            var browser = "";
+            c = navigator.userAgent.search("Chrome");
+            f = navigator.userAgent.search("Firefox");
+            m8 = navigator.userAgent.search("MSIE 8.0");
+            m9 = navigator.userAgent.search("MSIE 9.0");
+            if (c > -1) {
+                browser = "Chrome";
+                // chrome browser
+            transformfirsttick =  tick[0][0].attributes[1].value;
+
+            } else if (f > -1) {
+                browser = "Firefox";
+                 // firefox browser
+             transformfirsttick =  tick[0][0].attributes[2].value;
+            } else if (m9 > -1) {
+                browser ="MSIE 9.0";
+            } else if (m8 > -1) {
+                browser ="MSIE 8.0";
+            }
+            
             svg.select(".circlecontainer").attr("transform", transformfirsttick);
             svg.select(".linecontainer").attr("transform", transformfirsttick);
+            
+            
+            
+            //console.log(browser);
+            
         	 }
 
 
@@ -1983,11 +2017,39 @@ JSONObject allposts = new JSONObject();
            if(data.length == 1 )
       	 {
       	 var tick = svg.select(".d3-axis-horizontal").select(".tick");
-          transformfirsttick =  tick[0][0].attributes[1].value;
+      	 var transformfirsttick;
+      	 //transformfirsttick =  tick[0][0].attributes[2].value;
+          //console.log(tick[0][0].attributes[2]);
           //transformfirsttick = "translate(31.5,0)"
-          console.log(transformfirsttick);
+          //console.log(tick[0][0]);
+          // handle based on browser
+          var browser = "";
+          c = navigator.userAgent.search("Chrome");
+          f = navigator.userAgent.search("Firefox");
+          m8 = navigator.userAgent.search("MSIE 8.0");
+          m9 = navigator.userAgent.search("MSIE 9.0");
+          if (c > -1) {
+              browser = "Chrome";
+              // chrome browser
+          transformfirsttick =  tick[0][0].attributes[1].value;
+
+          } else if (f > -1) {
+              browser = "Firefox";
+               // firefox browser
+           transformfirsttick =  tick[0][0].attributes[2].value;
+          } else if (m9 > -1) {
+              browser ="MSIE 9.0";
+          } else if (m8 > -1) {
+              browser ="MSIE 8.0";
+          }
+          
           svg.select(".circlecontainer").attr("transform", transformfirsttick);
           svg.select(".linecontainer").attr("transform", transformfirsttick);
+          
+          
+          
+          //console.log(browser);
+          
       	 }
              // Crosshair
              //svg.selectAll('.d3-crosshair-overlay').attr("width", width);
@@ -2380,10 +2442,11 @@ JSONObject allposts = new JSONObject();
  //console.log(data);
  // data = [];
 
- <%-- data = [
+<%--  data = [
  [{"date": "Jan","close": <%=jan%>},{"date": "Feb","close": <%=feb%>},{"date": "Mar","close":<%=march%>},{"date": "Apr","close": <%=jan%>},{"date": "May","close": <%=may%>},{"date": "Jun","close": <%=june%>},{"date": "Jul","close": <%=july%>},{"date": "Aug","close": <%=aug%>},{"date": "Sep","close": <%=sep%>},{"date": "Oct","close": <%=oct%>},{"date": "Nov","close": <%=nov%>},{"date": "Dec","close": <%=dec%>}],
- ]; --%>
- 
+ ];
+ --%>
+ <%-- <%Iterator<String> keysMonth = monthJson.keys();%> --%>
  <%String [] months = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};%> 
  data = [[<%   	
     for(String m: months){
@@ -2395,8 +2458,9 @@ JSONObject allposts = new JSONObject();
  	   <%-- {"letter":"<%=key%>","frequency":<%=dayJson.get(key)%>}   --%>      	            		  		
 		  			
 <% } %>]];
-
- // console.log(data);
+ 
+ console.log("data for yearly pattern")
+  console.log(data);
  var line = d3.svg.line()
  .interpolate("monotone")
       //.attr("width", x.rangeBand())
@@ -2417,7 +2481,7 @@ JSONObject allposts = new JSONObject();
           return "No Information Available";
         }
         else if(d !== null) {
-         return d.date+" ("+d.close+")<br/> Click for more information";
+         return d.date+" ("+d.close+")";
           }
         // return "here";
         });
@@ -2520,7 +2584,7 @@ JSONObject allposts = new JSONObject();
                         .attr("d", line)
                         // .style("fill", "rgba(0,0,0,0.54)")
                         .style("stroke-width", 2)
-                        .style("stroke", "0080CC")
+                        .style("stroke", "#0080CC")
                          //.attr("transform", "translate("+margin.left/4.7+",0)");
                         // .datum(data)
 
@@ -2547,13 +2611,7 @@ JSONObject allposts = new JSONObject();
                       svg.selectAll(".circle-point").data(data[0])
                       .on("mouseover",tip.show)
                       .on("mouseout",tip.hide)
-                      .on("click",function(d){
-                    	  console.log(d.date);
-
-                   	  	  var d1 = 	  d.date + "-01-01";
-                  	      var d2 = 	  d.date + "-12-31";              					
-                  	      loadUrls(d1,d2);  
-                      });
+                      .on("click",function(d){console.log(d.date)});
                                          svg.call(tip)
                                          
                        
@@ -2602,15 +2660,17 @@ JSONObject allposts = new JSONObject();
                                .attr("cy", function(d){return y(d.close)})
 
                                .attr("transform", "translate("+margin.left/4.7+",0)");
-                                svg.selectAll(".circle-point").data(mergedarray)
+                               svg.selectAll(".circle-point").data(mergedarray)
                               .on("mouseover",tip.show)
                               .on("mouseout",tip.hide)
                               .on("click",function(d){
                             	  console.log(d.date);
+                            	  var d1 = 	  d.date + "-01-01";
+                           	      var d2 = 	  d.date + "-12-31";
+                 					
 
-                           	  	  var d1 = 	  d.date + "-01-01";
-                          	      var d2 = 	  d.date + "-12-31";              					
-                          	      loadUrls(d1,d2); 
+                           	      loadUrls(d1,d2); 
+                            	  
                               });
                          //                         svg.call(tip)
 
@@ -2620,7 +2680,13 @@ JSONObject allposts = new JSONObject();
                              svg.selectAll(".circle-point").data(mergedarray)
                              .on("mouseover",tip.show)
                              .on("mouseout",tip.hide)
-                             .on("click",function(d){console.log(d.date)});
+                             .on("click",function(d){
+                            	 console.log(d.date);
+
+                           	  	  var d1 = 	  d.date + "-01-01";
+                          	      var d2 = 	  d.date + "-12-31";              					
+                          	      loadUrls(d1,d2); 	 
+                             });
                                                 svg.call(tip)
 
 
@@ -2671,11 +2737,39 @@ JSONObject allposts = new JSONObject();
              if(data.length == 1 )
         	 {
         	 var tick = svg.select(".d3-axis-horizontal").select(".tick");
-            transformfirsttick =  tick[0][0].attributes[1].value;
+        	 var transformfirsttick;
+        	 //transformfirsttick =  tick[0][0].attributes[2].value;
+            //console.log(tick[0][0].attributes[2]);
             //transformfirsttick = "translate(31.5,0)"
-            //console.log(transformfirsttick);
+            //console.log(tick[0][0]);
+            // handle based on browser
+            var browser = "";
+            c = navigator.userAgent.search("Chrome");
+            f = navigator.userAgent.search("Firefox");
+            m8 = navigator.userAgent.search("MSIE 8.0");
+            m9 = navigator.userAgent.search("MSIE 9.0");
+            if (c > -1) {
+                browser = "Chrome";
+                // chrome browser
+            transformfirsttick =  tick[0][0].attributes[1].value;
+
+            } else if (f > -1) {
+                browser = "Firefox";
+                 // firefox browser
+             transformfirsttick =  tick[0][0].attributes[2].value;
+            } else if (m9 > -1) {
+                browser ="MSIE 9.0";
+            } else if (m8 > -1) {
+                browser ="MSIE 8.0";
+            }
+            
             svg.select(".circlecontainer").attr("transform", transformfirsttick);
             svg.select(".linecontainer").attr("transform", transformfirsttick);
+            
+            
+            
+            //console.log(browser);
+            
         	 }
 
 
@@ -2743,11 +2837,39 @@ JSONObject allposts = new JSONObject();
            if(data.length == 1 )
       	 {
       	 var tick = svg.select(".d3-axis-horizontal").select(".tick");
-          transformfirsttick =  tick[0][0].attributes[1].value;
+      	 var transformfirsttick;
+      	 //transformfirsttick =  tick[0][0].attributes[2].value;
+          //console.log(tick[0][0].attributes[2]);
           //transformfirsttick = "translate(31.5,0)"
-          console.log(transformfirsttick);
+          //console.log(tick[0][0]);
+          // handle based on browser
+          var browser = "";
+          c = navigator.userAgent.search("Chrome");
+          f = navigator.userAgent.search("Firefox");
+          m8 = navigator.userAgent.search("MSIE 8.0");
+          m9 = navigator.userAgent.search("MSIE 9.0");
+          if (c > -1) {
+              browser = "Chrome";
+              // chrome browser
+          transformfirsttick =  tick[0][0].attributes[1].value;
+
+          } else if (f > -1) {
+              browser = "Firefox";
+               // firefox browser
+           transformfirsttick =  tick[0][0].attributes[2].value;
+          } else if (m9 > -1) {
+              browser ="MSIE 9.0";
+          } else if (m8 > -1) {
+              browser ="MSIE 8.0";
+          }
+          
           svg.select(".circlecontainer").attr("transform", transformfirsttick);
           svg.select(".linecontainer").attr("transform", transformfirsttick);
+          
+          
+          
+          //console.log(browser);
+          
       	 }
              // Crosshair
              //svg.selectAll('.d3-crosshair-overlay').attr("width", width);
@@ -2755,8 +2877,21 @@ JSONObject allposts = new JSONObject();
      }
  });
 
+ 
+ 
+ $(document).ready(function() {
+		
+		$('#top-listtype').on("change",function(e){
+			var date_start = $("#date_start").val();
+			var date_end = $("#date_end").val();
+			loadUrls(date_start,date_end);
+		});
+		
 
+ });
  </script>
+ 
+ 
 
 <script src="pagedependencies/baseurl.js?v=93"></script>
 <script src="pagedependencies/bloggerportfolio.js"></script>

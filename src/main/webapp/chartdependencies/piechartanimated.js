@@ -27,6 +27,7 @@
         var svg = container
             .attr("width", radius * 2)
             .attr("height", radius * 2)
+            .call(responsivefy)
             .append("g")
                 .attr("transform", "translate(" + radius + "," + radius + ")");
 
@@ -169,4 +170,41 @@
                               return function(t) { return arc(i(t));
                           };
                       }
+                      
+                      function responsivefy(svg) {
+                      	  // container will be the DOM element the svg is appended to
+                      	  // we then measure the container and find its aspect ratioF
+                      	  const container = d3.select(svg.node().parentNode),
+                      	      width = parseInt(svg.style('width'), 10),
+                      	      height = 360,
+                      	      aspect = width / height;
+
+                      	  // add viewBox attribute and set its value to the initial size
+                      	  // add preserveAspectRatio attribute to specify how to scale
+                      	  // and call resize so that svg resizes on inital page load
+                      	  svg.attr('viewBox', `0 0 ${width} ${height}`)
+                      	      .attr('preserveAspectRatio', 'xMinYMid')
+                      	      .call(resize);
+
+                      	  // add a listener so the chart will be resized when the window resizes
+                      	  // to register multiple listeners for same event type,
+                      	  // you need to add namespace, i.e., 'click.foo'
+                      	  // necessary if you invoke this function for multiple svgs
+                      	  // api docs: https://github.com/mbostock/d3/wiki/Selections#on
+                      	  d3.select(window).on('resize.' + container.attr('id'), resize);
+
+                      	  // this is the code that actually resizes the chart
+                      	  // and will be called on load and in response to window resize
+                      	  // gets the width of the container and proportionally resizes the svg to fit
+                      	  function resize() {
+                      	      const targetWidth = parseInt(container.style('width'));
+                      	      
+                      	    plot_width = parseInt($('#scatter-container').width());
+                      	    
+                      	    if(targetWidth > 600){final_width = 360}else{final_width = targetWidth}
+                      	    
+                      	      svg.attr('width', final_width);
+                      	      svg.attr('height', 360);
+                      	  }
+                      	}
     }

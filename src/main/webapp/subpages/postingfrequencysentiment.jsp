@@ -34,20 +34,20 @@ String year_end="";
 /* allentitysentiments = blogpostsentiment._searchByRange("date", dt, dte, blogsiteId); */
 if(action.toString().equals("getsentimenttable")){
 	String pids = null;
-	//pids = new Blogposts()._getPostIdsByBloggerName("date",dt, dte,blogger.toString(),"date","DESC");
+	pids = new Blogposts()._getPostIdsByBloggerName("date",dt, dte,blogger.toString(),"date","DESC");
 	System.out.println("date..."+ dt+ dte+ pids);
 	
-	//allentitysentiments = blogpostsentiment._searchByRange("date", dt, dte, pids);
+	allentitysentiments = blogpostsentiment._searchByRange("date", dt, dte, pids);
 	
 %>
 <link rel="stylesheet" href="assets/css/table.css" />
 <link rel="stylesheet" href="assets/css/style.css" />
-<table id="DataTables_Table_1_wrapper" class="display" style="width:100%">
+<table id="DataTables_Table_1_wrapper" class="table_over_cover display" style="width:100%">
                                 <thead>
                                     <tr>
                                         <th>Entity</th>
                                         <th>Type</th>
-                                        <th>Sentiment</th>
+                                        <!-- <th>Sentiment</th> -->
 
                                     </tr>
                                 </thead>
@@ -71,7 +71,7 @@ if(action.toString().equals("getsentimenttable")){
                                         <td><%=tobj.get("entity").toString() %></td>
                                         <td><%=tobj.get("type").toString() %></td>
                                     
-                                        <td><%=tobj.get("sentiment").toString() %></td>
+                                        <%-- <td><%=tobj.get("sentiment").toString() %></td> --%>
                                     </tr>
                                     <% }} %>
                                 </tbody>

@@ -964,7 +964,7 @@
           </div> -->
 						<%
 							System.out.println("values1--" + mostactiveterm + "NOBLOGGER" + "," + dt + "," + dte + "," + ids);
-									JSONObject sql = post._getBloggerPosts(mostactiveterm, "NOBLOGGER", dt, dte, ids);
+									JSONObject sql = post._getBloggerPosts(mostactiveterm, "NOBLOGGER", dt, dte, ids,1000);
 
 									JSONObject firstpost = new JSONObject();
 									/*if(allposts.size()>0){ */
