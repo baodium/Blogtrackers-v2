@@ -79,7 +79,7 @@ public class DeleteTracker extends HttpServlet {
 	    	 tracker_names = object.getJSONArray("tracker_name");
 	    	for(int i =0; i < tracker_names.length(); i++) {
 	    		
-	    		insertToDB(userid, tracker_names.getString(i));
+	    		deleteFromDB(userid, tracker_names.getString(i));
 	    		pww.write("Tracker "+tracker_names.getString(i)+" has been deleted" );
 	    	}
 	    }catch (Exception e) {
@@ -89,7 +89,15 @@ public class DeleteTracker extends HttpServlet {
 	    //ArrayList prev = new DbConnection().query("SELECT * FROM trackers WHERE tracker_name='"+trackerName+"' AND userid= '"+userid+"'");
 	    }
 	}
-	public void insertToDB(String userid, String tracker_names) {
+	
+	/**
+	 * deleteFromDB(String userid, String tracker_names) - Deleting tracker associated with specific user
+	 * 
+	 * @param userid, 
+	 * @param tracker_names
+	 * @return  
+	 */
+	public void deleteFromDB(String userid, String tracker_names) {
 			String output = "";
 			String query="delete FROM blogtrackers.trackers where tracker_name='"+tracker_names+"' and userid ='"+userid+"'";
 			boolean done = new DbConnection().updateTable(query);

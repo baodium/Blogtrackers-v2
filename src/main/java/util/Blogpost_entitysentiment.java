@@ -28,28 +28,14 @@ public class Blogpost_entitysentiment {
 		return this.totalpost;
 	}
 
-	/*
-	 * public ArrayList _searchByRange(String field,String greater, String less,
-	 * String blog_ids) throws Exception { String[] args = blog_ids.split(",");
-	 * JSONArray pars = new JSONArray(); ArrayList<String> ar = new
-	 * ArrayList<String>(); for(int i=0; i<args.length; i++){
-	 * pars.put(args[i].replaceAll(" ", "")); }
-	 * 
-	 * String arg2 = pars.toString(); JSONObject jsonObj = new JSONObject("{\r\n" +
-	 * "  \"query\": {\r\n" + "    \"bool\": {\r\n" + "      \"must\": [\r\n" +
-	 * "        {\r\n" + "		  \"constant_score\":{\r\n" +
-	 * "					\"filter\":{\r\n" +
-	 * "							\"terms\":{\r\n" +
-	 * "							\"blogpost_id\":"+arg2+"\r\n" +
-	 * "									}\r\n" +
-	 * "							}\r\n" + "						}\r\n" +
-	 * "		},\r\n" + "      ]\r\n" + "    }\r\n" + "  }\r\n" + "}");
-	 * 
-	 * 
-	 * System.out.println("blogpostentity--"+jsonObj); String url =
-	 * base_url+"_search?size=200"; return this._getResult(url,jsonObj); }
+	/**
+	 * Getting entities based on blogpost_ids
+	 * @param greater -> lower_range of date to filter on
+	 * @param less -> higher_range of date to filter on
+	 * @param blog_ids -> blogpost_ids
+	 * @return String count
 	 */
-	public ArrayList _searchByRange(String field,String greater, String less, String blog_ids) throws Exception {
+	public ArrayList _searchByRange(String greater,String less, String blog_ids) throws Exception {
 		String[] args = blog_ids.split(","); 
 		JSONArray pars = new JSONArray(); 
 		ArrayList<String> ar = new ArrayList<String>();	
@@ -67,6 +53,11 @@ public class Blogpost_entitysentiment {
 		return postDataAll;
 	}
 	
+	/**g
+	 * Getting entities based on blogsite_ids
+	 * @param ids -> blogsite_ids
+	 * @return String count
+	 */
 	public ArrayList _fetch(String ids) throws Exception {
 		ArrayList result = new ArrayList();
 		String[] args = ids.split(",");

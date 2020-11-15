@@ -30,10 +30,13 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class AutomatedCrawlerConnect {
+	
 	/**
 	 * loadConstant() - For loading the configuration file from a remote repository	
+	 * 
+	 * @param 
+	 * @return HashMap<String, String> hm; 
 	 */
-	
 	public static HashMap<String, String> loadConstant() {
 		HashMap<String, String> hm = new HashMap<String, String>();
 		BufferedReader br = null;	
@@ -59,10 +62,13 @@ public class AutomatedCrawlerConnect {
 		return hm;
 	}
 
+
 	/**
 	 * getConnection() - For getting the connection parameter and connecting to the database driver
+	 * 
+	 * @param 
+	 * @return Connection; 
 	 */
-// hello
 	public  static Connection getConnection() {
 		try{
 			HashMap<String, String> hm = new HashMap<String, String>();
@@ -95,12 +101,11 @@ public class AutomatedCrawlerConnect {
 	}
 
 	
-	/*
-	 * This method checks to see if the username is already in the database
-	 * We use this method to verify if a user already has an account in our database
+	/**
+	 * updateTable(String query) - For Updating database
 	 * 
-	 * @param: iUsername: The username of the user
-	 * 
+	 * @param query
+	 * @return boolean; 
 	 */
 	
 	public boolean updateTable(String query){
@@ -123,6 +128,12 @@ public class AutomatedCrawlerConnect {
 		return donee;
 	}
 	
+	/**
+	 * insertRecord(String query) - For Inserting into database
+	 * 
+	 * @param query
+	 * @return boolean; 
+	 */
 	public boolean insertRecord(String query)
 	{
 		boolean donee = false;
@@ -145,8 +156,12 @@ public class AutomatedCrawlerConnect {
 	}
 	
 	
-	/* Query Database*/
-	
+	/**
+	 * query(String query) - For querying database and returning Arraylist
+	 * 
+	 * @param query
+	 * @return ArrayList result; 
+	 */
 	public static ArrayList query(String query){
 		ArrayList result=new ArrayList(); 
 		try{
@@ -190,7 +205,12 @@ public class AutomatedCrawlerConnect {
 	}
 	
 	
-	/* Query Database and return json result*/
+	/**
+	 * queryJSON(String query) - For querying database and returning Arraylist of JSON oBJECTS
+	 * 
+	 * @param query
+	 * @return ArrayList result; 
+	 */
 	public ArrayList queryJSON(String query){
 		
 		ArrayList<String> list = new ArrayList<String>();

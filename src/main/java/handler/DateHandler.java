@@ -20,6 +20,12 @@ import authentication.DbConnection;;
 public class DateHandler extends DbConnection
 {
 
+	/**
+	 * returnDates(String datePicked) - Formating date string
+	 * 
+	 * @param datePicked
+	 * @return List<String> listDates
+	 */
 	public List<String> returnDates(String datePicked){
 		List<String> listDates = new ArrayList<>();
 		try{
@@ -52,6 +58,12 @@ public class DateHandler extends DbConnection
 
 	}
 	
+	/**
+	 * returnScale(List<String> aa) - Getting date type (year, month, day, week)
+	 * 
+	 * @param aa
+	 * @return String scale;
+	 */
 	public String returnScale(List<String> aa){
 		String d1 = aa.get(0);
 		String d2 = aa.get(1);
@@ -110,6 +122,14 @@ public class DateHandler extends DbConnection
 			return null;
 		}
 	}
+	
+	/**
+	 * differenceBetweenDates - Getting difference between dates
+	 * 
+	 * @param fromDate
+	 * @param toDate
+	 * @return long[]{days, months, years};
+	 */
 	public long[] differenceBetweenDates(Date fromDate, Date toDate) {
 		Calendar startDate = Calendar.getInstance();
 		startDate.setTime(fromDate);
