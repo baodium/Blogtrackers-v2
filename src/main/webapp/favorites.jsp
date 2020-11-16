@@ -339,16 +339,19 @@ if(blogpostid.length > 0 && !allreturnedblog.equalsIgnoreCase("") )
 for(int k=0; k<blogpostid.length; k++)
 {
 List<String> test = new ArrayList<String>();	
-test = new DbConnection().query("select * from blogposts where blogpost_id="+blogpostid[k]);
+test = new DbConnection().queryJSON("select * from blogposts where blogpost_id="+blogpostid[k]);
 //System.out.println(test);
 //System.out.println(test.get(0));
 //String allblogstring = test.get(0).toString().replaceAll("\\[","").replaceAll("\\]","");
-String[] allblogarray =  test.toArray(new String[test.size()]);
-String eachblogpostid = allblogarray[0];
-String blogposttitle = allblogarray[1];
-String blogger = allblogarray[3];
-String permalink = allblogarray[11];
-String blogsiteid = myfavoritespost.selectBlogTitle(allblogarray[12]);
+
+JSONObject allblogarray = new JSONObject(test.get(0));
+//String[] allblogarray =  test.toArray(new String[test.size()]);
+Object eachblogpostid = allblogarray.getJSONObject("_source").get("blogpost_id");
+Object blogposttitle = allblogarray.getJSONObject("_source").get("title");
+Object blogger = allblogarray.getJSONObject("_source").get("blogger");
+Object permalink = allblogarray.getJSONObject("_source").get("permalink");
+Object blogsiteid = allblogarray.getJSONObject("_source").get("blogsite_id");
+
 //System.out.println(permalink); 
 //JSONObject jsArray = new JSONObject(test.get(0));
 //System.out.println(jsArray);
@@ -361,9 +364,9 @@ String blogsiteid = myfavoritespost.selectBlogTitle(allblogarray[12]);
 <div class="text-center mt10 mb10 trackingtracks"><button class="btn btn-primary stylebutton7">TRACKING</button> <button class="btn btn-primary stylebutton8">0 Tracks</button></div>
 
   <div class="card-body">
-    <a href="<%=request.getContextPath()%>/blogpostpage.jsp?p=<%=allblogarray[0] %>"><h4 class="card-title text-primary text-center pb20 bold-text post-title"><%=blogposttitle %></h4></a>
+    <a href="<%=request.getContextPath()%>/blogpostpage.jsp?p=<%=allblogarray.getJSONObject("_source").get("blogpost_id") %>"><h4 class="card-title text-primary text-center pb20 bold-text post-title"><%=blogposttitle %></h4></a>
     <p class="card-text text-center author mb0 light-text"><%=blogger %></p>
-    <p class="card-text text-center postdate light-text"><%=allblogarray[2]%></p>
+    <p class="card-text text-center postdate light-text"><%=allblogarray.getJSONObject("_source").get("date")%></p>
   </div>
   <div class="<%=eachblogpostid %>">
   <input type="hidden" class="post-image" id="<%=eachblogpostid %>" name="pic" value="<%=permalink %>">

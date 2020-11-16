@@ -30,10 +30,10 @@ public class Blogpost_entitysentiment {
 
 	/**
 	 * Getting entities based on blogpost_ids
-	 * @param greater -> lower_range of date to filter on
-	 * @param less -> higher_range of date to filter on
-	 * @param blog_ids -> blogpost_ids
-	 * @return String count
+	 * @param greater lower_range of date to filter on
+	 * @param less higher_range of date to filter on
+	 * @param blog_ids blogpost_ids
+	 * @return ArrayList of entities and types
 	 */
 	public ArrayList _searchByRange(String greater,String less, String blog_ids) throws Exception {
 		String[] args = blog_ids.split(","); 
@@ -53,10 +53,10 @@ public class Blogpost_entitysentiment {
 		return postDataAll;
 	}
 	
-	/**g
+	/**
 	 * Getting entities based on blogsite_ids
-	 * @param ids -> blogsite_ids
-	 * @return String count
+	 * @param ids blogsite_ids
+	 * @return ArrayList of entity data
 	 */
 	public ArrayList _fetch(String ids) throws Exception {
 		ArrayList result = new ArrayList();
