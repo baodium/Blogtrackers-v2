@@ -759,7 +759,7 @@ class StackedChart {
 					//Full day format (use for monthly/weekly charts - i.e. 06/30/19 0:00)
 					//formatted_date = ("0" + (date.getMonth() + 1)).slice(-2) + "/" + ("0" + date.getDate()).slice(-2) + "/" + date.getFullYear().toString().substr(-2) + " 0:00";
 					//this.data.push({"key": "Topic " + (topic + 1), "value": averages[year][topic].toFixed(3), "date": formatted_date});
-					dict['Topic ' + (topic + 1)] = averages[year][topic].toFixed(3);
+					dict['Topic ' + (topic + 1)] = parseFloat(averages[year][topic].toFixed(3));
 				}
 				this.data.push(dict);
 			}
@@ -768,7 +768,11 @@ class StackedChart {
 	
 	draw(elementName, HEIGHT, data) {
 	
-		let chartEngine = d3v4; 
+		let chartEngine = d3v4;
+		let axis_ticks = 30;
+		//let axis_height = 200000;
+		let axis_height = 5000;
+		let colors_array = ["#E377C2","#8C564B", "#9467BD", "#D62728", "#2CA02C", "#FF7F0E", "#1F77B4", "#7F7F7F","#17B890", "#D35269"];
 		
 		// set the dimensions and margins of the graph
 		var margin = {top: 10, right: 10, bottom: 50, left: 55},
@@ -785,7 +789,7 @@ class StackedChart {
 		          "translate(" + margin.left + "," + margin.top + ")");
 		
 		// Parse the Data
-		chartEngine.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/5_OneCatSevNumOrdered_wide.csv", function(data) {
+		//chartEngine.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/5_OneCatSevNumOrdered_wide.csv", function(data) {
 			
 		// List of groups = header of the csv files
 		
@@ -797,11 +801,11 @@ class StackedChart {
 		  .range([ 0, width ]);
 		svg.append("g")
 		  .attr("transform", "translate(0," + height + ")")
-		  .call(chartEngine.axisBottom(x).ticks(30));
+		  .call(chartEngine.axisBottom(x).ticks(axis_ticks));
 		
 		// Add Y axis
 		var y = chartEngine.scaleLinear()
-		  .domain([0, 200000])
+		  .domain([0, axis_height])
 		  .range([ height, 0 ]);
 		svg.append("g")
 		  .call(chartEngine.axisLeft(y));
@@ -809,13 +813,13 @@ class StackedChart {
 		// color palette
 		var color = chartEngine.scaleOrdinal()
 		  .domain(keys)
-		  .range(['#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00','#ffff33','#a65628','#f781bf', '#ffffff', '#000000'])
+		  .range(colors_array)
 		
 		//stack the data?
 		var stackedData = chartEngine.stack()
 		  .keys(keys)
 		  (data)
-		  //console.log("This is the stack result: ", stackedData)
+		console.log("This is the stack result: ", stackedData)
 		
 		// Show the areas
 		svg
@@ -830,7 +834,7 @@ class StackedChart {
 		      .y1(function(d) { 
 		    	  return y(d[1]); })
 		  )
-		})
+		//})
 	}
 }
 

@@ -273,6 +273,7 @@
 
 <link rel="stylesheet" href="assets/css/daterangepicker.css" />
 <link rel="stylesheet" href="assets/css/style.css" />
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900" rel="stylesheet">
 <link rel="stylesheet" href="assets/presentation/narrative-analysis.css"/>
         
         <script src="assets/behavior/narrative-analysis.js"></script>
@@ -573,7 +574,9 @@
                                 <div id="editWrapper">
                                     <textarea entity="<%=entity %>" name="narrativeTextInput" class="narrativeText narrative_text_input"><%=narrative.toString() %></textarea>
                                     <div id="editControls">
-                                        <button id="editButton"></button>
+                                        <button id="editButton" class="editButtons" title="Edit"></button>
+                                        <button id="cancelButton" class="editButtons" title="Cancel"></button>
+                                        <button id="confirmButton" class="editButtons" title="Confirm"></button>
                                     </div>
                                 </div>
                                 <p class="counter"><span class="number"><%=total_narrative_count.toString() %></span>Post </p>

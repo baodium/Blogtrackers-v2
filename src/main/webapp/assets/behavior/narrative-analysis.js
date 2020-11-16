@@ -38,6 +38,9 @@ document.addEventListener("DOMContentLoaded", function() {
             this.moreInfoModalContent = document.querySelector("section#moreInfoModal div#messageContent");
             this.moreInfoCloseButton = document.querySelector("section#moreInfoModal div#messageBox button#closeButton");
             this.bottomMessage = document.querySelector("section#notifications");
+            this.narrativeEditButton = "editButton";
+            this.narrativeConfirmButton = "confirmButton";
+            this.narrativeCancelButton = "cancelButton";
 
             this.uncollapseClass = "uncollapse";
             this.openClass = "open";
@@ -45,6 +48,8 @@ document.addEventListener("DOMContentLoaded", function() {
             this.displayedClass = "displayed";
             this.hiddenClass = "hidden";
             this.lastClass = "last";
+            this.editingClass = "editing";
+            this.previousContent = "";
 
             this.freezeDocumentScrollingClass = "freeze";
 
@@ -140,12 +145,37 @@ document.addEventListener("DOMContentLoaded", function() {
 
         }
 
-        narrativesClickListener() {
+        narrativesClickListener(event) {
 
-            if (event.target.classList.contains(this.narrativeText)) {
+
+            if (event.target.id == this.narrativeEditButton) {
+
+                event.currentTarget.classList.toggle(this.editingClass);
+                event.currentTarget.getElementsByClassName(this.narrativeText)[0].setAttribute("contenteditable", "true");
+                event.currentTarget.getElementsByClassName(this.narrativeText)[0].focus();
+                this.previousContent = event.currentTarget.getElementsByClassName(this.narrativeText)[0].textContent;
+
+            }
+
+            if (event.target.id == this.narrativeConfirmButton) {
+
+                event.currentTarget.classList.toggle(this.editingClass);
+                event.currentTarget.getElementsByClassName(this.narrativeText)[0].setAttribute("contenteditable", "false");
+
+            }
+
+            if (event.target.id == this.narrativeCancelButton) {
+
+                event.currentTarget.classList.toggle(this.editingClass);
+                event.currentTarget.getElementsByClassName(this.narrativeText)[0].setAttribute("contenteditable", "false");
+                event.currentTarget.getElementsByClassName(this.narrativeText)[0].textContent = this.previousContent;
+
+            }
+
+            if (event.target.classList.contains(this.narrativeText) && !(event.currentTarget.classList.contains(this.editingClass))) {
                 event.currentTarget.classList.toggle(this.openClass);
                 if (this.bottomMessage) this.bottomMessage.remove();
-            } 
+            }
 
         }
 
