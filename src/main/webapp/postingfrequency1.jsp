@@ -588,7 +588,7 @@
 												//String pids = post._getPostIdsByBloggerName("date",dt, dte,bloggerName,"date","DESC");
 												allterms = term._searchByRange("blogsiteid", dt, dte, blogsiteId);//_searchByRange("blogpostid",dt, dte,postids);
 												System.out.println("Most active blogger:" + mostactiveblogger);
-												allentitysentiments = blogpostsentiment._searchByRange("date", dt, dte, blogsiteId);
+												allentitysentiments = blogpostsentiment._searchByRange(dt, dte, blogsiteId);
 												selectedid = blogsiteId;
 												allposts = post._getBloggerByBloggerName("date", dt, dte, bloggerName, "date", "DESC");
 											} else {

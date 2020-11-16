@@ -37,7 +37,7 @@ if(action.toString().equals("getsentimenttable")){
 	pids = new Blogposts()._getPostIdsByBloggerName("date",dt, dte,blogger.toString(),"date","DESC");
 	System.out.println("date..."+ dt+ dte+ pids);
 	
-	allentitysentiments = blogpostsentiment._searchByRange("date", dt, dte, pids);
+	allentitysentiments = blogpostsentiment._searchByRange(dt, dte, pids);
 	
 %>
 <link rel="stylesheet" href="assets/css/table.css" />
