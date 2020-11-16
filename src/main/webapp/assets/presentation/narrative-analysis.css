@@ -185,7 +185,10 @@ ul#narrativeTree li.level {
 
 ul#narrativeTree li.level div.keyword {
 
-    display: inline-block;
+    display: inline-grid;
+    grid-template-columns: auto auto;
+    grid-gap: 7px;
+    align-items: center;
     font-size: 18px;
     font-weight: 600;
     background-color: var(--yellowish);
@@ -212,9 +215,9 @@ ul#narrativeTree li.level div.keyword div.collapseIcon {
     display: inline-block;
     margin-right: 2px;
     width: 14px;
-    height: 20px;
+    height: 14px;
     background-image: var(--interface);
-    background-position: -10px -969px;
+    background-position: -10px -975px;
 
 }
 
@@ -310,20 +313,53 @@ ul#narrativeTree li.level ul.narratives li.narrative.more div.middleSection div.
 
 }
 
+ul#narrativeTree li.level ul.narratives li.narrative.editing div.middleSection div#editWrapper div#editControls button#editButton {
+
+    display:none;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative:not(.editing) div.middleSection div#editWrapper div#editControls button#cancelButton {
+
+    display:none;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative:not(.editing) div.middleSection div#editWrapper div#editControls button#confirmButton {
+
+    display:none;
+
+}
+
 ul#narrativeTree li.level ul.narratives li.narrative div.middleSection div#editWrapper {
 
-    display: flex;
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-gap: 10px;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative.open div.middleSection div#editWrapper {
+
+    grid-template-columns: auto 24px;
 
 }
 
 ul#narrativeTree li.level ul.narratives li.narrative div.middleSection p.narrativeText {
 
     font-size: 18px;
+    outline: 0px;
     /* padding: 5px 5px; */
     opacity: 1;
     border-radius: var(--radius5);
     transition: font-size .2s ease;
     cursor: pointer;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative.editing div.middleSection p.narrativeText:hover {
+
+    background-color: transparent;
 
 }
 
@@ -333,6 +369,12 @@ ul#narrativeTree li.level ul.narratives li.narrative.open div.middleSection text
     line-height: 30px;
     font-weight: 600;
     height: 120px;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative div.middleSection textarea.narrativeText:hover {
+
+    background-color: var(--blueishLight);
 
 }
 
@@ -364,22 +406,36 @@ ul#narrativeTree li.level ul.narratives li.narrative div.middleSection textarea.
 
 ul#narrativeTree li.level ul.narratives li.narrative.open div.middleSection div#editControls {
 
-    margin-left: 5px;    
+    margin-left: 0px;    
 
 }
 
-ul#narrativeTree li.level ul.narratives li.narrative.open div.middleSection div#editControls button#editButton {
+ul#narrativeTree li.level ul.narratives li.narrative.open div.middleSection div#editControls button.editButtons {
 
+    display: block;
     width: 25px;
     height: 25px;
     background-image: var(--interface);
+    margin-bottom: 5px;
     background-position: -105px -960px;
 
 }
 
-ul#narrativeTree li.level ul.narratives li.narrative.open div.middleSection div#editControls button#editButton:hover {
+ul#narrativeTree li.level ul.narratives li.narrative.open div.middleSection div#editControls button.editButtons:hover {
 
     opacity: 0.5;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative.open div.middleSection div#editControls button#cancelButton {
+
+    background-position: -156px -957px;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative.open div.middleSection div#editControls button#confirmButton {
+
+    background-position: -200px -955px;
 
 }
 

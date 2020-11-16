@@ -153,7 +153,6 @@ public class Narrative extends HttpServlet {
 	public static List<Entity> search(String search_string) {
 		JSONObject result = new JSONObject();
 
-
 		JSONObject query = new JSONObject(
 				"{\r\n" + "    \"size\": 10,\r\n" + "     \"query\": {\r\n" + "        \"match\" : {\r\n"
 						+ "            \"data.narrative\" : {\r\n" + "                \"query\" : \"" + search_string
