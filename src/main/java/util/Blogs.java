@@ -825,7 +825,48 @@ public class Blogs extends DbConnection{
 		 * @throws Exception - Exception
 		 * @return String result
 		 */
-		public static ArrayList<Tuple2<String, Integer> > getTopBlogs(String field_name, String field_values, String from, String to, String limit) throws Exception {
+		public static ArrayList<Tuple2<String, Tuple2<String, Integer>> > getTopBlogs(String field_name, String field_values, String from, String to, String limit) throws Exception {
+			String result = null;
+			ArrayList<Tuple2<String, Tuple2<String, Integer>>> output = new ArrayList<>();
+			Tuple2<String, Tuple2<String, Integer>> v = new Tuple2<String, Tuple2<String, Integer>>(null,null);
+			
+			if (field_values.indexOf("\"") != 0) {
+				field_values = "\"" + field_values + "\"";
+			}
+			String query = "select "+field_name+", location, SUBSTRING_INDEX(SUBSTRING_INDEX(SUBSTRING_INDEX(SUBSTRING_INDEX(permalink, '/', 3), '://', -1), '/', 1), '?', 1) as domain, count("+field_name+") c\r\n" + 
+					"from blogposts\r\n" + 
+					"where "+field_name+" in ("+field_values+") \r\n" + 
+					"and date > \""+from+"\" and location is not null \r\n" + 
+					"and date < \""+to+"\"\r\n" + 
+					"group by "+field_name+" order by c desc limit "+limit+";";
+			
+//			System.out.println(query);
+			ResultSet post_all =  DbConnection.queryResultSet(query);
+			
+			while(post_all.next()){
+				String domain_name = post_all.getString("domain");
+				String location = post_all.getString("location");
+				int count = post_all.getInt("c");
+				
+				v = new Tuple2<String, Tuple2<String, Integer>>(domain_name, new Tuple2<String, Integer>(location, count));
+				output.add(v);
+			}
+
+			post_all.close();
+			return output;
+		}
+		
+		/**
+		 * Getting top location with respect to post frequency
+		 * @param field_name field name to filter search on
+		 * @param field_values field values
+		 * @param from lowest date range
+		 * @param to highest date range
+		 * @param limit output limit
+		 * @throws Exception - Exception
+		 * @return String result
+		 */
+		public static ArrayList<Tuple2<String, Integer> > getTopLocation(String field_name, String field_values, String from, String to, String limit) throws Exception {
 			String result = null;
 			ArrayList<Tuple2<String, Integer> > output = new ArrayList<>();
 			Tuple2<String, Integer> v = new Tuple2<String, Integer>(null,null);
@@ -833,21 +874,24 @@ public class Blogs extends DbConnection{
 			if (field_values.indexOf("\"") != 0) {
 				field_values = "\"" + field_values + "\"";
 			}
-			String query = "select "+field_name+", SUBSTRING_INDEX(SUBSTRING_INDEX(SUBSTRING_INDEX(SUBSTRING_INDEX(permalink, '/', 3), '://', -1), '/', 1), '?', 1) as domain, count("+field_name+") c\r\n" + 
-					"from blogposts\r\n" + 
-					"where "+field_name+" in ("+field_values+") \r\n" + 
-					"and date > \""+from+"\" \r\n" + 
-					"and date < \""+to+"\"\r\n" + 
-					"group by "+field_name+" limit "+limit+";";
+			String query = "select location, count(location) c\n" + 
+					"from blogposts\n" + 
+					"where "+field_name+" in ("+field_values+") \n" + 
+					"and date > \""+from+"\" \n" + 
+					"and date < \""+to+"\"\n" + 
+					"and location is not null\n" + 
+					"group by location\n" + 
+					"order by c desc\n" + 
+					"limit "+limit+";";
 			
-			System.out.println(query);
+//			System.out.println(query);
 			ResultSet post_all =  DbConnection.queryResultSet(query);
 			
 			while(post_all.next()){
-				String domain_name = post_all.getString("domain");
+				String location = post_all.getString("location");
 				int count = post_all.getInt("c");
 				
-				v = new Tuple2<String, Integer>(domain_name,count);
+				v = new Tuple2<String, Integer>(location,count);
 				output.add(v);
 			}
 
@@ -856,10 +900,9 @@ public class Blogs extends DbConnection{
 		}
 		
 		
-		
 		public static void main(String[] args) {
 			try {
-				//getMostInfluential("blogsite_id", "\"2649\",\"1319\",\"3436\"", "2020-01-01", "2020-11-11", "10");
+				getMostInfluentialBlogs("blogsite_id", "\"2649\",\"1319\",\"3436\"", "2020-01-01", "2020-11-11", "10");
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

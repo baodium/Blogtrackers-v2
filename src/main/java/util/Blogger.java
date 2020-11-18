@@ -181,7 +181,7 @@ public class Blogger {
 				"where "+field_name+" in ("+field_values+") \r\n" + 
 				"and date > \""+from+"\" \r\n" + 
 				"and date < \""+to+"\"\r\n" + 
-				"group by blogger limit "+limit+";";
+				"group by blogger order by m desc limit "+limit+";";
 		
 //		System.out.println(query);
 		ResultSet post_all =  DbConnection.queryResultSet(query);

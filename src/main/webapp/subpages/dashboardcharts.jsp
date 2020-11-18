@@ -15,7 +15,7 @@
 	pageEncoding="UTF-8"%>
 
 <%
-Object date_start = (null == request.getParameter("date_start")) ? "" : request.getParameter("date_start");
+	Object date_start = (null == request.getParameter("date_start")) ? "" : request.getParameter("date_start");
 Object date_end = (null == request.getParameter("date_end")) ? "" : request.getParameter("date_end");
 Object blogger = (null == request.getParameter("blogger")) ? "" : request.getParameter("blogger");
 
@@ -26,41 +26,36 @@ Object action = (null == request.getParameter("action")) ? "" : request.getParam
 Object post_ids = (null == request.getParameter("post_ids")) ? "" : request.getParameter("post_ids");
 Object ids = (null == request.getParameter("ids")) ? "" : request.getParameter("ids");
 
+String[] array = ids.toString().split(",");
+
+String blog_ids = "";
+for (String x : array) {
+	blog_ids += "\"" + x + "\",";
+}
+int length = blog_ids.length();
+blog_ids = blog_ids.substring(0, length - 1);
+
 PrintWriter out_ = response.getWriter();
 
+Trackers tracker = new Trackers();
+Blogposts post = new Blogposts();
+Blogs blog = new Blogs();
 
-Trackers tracker  = new Trackers();
-Blogposts post  = new Blogposts();
-Blogs blog  = new Blogs();
-
-Terms term  = new Terms();
-
-
-//String sql = post._getMostKeywordDashboard(null,date_start.toString(),date_end.toString(),ids.toString());
-//JSONObject json_type = new JSONObject();
-//Map<String, Integer> json_type = new HashMap<String, Integer>();
-
-//json_type=post._keywordTermvctors(sql);
-
-
-/* JSONObject res=post._keywordTermvctors(sql); */
-//System.out.println("data--"+json_type);
-//System.out.println("action--"+action.toString());
+Terms term = new Terms();
+ArrayList<scala.Tuple2<String, scala.Tuple2<String, Integer>>> top_location = Blogs.getTopBlogs("blogsite_id", blog_ids,
+		date_start.toString(), date_end.toString(), "10");
 %>
-<!-- <link rel="stylesheet" href="assets/bootstrap/css/bootstrap-grid.css" />
-<link rel="stylesheet" href="assets/bootstrap/css/bootstrap.css" />
-<link rel="stylesheet" href="assets/vendors/DataTables/dataTables.bootstrap4.min.css" />
-<link rel="stylesheet" href="assets/vendors/DataTables/Buttons-1.5.1/css/buttons.dataTables.min.css" />
-<script src="assets/js/jquery.min.js"></script> -->
 
-<% if(action.toString().equals("getkeyworddashboard")){
-	
-String dashboardterms = null;
-dashboardterms = Clustering.getTopTermsFromDashboard(ids.toString(), date_start.toString(),date_end.toString() , "100");
-	%>
-	
-	<%-- //<%=result.toString()%> --%>
- <div class="chart-container">
+
+<%
+	if (action.toString().equals("getkeyworddashboard")) {
+
+	String dashboardterms = null;
+	dashboardterms = Terms.getTopTerms("blogsiteid", blog_ids, date_start.toString(), date_end.toString(), "100");
+%>
+
+<%-- //<%=result.toString()%> --%>
+<div class="chart-container">
 	<div class="chart" id="tagcloudcontainer" asertain="nerc"></div>
 	<div class="jvectormap-zoomin zoombutton" id="zoom_in">+</div>
 	<div class="jvectormap-zoomout zoombutton" id="zoom_out">−</div>
@@ -70,7 +65,7 @@ dashboardterms = Clustering.getTopTermsFromDashboard(ids.toString(), date_start.
 <script src="assets/vendors/wordcloud/d3.layout.cloud.js"></script>
 <script type="text/javascript" src="assets/vendors/d3/d3_tooltip.js"></script>
 <script type="text/javascript" src="assets/js/jquery.inview.js"></script>
-<script type="text/javascript" src="chartdependencies/keywordtrendd3.js"></script> 
+<script type="text/javascript" src="chartdependencies/keywordtrendd3.js"></script>
 
 <script>
  /*
@@ -95,96 +90,96 @@ for(var i = 0; i < terms.length; i++){
 }
 wordtagcloud("#tagcloudcontainer",450,jsonresult);
 </script>
-	
-<% } else if(action.toString().equals("getlocationdashboard")){ %>
+
+<%
+	} else if (action.toString().equals("getlocationdashboard")) {
+%>
 
 <!-- START LOCATION  -->
-			<div class="card card-style mt20">
-					<div class="card-body mt0 pt0 pl0" style="min-height: 520px;">
+<div class="card card-style mt20">
+	<div class="card-body mt0 pt0 pl0" style="min-height: 520px;">
 
-						<div class="location_mecard">
+		<div class="location_mecard">
 
-							<div class="front p30 pt5 pb5">
+			<div class="front p30 pt5 pb5">
 
-								<div>
-									<p class="text-primary mt0 float-left">
-										Most Active Location
-									</p>
-									<button style="right: 10px; position: absolute" id="flip"
-										type="button" onclick="location_flip()"
-										class="btn btn-sm btn-primary float-right"
-										data-toggle="tooltip" data-placement="top"
-										title="Flip to view location usage" aria-expanded="false">
-										<i class="fas fa-exchange-alt" aria-hidden="true"></i>
-									</button>
-								</div>
-								<div style="min-height: 490px;">
-									<div class="map-container map-choropleth"></div>
-								</div>
+				<div>
+					<p class="text-primary mt0 float-left">Most Active Location</p>
+					<button style="right: 10px; position: absolute" id="flip"
+						type="button" onclick="location_flip()"
+						class="btn btn-sm btn-primary float-right" data-toggle="tooltip"
+						data-placement="top" title="Flip to view location usage"
+						aria-expanded="false">
+						<i class="fas fa-exchange-alt" aria-hidden="true"></i>
+					</button>
+				</div>
+				<div style="min-height: 490px;">
+					<div class="map-container map-choropleth"></div>
+				</div>
 
 
-							</div>
-							<!-- end front -->
-							<div class="back p30 pt5 pb5">
+			</div>
+			<!-- end front -->
+			<div class="back p30 pt5 pb5">
 
-								<div>
-									<p class="text-primary mt10 float-left">Location Usage</p>
-									<button style="right: 10px; position: absolute" id="flip"
-										type="button" onclick="location_flip()"
-										class="btn btn-sm btn-primary float-right"
-										data-toggle="tooltip" data-placement="top"
-										title="Flip to view location usage" aria-expanded="false">
+				<div>
+					<p class="text-primary mt10 float-left">Location Usage</p>
+					<button style="right: 10px; position: absolute" id="flip"
+						type="button" onclick="location_flip()"
+						class="btn btn-sm btn-primary float-right" data-toggle="tooltip"
+						data-placement="top" title="Flip to view location usage"
+						aria-expanded="false">
 
-										<i class="fas fa-exchange-alt" aria-hidden="true"></i>
-									</button>
-								</div>
+						<i class="fas fa-exchange-alt" aria-hidden="true"></i>
+					</button>
+				</div>
 
-								<div class="min-height-table">
-									<table id="DataTables_Table_19_wrapper" class="display"
-										style="width: 100%">
-										<thead>
-											<tr>
-												<th>Blogs</th>
-												<th>Location</th>
+				<div class="min-height-table">
+					<table id="DataTables_Table_19_wrapper" class="display"
+						style="width: 100%">
+						<thead>
+							<tr>
+								<th>Blogs</th>
+								<th>Location</th>
 
-											</tr>
-										</thead>
-										<tbody>
+							</tr>
+						</thead>
+						<tbody>
 
-											<%if (11 > 0) {
-						for (int i = 0; i < 11; i++) {
-							//ArrayList<?> loca = (ArrayList<?>) locations_usage.get(i);
-							//String loc = loca.get(0).toString();
-							//String size = loca.get(1).toString();
-							//String blogsite_name = loca.get(2).toString();
-							
+							<%
+								
+							if (top_location.size() > 0) {
+								for (scala.Tuple2<String, scala.Tuple2<String, Integer>> x : top_location) {
+									scala.Tuple2<String, Integer> location_count = x._2;
 							%>
 
-											<tr>
-												<td class="">sunnynews.com</td>
-												<td>USA</td>
-												
-											</tr>
+							<tr>
+								<td class=""><%=x._1%></td>
+								<td><%=location_count._1%></td>
 
-											<%}
-					}%>
+							</tr>
 
-										</tbody>
-									</table>
+							<%
+								}
+							}
+							%>
+
+						</tbody>
+					</table>
 
 
-								</div>
-
-							</div>
-							<!-- end back -->
-
-						</div>
-						<!--end location mecard -->
-
-					</div>
 				</div>
-				
-				<script>
+
+			</div>
+			<!-- end back -->
+
+		</div>
+		<!--end location mecard -->
+
+	</div>
+</div>
+
+<script>
 					function location_flip() {
 					    $('.location_mecard').toggleClass('flipped');
 					}
@@ -287,115 +282,106 @@ wordtagcloud("#tagcloudcontainer",450,jsonresult);
 
 						});
 				</script>
-				<!-- END LOCATION -->
+<!-- END LOCATION -->
 
 
 
 
-<% } else if(action.toString().equals("getlanguagedashboard")){ %>
+<%
+	} else if (action.toString().equals("getlanguagedashboard")) {
+%>
 
 
 
 <!-- START LANGUAGE -->
-				<div class="card card-style mt20">
+<div class="card card-style mt20">
 
-					<div class="card-body mt0 pt0 pl0" style="min-height: 520px;">
-						<div class="mecard">
-							<div class="front p30 pt5 pb5">
-								<div>
-									<p class="text-primary mt10 float-left">Language Usage</p>
-									<button style="right: 10px; position: absolute" id="flip1"
-										type="button" onclick="flip()"
-										class="btn btn-sm btn-primary float-right"
-										data-toggle="tooltip" data-placement="top"
-										title="Flip to view language usage" aria-expanded="false">
-										<i class="fas fa-exchange-alt" aria-hidden="true"></i>
-									</button>
-								</div>
-								<div class="min-height-table">
-									<div class="chart-container">
-								
-										<div class="chart" id="languageusage"></div>
-									</div>
-								</div>
-							</div>
-							<div class="back p30 pt5 pb5">
+	<div class="card-body mt0 pt0 pl0" style="min-height: 520px;">
+		<div class="mecard">
+			<div class="front p30 pt5 pb5">
+				<div>
+					<p class="text-primary mt10 float-left">Language Usage</p>
+					<button style="right: 10px; position: absolute" id="flip1"
+						type="button" onclick="flip()"
+						class="btn btn-sm btn-primary float-right" data-toggle="tooltip"
+						data-placement="top" title="Flip to view language usage"
+						aria-expanded="false">
+						<i class="fas fa-exchange-alt" aria-hidden="true"></i>
+					</button>
+				</div>
+				<div class="min-height-table">
+					<div class="chart-container">
 
-								<div>
-									<p class="text-primary mt10 float-left">Language Usage</p>
-									<button style="right: 10px; position: absolute" id="flip1"
-										type="button" onclick="flip()"
-										class="btn btn-sm btn-primary float-right"
-										data-toggle="tooltip" data-placement="top"
-										title="Flip to view language usage" aria-expanded="false">
-
-										<i class="fas fa-exchange-alt" aria-hidden="true"></i>
-									</button>
-								</div>
-
-								<div class="min-height-table">
-
-
-									<table id="DataTables_Table_1_wrapper" class="display"
-										style="width: 100%">
-										<thead>
-											<tr>
-												<th>Language</th>
-												<th>Frequency</th>
-
-											</tr>
-										</thead>
-										<tbody>
-										
-											<%
-											JSONArray result_language = new JSONArray();
-											ArrayList language_data=new ArrayList();
-											try{
-												language_data = DbConnection.query("SELECT language, sum(language_count) c FROM blogtrackers.language where blogsite_id in ("+ids+") and language is not null or language != 'null' group by language order by c desc limit 10");
-												//language_data= post._getMostLanguage(dt, dte, ids, 10);
-											}catch(Exception e){
-												System.out.println("Language error--"+e);
-											}
-													
-											if (language_data.size() > 0) {
-															JSONObject lang_total = new JSONObject();
-
-															for (int y = 0; y < language_data.size(); y++) {
-																ArrayList x = (ArrayList) language_data.get(y);
-																JSONObject a = new JSONObject();
-																if(x.get(0) != "null" && x.get(0) != "" && x.get(0) != null){
-																	a.put("letter", x.get(0));
-																	a.put("frequency", x.get(1));
-																	result_language.put(a);
-																
-											%>
-											<tr>
-												<td class=""><%=x.get(0)%></td>
-												<td><%=x.get(1)%></td>
-												<!-- <td class="">j.get("letter")</td>
-												<td>j.get("frequency")</td> -->
-											</tr>
-											<%
-												}
-															}
-														}
-											%>
-
-
-										</tbody>
-									</table>
-
-
-								</div>
-
-							</div>
-						</div>
-
+						<div class="chart" id="languageusage"></div>
 					</div>
+				</div>
+			</div>
+			<div class="back p30 pt5 pb5">
+
+				<div>
+					<p class="text-primary mt10 float-left">Language Usage</p>
+					<button style="right: 10px; position: absolute" id="flip1"
+						type="button" onclick="flip()"
+						class="btn btn-sm btn-primary float-right" data-toggle="tooltip"
+						data-placement="top" title="Flip to view language usage"
+						aria-expanded="false">
+
+						<i class="fas fa-exchange-alt" aria-hidden="true"></i>
+					</button>
+				</div>
+
+				<div class="min-height-table">
+
+
+					<table id="DataTables_Table_1_wrapper" class="display"
+						style="width: 100%">
+						<thead>
+							<tr>
+								<th>Language</th>
+								<th>Frequency</th>
+
+							</tr>
+						</thead>
+						<tbody>
+
+							<%
+								ArrayList<scala.Tuple2<String, Integer>> language_data = LanguageMapper.getTopLanguages("blogsite_id",
+									blog_ids, date_start.toString(), date_end.toString(), "10");
+							JSONArray result_language = new JSONArray();
+							if (language_data.size() > 0) {
+								for (scala.Tuple2<String, Integer> x : language_data) {
+									JSONObject a = new JSONObject();
+
+									a.put("letter", x._1);
+									a.put("frequency", x._2);
+									result_language.put(a);
+							%>
+							<tr>
+								<td class=""><%=x._1%></td>
+								<td><%=x._2%></td>
+								<!-- <td class="">j.get("letter")</td>
+												<td>j.get("frequency")</td> -->
+							</tr>
+							<%
+								}
+							}
+							%>
+
+
+						</tbody>
+					</table>
+
 
 				</div>
-				
-				<script>
+
+			</div>
+		</div>
+
+	</div>
+
+</div>
+
+<script>
 					function flip() {
 					    $('.mecard').toggleClass('flipped');
 					}
@@ -700,93 +686,69 @@ wordtagcloud("#tagcloudcontainer",450,jsonresult);
 				    }
 				});
 				</script>
-					<!-- End of language bar chart  -->
-					
-		<!-- END LANGUAGE -->
+<!-- End of language bar chart  -->
+
+<!-- END LANGUAGE -->
 
 
 
-<% } else if(action.toString().equals("getsentimentdashboard")){ %>
+<%
+	} else if (action.toString().equals("getsentimentdashboard")) {
+%>
 
 <!-- START SENTIMENT -->
-			<div class="card card-style mt20">
-					<div class="card-body  p30 pt5 pb5">
-						<div>
-							<p class="text-primary mt10">
-								Sentiment Usage
-							</p>
-						</div>
-						<div style="min-height: 420px;">
-							<div class="chart-container text-center">
-								<div class="chart svg-center" id="sentimentpiechart"></div>
-							</div>
-						</div>
-					</div>
-				</div>
-				
-				<script type="text/javascript">
+<div class="card card-style mt20">
+	<div class="card-body  p30 pt5 pb5">
+		<div>
+			<p class="text-primary mt10">Sentiment Usage</p>
+		</div>
+		<div style="min-height: 420px;">
+			<div class="chart-container text-center">
+				<div class="chart svg-center" id="sentimentpiechart"></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
 				  $(function () {
 				
-				 <%
-				 /* String pos = "";
-				 
-								String neg = "";
-								for (int i = 0; i < getPositiveEmotion.size(); i++) {
-									ArrayList<?> posi = (ArrayList<?>) getPositiveEmotion.get(i);
-									
-									if(posi.get(0) == null){
-										pos = "0";
-									}else{
-										pos = posi.get(0).toString();
-									}
-									
-								}
-								for (int i = 0; i < getNegativeEmotion.size(); i++) {
-									ArrayList<?> nega = (ArrayList<?>) getNegativeEmotion.get(i);
-									if(nega.get(0) == null){
-										neg = "0";
-									}else{
-										neg = nega.get(0).toString();
-									}
-									
-			
-								} */
-								
-								%>
+				 <%scala.Tuple2<Integer, Integer> result = Liwc.getSumPositveAndNegativeSentiment("blogsite_id", blog_ids,
+		date_start.toString(), date_end.toString());%>
 			      sentimentdata = [
 			            <%-- {label:"Negative", value:<%=Integer.parseInt(neg)%>},
 			            {label:"Positive", value:<%=Integer.parseInt(pos)%>}, --%>
-			            {label:"Negative", value:35},
-			            {label:"Positive", value:65}
+			            {label:"Negative", value:<%=result._2%>},
+			            {label:"Positive", value:<%=result._1%>}
 			        ];
-			      console.log("here---",sentimentdata);
+			      //console.log("here---",sentimentdata);
 			      pieChartAnimation("#sentimentpiechart",180,sentimentdata);
 				  });
 			        
 			      </script>
-		<!-- END SENTIMENT -->
+<!-- END SENTIMENT -->
 
 
-<% } else if(action.toString().equals("getbloggerdashboard")){ %>
+<%
+	} else if (action.toString().equals("getbloggerdashboard")) {
+%>
 
 <!-- START BLOGGER DISTRIBUTION -->
 <div class="card card-style mt20">
-					<div class="card-body p30 pt5 pb5">
-						<div>
-							<p class="text-primary mt10 float-left">
-								Blogger Distribution
-							</p>
-						</div>
-						<div class="min-height-table" style="min-height: 450px;">
-							<div class="chart-container">
-								<div class="chart" id="bubblesblogger"></div>
-							</div>
-						</div>
-					</div>
-				</div>
-				
-				<!-- Blogger Bubble Chart -->
-	<script>
+	<div class="card-body p30 pt5 pb5">
+		<div>
+			<p class="text-primary mt10 float-left">Blogger Distribution</p>
+		</div>
+		<div class="min-height-table" style="min-height: 450px;">
+			<div class="chart-container">
+				<div class="chart" id="bubblesblogger"></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Blogger Bubble Chart -->
+<script>
 $(function () {
     // Initialize chart
     bubblesblogger('#bubblesblogger', 470);
@@ -854,48 +816,21 @@ data = {
  "bloggers":[
 	 
 	 
-	 <%
-	 
-	 /* if (bloggerPostFrequency.size() > 0) {
-						int k = 0;
-						for (int m = 0; m < bloggerPostFrequency.size(); m++) {
-							ArrayList<?> bloggerFreq = (ArrayList<?>) bloggerPostFrequency.get(m);
-							String bloggerName = bloggerFreq.get(0).toString();
-							String bloggerPostFreq="0";
-							try{
-							bloggerPostFreq = (null ==  bloggerFreq.get(1).toString()) ? "0" :  bloggerFreq.get(1).toString();
-							}
-							catch(Exception e){
-								System.out.println(e);
-							} */
-							%>
+	  <%ArrayList<scala.Tuple2<String, Integer>> bloggerPostFrequency = Blogger.getMostInfluentialBloggers("blogsite_id",
+		blog_ids, date_start.toString(), date_end.toString(), "10");
+if (bloggerPostFrequency.size() > 0) {
+	for (scala.Tuple2<String, Integer> x : bloggerPostFrequency) {%>
 							
-							<%-- {"label":"<%=bloggerName.trim()%>","name":"<%=bloggerName.trim()%>", "size":<%=Integer.parseInt(bloggerPostFreq)%>}, --%>
-<%
-
-						//}
-
-					//}
+							{"label":"<%=x._1%>","name":"<%=x._1%>", "size":<%=x._2%>},
+<%}
+}%> 
 					
-					%>
-  {"label":"Blogger 2","name":"Obadimu Adewale", "size":2500},
- {"label":"Blogger 3","name":"Oluwaseun Walter", "size":2800},
- {"label":"Blogger 4","name":"Kiran Bandeli", "size":900},
- {"label":"Blogger 5","name":"Adekunle Mayowa", "size":1400},
- {"label":"Blogger 6","name":"Nihal Hussain", "size":200},
- {"label":"Blogger 7","name":"Adekunle Mayowa", "size":500},
- {"label":"Blogger 8","name":"Adekunle Mayowa", "size":300},
- {"label":"Blogger 9","name":"Adekunle Mayowa", "size":350},
- {"label":"Blogger 10","name":"Adekunle Mayowa", "size":1400}
+
  
  ]
     }
-     
-        
-/* data = data.sort(function(a, b){
-	return a.bloggers.size - b.bloggers.size;
-	}); */
-	
+  
+
 	
 	var mybloggers = 
 		  data.bloggers.sort(function(a, b){
@@ -919,6 +854,7 @@ data = {
 	  bloggers = alldata;
 	  
 	  data = {  bloggers } 
+	  console.log("blogger_data",data)
             //
             // Append chart elements
             //
@@ -1034,37 +970,37 @@ data = {
     }
 });
 </script>
-	<script>
+<script>
     var color = d3.scale.linear()
             .domain([0,1,2,3,4,5,6,10,15,20,80])
             .range(["#17394C", "#F5CC0E", "#CE0202", "#aaa", "#999", "#888", "#777", "#666", "#555", "#444", "#333", "#222"]);
 </script>
-	<!-- end of blogger bubble chart -->
+<!-- end of blogger bubble chart -->
 <!-- END BLOGGER DISTRIBUTION -->
 
 
-<% } else if(action.toString().equals("getblogdashboard")){ %>
+<%
+	} else if (action.toString().equals("getblogdashboard")) {
+%>
 
 
 <!-- START BLOG DISTRIBUTION -->
 
-				<div class="card card-style mt20">
-					<div class="card-body   p30 pt5 pb5">
-						<div>
-							<p class="text-primary mt10 float-left">
-								Blog Distribution
-							</p>
-						</div>
-						<div class="min-height-table" style="min-height: 500px;">
-							<div class="chart-container">
-								<div class="chart" id="bubblesblog"></div>
-							</div>
-						</div>
-					</div>
-				</div>
-				
-				<!-- Blog Bubble Chart -->
-	<script>
+<div class="card card-style mt20">
+	<div class="card-body   p30 pt5 pb5">
+		<div>
+			<p class="text-primary mt10 float-left">Blog Distribution</p>
+		</div>
+		<div class="min-height-table" style="min-height: 500px;">
+			<div class="chart-container">
+				<div class="chart" id="bubblesblog"></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Blog Bubble Chart -->
+<script>
 $(function () {
     // Initialize chart
     bubblesblog('#bubblesblog', 470);
@@ -1129,22 +1065,16 @@ $(function () {
 data = {
  //"name":"flare",
  "bloggers":[
-	 <%
-	 
-	// if (blogPostFrequency.size() > 0) {
-						//for (int m = 0; m < blogPostFrequency.size(); m++) {
-						//	ArrayList<?> blogFreq = (ArrayList<?>) blogPostFrequency.get(m);
-							//String blogName = blogFreq.get(0).toString();
-							//String blogPostFreq = blogFreq.get(1).toString();%>
-							<%-- {label:"<%=blogName%>", "size":<%=Integer.parseInt(blogPostFreq)%>, name:"<%=blogName%>", type:"blog"}, --%>
-		 <%
-		// }
+	 <%if (top_location.size() > 0) {
+			for (scala.Tuple2<String, scala.Tuple2<String, Integer>> x : top_location) {
+				scala.Tuple2<String, Integer> location_count = x._2;
+				%>
+							{label:"<%=x._1%>", "size":<%=location_count._2%>, name:"<%=x._1%>", type:"blog"},
+		 <%}
 
-					//}
+}%>
 					
-					%>
-					
-					 {"label":"Blogger 2","name":"Obadimu Adewale", "size":2500},
+/* 					 {"label":"Blogger 2","name":"Obadimu Adewale", "size":2500},
 					 {"label":"Blogger 3","name":"Oluwaseun Walter", "size":2800},
 					 {"label":"Blogger 4","name":"Kiran Bandeli", "size":900},
 					 {"label":"Blogger 5","name":"Adekunle Mayowa", "size":1400},
@@ -1152,7 +1082,7 @@ data = {
 					 {"label":"Blogger 7","name":"Adekunle Mayowa", "size":500},
 					 {"label":"Blogger 8","name":"Adekunle Mayowa", "size":300},
 					 {"label":"Blogger 9","name":"Adekunle Mayowa", "size":350},
-					 {"label":"Blogger 10","name":"Adekunle Mayowa", "size":1400}
+					 {"label":"Blogger 10","name":"Adekunle Mayowa", "size":1400} */
  ]
 }  
       
@@ -1298,7 +1228,7 @@ data = {
     }
 });
 </script>
-	<script>
+<script>
 $(".option-only").on("change",function(e){
 	console.log("only changed ");
 	var valu =  $(this).val();
@@ -1317,38 +1247,41 @@ $(".option-lable").on("click",function(e){
 	//$('form#customformsingle').submit();
 });
 </script>
-	<!-- End of blog bubble chart -->
+<!-- End of blog bubble chart -->
 
 <!-- END BLOG DISTRIBUTION -->
 
 
 
-<% } else if(action.toString().equals("getinfluencedashboard")){ %>
+<%
+	} else if (action.toString().equals("getinfluencedashboard")) {
+%>
 
 <!-- START INFLUENCE -->
-			<div class="card card-style mt20">
-					<div class="card-body p30 pt5 pb5">
-						<div>
-							<p class="text-primary mt10 float-left">
+<div class="card card-style mt20">
+	<div class="card-body p30 pt5 pb5">
+		<div>
+			<p class="text-primary mt10 float-left">
 
-								Most Influential 
-								<select class="text-primary filtersort sortbyblogblogger" id="swapInfluence">
-									<option value="blogs">Blogs</option>
-									<option value="bloggers">Bloggers</option>
-								</select>
-							</p>
-						</div>
-						<div class="min-height-table" style="min-height: 500px;">
-							<div class="chart-container" id="influencecontainer">
-								<div class="chart" id="influencebar"></div>
-							</div>
-						</div>
-					</div>
-				</div>
-				
-				
-				<!-- start of influence bar chart  -->
-	<script>
+				Most Influential <select
+					class="text-primary filtersort sortbyblogblogger"
+					id="swapInfluence">
+					<option value="blogs">Blogs</option>
+					<option value="bloggers">Bloggers</option>
+				</select>
+			</p>
+		</div>
+		<div class="min-height-table" style="min-height: 500px;">
+			<div class="chart-container" id="influencecontainer">
+				<div class="chart" id="influencebar"></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<!-- start of influence bar chart  -->
+<script>
 $(function () {
     // Initialize chart
     influencebar('#influencebar', 450);
@@ -1406,29 +1339,18 @@ $(function () {
       //sort by influence score
       data = [
     	  <%
-    	  
-    	   if (5 > 0) {
-						int p = 0;
-						//System.out.println(bloggers);
-						for (int y = 0; y < 5; y++) {
-							//ArrayList<?> blogInfluence = (ArrayList<?>) influenceBlog.get(y);
-							//String blogInf = blogInfluence.get(0).toString();
-							//String blogInfFreq = (null == blogInfluence.get(1).toString()) ? "0" : blogInfluence.get(1).toString();
-							if (p < 10) {
-								p++; 
-								
-								%>
-		<%-- {letter:"<%=blogInf%>", frequency:<%=blogInfFreq%>, name:"<%=blogInf%>", type:"blogger"}, --%>
+    	  ArrayList<scala.Tuple2<String, Integer>> blogInfluence = Blogs.getMostInfluentialBlogs("blogsite_id", blog_ids, date_start.toString(), date_end.toString(), "10");
+    	  if (blogInfluence.size() > 0) {
+	
+	for (scala.Tuple2<String, Integer> y : blogInfluence) {
+		%>
+		 {letter:"<%=y._1%>", frequency:<%=y._2%>, name:"<%=y._1%>", type:"blogger"},
 		
-		 {"letter":"Blogger ","frequency":"32", "name":"Obadimu Adewale", "type":"blogger"},
+		 /* {"letter":"Blogger ","frequency":"32", "name":"Obadimu Adewale", "type":"blogger"}, */
 		 
 		 <%
-		 }else{
-			 break;
-		 }
 						}
-					}
-					%>    
+					}%>    
         ];
       data = data.sort(function(a, b){
     	    return a.frequency - b.frequency;
@@ -1622,40 +1544,40 @@ $(function () {
 });
 </script>
 
-	<!--  End of influence bar -->
-<!-- END INFLUENCE --> 
+<!--  End of influence bar -->
+<!-- END INFLUENCE -->
 
 
-<% } else if(action.toString().equals("getclusterdashboard")){ %>
+<%
+	} else if (action.toString().equals("getclusterdashboard")) {
+%>
 
 <!-- START CLUSTER -->
 <div id="cluster_card_div" class="card card-style mt20 radial_f">
-					<div class="card-body p30 pt5 pb5">
-						<div>
-							<p class="text-primary mt10 float-left">
-								Clustering Analysis
-							</p>
-						</div>
-						<div id="scatter-container1" class="min-height-table"
-							style="min-height: 500px;">
-							<div class="hidden" id="cluster_computing_loaader">
-								<div align="center" class=" word1">
-									COMPUTING-CLUSTERS...
-									<span id="cluster_percentage">
-									<% int cluster_status_percentage = 34;   %>
-									<%=cluster_status_percentage %>%
-									</span>
-								</div>
-								<div align="center" class=" overlay1"></div>
-							</div>
-							<div class="chart-container" id="scatter-container">
-								<div class="chart" id="dataviz_axisZoom"></div>
-							</div>
-						</div>
-					</div>
+	<div class="card-body p30 pt5 pb5">
+		<div>
+			<p class="text-primary mt10 float-left">Clustering Analysis</p>
+		</div>
+		<div id="scatter-container1" class="min-height-table"
+			style="min-height: 500px;">
+			<div class="hidden" id="cluster_computing_loaader">
+				<div align="center" class=" word1">
+					COMPUTING-CLUSTERS... <span id="cluster_percentage"> <%
+ 	int cluster_status_percentage = 34;
+ %>
+						<%=cluster_status_percentage%>%
+					</span>
 				</div>
-				
-				<script>
+				<div align="center" class=" overlay1"></div>
+			</div>
+			<div class="chart-container" id="scatter-container">
+				<div class="chart" id="dataviz_axisZoom"></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
 				
 					
 					dataset = {}
@@ -1668,30 +1590,24 @@ $(function () {
 						var height = $('#scatter-container1').height() - 25;
 						 trending_words = [];
 							
-							<% 
-							/* String word_build = "";
-						 	for(int k = 0; k < 10; k++){
-						 		 word_build = "";
-						 		 if(source.length() > 0){ 
-								String [] splitted = source.get("cluster_" + (k + 1)).toString().split("\'topterms\':");
-										
-								List<String> termlist = Arrays.asList(splitted[1].replace("{","").replace("}","").split(","));
-								
-								for(int m = 0; m < 4; m++){
-									if(m > 0){
-										word_build += ", ";
-									}
-									word_build += termlist.get(m).split(":")[0].replace("\'","");
-								} */
-								%>
+							<%/* String word_build = "";
+for(int k = 0; k < 10; k++){
+	 word_build = "";
+	 if(source.length() > 0){ 
+	String [] splitted = source.get("cluster_" + (k + 1)).toString().split("\'topterms\':");
+			
+	List<String> termlist = Arrays.asList(splitted[1].replace("{","").replace("}","").split(","));
+	
+	for(int m = 0; m < 4; m++){
+		if(m > 0){
+			word_build += ", ";
+		}
+		word_build += termlist.get(m).split(":")[0].replace("\'","");
+	} */%>
 								<%-- trending_words[<%=k %>] = "<%=word_build %>"; --%>
 								
 								
-						 	<% 
-						 	
-						 		/*  } } */
-						 	
-						 	%>
+						 	<%/*  } } */%>
 						 	
 						 	trending_words[0] = "aa, bb, cc";
 						 	trending_words[1] = "ss, nn, xx";
@@ -1900,59 +1816,70 @@ $(function () {
 
 <!-- END CLUSTER -->
 
-<% } else if(action.toString().equals("getdomaindashboard")){ %>
+<%
+	} else if (action.toString().equals("getdomaindashboard")) {
+%>
 
 
 <!-- START DOMAIN -->
-				<div class="card card-style mt20">
-					<div class="card-body  p5 pt10 pb10"> 
-						<div style="min-height: 420px;">
-							<div>
-								<p class="text-primary p15 pb5 pt0">
-									List of Top 
-									<select id="top-listtype" class="text-primary filtersort sortbydomainsrls">
-										<option value="domains">Domains</option>
-										<option value="urls">URLs</option>
-									</select>
-								</p>
-							</div>
+<div class="card card-style mt20">
+	<div class="card-body  p5 pt10 pb10">
+		<div style="min-height: 420px;">
+			<div>
+				<p class="text-primary p15 pb5 pt0">
+					List of Top <select id="top-listtype"
+						class="text-primary filtersort sortbydomainsrls">
+						<option value="domains">Domains</option>
+						<option value="urls">URLs</option>
+					</select>
+				</p>
+			</div>
+
+			<div id="top-domain-box">
+				<table id="DataTables_Table_0_wrapper"
+					class="display table_over_cover" style="width: 100%">
+					<thead>
+						<tr>
+							<th>Domain</th>
+							<th>Frequency</th>
+						</tr>
+					</thead>
+					<tbody>
+
+						<%
+						String query = "select domain, count(domain) c\r\n" + 
+								"from outlinks\r\n" + 
+								"where blogsite_id in ("+blog_ids+") \r\n" + 
+								"and date > \""+date_start.toString()+"\" \r\n" + 
+								"and date < \""+date_end.toString()+"\"\r\n" + 
+								"group by domain\r\n" + 
+								"order by c desc;";
+						java.sql.ResultSet post_all =  DbConnection.queryResultSet(query);
+						
+						while(post_all.next()){
+							String domain = post_all.getString("domain");
+							int count = post_all.getInt("c");
 							
-							<div id="top-domain-box">
-								<table id="DataTables_Table_0_wrapper"
-									class="display table_over_cover" style="width: 100%">
-									<thead>
-										<tr>
-											<th>Domain</th>
-											<th>Frequency</th>
-										</tr>
-									</thead>
-									<tbody>
 
-										<%
-											if (11 > 0) {
-														for (int y = 0; y < 11; y++) {
-															//String key = outlinklooper.get(y).toString();
-															//JSONObject resu = outerlinks.getJSONObject(key);
-															//if (resu.get("domain") != "") {
-										%>
-										<tr>
-											<td class=""><a href="http://facebook.com" target="_blank">www.facebook.com</a></td>
-											<td>34</td>
-										</tr>
-										<%
-											//}
-														}
-													}
-										%>
+						%>
+						<tr>
+							<td class=""><a href="http://facebook.com" target="_blank"><%=domain %></a></td>
+							<td><%=count %></td>
+						</tr>
+						<%
+							//}
+						//}
+						}
+						%>
 
-									</tbody>
-								</table>
-							</div>
-						</div>
-					</div>
-				</div>
-				
-				<script>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
 			    $('#DataTables_Table_0_wrapper').DataTable( {
 			    	 "columnDefs": [
 			    		    { "width": "80%", "targets": 0 }
@@ -1985,9 +1912,11 @@ $(function () {
 				</script>
 
 <!-- END DOMAIN -->
-<% } %>
-	
-	<!-- <script type="text/javascript" src="assets/js/jquery-1.11.3.min.js"></script>
+<%
+	}
+%>
+
+<!-- <script type="text/javascript" src="assets/js/jquery-1.11.3.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/lettering.js/0.6.1/jquery.lettering.min.js"></script>
 	<script src="pagedependencies/imageloader.js?v=09"></script>
 	<script src="assets/bootstrap/js/bootstrap.js"></script>
@@ -1995,29 +1924,28 @@ $(function () {
 Start for tables 
 	<script type="text/javascript" src="assets/vendors/DataTables/datatables.min.js"></script>
 	<script type="text/javascript" src="assets/vendors/DataTables/dataTables.bootstrap4.min.js"></script> -->
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
