@@ -5,28 +5,18 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.SortedMap;
-import java.util.TreeMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import java.util.concurrent.*;
-
 import org.json.JSONObject;
 
-import authentication.AutomatedCrawlerConnect;
 import authentication.DbConnection;
 import scala.Tuple2;
 
@@ -44,8 +34,6 @@ import org.json.JSONException;
 
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.*;
-
 import javax.servlet.http.HttpServlet;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -85,33 +73,6 @@ public class Terms extends HttpServlet implements Runnable {
 	}
 
 	public ArrayList _searchByRange(String field, String greater, String less, ArrayList blog_ids) throws Exception {
-
-		/*
-		 * blog_ids = blog_ids.replaceAll(",$", ""); blog_ids =
-		 * blog_ids.replaceAll(", $", ""); blog_ids = "("+blog_ids+")"; int size = 20;
-		 * ArrayList response =new ArrayList(); DbConnection db = new DbConnection();
-		 * 
-		 * System.out.
-		 * println("SELECT term,frequency,date,blogpostid,id,blogsiteid FROM terms WHERE blogsiteid IN "
-		 * +blog_ids+" AND date>='"+greater+"' AND date <='"
-		 * +less+"' GROUP BY(term) ORDER BY frequency DESC LIMIT "+size+"");
-		 * 
-		 * try { //response = db.
-		 * queryJSON("SELECT term,frequency,date,blogpostid,id,blogsiteid FROM terms WHERE blogsiteid IN "
-		 * +blog_ids+" AND date>='"+greater+"' AND date <='"
-		 * +less+"' GROUP BY(term) ORDER BY frequency DESC LIMIT "+size+""); response =
-		 * db.
-		 * queryJSON("SELECT term,frequency,date,blogpostid,id,blogsiteid FROM terms WHERE blogsiteid IN "
-		 * +blog_ids+" GROUP BY(term) ORDER BY frequency DESC LIMIT "+size+"");
-		 * 
-		 * 
-		 * }catch(Exception e){ return response; }
-		 * 
-		 * 
-		 * return response;
-		 */
-
-		// System.out.println("post wale id "+blog_ids);
 		JSONObject jsonObj = new JSONObject(
 				"{\r\n" + "	\"size\":1000,\r\n" + "       \"query\": {\r\n" + "          \"bool\": { \r\n"
 						+ "               \"must\": {\r\n" + "						  \"constant_score\":{ \r\n"
@@ -127,14 +88,9 @@ public class Terms extends HttpServlet implements Runnable {
 						+ "                        }\r\n" + "                    }\r\n" + "                }\r\n"
 						+ "            }\r\n" + "        },\r\n" + "   	\"sort\":{\r\n" + "		\"frequency\":{\r\n"
 						+ "			\"order\":\"DESC\"\r\n" + "			}\r\n" + "		}\r\n"
-						+ /*
-							 * "    	\"aggregations\": {\r\n" + "        	\"term\": {\r\n" +
-							 * "            \"terms\": {\r\n" + "                \"field\": \"term\"\r\n" +
-							 * "            }\r\n" + "        	}\r\n" + "    	}\r\n"+
-							 */
+						+ 
 						"    }");
 
-		// jsonObj = new JSONObject(que3);
 		String url = base_url + "_search";
 		return this._getResult(url, jsonObj);
 
@@ -147,7 +103,7 @@ public class Terms extends HttpServlet implements Runnable {
 		String[] args = blog_ids.split(",");
 
 		JSONArray pars = new JSONArray();
-		ArrayList<String> ar = new ArrayList<String>();
+		new ArrayList<String>();
 		for (int i = 0; i < args.length; i++) {
 			pars.put(args[i].replaceAll(" ", ""));
 		}
@@ -167,14 +123,9 @@ public class Terms extends HttpServlet implements Runnable {
 						+ "                        }\r\n" + "                    }\r\n" + "                }\r\n"
 						+ "            }\r\n" + "        },\r\n" + "   	\"sort\":{\r\n" + "		\"frequency\":{\r\n"
 						+ "			\"order\":\"DESC\"\r\n" + "			}\r\n" + "		}\r\n"
-						+ /*
-							 * "    	\"aggregations\": {\r\n" + "        	\"term\": {\r\n" +
-							 * "            \"terms\": {\r\n" + "                \"field\": \"term\"\r\n" +
-							 * "            }\r\n" + "        	}\r\n" + "    	}\r\n"+
-							 */
+						+ 
 						"    }");
 
-		// jsonObj = new JSONObject(que3);
 		String url = base_url + "_search";
 		return this._getResult(url, jsonObj);
 
@@ -184,42 +135,10 @@ public class Terms extends HttpServlet implements Runnable {
 		blog_ids = blog_ids.replaceAll(",$", "");
 		blog_ids = blog_ids.replaceAll(", $", "");
 
-		/*
-		 * blog_ids = "("+blog_ids+")"; int size = 20; ArrayList response =new
-		 * ArrayList();
-		 * 
-		 * DbConnection db = new DbConnection();
-		 * 
-		 * System.out.
-		 * println("SELECT term,frequency,date,blogpostid,id,blogsiteid FROM terms WHERE blogsiteid IN "
-		 * +blog_ids+" AND date>='"+greater+"' AND date <='"
-		 * +less+"' GROUP BY(term) ORDER BY frequency DESC LIMIT "+size+"");
-		 * 
-		 * try { //response = db.
-		 * queryJSON("SELECT term,frequency,date,blogpostid,id,blogsiteid FROM terms WHERE blogsiteid IN "
-		 * +blog_ids+" AND date>='"+greater+"' AND date <='"
-		 * +less+"' GROUP BY(term) ORDER BY frequency DESC LIMIT "+size+""); //response
-		 * = db.
-		 * queryJSON("SELECT term,frequency,date,blogpostid,id,blogsiteid FROM terms WHERE blogsiteid IN "
-		 * +blog_ids+" GROUP BY(term) ORDER BY frequency DESC LIMIT "+size+""); response
-		 * = db.
-		 * queryJSON("SELECT term,frequency,date,blogpostid,id,blogsiteid FROM terms WHERE blogsiteid IN "
-		 * +blog_ids+" AND date>='"+greater+"' AND date <='"
-		 * +less+"' ORDER BY frequency DESC LIMIT "+size+"");
-		 * 
-		 * 
-		 * }catch(Exception e){ return response; }
-		 * 
-		 * 
-		 * return response;
-		 * 
-		 */
-
 		String[] args = blog_ids.split(",");
-		// System.out.println(args);
 
 		JSONArray pars = new JSONArray();
-		ArrayList<String> ar = new ArrayList<String>();
+		new ArrayList<String>();
 		for (int i = 0; i < args.length; i++) {
 			pars.put(args[i].replaceAll(" ", ""));
 		}
@@ -239,17 +158,9 @@ public class Terms extends HttpServlet implements Runnable {
 						+ "                        }\r\n" + "                    }\r\n" + "                }\r\n"
 						+ "            }\r\n" + "        },\r\n" + "   	\"sort\":{\r\n" + "		\"frequency\":{\r\n"
 						+ "			\"order\":\"DESC\"\r\n" + "			}\r\n" + "		}\r\n"
-						+ /*
-							 * "    	\"aggregations\": {\r\n" + "        	\"term\": {\r\n" +
-							 * "            \"terms\": {\r\n" + "                \"field\": \"term\"\r\n" +
-							 * "            }\r\n" + "        	}\r\n" + "    	}\r\n"+
-							 */
+						+ 
 						"    }");
-
-		// jsonObj = new JSONObject(que3);
 		String url = base_url + "_search";
-		//System.out.println("term_url" + url);
-		//System.out.println("term_jsonobj" + jsonObj);
 		return this._getResult(url, jsonObj);
 
 	}
@@ -262,8 +173,6 @@ public class Terms extends HttpServlet implements Runnable {
 
 		ArrayList response = new ArrayList();
 		DbConnection db = new DbConnection();
-
-		// System.out.println("SELECT * FROM terms WHERE blogpostid IN "+blog_ids+" ");
 		try {
 			response = db.queryJSON("SELECT * FROM terms WHERE blogpostid IN " + blog_ids + " ");
 		} catch (Exception e) {
@@ -279,9 +188,6 @@ public class Terms extends HttpServlet implements Runnable {
 		DbConnection db = new DbConnection();
 
 		try {
-
-			// response = db.queryJSON("SELECT * FROM terms WHERE blogpostid IN "+blog_ids+"
-			// ");
 			response = db.queryJSON(
 					"SELECT (select blogpost_id from blogposts bp where bp.blogpost_id = tm.blogpostid AND bp.blogger='"
 							+ blogger
@@ -308,25 +214,19 @@ public class Terms extends HttpServlet implements Runnable {
 		return "";
 	}
 
-//public String _getMostActiveByBlogger(String blogger,String date_start, String date_end) throws Exception {
 	public String _getMostActiveByBlogger(String blogger) throws Exception {
 
 		ArrayList response = new ArrayList();
 		DbConnection db = new DbConnection();
 
 		try {
-//		ArrayList bloggers = new DbConnection().query("SELECT * FROM user_blog WHERE userid='" + username + "'");
-//		System.out.println(bloggers.size());
-			// response = db.queryJSON("SELECT * FROM terms WHERE blogpostid IN "+blog_ids+"
-			// ");
+
 			response = db.query(
 					"SELECT (select blogpost_id from blogposts bp where bp.blogpost_id = tm.blogpostid AND bp.blogger='"
 							+ blogger
 							+ "' ) as blogpostid, tm.blogsiteid as blogsiteid, tm.blogpostid as blogpostid, tm.term as term, tm.frequency as frequency   FROM terms tm ORDER BY tm.frequency DESC LIMIT 1 ");
-//		response = db.queryJSON("SELECT (select blogpost_id from blogposts bp where bp.blogpost_id = tm.blogpostid AND bp.blogger='"+blogger+"' ) as blogpostid, tm.blogsiteid as blogsiteid, tm.blogpostid as blogpostid, tm.term as term, tm.frequency as frequency   FROM terms tm ORDER BY tm.frequency DESC LIMIT 1 ");
-			System.out.println(blogger);
+
 			ArrayList hd = (ArrayList) response.get(0);
-			System.out.println("-----------" + hd);
 			return hd.get(3).toString();
 
 		} catch (Exception e) {
@@ -360,15 +260,13 @@ public class Terms extends HttpServlet implements Runnable {
 	public String _searchRangeAggregate(String field, String greater, String less, String terms) throws Exception {
 		String[] args = terms.split(",");
 		JSONArray pars = new JSONArray();
-		ArrayList<String> ar = new ArrayList<String>();
+		new ArrayList<String>();
 		for (int i = 0; i < args.length; i++) {
 			pars.put(args[i].toLowerCase());
 		}
 
 		String arg2 = pars.toString();
-		// String range = "\"range\" : {\"sentiment\" : {\"gte\" : "+greater+",\"lte\" :
-		// "+less+"}}";
-
+		
 		String que = "{\r\n" + "  \"query\": {\r\n" + "    \"bool\": {\r\n" + "      \"must\": [\r\n" + "        {\r\n"
 				+ "		  \"constant_score\":{\r\n" + "					\"filter\":{\r\n"
 				+ "							\"terms\":{\r\n" + "							\"term\":" + arg2 + "\r\n"
@@ -388,14 +286,13 @@ public class Terms extends HttpServlet implements Runnable {
 	public String _searchRangeTotal(String field, String greater, String less, String terms) throws Exception {
 		String[] args = terms.split(",");
 		JSONArray pars = new JSONArray();
-		ArrayList<String> ar = new ArrayList<String>();
+		new ArrayList<String>();
 		for (int i = 0; i < args.length; i++) {
 			pars.put(args[i].toLowerCase());
 		}
 
 		String arg2 = pars.toString();
-		// String range = "\"range\" : {\"sentiment\" : {\"gte\" : "+greater+",\"lte\" :
-		// "+less+"}}";
+		
 		String que = "{\r\n" + "  \"query\": {\r\n" + "    \"bool\": {\r\n" + "      \"must\": [\r\n" + "        {\r\n"
 				+ "		  \"constant_score\":{\r\n" + "					\"filter\":{\r\n"
 				+ "							\"terms\":{\r\n" + "							\"term\":" + arg2 + "\r\n"
@@ -411,19 +308,16 @@ public class Terms extends HttpServlet implements Runnable {
 	}
 
 	public ArrayList _fetch(String ids) throws Exception {
-		ArrayList result = new ArrayList();
+		new ArrayList();
 		String[] args = ids.split(",");
 
 		JSONArray pars = new JSONArray();
-		ArrayList<String> ar = new ArrayList<String>();
+		new ArrayList<String>();
 		for (int i = 0; i < args.length; i++) {
 			pars.put(args[i].replaceAll(" ", ""));
 		}
 
 		String arg2 = pars.toString();
-
-		// String que = "{\"query\":
-		// {\"constant_score\":{\"filter\":{\"terms\":{\"blogsiteid\":"+arg2+"}}}}}";
 		String que = "{\"query\": {\"constant_score\":{\"filter\":{\"terms\":{\"id\":" + arg2
 				+ "}}}},\"sort\":{\"date\":{\"order\":\"DESC\"}}}";
 
@@ -470,9 +364,6 @@ public class Terms extends HttpServlet implements Runnable {
 			OutputStreamWriter wr = new OutputStreamWriter(con.getOutputStream());
 			wr.write(jsonObj.toString());
 			wr.flush();
-
-			// int responseCode = con.getResponseCode();
-
 			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
 			String inputLine;
 			StringBuffer response = new StringBuffer();
@@ -497,7 +388,6 @@ public class Terms extends HttpServlet implements Runnable {
 			}
 		} catch (Exception ex) {
 		}
-		/* System.out.println(list); */
 		return list;
 	}
 
@@ -517,10 +407,7 @@ public class Terms extends HttpServlet implements Runnable {
 			OutputStreamWriter wr = new OutputStreamWriter(con.getOutputStream());
 			wr.write(jsonObj.toString());
 			wr.flush();
-
-			// add request header
-			// con.setRequestProperty("User-Agent", "Mozilla/5.0");
-			int responseCode = con.getResponseCode();
+			con.getResponseCode();
 
 			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
 			String inputLine;
@@ -528,13 +415,11 @@ public class Terms extends HttpServlet implements Runnable {
 
 			while ((inputLine = in.readLine()) != null) {
 				response.append(inputLine);
-
 			}
 			in.close();
 
 			JSONObject myResponse = new JSONObject(response.toString());
-			ArrayList<String> list = new ArrayList<String>();
-			// System.out.println(myResponse.get("hits"));
+			new ArrayList<String>();
 			if (null != myResponse.get("hits")) {
 				String res = myResponse.get("hits").toString();
 				JSONObject myRes1 = new JSONObject(res);
@@ -561,10 +446,7 @@ public class Terms extends HttpServlet implements Runnable {
 			OutputStreamWriter wr = new OutputStreamWriter(con.getOutputStream());
 			wr.write(jsonObj.toString());
 			wr.flush();
-
-			// add request header
-			// con.setRequestProperty("User-Agent", "Mozilla/5.0");
-			int responseCode = con.getResponseCode();
+			con.getResponseCode();
 
 			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
 			String inputLine;
@@ -577,8 +459,7 @@ public class Terms extends HttpServlet implements Runnable {
 			in.close();
 
 			JSONObject myResponse = new JSONObject(response.toString());
-			ArrayList<String> list = new ArrayList<String>();
-			// System.out.println(myResponse.get("hits"));
+			new ArrayList<String>();
 			if (null != myResponse.get("aggregations")) {
 				String res = myResponse.get("aggregations").toString();
 				JSONObject myRes1 = new JSONObject(res);
@@ -599,11 +480,9 @@ public class Terms extends HttpServlet implements Runnable {
 		String tresu = null;
 		JSONObject tobj = null;
 		int alloccurence = 0;
-		int k = 0;
 		Blogposts post = new Blogposts();
 		try {
-			ArrayList allposts = post._searchByTitleAndBody(term, "date", start_date, end_date);// term._searchByRange("date",dt,dte,
-																								// tm,"term","10");
+			ArrayList allposts = post._searchByTitleAndBody(term, "date", start_date, end_date);
 
 			for (int i = 0; i < allposts.size(); i++) {
 				tres = allposts.get(i).toString();
@@ -611,18 +490,14 @@ public class Terms extends HttpServlet implements Runnable {
 				tresu = tresp.get("_source").toString();
 				tobj = new JSONObject(tresu);
 
-				int bodyoccurencece = 0;// ut.countMatches(tobj3.get("post").toString(), mostactiveterm);
+				int bodyoccurencece = 0;
 				String str = tobj.get("post").toString() + " " + tobj.get("post").toString();
 				str = str.toLowerCase();
 				term = term.toLowerCase();
 				String findStr = term;
 				int lastIndex = 0;
-				// int count = 0;
-
 				while (lastIndex != -1) {
-
 					lastIndex = str.indexOf(findStr, lastIndex);
-
 					if (lastIndex != -1) {
 						bodyoccurencece++;
 						alloccurence += bodyoccurencece;
@@ -651,7 +526,6 @@ public class Terms extends HttpServlet implements Runnable {
 
 			int extractInt(String s) {
 				String num = s.replaceAll("\\D", "");
-				// return 0 if no digits found
 				return num.isEmpty() ? 0 : Integer.parseInt(num);
 			}
 		});
@@ -671,14 +545,11 @@ public class Terms extends HttpServlet implements Runnable {
 			
 			Request request = new Request(requestType, endPoint);
 			request.setJsonEntity(query.toString());
-//System.out.println(request);
 			Response response = esClient.performRequest(request);
 			
 			String jsonResponse = EntityUtils.toString(response.getEntity());
 			myResponse = new JSONObject(jsonResponse);
-//			System.out.println("---"+myResponse);
 			esClient.close();
-//			return myResponse;
 
 		} catch (Exception e) {
 			esClient.close();
@@ -700,22 +571,13 @@ public class Terms extends HttpServlet implements Runnable {
 	}
 
 	public synchronized JSONArray merge(JSONArray jsonArray, JSONArray jsonArray1, String type) {
-//		List<Tuple2<String, Integer>> returnedData = Collections
-//				.synchronizedList(new ArrayList<Tuple2<String, Integer>>());
 		try {
-
-			// check to perform stream or check normal array or check best way to store ES
-			// hits
 			if (type.contentEquals("all")) {
 				for (int i = 0; i < jsonArray1.length(); i++) {
 					JSONObject jsonObject = jsonArray1.getJSONObject(i);
 					jsonArray.put(jsonObject);
 				}
-				//return jsonArray;
 			} 
-
-			
-
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -738,13 +600,8 @@ public class Terms extends HttpServlet implements Runnable {
 	}
 
 	public Map<String, Integer> wrangleDatadata2(JSONArray postarray, String field, int start, int end) {
-//		List<Tuple2<String, Integer>> returnedData = new ArrayList<Tuple2<String, Integer>>();
-//		ConcurrentSkipListMap<String, Integer> m = new ConcurrentSkipListMap<String, Integer>();
-//		HashMap<String, Integer> m = new HashMap<String, Integer>();
 		Map<String, Integer> m = Collections.synchronizedMap(new HashMap<String, Integer>());
-//		ConcurrentHashMap<String, Integer> m = new ConcurrentHashMap<String, Integer>();
 		String result = null;
-//		int count_ = 0;
 		for (int i = start; i < end; i++) {
 			String indx = postarray.get(i).toString();
 			JSONObject j1 = new JSONObject(indx);
@@ -753,20 +610,8 @@ public class Terms extends HttpServlet implements Runnable {
 			String terms = j2.get(field).toString();
 
 			String val = terms;
-//			System.out.println(val);
-
-//			try {
-//			JSONArray t = new JSONArray(val);
-////			System.out.println(t.length());
-//			}catch(Exception e) {
-//				System.out.println("error--" + e);
-//				System.out.println("error--" + val);
-//			}
-
 			result = val.replace("[", "").replace("]", "");
 			String[] spl = result.split("\\),");
-//			System.out.println(spl.length);
-//			count_ = count_ + spl.length;
 
 			for (String v : spl) {
 				if (!terms.equals("BLANK")) {
@@ -777,9 +622,6 @@ public class Terms extends HttpServlet implements Runnable {
 					String first = tsplit[0].replace("\'", "").trim();
 					Integer second = val2;
 
-					// Tuple2<String, Integer> pair = new Tuple2(first, second);
-//				returnedData.add(pair);
-//					this.datatuple.add(pair);
 					if (!m.containsKey(first)) {
 						m.put(first, second);
 					} else {
@@ -787,49 +629,29 @@ public class Terms extends HttpServlet implements Runnable {
 						int new_mval = m_val + second;
 						m.put(first, new_mval);
 					}
-
 				}
-//				else {
-//					Tuple2<String, Integer> pair = new Tuple2("__BLANK__", 1);
-//					this.datatuple.add(pair);
-//				}
 			}
 		}
-		System.out.println("done");
 
-		
-//		.entrySet().iterator().next();
-		List<Entry<String, Integer>> entry = entriesSortedByValues(m);
-//		String key = entry.getKey();
-//		Integer value = entry.getValue();
-		System.out.println(entry.get(0));
+		entriesSortedByValues(m);
 		return m;
-//		this.datatuple = returnedData;
-//		System.out.println(count_);
-//		System.out.println(datatuple.size());
-//		return returnedData;
 	}
 
 	public synchronized List<Tuple2<String, Integer>> dtuple(JSONArray jsonArray, int start, int end) {
 		List<Tuple2<String, Integer>> datatuple_ = new ArrayList<Tuple2<String, Integer>>();
 
-		String blogsiteid = null;
-		String blogpost_id = null;
 		String terms = null;
 		String result = null;
-		String topterm = null;
-		String date = null;
 		for (int i = start; i < end; i++) {
 			String indx = jsonArray.get(i).toString();
 			JSONObject j1 = new JSONObject(indx);
 			String ids = j1.get("_source").toString();
-//System.out.println();
 			JSONObject j2 = new JSONObject(ids);
 
-			blogsiteid = j2.get("blogsiteid").toString();
-			blogpost_id = j2.get("blogpost_id").toString();
+			j2.get("blogsiteid").toString();
+			j2.get("blogpost_id").toString();
 			terms = j2.get("terms").toString();
-			date = j2.get("date").toString();
+			j2.get("date").toString();
 
 			// process terms
 			String val = terms;
@@ -846,14 +668,12 @@ public class Terms extends HttpServlet implements Runnable {
 				datatuple_.add(pair);
 			});
 
-//		this.datatuple = data;
-			topterm = j2.get("topterm").toString();
+			j2.get("topterm").toString();
 
-//		Object date_json = j1.getJSONObject("fields").getJSONArray("date").get(0);
-//		date = date_json.toString();
 		}
 		return datatuple_;
 	}
+	
 
 	public ArrayList<JSONObject> _buildSlicedScrollQuery(JSONObject query) throws Exception {
 		ArrayList<JSONObject> result = new ArrayList<JSONObject>();
@@ -890,7 +710,7 @@ public class Terms extends HttpServlet implements Runnable {
 
 	public JSONObject _elastic(JSONObject query) throws Exception {
 
-		ArrayList<String> list = new ArrayList<String>();
+		new ArrayList<String>();
 
 		String source = null;
 
@@ -900,8 +720,6 @@ public class Terms extends HttpServlet implements Runnable {
 		JSONObject all_data = new JSONObject();
 
 		JSONObject myResponse = this._makeElasticRequest(query, "POST", "/blogpost_terms/_search/?scroll=1m");
-
-		// System.out.println(hm.get("elasticIndex") + "==" + "==" + query);
 
 		JSONArray allhits = new JSONArray();
 		JSONObject scrollResult = new JSONObject();
@@ -924,36 +742,27 @@ public class Terms extends HttpServlet implements Runnable {
 			allhits = scrollResult.getJSONObject("hits").getJSONArray("hits");
 			source = allhits.toString();
 			jsonArray = merge(jsonArray, new JSONArray(source), "all");
-			// jsonArray.put(new JSONArray(source));
 
 			for (int i = 0; i < jsonArray.length(); i++) {
 
 				if (allhits.length() <= 0) {
 					break;
 				}
-//			while (allhits.length() > 0) {
-				System.out.println("WHILE ---" + allhits.length());
 				scroll_id = (String) scrollResult.get("_scroll_id");
 				scrollResult = this._scrollRequest(scroll_id);
 				allhits = scrollResult.getJSONObject("hits").getJSONArray("hits");
 				source = allhits.toString();
 
 				jsonArray = merge(jsonArray, new JSONArray(source), "all");
-				// jsonArray.put(new JSONArray(source));
 			}
 
 			all_data.put("total", total.toString());
 			all_data.put("hit_array", jsonArray);
 
 		}
-		System.out.println("DONE");
 		return all_data;
 	}
 
-//	int arg1 = 10;
-//	String arg2 = "foo";
-//	Function<String, String> partialFunction = (str) -> callbackFunction.apply(arg1, arg2, str);
-//	stringList.parallelStream().map(partialFunction);
 
 	public static String applyFunction(String name, Function<String, String> function) {
 		return function.apply(name);
@@ -963,15 +772,13 @@ public class Terms extends HttpServlet implements Runnable {
 
 	public JSONObject _getTerms(String term, String bloggerName, String date_from, String date_to, String ids_)
 			throws Exception {
-//	
-		ArrayList<String> list = new ArrayList<String>();
-		ArrayList<String> _idlist = new ArrayList<String>();
+		new ArrayList<String>();
+		new ArrayList<String>();
 		String result = null;
 
 		JSONObject all_data = new JSONObject();
-		JSONObject posts_occured_data = new JSONObject();
+		new JSONObject();
 
-//		this._getTerms(term, bloggerName, date_from, date_to, ids_)
 		JSONObject query = new JSONObject();
 		List<Tuple2<String, Integer>> data = new ArrayList<Tuple2<String, Integer>>();
 		if (bloggerName != "__NOBLOGGER__") {
@@ -1005,24 +812,16 @@ public class Terms extends HttpServlet implements Runnable {
 			query = new JSONObject("");
 		}
 
-//		System.out.println("query for elastic _getBloggerPosts --> " + query);
 
 		JSONObject elas = this._elastic(query);
 		JSONArray jsonArray = (JSONArray) elas.getJSONArray("hit_array");
 
-		String total = elas.get("total").toString();
-		String blogpost_id = null;
-		String blogsiteid = null;
+		elas.get("total").toString();
 		String terms = null;
-		String topterm = null;
-		String date = null;
-
-		JSONArray all = new JSONArray();
+		new JSONArray();
 
 		System.out.println("DONE GETTING POSTS FOR BLOGGER");
 		if (jsonArray != null) {
-
-			// check to perform stream on jsonarry or convert to normal array(doubt)
 			for (int i = 0; i < jsonArray.length(); i++) {
 				String indx = jsonArray.get(i).toString();
 				JSONObject j1 = new JSONObject(indx);
@@ -1030,8 +829,8 @@ public class Terms extends HttpServlet implements Runnable {
 
 				JSONObject j2 = new JSONObject(ids);
 
-				blogsiteid = j2.get("blogsiteid").toString();
-				blogpost_id = j2.get("blogpost_id").toString();
+				j2.get("blogsiteid").toString();
+				j2.get("blogpost_id").toString();
 				terms = j2.get("terms").toString();
 
 				// process terms
@@ -1050,10 +849,10 @@ public class Terms extends HttpServlet implements Runnable {
 				});
 
 				this.datatuple = data;
-				topterm = j2.get("topterm").toString();
+				j2.get("topterm").toString();
 
 				Object date_json = j1.getJSONObject("fields").getJSONArray("date").get(0);
-				date = date_json.toString();
+				date_json.toString();
 
 			}
 		}
@@ -1069,42 +868,22 @@ public class Terms extends HttpServlet implements Runnable {
 	}
 
 	public String mapReduce(List<Tuple2<String, Integer>> data, String type) throws Exception {
-		JavaPairRDD<String, Integer> result = null;
 		String result2 = null;
 		SparkConf conf = new SparkConf().setMaster("local[6]").setAppName("Example");
-//		SparkConf conf = new SparkConf().setMaster("spark://144.167.35.50:4042").setAppName("Example").set("spark.ui.port","4042");
-//		conf.set("spark.driver.memory", "64g");
 		JavaSparkContext sc = new JavaSparkContext(conf);
 		try {
-
-//			data.stream().collect(Collectors.groupingBy(Tuple2::getKey, Collectors.mapping(Tuple2::getValue, Collectors.toList())));
-//			data.parallelStream().reduce((int a, int b) -> a+b);
-//			data.parallelStream().filter(x -> x._2 > 10 ).forEach(System.out::println);
 			JavaRDD rdd = sc.parallelize(data);
 			JavaPairRDD<String, Integer> pairRdd = JavaPairRDD.fromJavaRDD(rdd);
 
-			ArrayList<Tuple2<String, Integer>> test = new ArrayList<Tuple2<String, Integer>>();
+			new ArrayList<Tuple2<String, Integer>>();
 
 			if (type.contentEquals("topterm")) {
 				System.out.println("i am here");
 				System.out.println(data.size());
-				// System.out.println(data.parallelStream().max(new DummyComparator()));
-//				System.out.println(pairRdd.groupByKey().toString());
-//				result2 = pairRdd.reduceByKey((a, b) -> (a + b)).max(new DummyComparator())._1().toString();
 				result2 = pairRdd.reduceByKey((a, b) -> (a + b)).max(new DummyComparator()).toString();
-//				result = pairRdd.reduceByKey((a,b) -> (a + b));
-
-//				for (JavaPairRDD<String, Integer> tuple2 : pairRdd) {
-//					
-//				}
 				sc.stop();
-//				System.out.println(result.max(new DummyComparator()));
-//				return result;
 			} else if (type.contentEquals("dashboard")) {
-//				result2 = pairRdd.reduceByKey((a, b) -> (a + b)).takeOrdered(100, TupleTakeOrder.INSTANCE).toString();
 				result2 = pairRdd.reduceByKey((a, b) -> (a + b)).toString();
-//				return result;
-//				System.out.println(result);
 				sc.stop();
 				return result2;
 
@@ -1114,7 +893,6 @@ public class Terms extends HttpServlet implements Runnable {
 				sc.stop();
 				return result2;
 			}
-			// System.out.println();
 
 		} catch (Exception e) {
 			System.out.println(e);
@@ -1122,6 +900,75 @@ public class Terms extends HttpServlet implements Runnable {
 
 		return result2;
 
+	}
+	
+	public static String getTopTermsFromBlogger(String blogger, String from, String to, String limit) throws Exception {
+		String result = null;
+		JSONArray output = new JSONArray();
+		if (blogger.indexOf("\"") != 0) {
+			blogger = "\"" + blogger + "\"";
+		}
+		String query = "select n.term, sum(n.occurr) occurrence " + "from blogpost_terms_api, "
+				+ "json_table(terms_test, " + "'$[*]' columns( " + "term varchar(128) path '$.term', "
+				+ "occurr int(11) path '$.occurrence' " + ") " + ") " + "as n " + "where blogger in  (" + blogger
+				+ ") and date > \"" + from + "\" and date < \"" + to + "\" " + "group by n.term "
+				+ "order by occurrence desc " + "limit " + limit + "";
+		System.out.println(query);
+		ResultSet post_all =  DbConnection.queryResultSet(query);
+		
+		while(post_all.next()){
+			String term = post_all.getString("term");
+			int occurrence = post_all.getInt("occurrence");
+			Tuple2<String, Integer> v = new Tuple2<String, Integer>(term,occurrence);
+			output.put(v);
+		}
+
+		post_all.close();
+		return output.toString();
+	}
+	
+	/**
+	 * Getting most occuring terms
+	 * @param field_name field name to filter search on
+	 * @param field_values field values
+	 * @param from lowest date range
+	 * @param to highest date range
+	 * @param limit output limit
+	 * @throws Exception - Exception
+	 * @return String result
+	 */
+	public static String getTopTerms(String field_name, String field_values, String from, String to, String limit) throws Exception {
+		String result = null;
+		JSONArray output = new JSONArray();
+		if (field_values.indexOf("\"") != 0) {
+			field_values = "\"" + field_values + "\"";
+		}
+		String query = "select n.term, sum(n.occurr) occurrence " + "from blogpost_terms_api, "
+				+ "json_table(terms_test, " + "'$[*]' columns( " + "term varchar(128) path '$.term', "
+				+ "occurr int(11) path '$.occurrence' " + ") " + ") " + "as n " + "where "+field_name+" in  (" + field_values
+				+ ") and date > \"" + from + "\" and date < \"" + to + "\" " + "group by n.term "
+				+ "order by occurrence desc " + "limit " + limit + "";
+		System.out.println(query);
+		ResultSet post_all =  DbConnection.queryResultSet(query);
+		
+		while(post_all.next()){
+			String term = post_all.getString("term");
+			int occurrence = post_all.getInt("occurrence");
+			Tuple2<String, Integer> v = new Tuple2<String, Integer>(term,occurrence);
+			output.put(v);
+		}
+
+		post_all.close();
+		return output.toString();
+	}
+	
+	public static void main(String[] args) {
+		try {
+			getTopTerms("blogsiteid", "2649,1319,3436", "2020-01-01", "2020-11-11", "100");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public Terms() {
@@ -1152,64 +999,52 @@ public class Terms extends HttpServlet implements Runnable {
 		Clustering cluster = new Clustering();
 		HttpSession session = request.getSession();
 
-//		Map<String, Integer> result = new HashMap<String, Integer>();
 		String output = null;
 		Object action = (null == request.getParameter("action")) ? "" : request.getParameter("action");
 		Object date_start = (null == request.getParameter("date_start")) ? "" : request.getParameter("date_start");
 		Object date_end = (null == request.getParameter("date_end")) ? "" : request.getParameter("date_end");
 		Object blogger = (null == request.getParameter("blogger")) ? "" : request.getParameter("blogger");
 
-		Object all_bloggers = (null == request.getParameter("all_bloggers")) ? ""
-				: request.getParameter("all_bloggers");
+		if (null == request.getParameter("all_bloggers")) {
+		} else {
+			request.getParameter("all_bloggers");
+		}
 
-		Object post_ids = (null == request.getParameter("post_ids")) ? "" : request.getParameter("post_ids");
+		if (null == request.getParameter("post_ids")) {
+		} else {
+			request.getParameter("post_ids");
+		}
 		Object ids = (null == request.getParameter("ids")) ? "" : request.getParameter("ids");
-		JSONArray out_ = new JSONArray();
+		new JSONArray();
 		JSONObject o = new JSONObject();
 
 		if (action.toString().equals("getkeyworddashboard")) {
 			System.out.println("action is getkeyworddashboard and ids are " + ids.toString());
 			try {
-				JSONObject output_ = new JSONObject();
-				//o = cluster.getTopTermsFromBlogIds(ids.toString(), date_start.toString(), date_end.toString(),"100");
+				new JSONObject();
 				output = cluster.getTopTermsFromBlogIds(ids.toString(), date_start.toString(), date_end.toString(),"100");
-//				out_ = (JSONArray) o.get("output");
-
-//				String result = out_.toString().replaceAll("\"", "");
-//				output_.put(key, value);
-				//JSONObject ttt = (JSONObject) o.get("post_id_term_pair");
-				//System.out.println("keyssssss--" + ttt.keySet());
 				JSONObject pp = (JSONObject)o.get("post_id_post");
 				System.out.println("pp --" + pp.length());
 				if(pp.length() > 0) {
 					
 				session.setAttribute(ids.toString() + "--" + action.toString(), o);
 				}
-//				for (Tuple2<String, Integer> x : data) {
-//					result.put(x._1, x._2);
-//				}
 			} catch (Exception e) {
 
 			}
-			System.out.println("dashboard output");
-//			out.write(o.toString());
+
 			out.write(output.toString());
 		} else if (action.toString().equals("gethighestterms")) {
 			try {
-//				o = cluster.getTopTermsFromBlogIds(ids.toString(), date_start.toString(), date_end.toString(),"1");
-//				out_ = (JSONArray) o.get("output");
 				output = cluster.getTopTermsFromBlogIds(ids.toString(), date_start.toString(), date_end.toString(),"1");
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-//			out.write(out_.toString().replaceAll("\"", ""));
 			out.write(output.toString().replace("\"", ""));
 		}else if (action.toString().equals("getbloggerhighestterms")) {
 			try {
-//				output = cluster.getTopTermsBlogger(blogger.toString(), date_start.toString(), date_end.toString(),
-//						"1");
-				output = cluster.getTopTermsFromBlogger(blogger.toString(), date_start.toString(), date_end.toString(), "1");
+				output = getTopTermsFromBlogger(blogger.toString(), date_start.toString(), date_end.toString(), "1");
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

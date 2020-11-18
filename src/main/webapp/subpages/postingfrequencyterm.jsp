@@ -38,30 +38,7 @@
 	JSONArray topterms = new JSONArray();
 	JSONObject keys = new JSONObject();
 	String mostusedkeyword = "";
-/* 	if (allterms.size() > 0) {
-		for (int p = 0; p < allterms.size(); p++) {
-			String bstr = allterms.get(p).toString();
-			JSONObject bj = new JSONObject(bstr);
-			bstr = bj.get("_source").toString();
-			bj = new JSONObject(bstr);
-			String frequency = bj.get("frequency").toString();
-			int freq = Integer.parseInt(frequency);
 
-			String tm = bj.get("term").toString();
-			if (freq > highestfrequency) {
-				highestfrequency = freq;
-				mostusedkeyword = tm;
-			}
-
-			JSONObject cont = new JSONObject();
-			cont.put("key", tm);
-			cont.put("frequency", frequency);
-			if (!keys.has(tm)) {
-				keys.put(tm, tm);
-				/* topterms.put(cont); */
-/* 			}
-		}
-	} */ 
 String bloggerterms = null;
 	if (action.toString().equals("gettopkeyword")) {
 %>
@@ -69,7 +46,7 @@ String bloggerterms = null;
 <%
 	} else {
 		
-		bloggerterms = Clustering.getTopTermsFromBlogger( blogger.toString(), dt,dte , "100");
+		bloggerterms = Terms.getTopTermsFromBlogger(blogger.toString(), dt,dte , "100");
 		System.out.println("terms --"+bloggerterms);
 %>
 <!-- <div class="tagcloudcontainer" style="min-height: 420px;">

@@ -3,10 +3,13 @@ package util;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.URL; 
+import java.net.URL;
+import java.sql.ResultSet;
+
 import org.json.JSONObject;
 
 import authentication.DbConnection;
+import scala.Tuple2;
 
 import org.json.JSONArray;
 
@@ -520,6 +523,52 @@ public class Liwc {
 			}
 		}
 		return  list;
+	}
+	
+	
+	/**
+	 * Getting sum of positive and negative sentiment
+	 * @param field_name field name to filter search on
+	 * @param field_values field values
+	 * @param from lowest date range
+	 * @param to highest date range
+	 * @throws Exception - Exception
+	 * @return String result
+	 */
+	public static Tuple2<Integer, Integer> getSumPositveAndNegativeSentiment(String field_name, String field_values, String from, String to) throws Exception {
+		String result = null;
+		Tuple2<Integer, Integer> v = new Tuple2<Integer, Integer>(null, null);
+		
+		if (field_values.indexOf("\"") != 0) {
+			field_values = "\"" + field_values + "\"";
+		}
+		String query = "select sum(posemo) p, sum(negemo) n \r\n" + 
+				"from liwc \r\n" + 
+				"where blogpostid in (select blogpost_id from blogposts where "+field_name+" in ("+field_values+")) and\r\n" + 
+				"date > \""+from+"\" and \r\n" + 
+				"date < \""+to+"\";";
+		
+		System.out.println(query);
+		ResultSet post_all =  DbConnection.queryResultSet(query);
+		
+		while(post_all.next()){
+			int positive = post_all.getInt("p");
+			int negative = post_all.getInt("n");
+			v = new Tuple2<Integer, Integer>(positive,negative);
+		}
+
+		post_all.close();
+		return v;
+	}
+	
+	
+	public static void main(String[] args) {
+		try {
+			getSumPositveAndNegativeSentiment("blogsite_id", "2649,1319,3436", "2020-01-01", "2020-11-11");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }
