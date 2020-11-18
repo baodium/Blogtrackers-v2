@@ -4597,7 +4597,7 @@ var mymarker = [
 	
 	function load_custom_filter(type, element){
 		
-		$("."+element).html("<img src='images/loading.gif' /> COMPUTING TERMS FOR <b style='color : blue;  font-size: 20px;'><%=NumberFormat.getNumberInstance(Locale.US).format(new Double(totalpost).intValue())%></b> POSTS PLEASE WAIT...."); 
+		$("#"+element).html("<img src='images/loading.gif' /> COMPUTING DISPLAY FOR SELECTED DATE RANGE:  <b style='color : blue;  font-size: 20px;'><%=dt%> - <%=dte%></b> PLEASE WAIT...."); 
 		 /* $('#keywordbtn').prop("disabled", true);
 		 $("#hrefkeyword").attr("href", ""); */
 		$.ajax({
@@ -4607,25 +4607,23 @@ var mymarker = [
 			data: {
 				action:type,
 				/* blogger:null, */
-				
 				ids:"<%=ids%>",
 				date_start:"<%=dt%>",
 				date_end:"<%=dte%>"
 			},
 			error: function(response)
 			{		
-				$("."+element).html("FAILED TO COMPUTE TERMS.. RETRYING.. PLEASE WAIT.... <img src='images/loading.gif' />g");
-				$("."+element).html("<div style='min-height: 420px;'><div class='chart-container word-cld'><div class='chart' id='tagcloudcontainer'><div class='jvectormap-zoomin zoombutton' id='zoom_in'>+</div><div class='jvectormap-zoomout zoombutton' id='zoom_out'>−</div></div></div></div>");
-				wordtagcloud("#tagcloudcontainer99",450,{"NO KEYWORD":1});
+				$("#"+element).html("FAILED TO COMPUTE TERMS.. RETRYING.. PLEASE WAIT.... <img src='images/loading.gif' />g");
+				$("#"+element).html("<div style='min-height: 420px;'><div class='chart-container word-cld'><div class='chart' id='tagcloudcontainer'><div class='jvectormap-zoomin zoombutton' id='zoom_in'>+</div><div class='jvectormap-zoomout zoombutton' id='zoom_out'>−</div></div></div></div>");
+				//wordtagcloud("#tagcloudcontainer99",450,{"NO KEYWORD":1});
 				console.log("This is failure"+response);
 
 			},
 			success: function(response)
 			{   	
-				//alert(response)
-				console.log("sucess"+type);
+				
 			$("#"+element).html("<div id='dummy'></div><div style='min-height: 420px;'><div class='chart-container word-cld'><div class='chart' id='tagcloudcontainer99'><div class='jvectormap-zoomin zoombutton' id='zoom_in'>+</div><div class='jvectormap-zoomout zoombutton' id='zoom_out'>−</div></div></div></div>");
-			  $("#"+element).html("<img src='images/loading.gif' /> COMPUTING TERMS PLEASE WAIT....").html(response);
+			  $("#"+element).html("<img src='images/loading.gif' /> COMPUTING DISPLAY PLEASE WAIT....").html(response);
 			}
 		});
 		
