@@ -1053,7 +1053,7 @@ path.chord {
 		</div>
 
 		<div class="row mb0">
-			<div class="col-md-6 mt20 zoom">
+			<div class="col-md-6 mt20 zoom" id="getlocationdashboard">
 				<div class="card card-style mt20">
 					<div class="card-body mt0 pt0 pl0" style="min-height: 520px;">
 
@@ -1153,7 +1153,7 @@ path.chord {
 				</div>
 			</div>
 
-			<div class="col-md-6 mt20 zoom">
+			<div class="col-md-6 mt20 zoom" id="getlanguagedashboard">
 				<div class="card card-style mt20">
 
 					<div class="card-body mt0 pt0 pl0" style="min-height: 520px;">
@@ -1359,7 +1359,7 @@ path.chord {
 				</div>
 			</div>
 
-			<div class="col-md-6 mt20 zoom">
+			<div class="col-md-6 mt20 zoom" id="getsentimentdashboard">
 				<div class="card card-style mt20">
 					<div class="card-body  p30 pt5 pb5">
 						<div>
@@ -1395,7 +1395,7 @@ path.chord {
 		</div>
 
 		<div class="row mb0">
-			<div class="col-md-6 mt20 zoom">
+			<div class="col-md-6 mt20 zoom" id="getblogdashboard">
 				<div class="card card-style mt20">
 					<div class="card-body   p30 pt5 pb5">
 						<div>
@@ -1426,7 +1426,7 @@ path.chord {
 
 			</div>
 
-			<div class="col-md-6 mt20 zoom">
+			<div class="col-md-6 mt20 zoom" id="getbloggerdashboard">
 				<div class="card card-style mt20">
 					<div class="card-body p30 pt5 pb5">
 						<div>
@@ -1462,7 +1462,7 @@ path.chord {
 		<div class="row mb0">
 
 
-			<div class="col-md-6 mt20 zoom">
+			<div class="col-md-6 mt20 zoom" id="getinfluencedashboard">
 				<div class="card card-style mt20">
 					<div class="card-body p30 pt5 pb5">
 						<div>
@@ -1567,7 +1567,7 @@ path.chord {
 		<div class="row mb0">
 
 
-			<div class="col-md-6 mt20 zoom">
+			<div class="col-md-6 mt20 zoom" id="getclusterdashboard">
 				<div id="cluster_card_div" class="card card-style mt20 radial_f">
 					<div class="card-body p30 pt5 pb5">
 						<div>
@@ -1617,7 +1617,7 @@ path.chord {
 						</div> -->
 
 
-			<div class="col-md-6 mt20 zoom">
+			<div class="col-md-6 mt20 zoom" >
 				<div class="card card-style mt20">
 					<div class="card-body   p30 pt5 pb5">
 						<div>
@@ -1669,7 +1669,7 @@ path.chord {
 		</div>
 
 		<div class="row mb50">
-			<div class="col-md-12 mt20 zoom">
+			<div class="col-md-12 mt20 zoom" id="getdomaindashboard">
 				<div class="card card-style mt20">
 					<div class="card-body  p5 pt10 pb10">
 
@@ -3254,8 +3254,11 @@ $(document).ready(function() {
 	<script>
 $(function () {
 	
+	<% if(date_set.toString().equals("1")){}else{ %>
     // Initialize chart
     languageusage('#languageusage', 430);
+    
+	<% } %>
     // Chart setup
     function languageusage(element, height) {
       // Basic setup
@@ -3538,6 +3541,7 @@ function formatNumber(num) {
 
 	<!-- start of influence bar chart  -->
 	<script>
+	<% if(date_set.toString().equals("1")){}else{ %>
 $(function () {
     // Initialize chart
     influencebar('#influencebar', 450);
@@ -3800,9 +3804,11 @@ $(function () {
         }
     }
 });
+<% } %>
 </script>
 
 	<!--  End of influence bar -->
+
 
 	<!-- start sample graph script -->
 	<script>
@@ -4186,6 +4192,9 @@ $(function () {
 	<!-- end of posting frequency  -->
 	<!--  Start of sentiment Bar Chart -->
 	<script type="text/javascript">
+	//sentiment filter check
+	<% if(date_set.toString().equals("1")){}else{ %>
+	
 	  $(function () {
 	
 	 <%String pos = "";
@@ -4217,9 +4226,15 @@ $(function () {
             {label:"Positive", value:<%=Integer.parseInt(pos)%>}
         ];
       console.log("here---",sentimentdata);
-      pieChartAnimation("#sentimentpiechart",180,sentimentdata);
+      
+      // Initialize chart
+       pieChartAnimation("#sentimentpiechart",180,sentimentdata);
+      
+  
+     
 	  });
-        
+		<% } %>
+		//end sentiment filter check
       </script>
 
 	<script type="text/javascript">
@@ -4567,8 +4582,9 @@ var mymarker = [
 		src="assets/vendors/maps/jvectormap/map_files/countries/usa.js"></script>
 	<script type="text/javascript"
 		src="assets/vendors/maps/jvectormap/map_files/countries/germany.js"></script>
-	<script type="text/javascript"
-		src="assets/vendors/maps/vector_maps_demo.js"></script>
+		<%if(date_set.toString().equals("1")){}else{ %>
+	<script type="text/javascript" src="assets/vendors/maps/vector_maps_demo.js"></script>
+		<% } %>
 	<script type="text/javascript"
 		src="chartdependencies/keywordtrendd3.js"></script>
 	<script type="text/javascript" src="chartdependencies/chord.js"></script>
@@ -4579,9 +4595,42 @@ var mymarker = [
 	
 	var word_count2 = {}; 
 	
+	function load_custom_filter(type, element){
+		
+		$("."+element).html("<img src='images/loading.gif' /> COMPUTING TERMS FOR <b style='color : blue;  font-size: 20px;'><%=NumberFormat.getNumberInstance(Locale.US).format(new Double(totalpost).intValue())%></b> POSTS PLEASE WAIT...."); 
+		 /* $('#keywordbtn').prop("disabled", true);
+		 $("#hrefkeyword").attr("href", ""); */
+		$.ajax({
+			url: app_url+"subpages/dashboardcharts.jsp",
+			method: 'POST',
+           /* dataType: 'json', */
+			data: {
+				action:type,
+				/* blogger:null, */
+				
+				ids:"<%=ids%>",
+				date_start:"<%=dt%>",
+				date_end:"<%=dte%>"
+			},
+			error: function(response)
+			{		
+				$("."+element).html("FAILED TO COMPUTE TERMS.. RETRYING.. PLEASE WAIT.... <img src='images/loading.gif' />g");
+				$("."+element).html("<div style='min-height: 420px;'><div class='chart-container word-cld'><div class='chart' id='tagcloudcontainer'><div class='jvectormap-zoomin zoombutton' id='zoom_in'>+</div><div class='jvectormap-zoomout zoombutton' id='zoom_out'>−</div></div></div></div>");
+				wordtagcloud("#tagcloudcontainer99",450,{"NO KEYWORD":1});
+				console.log("This is failure"+response);
 
+			},
+			success: function(response)
+			{   	
+				//alert(response)
+				console.log("sucess"+type);
+			$("#"+element).html("<div id='dummy'></div><div style='min-height: 420px;'><div class='chart-container word-cld'><div class='chart' id='tagcloudcontainer99'><div class='jvectormap-zoomin zoombutton' id='zoom_in'>+</div><div class='jvectormap-zoomout zoombutton' id='zoom_out'>−</div></div></div></div>");
+			  $("#"+element).html("<img src='images/loading.gif' /> COMPUTING TERMS PLEASE WAIT....").html(response);
+			}
+		});
 		
-		
+	}
+	
 		
 		$(document).ready(function(){
 			 <%-- <%if (null == session.getAttribute(ids + "--getkeyworddashboard")) {%>
@@ -4649,6 +4698,18 @@ var mymarker = [
 				}
 			});
 			 
+			
+			<%}if(date_set.toString().equals("1")){%>
+			
+			load_custom_filter("getlocationdashboard","getlocationdashboard")
+			load_custom_filter("getlanguagedashboard","getlanguagedashboard") 
+			load_custom_filter("getsentimentdashboard","getsentimentdashboard")
+			 load_custom_filter("getbloggerdashboard","getbloggerdashboard")
+			load_custom_filter("getblogdashboard","getblogdashboard")
+			load_custom_filter("getinfluencedashboard","getinfluencedashboard")
+			//load_custom_filter("getclusterdashboard","getclusterdashboard")
+			load_custom_filter("getdomaindashboard","getdomaindashboard") 
+			
 			
 			<%}else if (status.equals("1") && date_set.toString()!= "1" ){
 			
@@ -5010,8 +5071,11 @@ function matrix_loader1(){
 		</script>
 
 	<!-- Blogger Bubble Chart -->
+	
 	<script>
+	<% if(date_set.toString().equals("1")){}else{ %>
 $(function () {
+	
     // Initialize chart
     bubblesblogger('#bubblesblogger', 470);
     // Chart setup
@@ -5256,12 +5320,15 @@ data = {
     var color = d3.scale.linear()
             .domain([0,1,2,3,4,5,6,10,15,20,80])
             .range(["#17394C", "#F5CC0E", "#CE0202", "#aaa", "#999", "#888", "#777", "#666", "#555", "#444", "#333", "#222"]);
+    <% } %>
 </script>
 	<!-- end of blogger bubble chart -->
 
 
 	<!-- Blog Bubble Chart -->
+	
 	<script>
+	<% if(date_set.toString().equals("1")){}else{ %>
 $(function () {
     // Initialize chart
     bubblesblog('#bubblesblog', 470);
@@ -5478,7 +5545,9 @@ data = {
       	}
     }
 });
+<% } %>
 </script>
+
 	<script>
 $(".option-only").on("change",function(e){
 	console.log("only changed ");

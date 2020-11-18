@@ -46,19 +46,17 @@ Terms term  = new Terms();
 /* JSONObject res=post._keywordTermvctors(sql); */
 //System.out.println("data--"+json_type);
 //System.out.println("action--"+action.toString());
-if(action.toString().equals("getkeyworddashboard")){
+%>
+<!-- <link rel="stylesheet" href="assets/bootstrap/css/bootstrap-grid.css" />
+<link rel="stylesheet" href="assets/bootstrap/css/bootstrap.css" />
+<link rel="stylesheet" href="assets/vendors/DataTables/dataTables.bootstrap4.min.css" />
+<link rel="stylesheet" href="assets/vendors/DataTables/Buttons-1.5.1/css/buttons.dataTables.min.css" />
+<script src="assets/js/jquery.min.js"></script> -->
+
+<% if(action.toString().equals("getkeyworddashboard")){
 	
-	System.out.println(action+"--->"+date_start.toString()+"--->"+date_end.toString()+"--->"+ids.toString());
 String dashboardterms = null;
 dashboardterms = Clustering.getTopTermsFromDashboard(ids.toString(), date_start.toString(),date_end.toString() , "100");
-System.out.println("terms --"+dashboardterms);
-	//JSONObject result = new JSONObject(json_type);
-	/* result.put("alltermsdata",res); */
-
-	/* out_.println(json_type); */
-//session.setAttribute(action.toString(), json_type);
-	
-//Object json_type_2 = (null == session.getAttribute(action.toString())) ? "" : session.getAttribute(action.toString());
 	%>
 	
 	<%-- //<%=result.toString()%> --%>
@@ -80,7 +78,6 @@ System.out.println("terms --"+dashboardterms);
 */
 
 var terms = <%=dashboardterms.toString()%>
-console.log('terms',jsonresult);
 var jsonresult = {}
 var currenttuple = null;
 var currentkey = null;
@@ -96,17 +93,1908 @@ for(var i = 0; i < terms.length; i++){
 	jsonresult[key]=value;
 	
 }
-
-//var new_dd = terms.replace('[','{').replace(']','}').replace(/\),/g,'-').replace(/\(/g,'').replace(/,/g,':').replace(/-/g,',').replace(/\)/g,'').replace(/'/g,'');
-//System.out.println("terms_result" + jsonresult);
-wordtagcloud("#tagcloudcontainer",450,jsonresult); 
-console.log('terms',jsonresult);
+wordtagcloud("#tagcloudcontainer",450,jsonresult);
 </script>
 	
+<% } else if(action.toString().equals("getlocationdashboard")){ %>
+
+<!-- START LOCATION  -->
+			<div class="card card-style mt20">
+					<div class="card-body mt0 pt0 pl0" style="min-height: 520px;">
+
+						<div class="location_mecard">
+
+							<div class="front p30 pt5 pb5">
+
+								<div>
+									<p class="text-primary mt0 float-left">
+										Most Active Location
+									</p>
+									<button style="right: 10px; position: absolute" id="flip"
+										type="button" onclick="location_flip()"
+										class="btn btn-sm btn-primary float-right"
+										data-toggle="tooltip" data-placement="top"
+										title="Flip to view location usage" aria-expanded="false">
+										<i class="fas fa-exchange-alt" aria-hidden="true"></i>
+									</button>
+								</div>
+								<div style="min-height: 490px;">
+									<div class="map-container map-choropleth"></div>
+								</div>
+
+
+							</div>
+							<!-- end front -->
+							<div class="back p30 pt5 pb5">
+
+								<div>
+									<p class="text-primary mt10 float-left">Location Usage</p>
+									<button style="right: 10px; position: absolute" id="flip"
+										type="button" onclick="location_flip()"
+										class="btn btn-sm btn-primary float-right"
+										data-toggle="tooltip" data-placement="top"
+										title="Flip to view location usage" aria-expanded="false">
+
+										<i class="fas fa-exchange-alt" aria-hidden="true"></i>
+									</button>
+								</div>
+
+								<div class="min-height-table">
+									<table id="DataTables_Table_19_wrapper" class="display"
+										style="width: 100%">
+										<thead>
+											<tr>
+												<th>Blogs</th>
+												<th>Location</th>
+
+											</tr>
+										</thead>
+										<tbody>
+
+											<%if (11 > 0) {
+						for (int i = 0; i < 11; i++) {
+							//ArrayList<?> loca = (ArrayList<?>) locations_usage.get(i);
+							//String loc = loca.get(0).toString();
+							//String size = loca.get(1).toString();
+							//String blogsite_name = loca.get(2).toString();
+							
+							%>
+
+											<tr>
+												<td class="">sunnynews.com</td>
+												<td>USA</td>
+												
+											</tr>
+
+											<%}
+					}%>
+
+										</tbody>
+									</table>
+
+
+								</div>
+
+							</div>
+							<!-- end back -->
+
+						</div>
+						<!--end location mecard -->
+
+					</div>
+				</div>
+				
+				<script>
+					function location_flip() {
+					    $('.location_mecard').toggleClass('flipped');
+					}
+					
+					$('#DataTables_Table_19_wrapper').DataTable( {
+						 "columnDefs": [
+				 		    { "width": "65%", "targets": 0 }
+				 		  ],
+					        "scrollY": 380,
+					        "scrollX": true,
+					         "pagingType": "simple",
+					        	 "bLengthChange": false,
+					        	 "bFilter":false,
+					        	 "bPaginate":false,
+					        	 "bInfo":false,
+					        	 "order": [[ 1, "desc" ]]
+					  
+					    } );
+					
+					
+					$(function() {
+
+
+						//console.log(mymarker[2].size);
+						    // Choropleth map
+						    var mapObj = new jvm.WorldMap({
+						    	container: $('.map-choropleth'),
+						        map: 'world_mill_en',
+						        backgroundColor: 'transparent',
+						        series: {
+						        	markers: [{
+						        		attribute: 'r',
+						                scale: [3,10]	
+						        	}],
+						            regions: [{
+						                values: gdpData,
+						                scale: ['#E5DBD2', '#E6CEC3'],
+						                normalizeFunction: 'polynomial'
+						            }]
+						        },
+						        markerStyle: {
+						                initial: {
+						                    r: 3,
+						                    'fill': '#F26247',
+						                    'fill-opacity': 0.8,
+						                    'stroke': '#fff',
+						                    'stroke-width' : 1.5,
+						                    'stroke-opacity': 0.9
+						                },
+						                hover: {
+						                    'stroke': '#fff',
+						                    'fill-opacity': 1,
+						                    'stroke-width': 1.5
+						                }
+						            },
+						            focusOn: {
+						                x: 0.5,
+						                y: 0.5,
+						                scale: 1
+						            },
+						            markers:[],
+						           // markers: mymarker,
+						        onRegionLabelShow: function(e, el, code){
+						            el.html(el.html()
+						            		// remove the data count
+						            		//+'<br>'+
+						            		//gdpData[code]
+						            );
+						        }
+						                 
+						    });
+						    var mapMarkers = [];
+						    var mapMarkersValues = [];
+						    mapMarkers.length = 0;
+						    mapMarkersValues.length = 0;
+						    //console.log(mymarker.length);
+						    for (var i = 0, l= mymarker.length; i < l; i++) {
+						    	//console.log(mymarker[i].name)      
+						     mapMarkers.push({name: mymarker[i].name, latLng: mymarker[i].latLng, r:mymarker[i].r *10});
+						    }
+						    mapObj.addMarkers(mapMarkers, []); 
+						    
+						    for (var i = 0, l= mymarker.length; i < l; i++) {
+						    	//console.log(mapObj.markers[i].element);
+						    	if(mymarker[i].r >=1 && mymarker[i].r < 3)
+						    		{
+						    		mapObj.markers[i].element.style.initial.r = (mymarker[i].r / 0.75) * 1.5;
+						    		}
+						    	
+						    	else if(mymarker[i].r > 30)
+						    		{
+						    		mapObj.markers[i].element.style.initial.r = mymarker[i].r/8;
+						    		}
+						    	else{
+						    		mapObj.markers[i].element.style.initial.r = mymarker[i].r;
+						    	}
+						        
+						    }
+						    mapObj.applyTransform();
+
+						});
+				</script>
+				<!-- END LOCATION -->
+
+
+
+
+<% } else if(action.toString().equals("getlanguagedashboard")){ %>
+
+
+
+<!-- START LANGUAGE -->
+				<div class="card card-style mt20">
+
+					<div class="card-body mt0 pt0 pl0" style="min-height: 520px;">
+						<div class="mecard">
+							<div class="front p30 pt5 pb5">
+								<div>
+									<p class="text-primary mt10 float-left">Language Usage</p>
+									<button style="right: 10px; position: absolute" id="flip1"
+										type="button" onclick="flip()"
+										class="btn btn-sm btn-primary float-right"
+										data-toggle="tooltip" data-placement="top"
+										title="Flip to view language usage" aria-expanded="false">
+										<i class="fas fa-exchange-alt" aria-hidden="true"></i>
+									</button>
+								</div>
+								<div class="min-height-table">
+									<div class="chart-container">
+								
+										<div class="chart" id="languageusage"></div>
+									</div>
+								</div>
+							</div>
+							<div class="back p30 pt5 pb5">
+
+								<div>
+									<p class="text-primary mt10 float-left">Language Usage</p>
+									<button style="right: 10px; position: absolute" id="flip1"
+										type="button" onclick="flip()"
+										class="btn btn-sm btn-primary float-right"
+										data-toggle="tooltip" data-placement="top"
+										title="Flip to view language usage" aria-expanded="false">
+
+										<i class="fas fa-exchange-alt" aria-hidden="true"></i>
+									</button>
+								</div>
+
+								<div class="min-height-table">
+
+
+									<table id="DataTables_Table_1_wrapper" class="display"
+										style="width: 100%">
+										<thead>
+											<tr>
+												<th>Language</th>
+												<th>Frequency</th>
+
+											</tr>
+										</thead>
+										<tbody>
+										
+											<%
+											JSONArray result_language = new JSONArray();
+											ArrayList language_data=new ArrayList();
+											try{
+												language_data = DbConnection.query("SELECT language, sum(language_count) c FROM blogtrackers.language where blogsite_id in ("+ids+") and language is not null or language != 'null' group by language order by c desc limit 10");
+												//language_data= post._getMostLanguage(dt, dte, ids, 10);
+											}catch(Exception e){
+												System.out.println("Language error--"+e);
+											}
+													
+											if (language_data.size() > 0) {
+															JSONObject lang_total = new JSONObject();
+
+															for (int y = 0; y < language_data.size(); y++) {
+																ArrayList x = (ArrayList) language_data.get(y);
+																JSONObject a = new JSONObject();
+																if(x.get(0) != "null" && x.get(0) != "" && x.get(0) != null){
+																	a.put("letter", x.get(0));
+																	a.put("frequency", x.get(1));
+																	result_language.put(a);
+																
+											%>
+											<tr>
+												<td class=""><%=x.get(0)%></td>
+												<td><%=x.get(1)%></td>
+												<!-- <td class="">j.get("letter")</td>
+												<td>j.get("frequency")</td> -->
+											</tr>
+											<%
+												}
+															}
+														}
+											%>
+
+
+										</tbody>
+									</table>
+
+
+								</div>
+
+							</div>
+						</div>
+
+					</div>
+
+				</div>
+				
+				<script>
+					function flip() {
+					    $('.mecard').toggleClass('flipped');
+					}
+					
+				  // datatable setup
+				    $('#DataTables_Table_1_wrapper').DataTable( {
+				    	"columnDefs": [
+				 		    { "width": "65%", "targets": 0 }
+				 		  ],
+				        "scrollY": 380,
+				        "scrollX": true,
+				         "pagingType": "simple",
+				        	 "bLengthChange": false,
+				        	 "bFilter":false,
+				        	 "bPaginate":false,
+				        	 "bInfo":false,
+				        	 "order": [[ 1, "desc" ]]
+				  
+				    } );
+				  
+				  
+				  
+				    <!--start of language bar chart  -->
+				$(function () {
+					
+				    // Initialize chart
+				    languageusage('#languageusage', 430);
+				    // Chart setup
+				    function languageusage(element, height) {
+				      // Basic setup
+				      // ------------------------------
+				      // Define main variables
+				      var d3Container = d3.select(element),
+				          margin = {top: 5, right: 50, bottom: 20, left: 110},
+				          width = d3Container.node().getBoundingClientRect().width - margin.left - margin.right,
+				          height = height - margin.top - margin.bottom - 5;
+				         var formatPercent = d3.format("");
+				      // Construct scales
+				      // ------------------------------
+				      // Horizontal
+				      var y = d3.scale.ordinal()
+				          .rangeRoundBands([height,0], .5, .40);
+				      // Vertical
+				      var x = d3.scale.linear()
+				          .range([0,width]);
+				      // Color
+				      var color = d3.scale.category20c();
+				      // Create axes
+				      // ------------------------------
+				      // Horizontal
+				      var xAxis = d3.svg.axis()
+				          .scale(x)
+				          .orient("bottom")
+				          .ticks(6);
+				      // Vertical
+				      var yAxis = d3.svg.axis()
+				          .scale(y)
+				          .orient("left")
+				          //.tickFormat(formatPercent);
+				      // Create chart
+				      // ------------------------------
+				      // Add SVG element
+				      var container = d3Container.append("svg").attr('class','languagesvg');
+				      // Add SVG group
+				      var svg = container
+				          .attr("width", width + margin.left + margin.right)
+				          .attr("height", height + margin.top + margin.bottom)
+				          .append("g")
+				          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+				      //         // Create tooltip
+				      //             // ------------------------------
+				      //
+				      //
+				      //
+				      // // Load data
+				      // // ------------------------------
+				      //
+				      //
+				      //
+				      	/* String sql = post._getMostKeywordDashboard(dt,dte,ids);
+					JSONObject res=post._keywordTermvctors(sql);	 */
+					data = [];
+					
+					
+				<%--      data = [
+				    	  <%if (languages.size() > 0) {
+										for (int y = 0; y < languages.size(); y++) {
+											ArrayList<?> langu = (ArrayList<?>) languages.get(y);
+											String languag = langu.get(0).toString();
+
+											String languag_freq = langu.get(1).toString();
+											if (y < 10) {%>
+											{letter:"<%=languag%>", frequency:<%=languag_freq%>},
+				    		<%}
+										}
+									}%>
+					 ];  --%>
+					
+					  data = <%=result_language%> 
+					 
+					 <%-- console.log("langdata-->"+"<%=language_data%>"); --%>
+				     data.sort(function(a, b){
+				    	    return a.frequency - b.frequency;
+				    	});
+				     
+				   /*    data = [
+				            {letter:"English", frequency:2550},
+				            {letter:"Russian", frequency:800},
+				            {letter:"Spanish", frequency:500},
+				            {letter:"French", frequency:1700},
+				            {letter:"Arabic", frequency:1900},
+				            {letter:"Unknown", frequency:1500}
+				        ]; */
+				      
+				      //
+				      //
+				      //   // Create tooltip
+				        var tip = d3.tip()
+				               .attr('class', 'd3-tip')
+				               .style("text-transform", "uppercase")
+				               .html(function(d) {
+				                   return d.letter.toUpperCase()+" ("+formatNumber(d.frequency)+")";
+				               });
+				function formatNumber(num) {
+					  return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+					}
+				           // Initialize tooltip
+				           svg.call(tip);
+				      //
+				      //     // Pull out values
+				      //     data.forEach(function(d) {
+				      //         d.frequency = +d.frequency;
+				      //     });
+				      //
+				      //
+				      //
+				      //     // Set input domains
+				      //     // ------------------------------
+				      //
+				      //    // Vertical
+				          y.domain(data.map(function(d) { return d.letter; }));
+				          
+				          
+				          // Horizontal domain
+				          x.domain([0,d3.max(data, function(d) { return d.frequency; })]);
+				      //
+				      //
+				      //     //
+				      //     // Append chart elements
+				      //     //
+				      //
+				      //     // Append axes
+				      //     // ------------------------------
+				      //
+				          // Horizontal
+				          svg.append("g")
+				              .attr("class", "d3-axis d3-axis-horizontal d3-axis-strong")
+				              .attr("transform", "translate(0," + height + ")")
+				              //.attr("stroke","#333")
+				              //.attr("fill","#333")
+				              .attr("stroke-height","1")
+				              .call(xAxis);
+				          // Vertical
+				          var verticalAxis = svg.append("g")
+				              .attr("class", "d3-axis d3-axis-vertical d3-axis-strong")
+				              .style("color","yellow")
+				              .call(yAxis)
+				              .selectAll("text")
+				              .style("font-size",12)
+				              .style("text-transform","capitalize");
+				      //
+				      //
+				      //     // Add text label
+				      //     verticalAxis.append("text")
+				      //         .attr("transform", "rotate(-90)")
+				      //         .attr("y", 10)
+				      //         .attr("dy", ".71em")
+				      //         .style("text-anchor", "end")
+				      //         .style("fill", "#999")
+				      //         .style("font-size", 12)
+				      //         // .text("Frequency")
+				      //         ;
+				      //
+				      //
+				      //     // Add bars
+				          var transitionbarlanguage = svg.selectAll(".d3-bar")
+				              .data(data)
+				              .enter()
+				              .append("rect")
+				                  .attr("class", "d3-bar")
+				                  .attr("y", function(d) { return y(d.letter); })
+				                  //.attr("height", y.rangeBand())
+				                   .attr("height", 30)
+				                  .attr('transform', 'translate(0, '+(y.rangeBand()/2-14.5)+')')
+				                  .attr("x", function(d) { return 0; })
+				                  .attr("width", 0)
+				                   .style("fill", function(d) {
+				                  maxvalue = d3.max(data, function(d) { return d.frequency; });
+				                  if(d.frequency == maxvalue)
+				                  {
+				                    return "#0080CC";
+				                  }
+				                  else
+				                  {
+				                    return "#78BCE4";
+				                  }
+				                }) 
+				                  .on('mouseover', tip.show)
+				                  .on('mouseout', tip.hide)
+				                  transitionbarlanguage.transition()
+				                  .delay(200)
+				                  .duration(1000)
+				                  .attr("width", function(d) { return x(d.frequency); })
+				                  .attr('transform', 'translate(0, '+(y.rangeBand()/2-14.5)+')');
+				      
+				          $(element).bind('inview', function (event, visible) {
+				        	  if (visible == true) {
+				        	    // element is now visible in the viewport
+				        		  transitionbarlanguage.transition()
+				                  .delay(200)
+				                  .duration(1000)
+				                  .attr("width", function(d) { return x(d.frequency); })
+				                  .attr('transform', 'translate(0, '+(y.rangeBand()/2-14.5)+')');
+				        	  } else {
+				        		  
+				        		  transitionbarlanguage.attr("width", 0)
+				        	    // element has gone out of viewport
+				        	  }
+				        	});
+				         /*  element
+				          transitionbar.transition()
+				          .delay(200)
+				          .duration(1000)
+				          .attr("width", function(d) { return x(d.frequency); })
+				          .attr('transform', 'translate(0, '+(y.rangeBand()/2-14.5)+')');
+				 */
+				                  // svg.selectAll(".d3-bar")
+				                  //     .data(data)
+				                  //     .enter()
+				                  //     .append("rect")
+				                  //         .attr("class", "d3-bar")
+				                  //         .attr("x", function(d) { return x(d.letter); })
+				                  //         .attr("width", x.rangeBand())
+				                  //         .attr("y", function(d) { return y(d.frequency); })
+				                  //         .attr("height", function(d) { return height - y(d.frequency); })
+				                  //         .style("fill", function(d) { return "#58707E"; })
+				                  //         .on('mouseover', tip.show)
+				                  //         .on('mouseout', tip.hide);
+				 
+				 
+				 ExportSVGAsImage('.savelanguagejpg','click','.languagesvg',width,height,'jpg');
+				 ExportSVGAsImage('.savelanguagepng','click','.languagesvg',width,height,'png');
+				 
+				//Set-up the export button
+				/*  d3.select('#savelanguage').on('click', function(){
+				 	var svgString = getSVGString(d3.select('.languagesvg').node());
+				 	svgString2Image( svgString, 2*width, 2*height, 'png', save ); // passes Blob and filesize String to the callback
+				 	function save( dataBlob, filesize ){
+				 		saveAs( dataBlob, 'D3 vis exported to PNG.png' ); // FileSaver.js function
+				 	}
+				 }); */
+				 
+				        // Resize chart
+				        // ------------------------------
+				        // Call function on window resize
+				        $(window).on('resize', resize);
+				        // Call function on sidebar width change
+				        $('.sidebar-control').on('click', resize);
+				        // Resize function
+				        //
+				        // Since D3 doesn't support SVG resize by default,
+				        // we need to manually specify parts of the graph that need to
+				        // be updated on window resize
+				        function resize() {
+				            // Layout variables
+				            width = d3Container.node().getBoundingClientRect().width - margin.left - margin.right;
+				            // // Layout
+				            // // -------------------------
+				            //
+				            // // Main svg width
+				            container.attr("width", width + margin.left + margin.right);
+				            // Width of appended group
+				            svg.attr("width", width + margin.left + margin.right);
+				            //
+				            //
+				            // // Axes
+				            // // -------------------------
+				            //
+				            // // Horizontal range
+				           x.range([0,width]);
+				            //
+				            // // Horizontal axis
+				            svg.selectAll('.d3-axis-horizontal').call(xAxis);
+				             // svg.selectAll('.d3-bar-vertical').call(yAxis);
+				            //
+				            // // Chart elements
+				            // // -------------------------
+				            //
+				            // // Line path
+				           svg.selectAll('.d3-bar').attr("width", function(d) { return x(d.frequency); });
+				        }
+				    }
+				});
+				</script>
+					<!-- End of language bar chart  -->
+					
+		<!-- END LANGUAGE -->
+
+
+
+<% } else if(action.toString().equals("getsentimentdashboard")){ %>
+
+<!-- START SENTIMENT -->
+			<div class="card card-style mt20">
+					<div class="card-body  p30 pt5 pb5">
+						<div>
+							<p class="text-primary mt10">
+								Sentiment Usage
+							</p>
+						</div>
+						<div style="min-height: 420px;">
+							<div class="chart-container text-center">
+								<div class="chart svg-center" id="sentimentpiechart"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<script type="text/javascript">
+				  $(function () {
+				
+				 <%
+				 /* String pos = "";
+				 
+								String neg = "";
+								for (int i = 0; i < getPositiveEmotion.size(); i++) {
+									ArrayList<?> posi = (ArrayList<?>) getPositiveEmotion.get(i);
+									
+									if(posi.get(0) == null){
+										pos = "0";
+									}else{
+										pos = posi.get(0).toString();
+									}
+									
+								}
+								for (int i = 0; i < getNegativeEmotion.size(); i++) {
+									ArrayList<?> nega = (ArrayList<?>) getNegativeEmotion.get(i);
+									if(nega.get(0) == null){
+										neg = "0";
+									}else{
+										neg = nega.get(0).toString();
+									}
+									
+			
+								} */
+								
+								%>
+			      sentimentdata = [
+			            <%-- {label:"Negative", value:<%=Integer.parseInt(neg)%>},
+			            {label:"Positive", value:<%=Integer.parseInt(pos)%>}, --%>
+			            {label:"Negative", value:35},
+			            {label:"Positive", value:65}
+			        ];
+			      console.log("here---",sentimentdata);
+			      pieChartAnimation("#sentimentpiechart",180,sentimentdata);
+				  });
+			        
+			      </script>
+		<!-- END SENTIMENT -->
+
+
+<% } else if(action.toString().equals("getbloggerdashboard")){ %>
+
+<!-- START BLOGGER DISTRIBUTION -->
+<div class="card card-style mt20">
+					<div class="card-body p30 pt5 pb5">
+						<div>
+							<p class="text-primary mt10 float-left">
+								Blogger Distribution
+							</p>
+						</div>
+						<div class="min-height-table" style="min-height: 450px;">
+							<div class="chart-container">
+								<div class="chart" id="bubblesblogger"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<!-- Blogger Bubble Chart -->
+	<script>
+$(function () {
+    // Initialize chart
+    bubblesblogger('#bubblesblogger', 470);
+    // Chart setup
+    function bubblesblogger(element, diameter) {
+        // Basic setup
+        // ------------------------------
+        // Format data
+        var format = d3.format(",d");
+        // Color scale
+        color = d3.scale.category10();
+        // Define main variables
+        var d3Container = d3.select(element),
+            margin = {top: 5, right: 20, bottom: 20, left: 50},
+            width = d3Container.node().getBoundingClientRect().width - margin.left - margin.right,
+            height = height - margin.top - margin.bottom;
+            diamter = height;
+            // Add SVG element
+            var container = d3Container.append("svg");
+            // Add SVG group
+            var svg = container
+                .attr("width", diameter + margin.left + margin.right)
+                .attr("height",diameter + margin.top + margin.bottom)
+                .call(responsivefy)
+                .attr("class", "bubble");
+        // Create chart
+        // ------------------------------
+        // var svg = d3.select(element).append("svg")
+        //     .attr("width", diameter)
+        //     .attr("height", diameter)
+        //     .attr("class", "bubble");
+        // Create chart
+        // ------------------------------
+        // Add tooltip
+        var tip = d3.tip()
+            .attr('class', 'd3-tip')
+            .offset([-5, 0])
+            .html(function(d) {
+                return "Blogger Name: "+toTitleCase(d.label)+"<br/> Total Blogposts: "
+                //+d.className + ": " 
+                + format(d.value) ;
+            });
+        // Initialize tooltip
+        svg.call(tip);
+        function toTitleCase(str) {
+            return str.replace(
+                /\w\S*/g,
+                function(txt) {
+                    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+                }
+            );
+        }
+        // Construct chart layout
+        // ------------------------------
+        // Pack
+        
+        var bubble = d3.layout.pack()
+            .sort(null)
+            .size([diameter, diameter])
+            .padding(15);
+        // Load data
+        // ------------------------------
+data = {
+ //"name":"flare",
+ "bloggers":[
+	 
+	 
+	 <%
+	 
+	 /* if (bloggerPostFrequency.size() > 0) {
+						int k = 0;
+						for (int m = 0; m < bloggerPostFrequency.size(); m++) {
+							ArrayList<?> bloggerFreq = (ArrayList<?>) bloggerPostFrequency.get(m);
+							String bloggerName = bloggerFreq.get(0).toString();
+							String bloggerPostFreq="0";
+							try{
+							bloggerPostFreq = (null ==  bloggerFreq.get(1).toString()) ? "0" :  bloggerFreq.get(1).toString();
+							}
+							catch(Exception e){
+								System.out.println(e);
+							} */
+							%>
+							
+							<%-- {"label":"<%=bloggerName.trim()%>","name":"<%=bloggerName.trim()%>", "size":<%=Integer.parseInt(bloggerPostFreq)%>}, --%>
+<%
+
+						//}
+
+					//}
+					
+					%>
+  {"label":"Blogger 2","name":"Obadimu Adewale", "size":2500},
+ {"label":"Blogger 3","name":"Oluwaseun Walter", "size":2800},
+ {"label":"Blogger 4","name":"Kiran Bandeli", "size":900},
+ {"label":"Blogger 5","name":"Adekunle Mayowa", "size":1400},
+ {"label":"Blogger 6","name":"Nihal Hussain", "size":200},
+ {"label":"Blogger 7","name":"Adekunle Mayowa", "size":500},
+ {"label":"Blogger 8","name":"Adekunle Mayowa", "size":300},
+ {"label":"Blogger 9","name":"Adekunle Mayowa", "size":350},
+ {"label":"Blogger 10","name":"Adekunle Mayowa", "size":1400}
+ 
+ ]
+    }
+     
+        
+/* data = data.sort(function(a, b){
+	return a.bloggers.size - b.bloggers.size;
+	}); */
+	
+	
+	var mybloggers = 
+		  data.bloggers.sort(function(a, b){
+		return b.size - a.size;
+		})
+		
+		
+		/* resort the bubbles chart by size */
+		var alldata=[];
+		
+	  for(i=0;i<mybloggers.length;i++)
+		{
+		var myconcat = ",";
+		if(i == mybloggers.length - 1)
+		{
+			myconcat = "";	
+		} 
+		alldata[i]= {"label":mybloggers[i].label,"name":mybloggers[i].name,"size":mybloggers[i].size}
+		} 
+	/* End of sorting   */
+	  bloggers = alldata;
+	  
+	  data = {  bloggers } 
+            //
+            // Append chart elements
+            //
+ 			
+            // Bind data
+            var node = svg.selectAll(".d3-bubbles-node")
+                .data(bubble.nodes(classes(data))
+                .filter(function(d) { return !d.children; }))
+                .enter()
+                .append("g")
+                    .attr("class", "d3-bubbles-node")
+                    .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+        
+			var color = d3.scale.linear()
+			.domain([0,1,2,3,4,5,6,10,15,20])
+			.range(["#17394C", "#FFBB78", "#CE0202", "#0080CC", "#72C28E", "#D6A78D", "#FF7E7E", "#666", "#555", "#444"]);
+            // Append circles
+            node.append("circle")
+                .attr("r", 0)
+                .style("fill", function(d,i) {
+                   return color(i);
+                  // customize Color
+                 /*  if(i<5)
+                  {
+                    return "#0080cc";
+                  }
+                  else if(i>=5)
+                  {
+                    return "#78bce4";
+                  } */
+                })
+                .on('mouseover', tip.show)
+                .on('mouseout', tip.hide);
+            // Append text
+            node.append("text")
+                .attr("dy", ".3em")
+                .style("fill", "#fff")
+                .style("text-transform","capitalize")
+                .style("font-size", 12)
+                .style("text-anchor", "middle")
+                .text(function(d) { 
+                	
+                	if(d.r < 30)
+            		{
+            		return "";
+            		}
+            	else
+            		{
+            		return d.label.substring(0, d.r / 3);  
+            		}
+                	
+                });
+     
+            
+            
+            // animation effect for bubble chart
+            $(element).bind('inview', function (event, visible) {
+            	  if (visible == true) {
+            		  node.selectAll("circle").transition()
+                      .delay(200)
+                      .duration(1000)
+                      .attr("r", function(d) { return d.r; })
+            	  } else {
+            		  node.selectAll("circle")
+                      .attr("r", 0 )
+            	  }
+            	});
+           
+           
+        // Returns a flattened hierarchy containing all leaf nodes under the root.
+        function classes(root) {
+            var classes = [];
+            function recurse(name, node) {
+                if (node.bloggers) node.bloggers.forEach(function(child) { recurse(node.name, child); });
+                else classes.push({packageName: name, className: node.name, value: node.size,label:node.label});
+            }
+            recurse(null, root);
+            return {children: classes};
+        }
+        
+        
+        function responsivefy(svg) {
+        	  // container will be the DOM element the svg is appended to
+        	  // we then measure the container and find its aspect ratio
+        	  const container = d3.select(svg.node().parentNode),
+        	      width = parseInt(svg.style('width'), 10),
+        	      height = 495,
+        	      aspect = width / height;
+
+        	  // add viewBox attribute and set its value to the initial size
+        	  // add preserveAspectRatio attribute to specify how to scale
+        	  // and call resize so that svg resizes on inital page load
+        	  svg.attr('viewBox', `0 0 ${width} ${height}`)
+        	      .attr('preserveAspectRatio', 'xMinYMid')
+        	      .call(resize);
+
+        	  // add a listener so the chart will be resized when the window resizes
+        	  // to register multiple listeners for same event type,
+        	  // you need to add namespace, i.e., 'click.foo'
+        	  // necessary if you invoke this function for multiple svgs
+        	  // api docs: https://github.com/mbostock/d3/wiki/Selections#on
+        	  d3.select(window).on('resize.' + container.attr('id'), resize);
+
+        	  // this is the code that actually resizes the chart
+        	  // and will be called on load and in response to window resize
+        	  // gets the width of the container and proportionally resizes the svg to fit
+        	  function resize() {
+        	      const targetWidth = parseInt(container.style('width'));
+        	      svg.attr('width', targetWidth);
+        	      svg.attr('height', Math.round(targetWidth / aspect));
+        	  }
+        	}
+    }
+});
+</script>
+	<script>
+    var color = d3.scale.linear()
+            .domain([0,1,2,3,4,5,6,10,15,20,80])
+            .range(["#17394C", "#F5CC0E", "#CE0202", "#aaa", "#999", "#888", "#777", "#666", "#555", "#444", "#333", "#222"]);
+</script>
+	<!-- end of blogger bubble chart -->
+<!-- END BLOGGER DISTRIBUTION -->
+
+
+<% } else if(action.toString().equals("getblogdashboard")){ %>
+
+
+<!-- START BLOG DISTRIBUTION -->
+
+				<div class="card card-style mt20">
+					<div class="card-body   p30 pt5 pb5">
+						<div>
+							<p class="text-primary mt10 float-left">
+								Blog Distribution
+							</p>
+						</div>
+						<div class="min-height-table" style="min-height: 500px;">
+							<div class="chart-container">
+								<div class="chart" id="bubblesblog"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<!-- Blog Bubble Chart -->
+	<script>
+$(function () {
+    // Initialize chart
+    bubblesblog('#bubblesblog', 470);
+    // Chart setup
+    function bubblesblog(element, diameter) {
+        // Basic setup
+        // ------------------------------
+        // Format data
+        var format = d3.format(",d");
+        // Color scale
+        color = d3.scale.category10();
+        // Define main variables
+        var d3Container = d3.select(element),
+            margin = {top: 5, right: 20, bottom: 20, left: 50},
+            width = d3Container.node().getBoundingClientRect().width - margin.left - margin.right,
+            height = height - margin.top - margin.bottom;
+            diamter = height;
+            // Add SVG element
+            var container = d3Container.append("svg");
+            // Add SVG group
+            var svg = container
+                .attr("width", diameter + margin.left + margin.right)
+                .attr("height",diameter + margin.top + margin.bottom)
+                .call(responsivefy)
+                .attr("class", "bubble");
+        // Create chart
+        // ------------------------------
+        // var svg = d3.select(element).append("svg")
+        //     .attr("width", diameter)
+        //     .attr("height", diameter)
+        //     .attr("class", "bubble");
+        // Create chart
+        // ------------------------------
+        // Add tooltip
+        var tip = d3.tip()
+            .attr('class', 'd3-tip')
+            .offset([-5, 0])
+            .html(function(d) {
+                return "Blog Name: "+toTitleCase(d.label)+"<br/> Total Blogposts: "
+                //+d.className + ": " 
+                + format(d.value);
+            });
+        // Initialize tooltip
+        svg.call(tip);
+        function toTitleCase(str) {
+            return str.replace(
+                /\w\S*/g,
+                function(txt) {
+                    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+                }
+            );
+        }
+        // Construct chart layout
+        // ------------------------------
+        // Pack
+        var bubble = d3.layout.pack()
+            .sort(null)
+            .size([diameter, diameter])
+            .padding(15);
+        // Load data
+        // ------------------------------
+data = {
+ //"name":"flare",
+ "bloggers":[
+	 <%
+	 
+	// if (blogPostFrequency.size() > 0) {
+						//for (int m = 0; m < blogPostFrequency.size(); m++) {
+						//	ArrayList<?> blogFreq = (ArrayList<?>) blogPostFrequency.get(m);
+							//String blogName = blogFreq.get(0).toString();
+							//String blogPostFreq = blogFreq.get(1).toString();%>
+							<%-- {label:"<%=blogName%>", "size":<%=Integer.parseInt(blogPostFreq)%>, name:"<%=blogName%>", type:"blog"}, --%>
+		 <%
+		// }
+
+					//}
+					
+					%>
+					
+					 {"label":"Blogger 2","name":"Obadimu Adewale", "size":2500},
+					 {"label":"Blogger 3","name":"Oluwaseun Walter", "size":2800},
+					 {"label":"Blogger 4","name":"Kiran Bandeli", "size":900},
+					 {"label":"Blogger 5","name":"Adekunle Mayowa", "size":1400},
+					 {"label":"Blogger 6","name":"Nihal Hussain", "size":200},
+					 {"label":"Blogger 7","name":"Adekunle Mayowa", "size":500},
+					 {"label":"Blogger 8","name":"Adekunle Mayowa", "size":300},
+					 {"label":"Blogger 9","name":"Adekunle Mayowa", "size":350},
+					 {"label":"Blogger 10","name":"Adekunle Mayowa", "size":1400}
+ ]
+}  
+      
+     
+     
+      
+  var mybloggers = 
+	  data.bloggers.sort(function(a, b){
+	return b.size - a.size;
+	})
+	
+	
+	/* resort the bubbles chart by size */
+	var alldata=[];
+	
+  for(i=0;i<mybloggers.length;i++)
+	{
+	var myconcat = ",";
+	if(i == mybloggers.length - 1)
+	{
+		myconcat = "";	
+	} 
+	alldata[i]= {"label":mybloggers[i].label,"name":mybloggers[i].name,"size":mybloggers[i].size}
+	} 
+/* End of sorting   */
+  bloggers = alldata;
+  
+  data = {   bloggers  }
+  
+  
+            //
+            // Append chart elements
+            //
+            // Bind data
+            var node = svg.selectAll(".d3-bubbles-node")
+                .data(bubble.nodes(classes(data))
+                .filter(function(d) { return !d.children; }))
+                .enter()
+                .append("g")
+                    .attr("class", "d3-bubbles-node")
+                    .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+        
+			var color = d3.scale.linear()
+			.domain([0,1,2,3,4,5,6,10,15,20])
+			.range(["#17394C", "#FFBB78", "#CE0202", "#0080CC", "#72C28E", "#D6A78D", "#FF7E7E", "#666", "#555", "#444"]);
+			
+            // Append circles
+            node.append("circle")
+                .attr("r", 0)
+                .style("fill", function(d,i) {
+                  //return color(i);
+                  /* if(i<5)
+                  {
+                    return "#0080cc";
+                  }
+                  else if(i>=5)
+                  {
+                    return "#78bce4";
+                  } */
+                  //console.log(d.r * 2);
+                 // console.log("afde");
+                  return color(i);
+                
+                })
+                .on('mouseover',tip.show)
+                .on('mouseout', tip.hide);
+           
+            // Append text
+            node.append("text")
+                .attr("dy", ".3em")
+                .style("fill", "#fff")
+                .style("text-transform","lowercase")
+                .style("font-size", 12)
+                .style("text-transform","capitalize")
+                .style("text-anchor", "middle")
+                .text(function(d) { 
+                	if(d.r < 30)
+                		{
+                		return "";
+                		}
+                	else
+                		{
+                		return d.label.substring(0, d.r / 3);  
+                		}
+                
+                	
+                });
+            
+            // animation effect on bubble chart
+            $(element).bind('inview', function (event, visible) {
+          	  if (visible == true) {
+          		  node.selectAll("circle").transition()
+                    .delay(200)
+                    .duration(1000)
+                    .attr("r", function(d) { return d.r; })
+          	  } else {
+          		  node.selectAll("circle")
+                    .attr("r", 0 )
+          	  }
+          	});
+        // Returns a flattened hierarchy containing all leaf nodes under the root.
+        function classes(root) {
+            var classes = [];
+            function recurse(name, node) {
+                if (node.bloggers) node.bloggers.forEach(function(child) { recurse(node.name, child); });
+                else classes.push({packageName: name, className: node.name, value: node.size,label:node.label});
+            }
+            recurse(null, root);
+            return {children: classes};
+        }
+        
+        function responsivefy(svg) {
+      	  // container will be the DOM element the svg is appended to
+      	  // we then measure the container and find its aspect ratioF
+      	  const container = d3.select(svg.node().parentNode),
+      	      width = parseInt(svg.style('width'), 10),
+      	      height = 495,
+      	      aspect = width / height;
+
+      	  // add viewBox attribute and set its value to the initial size
+      	  // add preserveAspectRatio attribute to specify how to scale
+      	  // and call resize so that svg resizes on inital page load
+      	  svg.attr('viewBox', `0 0 ${width} ${height}`)
+      	      .attr('preserveAspectRatio', 'xMinYMid')
+      	      .call(resize);
+
+      	  // add a listener so the chart will be resized when the window resizes
+      	  // to register multiple listeners for same event type,
+      	  // you need to add namespace, i.e., 'click.foo'
+      	  // necessary if you invoke this function for multiple svgs
+      	  // api docs: https://github.com/mbostock/d3/wiki/Selections#on
+      	  d3.select(window).on('resize.' + container.attr('id'), resize);
+
+      	  // this is the code that actually resizes the chart
+      	  // and will be called on load and in response to window resize
+      	  // gets the width of the container and proportionally resizes the svg to fit
+      	  function resize() {
+      	      const targetWidth = parseInt(container.style('width'));
+      	      svg.attr('width', targetWidth);
+      	      svg.attr('height', Math.round(targetWidth / aspect));
+      	  }
+      	}
+    }
+});
+</script>
+	<script>
+$(".option-only").on("change",function(e){
+	console.log("only changed ");
+	var valu =  $(this).val();
+	$("#single_date").val(valu);
+	$('form#customformsingle').submit();
+});
+$(".option-only").on("click",function(e){
+	console.log("only Click ");
+	$("#single_date").val($(this).val());
+	//$('form#customformsingle').submit();
+});
+$(".option-lable").on("click",function(e){
+	console.log("Label Click ");
+	
+	$("#single_date").val($(this).val());
+	//$('form#customformsingle').submit();
+});
+</script>
+	<!-- End of blog bubble chart -->
+
+<!-- END BLOG DISTRIBUTION -->
+
+
+
+<% } else if(action.toString().equals("getinfluencedashboard")){ %>
+
+<!-- START INFLUENCE -->
+			<div class="card card-style mt20">
+					<div class="card-body p30 pt5 pb5">
+						<div>
+							<p class="text-primary mt10 float-left">
+
+								Most Influential 
+								<select class="text-primary filtersort sortbyblogblogger" id="swapInfluence">
+									<option value="blogs">Blogs</option>
+									<option value="bloggers">Bloggers</option>
+								</select>
+							</p>
+						</div>
+						<div class="min-height-table" style="min-height: 500px;">
+							<div class="chart-container" id="influencecontainer">
+								<div class="chart" id="influencebar"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				
+				<!-- start of influence bar chart  -->
+	<script>
+$(function () {
+    // Initialize chart
+    influencebar('#influencebar', 450);
+    // Chart setup
+    function influencebar(element, height) {
+      // Basic setup
+      // ------------------------------
+      // Define main variables
+      var d3Container = d3.select(element),
+          margin = {top: 5, right: 50, bottom: 20, left: 150},
+          width = d3Container.node().getBoundingClientRect().width - margin.left - margin.right,
+          height = height - margin.top - margin.bottom - 5;
+         var formatPercent = d3.format("");
+      // Construct scales
+      // ------------------------------
+      // Horizontal
+      var y = d3.scale.ordinal()
+          .rangeRoundBands([height,0], .5, .40);
+      // Vertical
+      var x = d3.scale.linear()
+          .range([0,width]);
+      // Color
+      var color = d3.scale.category20c();
+      // Create axes
+      // ------------------------------
+      // Horizontal
+      var xAxis = d3.svg.axis()
+          .scale(x)
+          .orient("bottom")
+          .ticks(6);
+      // Vertical
+      var yAxis = d3.svg.axis()
+          .scale(y)
+          .orient("left")
+          //.tickFormat(formatPercent);
+      // Create chart
+      // ------------------------------
+      // Add SVG element
+      var container = d3Container.append("svg");
+      // Add SVG group
+      var svg = container
+          .attr("width", width + margin.left + margin.right)
+          .attr("height", height + margin.top + margin.bottom)
+          .append("g")
+              .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+      //         // Create tooltip
+      //             // ------------------------------
+      //
+      //
+      //
+      // // Load data
+      // // ------------------------------
+      //
+      //
+      //sort by influence score
+      data = [
+    	  <%
+    	  
+    	   if (5 > 0) {
+						int p = 0;
+						//System.out.println(bloggers);
+						for (int y = 0; y < 5; y++) {
+							//ArrayList<?> blogInfluence = (ArrayList<?>) influenceBlog.get(y);
+							//String blogInf = blogInfluence.get(0).toString();
+							//String blogInfFreq = (null == blogInfluence.get(1).toString()) ? "0" : blogInfluence.get(1).toString();
+							if (p < 10) {
+								p++; 
+								
+								%>
+		<%-- {letter:"<%=blogInf%>", frequency:<%=blogInfFreq%>, name:"<%=blogInf%>", type:"blogger"}, --%>
+		
+		 {"letter":"Blogger ","frequency":"32", "name":"Obadimu Adewale", "type":"blogger"},
+		 
+		 <%
+		 }else{
+			 break;
+		 }
+						}
+					}
+					%>    
+        ];
+      data = data.sort(function(a, b){
+    	    return a.frequency - b.frequency;
+    	}); 
+      //
+      //
+      //   // Create tooltip
+        var tip = d3.tip()
+               .attr('class', 'd3-tip')
+               .offset([-10, 0])
+               .html(function(d) {
+                 if(d.type === "blogger")
+                 {
+                   return "Blogger Name: "+d.name+"<br/> Influence Score: "+d.frequency;
+                 }
+                 if(d.type === "blog")
+                 {
+                   return d.letter+" ("+d.frequency+")<br/> Blog: "+d.name;
+                 }
+               });
+           // Initialize tooltip
+           svg.call(tip);
+      //
+      //     // Pull out values
+      //     data.forEach(function(d) {
+      //         d.frequency = +d.frequency;
+      //     });
+      //
+      //
+      //
+      //     // Set input domains
+      //     // ------------------------------
+      //
+      //     // Horizontal
+          y.domain(data.map(function(d) { return d.letter; }));
+          // Vertical
+          x.domain([d3.min(data, function(d) { return d.frequency-20; }),d3.max(data, function(d) { return d.frequency; })]);
+      //
+      //
+      //     //
+      //     // Append chart elements
+      //     //
+      //
+      //     // Append axes
+      //     // ------------------------------
+      //
+          // Horizontal
+          svg.append("g")
+              .attr("class", "d3-axis d3-axis-horizontal d3-axis-strong")
+              .attr("transform", "translate(0," + height + ")")
+              .call(xAxis);
+          // Vertical
+          var verticalAxis = svg.append("g")
+              .attr("class", "d3-axis d3-axis-vertical d3-axis-strong")
+              .style("color","yellow")
+              .call(yAxis)
+              .selectAll("text")
+              .style("font-size",12)
+              .style("text-transform","capitalize")
+              .attr("data-toggle", "tooltip")
+		      .attr("data-placement", "top")
+		      .attr("title", function (d) {  return d; })
+		      
+   			/* .attr("y", -25)
+    		.attr("x", 20)
+    		.attr("dy", ".75em")
+    		.attr("transform", "rotate(-70)"); */
+      //
+      //
+      //     // Add text label
+      //     verticalAxis.append("text")
+      //         .attr("transform", "rotate(-90)")
+      //         .attr("y", 10)
+      //         .attr("dy", ".71em")
+      //         .style("text-anchor", "end")
+      //         .style("fill", "#999")
+      //         .style("font-size", 12)
+      //         // .text("Frequency")
+      //         ;
+      //
+      //
+      //     // Add bars
+       var colorblogs = d3.scale.linear()
+	.domain([0,1,2,3,4,5,6,10,15,20])
+	.range(["#17394C", "#FFBB78", "#CE0202", "#0080CC", "#72C28E", "#D6A78D", "#FF7E7E", "#666", "#555", "#444"]);
+
+          var transitionbarinfluence = svg.selectAll(".d3-bar")
+              .data(data)
+              .enter()
+              .append("rect")
+                  .attr("class", "d3-bar")
+                  .attr("y", function(d) { return y(d.letter); })
+                  //.attr("height", y.rangeBand())
+                  .attr("height", 30)
+                  .attr('transform', 'translate(0, '+(y.rangeBand()/2-14.5)+')')
+                  .attr("x", function(d) { return 0; })
+                  .attr("width", 0)
+                  /*
+                  .style("fill", function(d) {
+                  maxvalue = d3.max(data, function(d) { return d.frequency; });
+                  if(d.frequency == maxvalue)
+                  {
+                    return "#0080CC";
+                  }
+                  else
+                  {
+                    return "#78BCE4";
+                  }
+
+                })*/
+                .style("fill", function(d,i) {
+                    
+                    return colorblogs(data.length - i - 1);
+                   
+                  })
+                  .on('mouseover', tip.show)
+                  .on('mouseout', tip.hide);
+          $(element).bind('inview', function (event, visible) {
+        	  if (visible == true) {
+        	    // element is now visible in the viewport
+        		  transitionbarinfluence.transition()
+                  .delay(200)
+                  .duration(1000)
+                  .attr("width", function(d) { return x(d.frequency); })
+                  .attr('transform', 'translate(0, '+(y.rangeBand()/2-14.5)+')');
+        	  } else {
+        		  
+        		  transitionbarinfluence.attr("width", 0)
+        	    // element has gone out of viewport
+        	  }
+        	});
+        
+         /*  svg.append("g")
+          .attr("transform", "translate("+x(50)+",0)")
+          .append("line")
+          .attr("y2", height)
+          .style("stroke", "#2ecc71")
+          .style("stroke-width", "1px") */
+                  // svg.selectAll(".d3-bar")
+                  //     .data(data)
+                  //     .enter()
+                  //     .append("rect")
+                  //         .attr("class", "d3-bar")
+                  //         .attr("x", function(d) { return x(d.letter); })
+                  //         .attr("width", x.rangeBand())
+                  //         .attr("y", function(d) { return y(d.frequency); })
+                  //         .attr("height", function(d) { return height - y(d.frequency); })
+                  //         .style("fill", function(d) { return "#58707E"; })
+                  //         .on('mouseover', tip.show)
+                  //         .on('mouseout', tip.hide);
+        // Resize chart
+        // ------------------------------
+        // Call function on window resize
+        $(window).on('resize', resize);
+        // Call function on sidebar width change
+        $('.sidebar-control').on('click', resize);
+        // Resize function
+        //
+        // Since D3 doesn't support SVG resize by default,
+        // we need to manually specify parts of the graph that need to
+        // be updated on window resize
+        function resize() {
+            // Layout variables
+            width = d3Container.node().getBoundingClientRect().width - margin.left - margin.right;
+            // // Layout
+            // // -------------------------
+            //
+            // // Main svg width
+            container.attr("width", width + margin.left + margin.right);
+            // Width of appended group
+            svg.attr("width", width + margin.left + margin.right);
+            //
+            //
+            // // Axes
+            // // -------------------------
+            //
+            // // Horizontal range
+           x.range([0,width]);
+            //
+            // // Horizontal axis
+            svg.selectAll('.d3-axis-horizontal').call(xAxis);
+             // svg.selectAll('.d3-bar-vertical').call(yAxis);
+            //
+            // // Chart elements
+            // // -------------------------
+            //
+            // // Line path
+           svg.selectAll('.d3-bar').attr("width", function(d) { return x(d.frequency); });
+        }
+    }
+});
+</script>
+
+	<!--  End of influence bar -->
+<!-- END INFLUENCE --> 
+
+
+<% } else if(action.toString().equals("getclusterdashboard")){ %>
+
+<!-- START CLUSTER -->
+<div id="cluster_card_div" class="card card-style mt20 radial_f">
+					<div class="card-body p30 pt5 pb5">
+						<div>
+							<p class="text-primary mt10 float-left">
+								Clustering Analysis
+							</p>
+						</div>
+						<div id="scatter-container1" class="min-height-table"
+							style="min-height: 500px;">
+							<div class="hidden" id="cluster_computing_loaader">
+								<div align="center" class=" word1">
+									COMPUTING-CLUSTERS...
+									<span id="cluster_percentage">
+									<% int cluster_status_percentage = 34;   %>
+									<%=cluster_status_percentage %>%
+									</span>
+								</div>
+								<div align="center" class=" overlay1"></div>
+							</div>
+							<div class="chart-container" id="scatter-container">
+								<div class="chart" id="dataviz_axisZoom"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<script>
+				
+					
+					dataset = {}
+					clusterdiagram5('#dataviz_axisZoom', dataset);
+					
+					///start clustering5 funtion
+					 function clusterdiagram5(element, dataset) {
+						 var final_centroids = {};
+						 var plot_width = $('#scatter-container').width();
+						var height = $('#scatter-container1').height() - 25;
+						 trending_words = [];
+							
+							<% 
+							/* String word_build = "";
+						 	for(int k = 0; k < 10; k++){
+						 		 word_build = "";
+						 		 if(source.length() > 0){ 
+								String [] splitted = source.get("cluster_" + (k + 1)).toString().split("\'topterms\':");
+										
+								List<String> termlist = Arrays.asList(splitted[1].replace("{","").replace("}","").split(","));
+								
+								for(int m = 0; m < 4; m++){
+									if(m > 0){
+										word_build += ", ";
+									}
+									word_build += termlist.get(m).split(":")[0].replace("\'","");
+								} */
+								%>
+								<%-- trending_words[<%=k %>] = "<%=word_build %>"; --%>
+								
+								
+						 	<% 
+						 	
+						 		/*  } } */
+						 	
+						 	%>
+						 	
+						 	trending_words[0] = "aa, bb, cc";
+						 	trending_words[1] = "ss, nn, xx";
+						 	trending_words[2] = "ff, gg, nn";
+						 	 
+						 	 //start getting max and min posts numbers
+						 	for(var i = 0; i < dataset.nodes.length; i++){
+						 		 if(i == 0){
+						 			min_post_count = dataset.nodes[i].level
+						 			max_post_count = dataset.nodes[i].level
+						 		 }
+						 		 
+						 		 if(dataset.nodes[i].level < min_post_count){
+						 			min_post_count = dataset.nodes[i].level
+						 		 }
+						 		 
+						 		if(dataset.nodes[i].level > max_post_count){
+						 			max_post_count = dataset.nodes[i].level
+						 		 }
+						 		 
+						 	}
+						 	//end getting max and min posts numbers
+						 	
+						 	//start get normalized array for radius values
+						 	normalized_radius = [];
+						 	for(var i = 0; i < dataset.nodes.length; i++){
+						 		
+						 		normalized_value = ( (dataset.nodes[i].level - min_post_count)/(max_post_count - min_post_count));
+						 		
+						 		range = 2 - 1;
+						 		normalized_value = (normalized_value * range) + 1;
+						 		
+						 		temp = normalized_value * 20;
+						 		normalized_radius[i] = temp;
+						 		
+						 	}
+						 	
+						 	//start get normalized array for radius values
+					  
+						 
+					var nodes = dataset.nodes
+					 var links = dataset.links
+					
+					   // Define main variables
+					   var d3Container = d3v4.select(element),
+					     margin = {top: 0, right: 50, bottom: 0, left: 50},
+					     width = plot_width,
+					     height = height;
+								radius = 6;
+								
+								
+					
+					   //var colors = d3v4.scaleOrdinal().range(["#6b085e", "#e50471", "#0571a0", "#038a2c", "#6b8a03", "#a02f05", "#b770e1", "#fc8f82 ", "#011aa7", "#a78901"]);
+					   var colors = d3v4.scaleOrdinal().range(["#E377C2","#8C564B", "#9467BD", "#D62728", "#2CA02C", "#FF7F0E", "#1F77B4", "#7F7F7F","#17B890", "#D35269"]);
+					   // Add SVG element
+					   var container = d3Container.append("svg");
+					   // Add SVG group
+					   var svg = container
+					     .attr("width", width + margin.left + margin.right)
+					     .attr("height", height + margin.top + margin.bottom)
+					     .call(responsivefy) // tada!
+					   .attr("overflow", "visible");
+					     //.append("g")
+					    //  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+					    // simulation setup with all forces
+					  var linkForce = d3v4
+					  .forceLink()
+					  .id(function (link) { return link.id })
+					  .strength(function (link) { return link.strength })
+					    // simulation setup with all forces
+					     var simulation = d3v4
+					     .forceSimulation()
+					     .force('link', d3v4.forceLink().id(d =>d.id).distance(-20))
+					     .force('charge', d3v4.forceManyBody())
+					     /* .force('center', d3v4.forceCenter(width, height ))  */
+					     .force('center', d3v4.forceCenter())  
+					     .force("collide",d3v4.forceCollide().strength(-5)) 
+					     /* simulation.force("center")
+					    .x(width * forceProperties.center.x)
+					    .y(height * forceProperties.center.y); */
+					     /* var simulation = d3.forceSimulation()
+					       .force('x', d3.forceX().x(d => d.x))
+					       .force('y', d3.forceY().y(d => d.y))
+					       .force("charge",d3.forceManyBody().strength(-20))
+					       .force("link", d3.forceLink().id(d =>d.id).distance(20)) 
+					       .force("collide",d3.forceCollide().radius(d => d.r*10)) 
+					       .force('center', d3v4.forceCenter(width, height )) */
+								
+								simulation.force("center")
+							  .x(width / 2)
+							  .y(height / 2)
+							   
+							  	simulation.force("charge")
+					    .strength(-2000 * true)
+					    .distanceMin(1)
+					    .distanceMax(1000);
+							  /* .x(width * 0.5) */
+								
+								simulation.alpha(1).restart(); 
+					     var linkElements = svg.append("g")
+					      .attr("class", "links")
+					      .selectAll("line")
+					      .data(links)
+					      .enter().append("line")
+					       .attr("stroke-width", 0)
+					     	 .attr("stroke", "rgba(50, 50, 50, 0.2)")
+					    function getNodeColor(node) {
+					     return node.level === 1 ? 'red' : 'gray'
+					    }
+					    var nodeElements = svg.append("g")
+					     .attr("class", "nodes")
+					     .selectAll("circle")
+					     .data(nodes)
+					     .enter().append("circle")
+					     /* .attr(circleAttrs) */
+					     // .attr("r", function (d, i) {return d.level})
+					      .attr("r", function (d, i) {return normalized_radius[d.group-1]})
+					      .attr("cluster_number", function (d, i) {return d.group})
+					      .attr("data-toggle", "tooltip")
+					      .attr("data-placement", "top")
+					      .attr("title", function (d, i) {return trending_words[d.group-1]})
+					      .attr("fill", function (d, i) {return colors(d.group);})
+					      .attr("class", "cluster_visual")
+							  .attr("loaded_color",function (d) {return colors(d.group); })
+							  .attr("cluster_id", function(node){return node.label})
+					      //.attr("text",function (node) { return node.label })
+					      /* .on("mouseover", function (node) { return node.label }); */
+					    var textElements = svg.append("g")
+					     .attr("class", "texts")
+					     .selectAll("text")
+					     .data(nodes)
+					     .enter().append("text")
+					      .text(function (node) { return node.label })
+					    	 .attr("font-size", 15)
+					    	 .attr("dx", 15)
+					      .attr("dy", 4) 
+					     simulation.nodes(nodes).on('tick', () => {
+					      nodeElements
+					       .attr('cx', function (node) { return node.x })
+					       .attr('cy', function (node) { return node.y })
+					       textElements  
+					       .attr('x', function (node) { return node.x })
+					       .attr('y', function (node) { return node.y })
+					       linkElements
+					   .attr('x1', function (link) { return link.source.x })
+					   .attr('y1', function (link) { return link.source.y })
+					   .attr('x2', function (link) { return link.target.x })
+					   .attr('y2', function (link) { return link.target.y })
+					     })
+					function handleMouseOver(d, i) { // Add interactivity
+					      // Use D3 to select element, change color and size
+					      d3.select(this).attr({
+					       fill: "orange",
+					       r: radius * 2
+					      });
+					      // Specify where to put label of text
+					      svg.append("text").attr({
+					        id: "t" + d.x + "-" + d.y + "-" + i, // Create an id for text so we can select it later for removing on mouseout
+					        x: function() { return xScale(d.x) - 30; },
+					        y: function() { return yScale(d.y) - 15; }
+					      })
+					      .text(function() {
+					       return [d.x, d.y]; // Value of the text
+					      });
+					     }
+					 simulation.force("link").links(links)
+					 
+					 function responsivefy(svg) {
+			  // container will be the DOM element the svg is appended to
+			  // we then measure the container and find its aspect ratio
+			  const container = d3.select(svg.node().parentNode),
+			      width = parseInt(svg.style('width'), 10),
+			      height = parseInt(svg.style('height'), 10),
+			      aspect = width / height;
+
+			  // add viewBox attribute and set its value to the initial size
+			  // add preserveAspectRatio attribute to specify how to scale
+			  // and call resize so that svg resizes on inital page load
+			  svg.attr('viewBox', `0 0 ${width} ${height}`)
+			      .attr('preserveAspectRatio', 'xMinYMid')
+			      .call(resize);
+
+			  // add a listener so the chart will be resized when the window resizes
+			  // to register multiple listeners for same event type,
+			  // you need to add namespace, i.e., 'click.foo'
+			  // necessary if you invoke this function for multiple svgs
+			  // api docs: https://github.com/mbostock/d3/wiki/Selections#on
+			  d3.select(window).on('resize.' + container.attr('id'), resize);
+
+			  // this is the code that actually resizes the chart
+			  // and will be called on load and in response to window resize
+			  // gets the width of the container and proportionally resizes the svg to fit
+			  function resize() {
+			      const targetWidth = parseInt(container.style('width'));
+			      svg.attr('width', targetWidth);
+			      svg.attr('height', Math.round(targetWidth / aspect));
+			  }
+			}
+					 
+					
+					 
+					 }
+					 ///end clustering5 function
+				
+				</script>
+
+<!-- END CLUSTER -->
+
+<% } else if(action.toString().equals("getdomaindashboard")){ %>
+
+
+<!-- START DOMAIN -->
+				<div class="card card-style mt20">
+					<div class="card-body  p5 pt10 pb10"> 
+						<div style="min-height: 420px;">
+							<div>
+								<p class="text-primary p15 pb5 pt0">
+									List of Top 
+									<select id="top-listtype" class="text-primary filtersort sortbydomainsrls">
+										<option value="domains">Domains</option>
+										<option value="urls">URLs</option>
+									</select>
+								</p>
+							</div>
+							
+							<div id="top-domain-box">
+								<table id="DataTables_Table_0_wrapper"
+									class="display table_over_cover" style="width: 100%">
+									<thead>
+										<tr>
+											<th>Domain</th>
+											<th>Frequency</th>
+										</tr>
+									</thead>
+									<tbody>
+
+										<%
+											if (11 > 0) {
+														for (int y = 0; y < 11; y++) {
+															//String key = outlinklooper.get(y).toString();
+															//JSONObject resu = outerlinks.getJSONObject(key);
+															//if (resu.get("domain") != "") {
+										%>
+										<tr>
+											<td class=""><a href="http://facebook.com" target="_blank">www.facebook.com</a></td>
+											<td>34</td>
+										</tr>
+										<%
+											//}
+														}
+													}
+										%>
+
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<script>
+			    $('#DataTables_Table_0_wrapper').DataTable( {
+			    	 "columnDefs": [
+			    		    { "width": "80%", "targets": 0 }
+			    		  ]
+			    /*     "scrollY": 430,
+			        "scrollX": false,
+			         "pagingType": "simple",
+			        	 "bLengthChange": false,
+			        	 "order": [[ 1, "desc" ]] */
+			        	 
+			        	 
+			    /*      ,
+			         dom: 'Bfrtip',
+			         "columnDefs": [
+			      { "width": "80%", "targets": 0 }
+			    ],
+			      buttons:{
+			        buttons: [
+			            { extend: 'pdfHtml5',orientation: 'potrait', pageSize: 'LEGAL', className: 'btn-primary stylebutton1'},
+			            {extend:'csv',className: 'btn-primary stylebutton1'},
+			            {extend:'excel',className: 'btn-primary stylebutton1'},
+			           // {extend:'copy',className: 'btn-primary stylebutton1', text: 'Copy to Clipboard'},
+			            {extend:'print',className: 'btn-primary stylebutton1'},
+			        ]
+			      } */
+			    } );
+			    
+			    $('#DataTables_Table_0_wrapper').css( 'display', 'block' );
+			    $('#DataTables_Table_0_wrapper').width('100%');
+				</script>
+
+<!-- END DOMAIN -->
 <% } %>
 	
-	
-	
+	<!-- <script type="text/javascript" src="assets/js/jquery-1.11.3.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/lettering.js/0.6.1/jquery.lettering.min.js"></script>
+	<script src="pagedependencies/imageloader.js?v=09"></script>
+	<script src="assets/bootstrap/js/bootstrap.js"></script>
+	<script src="assets/js/generic.js"></script>
+Start for tables 
+	<script type="text/javascript" src="assets/vendors/DataTables/datatables.min.js"></script>
+	<script type="text/javascript" src="assets/vendors/DataTables/dataTables.bootstrap4.min.js"></script> -->
 	
 	
 	

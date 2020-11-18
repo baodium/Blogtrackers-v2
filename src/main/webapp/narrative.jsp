@@ -572,11 +572,11 @@
                             </div>
                             <div class="narrativeTextWrapper">
                                 <div id="editWrapper">
-                                    <textarea entity="<%=entity %>" name="narrativeTextInput" class="narrativeText narrative_text_input"><%=narrative.toString() %></textarea>
+                                    <textarea id="<%=entity %>" entity="<%=entity %>" name="narrativeTextInput" class="narrativeText narrative_text_input"><%=narrative.toString() %></textarea>
                                     <div id="editControls">
-                                        <button id="editButton" class="editButtons" title="Edit"></button>
-                                        <button id="cancelButton" class="editButtons" title="Cancel"></button>
-                                        <button id="confirmButton" class="editButtons" title="Confirm"></button>
+                                        <button id="editButton" class="editButtons" title="Edit" entity="<%=entity %>"></button>
+                                        <button id="cancelButton" class="editButtons cancel_narrative" title="Cancel" entity="<%=entity %>"></button>
+                                        <button id="confirmButton" class="editButtons confirm_narrative" title="Confirm" entity="<%=entity %>"></button>
                                     </div>
                                 </div>
                                 <p class="counter"><span class="number"><%=total_narrative_count.toString() %></span>Post </p>
