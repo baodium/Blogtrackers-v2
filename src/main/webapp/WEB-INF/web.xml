@@ -2,28 +2,56 @@
  "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
  "http://java.sun.com/dtd/web-app_2_3.dtd" >
 
+
 <web-app>
-<servlet>
-  <servlet-name>jsp</servlet-name>
-  <servlet-class>org.apache.jasper.servlet.JspServlet</servlet-class>
-  <init-param>
-      <param-name>fork</param-name>
-      <param-value>false</param-value>
-  </init-param>
-  <init-param>
-      <param-name>xpoweredBy</param-name>
-      <param-value>false</param-value>
-  </init-param>
-  <init-param>                                    <!-- this should be added -->
-      <param-name>compilerSourceVM</param-name>
-      <param-value>1.7</param-value>
-  </init-param>
-  <init-param>
-      <param-name>compilerTargetVM</param-name>
-      <param-value>1.7</param-value>
-  </init-param>                                   <!-- last added line -->
-  <load-on-startup>3</load-on-startup>
-</servlet>
+
+<filter>
+		<filter-name>GzipFilter</filter-name>
+		<filter-class>wrapper.GZipServletFilter</filter-class>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>GzipFilter</filter-name>
+		<url-pattern>*.js</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>GzipFilter</filter-name>
+		<url-pattern>*.css</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>GzipFilter</filter-name>
+		<url-pattern>*.html</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>GzipFilter</filter-name>
+		<url-pattern>*.jsp</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>GzipFilter</filter-name>
+		<url-pattern>/</url-pattern>
+	</filter-mapping>
+
+	<servlet>
+		<servlet-name>jsp</servlet-name>
+		<servlet-class>org.apache.jasper.servlet.JspServlet</servlet-class>
+		<init-param>
+			<param-name>fork</param-name>
+			<param-value>false</param-value>
+		</init-param>
+		<init-param>
+			<param-name>xpoweredBy</param-name>
+			<param-value>false</param-value>
+		</init-param>
+		<init-param>                                    <!-- this should be added -->
+			<param-name>compilerSourceVM</param-name>
+			<param-value>1.7</param-value>
+		</init-param>
+		<init-param>
+			<param-name>compilerTargetVM</param-name>
+			<param-value>1.7</param-value>
+		</init-param>                                   <!-- last added line -->
+		<load-on-startup>3</load-on-startup>
+	</servlet>
 	<servlet>
 		<servlet-name>AddBlog</servlet-name>
 		<display-name>AddBlog</display-name>
@@ -42,49 +70,49 @@
 		<description></description>
 		<servlet-class>util.FileUpload</servlet-class>
 	</servlet>
-	
+
 	<servlet>
 		<servlet-name>KeywordTrend</servlet-name>
 		<display-name>KeywordTrend</display-name>
 		<description></description>
 		<servlet-class>util.KeywordTrend</servlet-class>
-		</servlet>
-		<servlet>
+	</servlet>
+	<servlet>
 		<servlet-name>Influence</servlet-name>
 		<display-name>Influence</display-name>
 		<description></description>
 		<servlet-class>util.Influence</servlet-class>
 	</servlet>
-		<servlet>
-			<servlet-name>KeywordTrend1</servlet-name>
-			<display-name>KeywordTrend1</display-name>
-			<description></description>
-			<servlet-class>util.KeywordTrend1</servlet-class>
-		</servlet>
-		<servlet>
-			<servlet-name>TopKeywords</servlet-name>
-			<display-name>TopKeywords</display-name>
-			<description></description>
-			<servlet-class>util.TopKeywords</servlet-class>
-		</servlet>
-		<servlet>
-			<servlet-name>TopicDistribution</servlet-name>
-			<display-name>TopicDistribution</display-name>
-			<description></description>
-			<servlet-class>util.TopicDistribution</servlet-class>
-		</servlet>
-		<servlet>
-			<servlet-name>Clustering</servlet-name>
-			<display-name>Clustering</display-name>
-			<description></description>
-			<servlet-class>util.Clustering</servlet-class>
-		</servlet>
-		<servlet>
-			<servlet-name>Narrative</servlet-name>
-			<display-name>Narrative</display-name>
-			<description></description>
-			<servlet-class>util.Narrative</servlet-class>
-		</servlet>
+	<servlet>
+		<servlet-name>KeywordTrend1</servlet-name>
+		<display-name>KeywordTrend1</display-name>
+		<description></description>
+		<servlet-class>util.KeywordTrend1</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>TopKeywords</servlet-name>
+		<display-name>TopKeywords</display-name>
+		<description></description>
+		<servlet-class>util.TopKeywords</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>TopicDistribution</servlet-name>
+		<display-name>TopicDistribution</display-name>
+		<description></description>
+		<servlet-class>util.TopicDistribution</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>Clustering</servlet-name>
+		<display-name>Clustering</display-name>
+		<description></description>
+		<servlet-class>util.Clustering</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>Narrative</servlet-name>
+		<display-name>Narrative</display-name>
+		<description></description>
+		<servlet-class>util.Narrative</servlet-class>
+	</servlet>
 	<servlet-mapping>
 		<servlet-name>AddBlog</servlet-name>
 		<url-pattern>/AddBlog</url-pattern>
@@ -136,5 +164,7 @@
 		<location>/500.html</location>
 
 	</error-page>
+
+	
 
 </web-app>

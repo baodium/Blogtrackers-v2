@@ -279,10 +279,11 @@ public class DbConnection {
 		ArrayList result = new ArrayList();
 		try {
 			Connection conn = getConnection();
-			PreparedStatement pstmt = conn.prepareStatement(query);
-			ResultSet rs = pstmt.executeQuery();
+			//PreparedStatement pstmt = conn.prepareStatement(query);
+			//ResultSet rs = pstmt.executeQuery();
+			ResultSet rs = null;
 			Statement stmt = null;
-			if (rs.next()) {
+//			if (rs.next()) {
 				stmt = conn.prepareStatement(query);
 				rs = stmt.executeQuery(query);
 				ResultSetMetaData rsmd = rs.getMetaData();
@@ -299,13 +300,13 @@ public class DbConnection {
 				}
 
 				rs.close();
-				pstmt.close();
+				//pstmt.close();
 				conn.close();
-			} else {
-				rs.close();
-				pstmt.close();
-				conn.close();
-			}
+//			} else {
+//				rs.close();
+//				pstmt.close();
+//				conn.close();
+//			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -326,10 +327,11 @@ public class DbConnection {
 
 		try {
 			Connection conn = getConnection();
-			PreparedStatement pstmt = conn.prepareStatement(query);
-			ResultSet rs = pstmt.executeQuery();
+//			PreparedStatement pstmt = conn.prepareStatement(query);
+//			ResultSet rs = pstmt.executeQuery();
 			Statement stmt = null;
-			if (rs.next()) {
+			ResultSet rs = null;
+//			if (rs.next()) {
 				stmt = conn.prepareStatement(query);
 				rs = stmt.executeQuery(query);
 				ResultSetMetaData rsmd = rs.getMetaData();
@@ -354,13 +356,14 @@ public class DbConnection {
 				}
 
 				rs.close();
-				pstmt.close();
+				//pstmt.close();
 				conn.close();
-			} else {
-				rs.close();
-				pstmt.close();
-				conn.close();
-			}
+//			} 
+//		else {
+//				rs.close();
+//				pstmt.close();
+//				conn.close();
+//			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -435,6 +438,41 @@ public class DbConnection {
 		return result;
 	}
 
+	
+	/**
+	 * Custom query for getting ResultSet
+	 * 
+	 * @param query query string for Keyword Trend
+	 * @return ResultSet result
+	 */
+	public static ResultSet queryResultSet(String query) {
+		ArrayList<String> list = new ArrayList<String>();
+		ArrayList result = new ArrayList();
+		ResultSet rs = null;
+
+		try {
+			Connection conn = getConnection();
+//			PreparedStatement pstmt = conn.prepareStatement(query);
+//			rs = pstmt.executeQuery();
+			Statement stmt = null;
+//			if (rs.next()) {
+				stmt = conn.prepareStatement(query);
+				rs = stmt.executeQuery(query);
+				ResultSetMetaData rsmd = rs.getMetaData();
+				int column_size = rsmd.getColumnCount();
+
+				int i = 0;
+//				while (rs.next()) {
+//					
+//				}
+//				}
+//				conn.close();
+				
+			}catch(Exception e) {
+				System.out.println("test");
+			}
+		return rs;
+	}
 	public static void main(String[] args) {
 
 		System.out.println("started");
@@ -476,74 +514,86 @@ public class DbConnection {
 		// ArrayList test = query(q);
 
 		// System.out.println(result);
-		HashMap<String, Double> notes = new HashMap<String, Double>();
-
-		String[] notes_name = { "Fifty Pounds", "Twenty Pounds", "Ten Pounds", "Five Pounds", "Two Pounds", "One Pound",
-				"Fifty Pence", "Twenty Pence", "Ten Pence", "Five Pence", "Two Pence", "One Pence" };
-		//BigDecimal[] notes_value = {new BigDecimal(50.0), new BigDecimal(20.0), new BigDecimal(10.0), new BigDecimal(5.0), 
-		//new BigDecimal(2.0), new BigDecimal(1.0), new BigDecimal(0.50), new BigDecimal(0.20), new BigDecimal(0.10), new BigDecimal(0.05), new BigDecimal(0.02), new BigDecimal(0.01)};
-		int [] notes_value = {5000, 2000, 1000, 500, 200, 100, 50, 20, 10, 5, 2, 1};
+//		HashMap<String, Double> notes = new HashMap<String, Double>();
+//
+//		String[] notes_name = { "Fifty Pounds", "Twenty Pounds", "Ten Pounds", "Five Pounds", "Two Pounds", "One Pound",
+//				"Fifty Pence", "Twenty Pence", "Ten Pence", "Five Pence", "Two Pence", "One Pence" };
+//		//BigDecimal[] notes_value = {new BigDecimal(50.0), new BigDecimal(20.0), new BigDecimal(10.0), new BigDecimal(5.0), 
+//		//new BigDecimal(2.0), new BigDecimal(1.0), new BigDecimal(0.50), new BigDecimal(0.20), new BigDecimal(0.10), new BigDecimal(0.05), new BigDecimal(0.02), new BigDecimal(0.01)};
+//		int [] notes_value = {5000, 2000, 1000, 500, 200, 100, 50, 20, 10, 5, 2, 1};
+//		
+//		notes.put("Fifty Pounds", 50.0);
+//		notes.put("Twenty Pounds", 20.0);
+//		notes.put("Ten Pounds", 10.0);
+//		notes.put("Five Pounds", 5.0);
+//		notes.put("Two Pounds", 2.0);
+//		notes.put("One Pound", 1.0);
+//		notes.put("Fifty Pence", 0.50);
+//		notes.put("Twenty Pence", 0.20);
+//		notes.put("Ten Pence", 0.10);
+//		notes.put("Five Pence", 0.05);
+//		notes.put("Two Pence", 0.02);
+//		notes.put("One Pence", 0.01);
+//
+//		int cash = 50 * 100;
+//		double purchasePrice = 8.25 * 100;
+//
+//		if (cash < purchasePrice) {
+//			System.out.println("ERROR");
+//		} else if (cash == purchasePrice) {
+//			System.out.println("Zero");
+//		} else {
+////			BigDecimal cash_ = new BigDecimal(cash);
+////			BigDecimal purchase_cash = new BigDecimal(purchasePrice);
+////			BigDecimal change = cash_.subtract(purchase_cash);
+//			
+//			int change = cash - (int)purchasePrice;
+//
+//			/*
+//			 * String res = getChange("", change); System.out.println(res);
+//			 */
+//			int i = 0;
+//
+//			//while (change > 0) {
+//
+//				// for(int i = 0; i< notes_name.length; i++){
+//				while (i < notes_name.length) {
+//					int current_amount_v = notes_value[i];
+//					String current_amount_s = notes_name[i];
+//					if (change >= current_amount_v) {
+//						if (change != current_amount_v) {
+//							System.out.print(current_amount_s + ", ");
+//						}else {
+//						System.out.print(current_amount_s);
+//						}
+//						change -= current_amount_v;
+//
+//						if (change > current_amount_v) {
+//							i--;
+//						}
+//
+//					}
+//					i++;
+//					if (change == 0) {
+//						break;
+//					}
+//
+//				}
+//			//}
+//		}
+		String from = "2000-01-01";
+		String to = "2020-03-27";
+		String blogger = "\"George McGinn\"";
+		String limit = "100";
 		
-		notes.put("Fifty Pounds", 50.0);
-		notes.put("Twenty Pounds", 20.0);
-		notes.put("Ten Pounds", 10.0);
-		notes.put("Five Pounds", 5.0);
-		notes.put("Two Pounds", 2.0);
-		notes.put("One Pound", 1.0);
-		notes.put("Fifty Pence", 0.50);
-		notes.put("Twenty Pence", 0.20);
-		notes.put("Ten Pence", 0.10);
-		notes.put("Five Pence", 0.05);
-		notes.put("Two Pence", 0.02);
-		notes.put("One Pence", 0.01);
-
-		int cash = 50 * 100;
-		double purchasePrice = 8.25 * 100;
-
-		if (cash < purchasePrice) {
-			System.out.println("ERROR");
-		} else if (cash == purchasePrice) {
-			System.out.println("Zero");
-		} else {
-//			BigDecimal cash_ = new BigDecimal(cash);
-//			BigDecimal purchase_cash = new BigDecimal(purchasePrice);
-//			BigDecimal change = cash_.subtract(purchase_cash);
-			
-			int change = cash - (int)purchasePrice;
-
-			/*
-			 * String res = getChange("", change); System.out.println(res);
-			 */
-			int i = 0;
-
-			//while (change > 0) {
-
-				// for(int i = 0; i< notes_name.length; i++){
-				while (i < notes_name.length) {
-					int current_amount_v = notes_value[i];
-					String current_amount_s = notes_name[i];
-					if (change >= current_amount_v) {
-						if (change != current_amount_v) {
-							System.out.print(current_amount_s + ", ");
-						}else {
-						System.out.print(current_amount_s);
-						}
-						change -= current_amount_v;
-
-						if (change > current_amount_v) {
-							i--;
-						}
-
-					}
-					i++;
-					if (change == 0) {
-						break;
-					}
-
-				}
-			//}
-		}
-
+		String query = "select n.term, sum(n.occurr) occurrence " + "from blogpost_terms_api, "
+				+ "json_table(terms_test, " + "'$[*]' columns( " + "term varchar(128) path '$.term', "
+				+ "occurr int(11) path '$.occurrence' " + ") " + ") " + "as n " + "where blogger in  (" + blogger
+				+ ") and date > \"" + from + "\" and date < \"" + to + "\" " + "group by n.term "
+				+ "order by occurrence desc " + "limit " + limit + "";
+		
+		ResultSet result =  queryResultSet(query);
+		
 		Instant end = Instant.now();
 		Duration timeElapsed = Duration.between(start, end);
 		System.out.println("Time taken: " + timeElapsed.getSeconds() + " seconds");

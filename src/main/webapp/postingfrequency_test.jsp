@@ -550,7 +550,7 @@ userinfo = (ArrayList<?>)userinfo.get(0);
 												pids = post._getPostIdsByBloggerName("date",dt, dte,"'"+bloggerName+"'","date","DESC");
 												//allterms = term._searchByRange("blogsiteid", dt, dte, blogsiteId);//_searchByRange("blogpostid",dt, dte,postids);
 												System.out.println("Most active blogger:"+mostactiveblogger);
-												allentitysentiments = blogpostsentiment._searchByRange("date", dt, dte, pids);
+												allentitysentiments = blogpostsentiment._searchByRange(dt, dte, pids);
 												System.out.println("entity--" + allentitysentiments.size());
 												System.out.println("pids--" + pids);
 												selectedid=blogsiteId; 

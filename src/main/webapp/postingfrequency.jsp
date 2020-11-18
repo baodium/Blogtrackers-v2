@@ -562,7 +562,7 @@ userinfo = (ArrayList<?>)userinfo.get(0);
 												//allterms = term._searchByRange("blogsiteid", dt, dte, blogsiteId);//_searchByRange("blogpostid",dt, dte,postids);
 												//System.out.println("Most active blogger:"+mostactiveblogger);
 												try{
-													allentitysentiments = blogpostsentiment._searchByRange("date", dt, dte, pids);
+													allentitysentiments = blogpostsentiment._searchByRange(dt, dte, pids);
 													
 												}catch(Exception e){
 													
@@ -1893,7 +1893,7 @@ $(document).ready(function(){
 	<%-- wordtagcloud("#tagcloudcontainer",450,<%=res%>);  --%>
 	<%-- wordtagcloud("#tagcloudcontainer",450,<%=d%>); 
 	 --%>
- /* wordtagcloud("#tagcloudcontainer",450,word_count2); */
+	 /* wordtagcloud("#tagcloudcontainer",450,word_count2); */
 
  </script>
 <script src="pagedependencies/baseurl.js?v=93"></script>

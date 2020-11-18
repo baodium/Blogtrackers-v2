@@ -6,12 +6,14 @@ import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.json.JSONObject;
 import java.util.*;
 
 import authentication.DbConnection;
+import scala.Tuple2;
 
 import org.json.JSONArray;
 
@@ -114,6 +116,95 @@ public class Blogger {
 		}
 		return count;
 
+	}
+	
+	/**
+	 * Getting top bloggers with respect to post frequency
+	 * @param field_name field name to filter search on
+	 * @param field_values field values
+	 * @param from lowest date range
+	 * @param to highest date range
+	 * @param limit output limit
+	 * @throws Exception - Exception
+	 * @return String result
+	 */
+	public static ArrayList<Tuple2<String, Integer> > getTopBloggers(String field_name, String field_values, String from, String to, String limit) throws Exception {
+		String result = null;
+		ArrayList<Tuple2<String, Integer> > output = new ArrayList<>();
+		Tuple2<String, Integer> v = new Tuple2<String, Integer>(null,null);
+		
+		if (field_values.indexOf("\"") != 0) {
+			field_values = "\"" + field_values + "\"";
+		}
+		String query = "select blogger, count(blogger) c\r\n" + 
+				"from blogposts\r\n" + 
+				"where "+field_name+" in ("+field_values+") \r\n" + 
+				"and date > \""+from+"\" \r\n" + 
+				"and date < \""+to+"\"\r\n" + 
+				"group by blogger limit "+limit+";";
+		
+		System.out.println(query);
+		ResultSet post_all =  DbConnection.queryResultSet(query);
+		
+		while(post_all.next()){
+			String blogger = post_all.getString("blogger").replaceAll("\\s+", " ").replace("By","").replace("by","").trim();
+			int count = post_all.getInt("c");
+			
+			v = new Tuple2<String, Integer>(blogger,count);
+			output.add(v);
+		}
+
+		post_all.close();
+		return output;
+	}
+	
+	/**
+	 * Getting most influential bloggers
+	 * @param field_name field name to filter search on
+	 * @param field_values field values
+	 * @param from lowest date range
+	 * @param to highest date range
+	 * @param limit output limit
+	 * @throws Exception - Exception
+	 * @return String result
+	 */
+	public static ArrayList<Tuple2<String, Integer> > getMostInfluentialBloggers(String field_name, String field_values, String from, String to, String limit) throws Exception {
+		String result = null;
+		ArrayList<Tuple2<String, Integer> > output = new ArrayList<>();
+		Tuple2<String, Integer> v = new Tuple2<String, Integer>(null,null);
+		
+		if (field_values.indexOf("\"") != 0) {
+			field_values = "\"" + field_values + "\"";
+		}
+		String query = "select blogger, max(influence_score) m\r\n" + 
+				"from blogposts\r\n" + 
+				"where "+field_name+" in ("+field_values+") \r\n" + 
+				"and date > \""+from+"\" \r\n" + 
+				"and date < \""+to+"\"\r\n" + 
+				"group by blogger limit "+limit+";";
+		
+//		System.out.println(query);
+		ResultSet post_all =  DbConnection.queryResultSet(query);
+		
+		while(post_all.next()){
+			String blogger = post_all.getString("blogger").replaceAll("\\s+", " ").replace("By","").replace("by","").trim();
+			int count = post_all.getInt("m");
+			
+			v = new Tuple2<String, Integer>(blogger,count);
+			output.add(v);
+		}
+
+		post_all.close();
+		return output;
+	}
+	
+	public static void main(String[] args) {
+		try {
+			getMostInfluentialBloggers("blogsite_id", "\"2649\",\"1319\",\"3436\"", "2020-01-01", "2020-11-11", "10");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }
