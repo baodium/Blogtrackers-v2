@@ -143,7 +143,6 @@ public class Blogger {
 				"and date < \""+to+"\"\r\n" + 
 				"group by blogger limit "+limit+";";
 		
-		System.out.println(query);
 		ResultSet post_all =  DbConnection.queryResultSet(query);
 		
 		while(post_all.next()){
@@ -183,7 +182,6 @@ public class Blogger {
 				"and date < \""+to+"\"\r\n" + 
 				"group by blogger order by m desc limit "+limit+";";
 		
-//		System.out.println(query);
 		ResultSet post_all =  DbConnection.queryResultSet(query);
 		
 		while(post_all.next()){

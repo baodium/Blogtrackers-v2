@@ -219,11 +219,9 @@ public class Liwc {
 		blogids = blogids.replaceAll(",$", "");
 		blogids = blogids.replaceAll(", $", "");
 		blogids = "("+blogids+")";
-		//System.out.println(blogids);
+
 		
 		try {
-		// bad query too slow takes like 10 to 20 second on larger blogs
-		 //result = db.query("SELECT SUM(posemo) FROM blogtrackers.liwc where blogpostid in (select blogpost_id from blogposts where blogsite_id in"+blogids+")");
 		result = db.query("SELECT SUM(posemocount) FROM blogtrackers.blogsite_sentiments where blogsite_id in "+blogids);	
 		
 			
@@ -418,7 +416,6 @@ public class Liwc {
 
 		JSONObject myResponse = new JSONObject(response.toString());
 		ArrayList<String> list = new ArrayList<String>(); 
-		//System.out.println(myResponse.get("hits"));
 		if(null!=myResponse.get("hits")) {
 			String res = myResponse.get("hits").toString();
 			JSONObject myRes1 = new JSONObject(res);          
@@ -463,7 +460,7 @@ public class Liwc {
 
 		JSONObject myResponse = new JSONObject(response.toString());
 		ArrayList<String> list = new ArrayList<String>(); 
-		//System.out.println(myResponse.get("hits"));
+
 		if(null!=myResponse.get("aggregations")) {
 			String res = myResponse.get("aggregations").toString();
 			JSONObject myRes1 = new JSONObject(res); 
@@ -547,8 +544,6 @@ public class Liwc {
 				"where blogpostid in (select blogpost_id from blogposts where "+field_name+" in ("+field_values+")) and\r\n" + 
 				"date > \""+from+"\" and \r\n" + 
 				"date < \""+to+"\";";
-		
-		System.out.println(query);
 		ResultSet post_all =  DbConnection.queryResultSet(query);
 		
 		while(post_all.next()){

@@ -88,6 +88,7 @@ Instant start = Instant.now();
 			profileimage = "images/default-avatar.png";
 			if (userpic.indexOf("http") > -1) {
 				profileimage = userpic;
+				
 			}
 
 			File f = new File(filename);

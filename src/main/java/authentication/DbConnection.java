@@ -9,7 +9,6 @@
 package authentication;
 
 import java.io.BufferedReader;
-import java.math.BigDecimal;
 import java.io.FileReader;
 import java.io.IOException;
 import java.security.MessageDigest;
@@ -25,21 +24,10 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import org.json.JSONArray;
 import org.json.JSONObject;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class DbConnection {
 	/**
@@ -92,7 +80,7 @@ public class DbConnection {
 			String driver = hm.get("driver");
 			String username = hm.get("dbUserName");// "root";//
 			String password = hm.get("dbPassword");
-			String elastic = hm.get("elasticIndex");
+			hm.get("elasticIndex");
 
 			if (connectionURL != null && username != null && password != null) { // check to see if the connection
 																					// parameter was successfully loaded
@@ -234,7 +222,7 @@ public class DbConnection {
 			Connection conn = getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(query);
 
-			int done = pstmt.executeUpdate(query);
+			pstmt.executeUpdate(query);
 			// rs = stmt.executeQuery(query);
 			donee = true;
 			pstmt.close();
@@ -258,7 +246,7 @@ public class DbConnection {
 			Connection conn = getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(query);
 
-			int done = pstmt.executeUpdate(query);
+			pstmt.executeUpdate(query);
 
 			donee = true;
 			pstmt.close();
@@ -279,34 +267,25 @@ public class DbConnection {
 		ArrayList result = new ArrayList();
 		try {
 			Connection conn = getConnection();
-			//PreparedStatement pstmt = conn.prepareStatement(query);
-			//ResultSet rs = pstmt.executeQuery();
 			ResultSet rs = null;
 			Statement stmt = null;
-//			if (rs.next()) {
-				stmt = conn.prepareStatement(query);
-				rs = stmt.executeQuery(query);
-				ResultSetMetaData rsmd = rs.getMetaData();
-				int column_size = rsmd.getColumnCount();
-				int i = 0;
-				while (rs.next()) {
-					ArrayList output = new ArrayList();
-					int total = column_size;
-					for (int j = 1; j <= (total); j++) {
-						output.add((j - 1), rs.getString(j));
-					}
-					result.add(i, output);
-					i++;
+			stmt = conn.prepareStatement(query);
+			rs = stmt.executeQuery(query);
+			ResultSetMetaData rsmd = rs.getMetaData();
+			int column_size = rsmd.getColumnCount();
+			int i = 0;
+			while (rs.next()) {
+				ArrayList output = new ArrayList();
+				int total = column_size;
+				for (int j = 1; j <= (total); j++) {
+					output.add((j - 1), rs.getString(j));
 				}
+				result.add(i, output);
+				i++;
+			}
 
-				rs.close();
-				//pstmt.close();
-				conn.close();
-//			} else {
-//				rs.close();
-//				pstmt.close();
-//				conn.close();
-//			}
+			rs.close();
+			conn.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -323,47 +302,31 @@ public class DbConnection {
 	public static ArrayList queryJSON(String query) {
 
 		ArrayList<String> list = new ArrayList<String>();
-		ArrayList result = new ArrayList();
-
 		try {
 			Connection conn = getConnection();
-//			PreparedStatement pstmt = conn.prepareStatement(query);
-//			ResultSet rs = pstmt.executeQuery();
 			Statement stmt = null;
 			ResultSet rs = null;
-//			if (rs.next()) {
-				stmt = conn.prepareStatement(query);
-				rs = stmt.executeQuery(query);
-				ResultSetMetaData rsmd = rs.getMetaData();
-				int column_size = rsmd.getColumnCount();
+			stmt = conn.prepareStatement(query);
+			rs = stmt.executeQuery(query);
+			ResultSetMetaData rsmd = rs.getMetaData();
+			int column_size = rsmd.getColumnCount();
 
-				int i = 0;
-				while (rs.next()) {
-					// ArrayList output=new ArrayList();
-					int total = column_size;
-					JSONObject jobj = new JSONObject();
-					for (int j = 1; j <= (total); j++) {
-						String name = rsmd.getColumnName(j);
-						// output.add((j-1), rs.getString(j));
-						jobj.put(name, rs.getString(j));
-					}
-
-					JSONObject source = new JSONObject();
-					source.put("_source", jobj);
-					list.add(source.toString());
-
-					i++;
+			while (rs.next()) {
+				int total = column_size;
+				JSONObject jobj = new JSONObject();
+				for (int j = 1; j <= (total); j++) {
+					String name = rsmd.getColumnName(j);
+					jobj.put(name, rs.getString(j));
 				}
 
-				rs.close();
-				//pstmt.close();
-				conn.close();
-//			} 
-//		else {
-//				rs.close();
-//				pstmt.close();
-//				conn.close();
-//			}
+				JSONObject source = new JSONObject();
+				source.put("_source", jobj);
+				list.add(source.toString());
+			}
+
+			rs.close();
+			conn.close();
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -407,7 +370,7 @@ public class DbConnection {
 	public static HashMap queryKWT(String query) {
 		HashMap result = new HashMap();
 		HashMap<String, Integer> keyword_trend = new HashMap<String, Integer>();
-		HashMap<String, Integer> post_count = new HashMap<String, Integer>();
+		new HashMap<String, Integer>();
 		try {
 			Connection conn = getConnection();
 			Statement stmt = conn.createStatement();
@@ -438,7 +401,6 @@ public class DbConnection {
 		return result;
 	}
 
-	
 	/**
 	 * Custom query for getting ResultSet
 	 * 
@@ -446,33 +408,20 @@ public class DbConnection {
 	 * @return ResultSet result
 	 */
 	public static ResultSet queryResultSet(String query) {
-		ArrayList<String> list = new ArrayList<String>();
-		ArrayList result = new ArrayList();
 		ResultSet rs = null;
-
 		try {
 			Connection conn = getConnection();
-//			PreparedStatement pstmt = conn.prepareStatement(query);
-//			rs = pstmt.executeQuery();
 			Statement stmt = null;
-//			if (rs.next()) {
-				stmt = conn.prepareStatement(query);
-				rs = stmt.executeQuery(query);
-				ResultSetMetaData rsmd = rs.getMetaData();
-				int column_size = rsmd.getColumnCount();
 
-				int i = 0;
-//				while (rs.next()) {
-//					
-//				}
-//				}
-//				conn.close();
-				
-			}catch(Exception e) {
-				System.out.println("test");
-			}
+			stmt = conn.prepareStatement(query);
+			rs = stmt.executeQuery(query);
+
+		} catch (Exception e) {
+			System.out.println("test");
+		}
 		return rs;
 	}
+
 	public static void main(String[] args) {
 
 		System.out.println("started");
@@ -508,6 +457,8 @@ public class DbConnection {
 		// map.entrySet().parallelStream())
 		// .collect(Collectors.toMap(Entry::getKey, Entry::getValue, Integer::sum,
 		// HashMap::new));
+		
+		query("SELECT * FROM blogposts limit 1000");
 
 		// System.out.println("done with counting");
 		// System.out.println(map_count);
@@ -585,15 +536,15 @@ public class DbConnection {
 		String to = "2020-03-27";
 		String blogger = "\"George McGinn\"";
 		String limit = "100";
-		
+
 		String query = "select n.term, sum(n.occurr) occurrence " + "from blogpost_terms_api, "
 				+ "json_table(terms_test, " + "'$[*]' columns( " + "term varchar(128) path '$.term', "
 				+ "occurr int(11) path '$.occurrence' " + ") " + ") " + "as n " + "where blogger in  (" + blogger
 				+ ") and date > \"" + from + "\" and date < \"" + to + "\" " + "group by n.term "
 				+ "order by occurrence desc " + "limit " + limit + "";
-		
-		ResultSet result =  queryResultSet(query);
-		
+
+		queryResultSet(query);
+
 		Instant end = Instant.now();
 		Duration timeElapsed = Duration.between(start, end);
 		System.out.println("Time taken: " + timeElapsed.getSeconds() + " seconds");

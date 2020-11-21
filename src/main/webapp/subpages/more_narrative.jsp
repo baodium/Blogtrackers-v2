@@ -285,6 +285,7 @@ if(action.toString().equals("load_more_narrative")){
 			URI uri = new URI(permalink.toString());
 			domain = uri.getHost();
 			
+			
 			date = source.getJSONObject("_source").get("date").toString();
 			LocalDate datee = LocalDate.parse(date.toString().split("T")[0]);
 			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");

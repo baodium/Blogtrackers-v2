@@ -27,7 +27,6 @@ Object post_ids = (null == request.getParameter("post_ids")) ? "" : request.getP
 Object ids = (null == request.getParameter("ids")) ? "" : request.getParameter("ids");
 
 String[] array = ids.toString().split(",");
-
 String blog_ids = "";
 for (String x : array) {
 	blog_ids += "\"" + x + "\",";
@@ -35,11 +34,14 @@ for (String x : array) {
 int length = blog_ids.length();
 blog_ids = blog_ids.substring(0, length - 1);
 
+
 PrintWriter out_ = response.getWriter();
 
 Trackers tracker = new Trackers();
 Blogposts post = new Blogposts();
 Blogs blog = new Blogs();
+
+Dashboard d  = new Dashboard(ids.toString(), date_start.toString(), date_end.toString());
 
 Terms term = new Terms();
 ArrayList<scala.Tuple2<String, scala.Tuple2<String, Integer>>> top_location = Blogs.getTopBlogs("blogsite_id", blog_ids,
@@ -345,22 +347,24 @@ wordtagcloud("#tagcloudcontainer",450,jsonresult);
 						<tbody>
 
 							<%
-								ArrayList<scala.Tuple2<String, Integer>> language_data = LanguageMapper.getTopLanguages("blogsite_id",
-									blog_ids, date_start.toString(), date_end.toString(), "10");
-							JSONArray result_language = new JSONArray();
-							if (language_data.size() > 0) {
-								for (scala.Tuple2<String, Integer> x : language_data) {
+							java.sql.ResultSet language_data = d.load_filter(blog_ids, date_start.toString(), date_end.toString(), "top_language", "10");
+								/* ArrayList<scala.Tuple2<String, Integer>> language_data = LanguageMapper.getTopLanguages("blogsite_id",
+									blog_ids, date_start.toString(), date_end.toString(), "10");*/
+							JSONArray result_language = new JSONArray(); 
+							if (language_data != null) {
+								while(language_data.next()) {
 									JSONObject a = new JSONObject();
+									
+									String lang = language_data.getString("language");
+									int count = language_data.getInt("c");
 
-									a.put("letter", x._1);
-									a.put("frequency", x._2);
+									a.put("letter", lang);
+									a.put("frequency", count);
 									result_language.put(a);
 							%>
 							<tr>
-								<td class=""><%=x._1%></td>
-								<td><%=x._2%></td>
-								<!-- <td class="">j.get("letter")</td>
-												<td>j.get("frequency")</td> -->
+								<td class=""><%=lang%></td>
+								<td><%=count%></td>
 							</tr>
 							<%
 								}
@@ -481,6 +485,7 @@ wordtagcloud("#tagcloudcontainer",450,jsonresult);
 					 ];  --%>
 					
 					  data = <%=result_language%> 
+					  console.log("data--",data)
 					 
 					 <%-- console.log("langdata-->"+"<%=language_data%>"); --%>
 				     data.sort(function(a, b){
@@ -1345,9 +1350,6 @@ $(function () {
 	for (scala.Tuple2<String, Integer> y : blogInfluence) {
 		%>
 		 {letter:"<%=y._1%>", frequency:<%=y._2%>, name:"<%=y._1%>", type:"blogger"},
-		
-		 /* {"letter":"Blogger ","frequency":"32", "name":"Obadimu Adewale", "type":"blogger"}, */
-		 
 		 <%
 						}
 					}%>    
@@ -1588,27 +1590,7 @@ $(function () {
 						 var final_centroids = {};
 						 var plot_width = $('#scatter-container').width();
 						var height = $('#scatter-container1').height() - 25;
-						 trending_words = [];
-							
-							<%/* String word_build = "";
-for(int k = 0; k < 10; k++){
-	 word_build = "";
-	 if(source.length() > 0){ 
-	String [] splitted = source.get("cluster_" + (k + 1)).toString().split("\'topterms\':");
-			
-	List<String> termlist = Arrays.asList(splitted[1].replace("{","").replace("}","").split(","));
-	
-	for(int m = 0; m < 4; m++){
-		if(m > 0){
-			word_build += ", ";
-		}
-		word_build += termlist.get(m).split(":")[0].replace("\'","");
-	} */%>
-								<%-- trending_words[<%=k %>] = "<%=word_build %>"; --%>
-								
-								
-						 	<%/*  } } */%>
-						 	
+						 trending_words = [];												 	
 						 	trending_words[0] = "aa, bb, cc";
 						 	trending_words[1] = "ss, nn, xx";
 						 	trending_words[2] = "ff, gg, nn";
@@ -1849,11 +1831,11 @@ for(int k = 0; k < 10; k++){
 						<%
 						String query = "select domain, count(domain) c\r\n" + 
 								"from outlinks\r\n" + 
-								"where blogsite_id in ("+blog_ids+") \r\n" + 
+								"where blogsite_id in ("+blog_ids+") and domain is not null and domain != '' \r\n" + 
 								"and date > \""+date_start.toString()+"\" \r\n" + 
 								"and date < \""+date_end.toString()+"\"\r\n" + 
 								"group by domain\r\n" + 
-								"order by c desc;";
+								"order by c desc limit 1000;";
 						java.sql.ResultSet post_all =  DbConnection.queryResultSet(query);
 						
 						while(post_all.next()){
@@ -1867,8 +1849,6 @@ for(int k = 0; k < 10; k++){
 							<td><%=count %></td>
 						</tr>
 						<%
-							//}
-						//}
 						}
 						%>
 
@@ -1884,46 +1864,17 @@ for(int k = 0; k < 10; k++){
 			    	 "columnDefs": [
 			    		    { "width": "80%", "targets": 0 }
 			    		  ]
-			    /*     "scrollY": 430,
-			        "scrollX": false,
-			         "pagingType": "simple",
-			        	 "bLengthChange": false,
-			        	 "order": [[ 1, "desc" ]] */
-			        	 
-			        	 
-			    /*      ,
-			         dom: 'Bfrtip',
-			         "columnDefs": [
-			      { "width": "80%", "targets": 0 }
-			    ],
-			      buttons:{
-			        buttons: [
-			            { extend: 'pdfHtml5',orientation: 'potrait', pageSize: 'LEGAL', className: 'btn-primary stylebutton1'},
-			            {extend:'csv',className: 'btn-primary stylebutton1'},
-			            {extend:'excel',className: 'btn-primary stylebutton1'},
-			           // {extend:'copy',className: 'btn-primary stylebutton1', text: 'Copy to Clipboard'},
-			            {extend:'print',className: 'btn-primary stylebutton1'},
-			        ]
-			      } */
 			    } );
 			    
 			    $('#DataTables_Table_0_wrapper').css( 'display', 'block' );
 			    $('#DataTables_Table_0_wrapper').width('100%');
 				</script>
 
-<!-- END DOMAIN -->
+
 <%
 	}
 %>
 
-<!-- <script type="text/javascript" src="assets/js/jquery-1.11.3.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/lettering.js/0.6.1/jquery.lettering.min.js"></script>
-	<script src="pagedependencies/imageloader.js?v=09"></script>
-	<script src="assets/bootstrap/js/bootstrap.js"></script>
-	<script src="assets/js/generic.js"></script>
-Start for tables 
-	<script type="text/javascript" src="assets/vendors/DataTables/datatables.min.js"></script>
-	<script type="text/javascript" src="assets/vendors/DataTables/dataTables.bootstrap4.min.js"></script> -->
 
 
 

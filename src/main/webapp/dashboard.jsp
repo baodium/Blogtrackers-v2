@@ -31,9 +31,6 @@
 	String sort = (null == request.getParameter("sortby"))
 			? "blog"
 			: request.getParameter("sortby").toString().replaceAll("[^a-zA-Z]", " ");
-	System.out.println("email--" + email);
-	
-	System.out.println("valueeeeee"+date_set);
 	
 	if (user == null || user == "") {
 		response.sendRedirect("index.jsp");
@@ -48,7 +45,7 @@
 		String date_modified = "";
 		ArrayList detail = new ArrayList();
 		ArrayList termss = new ArrayList();
-		ArrayList outlinks = new ArrayList();
+		//ArrayList outlinks = new ArrayList();
 		ArrayList liwcpost = new ArrayList();
 		Trackers tracker = new Trackers();
 		Blogger bloggerss = new Blogger();
@@ -56,9 +53,7 @@
 		Outlinks outl = new Outlinks();
 		Comment comment = new Comment();
 		if (tid != "") {
-			// fast query	
 			detail = tracker._fetch(tid.toString());
-
 		} else {
 			detail = tracker._list("DESC", "", user.toString(), "1");
 
@@ -70,14 +65,12 @@
 		String ids = "";
 		String trackername = "";
 		if (detail.size() > 0) {
-
-			//String res = detail.get(0).toString();
 			ArrayList resp = (ArrayList<?>) detail.get(0);
 			String tracker_userid = resp.get(1).toString();
 			trackername = resp.get(2).toString();
 			if (tracker_userid.equals(user.toString())) {
 				isowner = true;
-				String query = resp.get(5).toString();//obj.get("query").toString();
+				String query = resp.get(5).toString();
 				query = query.replaceAll("blogsite_id in ", "");
 				query = query.replaceAll("\\(", "");
 				query = query.replaceAll("\\)", "");
@@ -107,52 +100,35 @@
 				}
 
 				File f = new File(filename);
-
-				//System.out.println("new_pat--"+path_new);
-
 				File path_new = new File(
 						application.getRealPath("/").replace('/', '/') + "images/profile_images");
 				if (f.exists() && !f.isDirectory()) {
 					profileimage = "images/profile_images/" + userinfo.get(2).toString() + ".jpg";
 				} else {
-					/* new File("/path/directory").mkdirs(); */
 					path_new.mkdirs();
-					System.out.println("pathhhhh1--" + path_new);
 				}
 
 				if (path_new.exists()) {
-
 					String t = "/images/profile_images";
 					int p = userpic.indexOf(t);
-					System.out.println(p);
 					if (p != -1) {
-
-						System.out.println("pic path---" + userpic);
-						System.out.println("path exists---" + userpic.substring(0, p));
 						String path_update = userpic.substring(0, p);
 						if (!path_update.equals(path_new.toString())) {
 							profileimage = "images/profile_images/" + userinfo.get(2).toString() + ".jpg";
-							/* profileimage=userpic.replace(userpic.substring(0, p), path_new.toString()); */
 							String new_file_path = path_new.toString().replace("\\images\\profile_images", "")
 									+ "/" + profileimage;
-							System.out.println("ready to be updated--" + new_file_path);
-							/*new DbConnection().updateTable("UPDATE usercredentials SET profile_picture  = '" + pass + "' WHERE Email = '" + email + "'"); */
-						}
+							}
 					} else {
 						path_new.mkdirs();
 						profileimage = "images/profile_images/" + userinfo.get(2).toString() + ".jpg";
-						/* profileimage=userpic.replace(userpic.substring(0, p), path_new.toString()); */
 						String new_file_path = path_new.toString().replace("\\images\\profile_images", "") + "/"
 								+ profileimage;
-						System.out.println("ready to be updated--" + new_file_path);
 
 						new DbConnection().updateTable("UPDATE usercredentials SET profile_picture  = '"
 								+ "images/profile_images/" + userinfo.get(2).toString() + ".jpg"
 								+ "' WHERE Email = '" + email + "'");
-						System.out.println("updated");
 					}
 				} else {
-					System.out.println("path doesnt exist");
 				}
 			} catch (Exception e) {
 
@@ -162,7 +138,6 @@
 			Blogposts post = new Blogposts();
 			Blogs blog = new Blogs();
 			Sentiments senti = new Sentiments();
-			//Date today = new Date();
 			SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MMM d, yyyy");
 			SimpleDateFormat DATE_FORMAT2 = new SimpleDateFormat("yyyy-MM-dd");
 			SimpleDateFormat DAY_ONLY = new SimpleDateFormat("dd");
@@ -177,7 +152,6 @@
 			Date today = new Date();
 			Date nnow = new Date();
 
-			//System.out.println("start:"+stdate+", End:"+endate);
 
 			try {
 				dstart = new SimpleDateFormat("yyyy-MM-dd").parse(stdate);
@@ -208,8 +182,6 @@
 
 			String totalpost = "";
 			ArrayList allauthors = new ArrayList();
-			//String possentiment = "0";
-			//String negsentiment = "0";
 			String ddey = "31";
 			String dt = dst;
 			String dte = dend;
@@ -220,7 +192,6 @@
 				month = MONTH_ONLY.format(nnow);
 				day = DAY_ONLY.format(nnow);
 				year = YEAR_ONLY.format(nnow);
-				//System.out.println("Now:"+month+"small:"+smallmonth);
 				if (month.equals("02")) {
 
 					ddey = (new Double(year).intValue() % 4 == 0) ? "28" : "29";
@@ -261,37 +232,47 @@
 
 			//Our New Code
 			Liwc liwc = new Liwc();
+			String totalbloggers = null;
+			ArrayList locations = new ArrayList<>();
+			ArrayList locations_usage = new ArrayList<>();
+			ArrayList languages =  new ArrayList<>();
+			ArrayList bloggerPostFrequency =  new ArrayList<>();
+			ArrayList blogPostFrequency =  new ArrayList<>();
+			ArrayList influenceBlog =  new ArrayList<>();
+			ArrayList influenceBlogger =  new ArrayList<>();
+			ArrayList getPositiveEmotion =  new ArrayList<>();
+			ArrayList getNegativeEmotion =  new ArrayList<>();
 			
 			
-			//System.out.println("COMI----" + request.getHeader("referer"));
-			String totalbloggers = bloggerss._getBloggerById(ids);
 
-			//System.out.println("Total bloggers----" + totalbloggers);
+			totalbloggers = bloggerss._getBloggerById(ids);
 
-			ArrayList locations = blog._getLocation(ids);
+
 			
-			ArrayList locations_usage = blog._getLocationUsage(ids);
+			//locations = blog._getLocation(ids);
 			
-			//System.out.println("all blog location");
-			ArrayList languages = blog._getLanguage(ids);
-			//System.out.println(languages);
-			//System.out.println("all blog language");
-			ArrayList bloggerPostFrequency = bloggerss._getBloggerPostFrequency(ids);
-			//System.out.println("all blogger post frequency");
-			ArrayList blogPostFrequency = blog._getblogPostFrequency(ids);
-			//System.out.println("all blog post frequency");
-			ArrayList influenceBlog = blog._getInfluencialBlog(ids);
-			//System.out.println("all blog influencial");
-			ArrayList influenceBlogger = blog._getInfluencialBlogger(ids);
-			//System.out.println("all bloggger influencial");
+			
+			//locations_usage = blog._getLocationUsage(ids);
+
+			//languages = blog._getLanguage(ids);
+
+			//bloggerPostFrequency = bloggerss._getBloggerPostFrequency(ids);
+
+			//blogPostFrequency = blog._getblogPostFrequency(ids);
+			
+			//influenceBlog = blog._getInfluencialBlog(ids);
+			
+			//influenceBlogger = blog._getInfluencialBlogger(ids);
+			
 
 			// needs reindexing for large data set
-			ArrayList getPositiveEmotion = liwc._getPosEmotion(ids);
+			//getPositiveEmotion = liwc._getPosEmotion(ids);
 			// slow
-			//System.out.println("all positive emotion");
-			ArrayList getNegativeEmotion = liwc._getNegEmotion(ids);
+
+			//getNegativeEmotion = liwc._getNegEmotion(ids); 
 			// slow
-			//System.out.println("all negative emotion");
+			
+
 			Map<Integer, Integer> postingTrend = new TreeMap<Integer, Integer>();
 
 			session.setAttribute("influentialbloggers", influenceBlogger);
@@ -316,39 +297,26 @@
 
 			dispfrom = DATE_FORMAT.format(new SimpleDateFormat("yyyy-MM-dd").parse(dt));
 			dispto = DATE_FORMAT.format(new SimpleDateFormat("yyyy-MM-dd").parse(dte));
-			//totalpost = post._searchRangeTotal("date", dt, dte, ids);
-
-			//System.out.println("idsss"+ids);
+	
 			totalpost = post._getBlogPostById(ids);
+			//outlinks = outl._searchByRange("date", dt, dte, ids);
 
-			/* outlinks = outl._searchByRange("date", dt, dte, ids); */
-
-			if (totalpost.equals("")) {
-				totalpost = post._searchRangeTotal("date", dt, dte, ids); // To be modified later
-			}
-			//System.out.println("termss start");
-			//termss = term._searchByRange("blogsiteid", dt, dte, ids);
-			//System.out.println("terms---" + termss);
-			session.setAttribute("terms", termss);
-			//System.out.println("termss end");
-			//System.out.println("outlinks start");
-			outlinks = outl._searchByRange("date", dt, dte, ids);
-
-			String totalcomment = comment._getCommentById(ids);
-			//System.out.println("totalcomment end");
-
-			//System.out.println("blogfetch start");
+			String totalcomment = null;
+			totalcomment = comment._getCommentById(ids); 
+			
 			ArrayList blogs = blog._fetch(ids); //To be removed
-			//System.out.println("blogfetch end");
+
 			String[] blogss = ids.split(",");
 			int totalblog = blogss.length;
+			
+			
 
 			JSONObject graphyears = new JSONObject();
 			JSONArray yearsarray = new JSONArray();
 
 			int b = 0;
-			//System.out.println("year start"+ystint +":"+yendint);
-			ArrayList postingTotal = post._searchPostTotal("date", ystint, yendint, ids);
+			ArrayList postingTotal = new ArrayList<>();
+			postingTotal = post._searchPostTotal("date", ystint, yendint, ids); 
 
 			for (int i = ystint; i <= yendint; i++) {
 				postingTrend.put(i, 0);
@@ -359,332 +327,31 @@
 					ArrayList<?> postCount = (ArrayList<?>) postingTotal.get(m);
 					String postyear = postCount.get(0).toString();
 					String yearcount = postCount.get(1).toString();
-					//System.out.println(postyear+":"+yearcount);
 					if (postingTrend.containsKey(Integer.parseInt(postyear))) {
 						postingTrend.put(Integer.parseInt(postyear), Integer.parseInt(yearcount));
 					}
 				}
 			}
 
-			/* 		
-					for (int y = ystint; y <= yendint; y++) {
-						
-						String dtu = y + "-01-01";
-						String dtue = y + "-12-31";
-			
-						if (b == 0) {
-							dtu = dt;
-						} else if (b == yendint) {
-							dtue = dte;
-						}
-						System.out.println("search range start");
-						String totu = post._searchRangeTotal("date", dtu, dtue, ids);
-						
-						System.out.println("search range end");	
-						graphyears.put(y + "", totu);
-						yearsarray.put(b, y);
-						b++;
-					}
-					System.out.println("year end");
-					 */
-			JSONArray unsortedterms = new JSONArray();
-			JSONObject termstore = new JSONObject();
-
-			JSONArray sortedyearsarray = yearsarray;//post._sortJson(yearsarray);
-			JSONObject keys = new JSONObject();
-			JSONObject positions = new JSONObject();
-
-			Map<String, Integer> top_terms = new HashMap<String, Integer>();
-
-			try {
-				if (termss.size() > 0) {
-					for (int p = 0; p < termss.size(); p++) {
-						String bstr = termss.get(p).toString();
-						JSONObject bj = new JSONObject(bstr);
-						bstr = bj.get("_source").toString();
-						bj = new JSONObject(bstr);
-						String tm = bj.get("term").toString();
-						String frequency = bj.get("frequency").toString();
-						String id = bj.get("id").toString();
-
-						int frequency2 = Integer.parseInt(frequency);
-						if (top_terms.containsKey(tm)) {
-							top_terms.put(tm, top_terms.get(tm) + frequency2);
-							frequency2 = top_terms.get(tm) + frequency2;
-						} else {
-							top_terms.put(tm, frequency2);
-						}
-
-						unsortedterms.put(frequency2 + "___" + tm + "___" + id);
-
-					}
-
-					session.setAttribute("top_term", top_terms);
-				}
-			} catch (Exception e) {
-				System.err.println(e);
-			}
-
-			JSONObject outerlinks = new JSONObject();
-			ArrayList outlinklooper = new ArrayList();
-			if (outlinks.size() > 0) {
-				int mm = 0;
-				for (int p = 0; p < outlinks.size(); p++) {
-					String bstr = outlinks.get(p).toString();
-					JSONObject bj = new JSONObject(bstr);
-					bstr = bj.get("_source").toString();
-					bj = new JSONObject(bstr);
-					String link = bj.get("link").toString();
-
-					JSONObject content = new JSONObject();
-					String maindomain = "";
-					try {
-						URI uri = new URI(link);
-						String domain = uri.getHost();
-						if (domain.startsWith("www.")) {
-							maindomain = domain.substring(4);
-						} else {
-							maindomain = domain;
-						}
-					} catch (Exception ex) {
-					}
-
-					if (outerlinks.has(maindomain)) {
-						content = new JSONObject(outerlinks.get(maindomain).toString());
-						int valu = new Double(content.get("value").toString()).intValue();
-						valu++;
-						content.put("value", valu);
-						content.put("link", link);
-						content.put("domain", maindomain);
-						outerlinks.put(maindomain, content);
-					} else {
-						int valu = 1;
-						content.put("value", valu);
-						content.put("link", link);
-						content.put("domain", maindomain);
-						outerlinks.put(maindomain, content);
-						outlinklooper.add(mm, maindomain);
-						mm++;
-					}
-
-				}
-			}
-			
-			
-			ArrayList details = DbConnection.query("select status, status_percentage from tracker_keyword where tid = " + tid);
-			ArrayList res = (ArrayList)details.get(0);
-			
-			String status = res.get(0).toString();
-			String status_percentage = res.get(1).toString();
-			
-			JSONObject final_result = new JSONObject();
-			final_result.put("status_percentage",status_percentage);
-			final_result.put("status",status);
-			
-			
-			
-			///start clusering check
-			ArrayList cluster_details = DbConnection.query("select status, status_percentage from clusters where tid = " + tid);
-			ArrayList cluster_res = new ArrayList<>();
-			String cluster_status = "";
+			String cluster_status = "0";
 			String cluster_status_percentage = "";
-			if(cluster_details.size() > 0){
-				cluster_res = (ArrayList)cluster_details.get(0);
-				cluster_status = cluster_res.get(0).toString();
-				cluster_status_percentage = cluster_res.get(1).toString();
-			}
-			
-			JSONObject cluster_final_result = new JSONObject();
-			cluster_final_result.put("status_percentage",status_percentage);
-			cluster_final_result.put("status",status);
-			
+			String status = "0";
+			String status_percentage = null;
 			JSONObject final_centroids = new JSONObject();
-			JSONObject source = new JSONObject();
+			JSONObject final_result = new JSONObject();
+			java.sql.ResultSet source = null;
 			
-			if(cluster_status.equals("1")){
-				
-				//System.out.println("IT IS ONE!!!!!!");
-			//start clustering data gathering
-			Clustering cluster = new Clustering();
-				String tracker_id = tid.toString();
-	//get postids from each cluster in tracker and save in JSONObject
-	ArrayList result = cluster._getClusters(tracker_id);
-	System.out.println("done with clusters");
-	
-	
-try{
-	JSONObject ress = new JSONObject(result.get(0).toString());
-	System.out.println("done with res");
-	
-	
-	source = new JSONObject(ress.get("_source").toString());
-	
-	HashMap<Pair<String, String>, ArrayList<JSONObject>> clusterResult = new HashMap<Pair<String, String>, ArrayList<JSONObject>>();
-
-	Pair<String, String> key_val = new Pair<String, String>(null, null);
-
-	HashMap<String, String> key_val_posts = new HashMap<String, String>();
-	ArrayList<JSONObject> scatterplotfinaldata = new ArrayList<JSONObject>();
-	
-	JSONObject distances = new JSONObject();
-	HashMap<String, String> topterms = new HashMap<String, String>();
-			String find = "";
-	int [][] termsMatrix = new int[10][10];
-	//int count = 0;
-	JSONArray links_centroids = new JSONArray();
-	JSONArray nodes_centroids = new JSONArray();
-	//start main foor loop
-	for (int i = 1; i < 11; i++) {
-
-		String cluster_ = "cluster_" + String.valueOf(i);
-		String centroids = "C" + String.valueOf(i) + "xy";
-		JSONObject cluster_data = new JSONObject(source.get(cluster_).toString());
-		
-		String post_ids = cluster_data.get("post_ids").toString();
-	
-		String centroid = source.get(centroids).toString().replace("[", "").replace("]", "");
-		String centroid_x = centroid.split(",")[0].trim();
-		String centroid_y = centroid.split(",")[1].trim();
-		
-		JSONObject data_centroids_ = new JSONObject();
-		
-		data_centroids_.put("id","Cluster_" + i);
-	   	data_centroids_.put("group", i);
-	   	data_centroids_.put("label","CLUSTER_" + i);
-	   	data_centroids_.put("level",post_ids.split(",").length);
-	
-	   	nodes_centroids.put(data_centroids_);
-		
-		for(int k = 1; k < 11; k++){
-			if(k != i){
-				String centroids_ = "C" + String.valueOf(k) + "xy";
-				String centroid_ = source.get(centroids_).toString().replace("[", "").replace("]", "");
-				String centroid_x_ = centroid_.split(",")[0].trim();
-				String centroid_y_ = centroid_.split(",")[1].trim();
-				
-				JSONObject data_centroids = new JSONObject();
-				data_centroids.put("target","Cluster_" + i);
-				data_centroids.put("source","Cluster_" + k);
-				
-				double left_ = Math.pow((double)Double.parseDouble(centroid_x_) - (double)Double.parseDouble(centroid_x), 2);
-				double right_ = Math.pow((double)Double.parseDouble(centroid_y_) - (double)Double.parseDouble(centroid_y), 2);
-				String distance_ = String.valueOf(Math.pow((left_ + right_), 0.5));
-				 
-				data_centroids.put("strength", 50 - Double.parseDouble(distance_));
-				links_centroids.put(data_centroids);
-				
-			}
+			/* Dashboard d = new Dashboard(tid.toString());
+			d.load_cluster_and_terms_dashboard();
 			
-		}
-		
-		/* JSONObject svd_ = new JSONObject(source.get("svd").toString());
-		
-		int counter = 0;
-		String [] post_split = post_ids.split(",");
-		
-		for(int j = 0; j < post_split.length; j++){
+			cluster_status = d.get_cluster_status();
+			cluster_status_percentage = d.get_cluster_status_percentage();
+			status = d.get_kwt_status();
+			status_percentage = d.get_kwt_status_percentage();
+			final_centroids = d.get_final_centroids();
+			final_result = d.get_final_result();
 			
-			
-			
-			JSONObject scatter_plot = new JSONObject();
-			String p_id = post_split[j];
-			Object x_y = svd_.get(p_id);
-					
-			x_y = x_y.toString().replace("[","").replace("]","").trim().replaceAll("\\s+", " ");
-			
-			String x = x_y.toString().split(" ")[0];
-			String y = x_y.toString().split(" ")[1];
-			
-			String postid = p_id.toString();
-			
-			scatter_plot.put("cluster",String.valueOf(i));
-			
-			scatter_plot.put("",String.valueOf(counter));
-			scatter_plot.put("new_x",x);
-			scatter_plot.put("new_y",y);
-			counter++;
-			
-			double left = Math.pow((double)Double.parseDouble(x) - (double)Double.parseDouble(centroid_x), 2);
-			double right = Math.pow((double)Double.parseDouble(y) - (double)Double.parseDouble(centroid_y), 2);
-			String distance = String.valueOf(Math.pow((left + right), 0.5));
-			distances.put(postid, distance); 
-			scatterplotfinaldata.add(scatter_plot);
-			
-		}
-		
-		ArrayList<JSONObject> postDataAll = DbConnection.queryJSON("select date,post,num_comments, blogger,permalink, title, blogpost_id, location, blogsite_id from blogposts where blogpost_id in ("+post_ids+") limit 500" );
-		System.out.println("done with query --"); */
-		
-		String terms = cluster_data.get("topterms").toString();
-		String str1 = null;
-		str1 = terms.replace("),", "-").replace("(", "").replace(")", "").replaceAll("[0-9]","").replace("-", "");
-		List<String> t1 = Arrays.asList(str1.replace("[","").replace("]","").split(","));
-		termsMatrix[i - 1][i - 1] = t1.size();
-		
-		//CREATING CHORD MATRIX
-		
-		String str2 = null;
-		
-		for(int k = (i + 1); k < 11; k++)
-		{
-		String cluster_matrix  = "cluster_" + String.valueOf(k);
-		JSONObject cluster_data_matrix = new JSONObject(source.get(cluster_matrix).toString());
-		String terms_matrix = cluster_data_matrix.get("topterms").toString();
-		
-		str2 = terms_matrix.replace("),", "-").replace("(", "").replace(")", "").replaceAll("[0-9]","").replace("-", "");
-	
-		List<String> t2 = Arrays.asList(str2.replace("[","").replace("]","").split(","));
-	
-		int count = 0;
-		for (int i_ = 0; i_ < t1.size(); i_++)
-        {
-            for (int j_ = 0; j_ < t2.size(); j_++)
-            {
-                if(t1.get(i_).contentEquals(t2.get(j_)))
-                {
-                 
-                 count ++;
-                 }
-            }
-        }
-		
-		termsMatrix[i-1][k-1] = count;
-		termsMatrix[k-1][i-1] = count;
-		 }
-		//DONE CREATING CHORD MATRIX
-		
-		/* topterms.put(cluster_,terms);
-		
-		key_val = new Pair<String, String>(cluster_, post_ids);
-		
-		key_val_posts.put(cluster_, post_ids);
-		
-		clusterResult.put(key_val, postDataAll); */
-		
-		
-
-	}
-//end main for loop
-
-	
-	
-	final_centroids.put("nodes",nodes_centroids);
-	final_centroids.put("links",links_centroids);
-			
-			//end clustering data ghathering
-
-}catch (Exception e){
-	
-}
-//end try catch
-
-			
-}else if(cluster_status.equals("0")){
-	System.out.println("IT IS zERO!!!!!!");
-	
-	
-}
-
+			source = d.get_cluster_result();   */
 
 ///end clustering check
 
@@ -709,32 +376,26 @@ try{
 
 <link href="https://fonts.googleapis.com/css?family=Open+Sans:600,700"
 	rel="stylesheet">
-<link rel="stylesheet" href="assets/bootstrap/css/bootstrap-grid.css" />
-<link rel="stylesheet" href="assets/bootstrap/css/bootstrap.css" />
+<link async=true rel="stylesheet"
+	href="assets/bootstrap/css/bootstrap-grid.css" />
+<link async=true rel="stylesheet"
+	href="assets/bootstrap/css/bootstrap.css" />
 <link rel="stylesheet"
 	href="assets/fonts/fontawesome/css/fontawesome-all.css" />
 <link rel="stylesheet" href="assets/fonts/iconic/css/open-iconic.css" />
-<link rel="stylesheet"
+<link async=true rel="stylesheet"
 	href="assets/vendors/bootstrap-daterangepicker/daterangepicker.css" />
-<link rel="stylesheet" href="assets/css/table.css" />
+<link async=true rel="stylesheet" href="assets/css/table.css" />
 <link rel="stylesheet"
 	href="assets/vendors/DataTables/dataTables.bootstrap4.min.css" />
 <link rel="stylesheet"
 	href="assets/vendors/DataTables/Buttons-1.5.1/css/buttons.dataTables.min.css" />
 <link rel="stylesheet" href="assets/css/daterangepicker.css" />
-<link rel="stylesheet" href="assets/css/style.css" />
-<!-- <link rel="stylesheet" href="assets/css/bar.css" /> -->
-<!--end of bootsrap -->
-<link rel="stylesheet" href="assets/css/toastr.css">
-
-<script src="assets/js/jquery.min.js"></script>
+<link async=true rel="stylesheet" href="assets/css/style.css" />
+<link async=true rel="stylesheet" href="assets/css/toastr.css">
 <script src="assets/js/popper.min.js"></script>
-<script type="text/javascript" src="assets/js/toastr.js"></script>
-
-<!-- <script src="assets/js/jquery-3.2.1.slim.min.js"></script>-->
-<!-- <script src="assets/js/popper.min.js"></script> -->
-<script src="pagedependencies/googletagmanagerscript.js"></script>
-
+<script async type="text/javascript" src="assets/js/toastr.js"></script>
+<script async src="pagedependencies/googletagmanagerscript.js"></script>
 <script src="pagedependencies/baseurl.js"></script>
 
 <!-- Start scatter plot css  -->
@@ -835,11 +496,6 @@ path.chord {
 
 				</div>
 				<div id="othersection" class="col-md-12 mt10" style="clear: both">
-					<%-- <a class="cursor-pointer profilemenulink"
-						href="<%=request.getContextPath()%>/notifications.jsp"><h6
-							class="text-primary">
-							Notifications <b id="notificationcount" class="cursor-pointer">12</b>
-						</h6> </a>  --%>
 					<a class="cursor-pointer profilemenulink"
 						href="<%=request.getContextPath()%>/addblog.jsp"><h6
 							class="text-primary">Add Blog</h6></a> <a
@@ -877,9 +533,7 @@ path.chord {
 					<span class="navbar-toggler-icon"></span>
 				</button>
 			</nav>
-			<!-- <div class="navbar-header ">
-      <a class="navbar-brand text-center" href="#"><img src="images/blogtrackers.png" /></a>
-      </div> -->
+
 			<!-- Mobile menu  -->
 			<div class="col-lg-6 themainmenu" align="center">
 				<ul class="nav main-menu2"
@@ -901,17 +555,11 @@ path.chord {
 					<li class="dropdown dropdown-user cursor-pointer float-right">
 						<a class="dropdown-toggle " id="profiletoggle"
 						data-toggle="dropdown"> <!-- <i class="fas fa-circle"
-							id="notificationcolor"> -->
-							</i> <img src="<%=profileimage%>" width="50" height="50"
+							id="notificationcolor"> --> </i> <img src="<%=profileimage%>"
+							width="50" height="50"
 							onerror="this.src='images/default-avatar.png'" alt="" class="" />
-							<span class="bold-text"><%=user_name[0]%></span> <!-- <ul class="profilemenu dropdown-menu dropdown-menu-left">
-              <li><a href="#"> My profile</a></li>
-              <li><a href="#"> Features</a></li>
-              <li><a href="#"> Help</a></li>
-              <li><a href="#">Logout</a></li>
-  </ul> -->
+							<span class="bold-text"><%=user_name[0]%></span>
 					</a>
-
 					</li>
 				</ul>
 			</div>
@@ -932,9 +580,6 @@ path.chord {
 				</ul>
 			</div>
 		</div>
-		<!-- <div class="profilenavbar" style="visibility:hidden;"></div> -->
-
-
 	</nav>
 
 
@@ -949,10 +594,6 @@ path.chord {
 					<a class="breadcrumb-item active text-primary"
 						href="<%=request.getContextPath()%>/dashboard.jsp?tid=<%=tid%>">Dashboard</a>
 				</nav>
-				<!-- <div>
-					<button class="btn btn-primary stylebutton1 " id="printdoc">SAVE
-						AS PDF</button>
-				</div> -->
 			</div>
 
 			<div class="col-md-6 text-right mt10">
@@ -962,23 +603,7 @@ path.chord {
 					</h6>
 				</div>
 				<div>
-					<div class="btn-group mt5" data-toggle="buttons">
-						<!-- <label
-							class="btn btn-primary btn-sm daterangebutton legitRipple nobgnoborder">
-							<input type="radio" name="options" value="day"
-							class="option-only" autocomplete="off"> Day
-						</label> <label class="btn btn-primary btn-sm nobgnoborder"> <input
-							type="radio" class="option-only" name="options" value="week"
-							autocomplete="off">Week
-						</label> <label class="btn btn-primary btn-sm nobgnoborder"> <input
-							type="radio" class="option-only" name="options" value="month"
-							autocomplete="off"> Month
-						</label> <label class="btn btn-primary btn-sm text-center nobgnoborder">Year
-							<input type="radio" class="option-only" name="options"
-							value="year" autocomplete="off">
-						</label> ii-->
-						<!-- <label class="btn btn-primary btn-sm nobgnoborder" id="custom">Custom</label> -->
-					</div>
+					<div class="btn-group mt5" data-toggle="buttons"></div>
 
 				</div>
 			</div>
@@ -998,12 +623,12 @@ path.chord {
 			</div>
 
 			<div class="col-md-2">
-				<div class="card nocoloredcard mt10 mb10">
+				<div class="card nocoloredcard mt10 mb10" id="getbloggercount">
 					<div class="card-body p0 pt5 pb5">
 						<h5 class="text-primary mb0">
 							<i class="fas fa-user icondash"></i>Bloggers
 						</h5>
-						<h3 class="text-blue mb0 countdash dash-label blogger-count"><%=NumberFormat.getNumberInstance(Locale.US).format(new Double(totalbloggers).intValue())%></h3>
+						<h3 class="text-blue mb0 countdash dash-label blogger-count"><%=(totalbloggers == "" || totalbloggers == null) ? "" : NumberFormat.getNumberInstance(Locale.US).format(new Double(totalbloggers).intValue()) %></h3>
 					</div>
 				</div>
 			</div>
@@ -1014,7 +639,7 @@ path.chord {
 						<h5 class="text-primary mb0">
 							<i class="fas fa-file-alt icondash"></i>Posts
 						</h5>
-						<h3 class="text-blue mb0 countdash dash-label"><%=NumberFormat.getNumberInstance(Locale.US).format(new Double(totalpost).intValue())%></h3>
+						<h3 class="text-blue mb0 countdash dash-label"><%=(totalpost == "" || totalpost == null) ? "" :NumberFormat.getNumberInstance(Locale.US).format(new Double(totalpost).intValue())%></h3>
 					</div>
 				</div>
 			</div>
@@ -1062,18 +687,7 @@ path.chord {
 							<div class="front p30 pt5 pb5">
 
 								<div>
-									<p class="text-primary mt0 float-left">
-										Most Active Location
-										<!-- <select
-										class="text-primary filtersort sortbyblogblogger"><option
-											value="blogs">Blogs</option>
-										<option value="bloggers">Bloggers</option></select>  -->
-										<%-- for Past <select
-										class="text-primary filtersort sortbytimerange">
-										<option value="" >All</option>
-										<option value="week" <%=(single.equals("week"))?"selected":"" %>>Week</option>
-										<option value="month" <%=(single.equals("month"))?"selected":"" %>>Month</option>
-										<option value="year" <%=(single.equals("year"))?"selected":"" %>>Year</option></select> --%>
+									<p class="text-primary mt0 float-left">Most Active Location
 									</p>
 									<button style="right: 10px; position: absolute" id="flip"
 										type="button" onclick="location_flip()"
@@ -1128,8 +742,6 @@ path.chord {
 											<tr>
 												<td class=""><%=blogsite_name%></td>
 												<td><%=loc%></td>
-												<!-- <td class="">j.get("letter")</td>
-												<td>j.get("frequency")</td> -->
 											</tr>
 
 											<%}
@@ -1142,10 +754,9 @@ path.chord {
 								</div>
 
 							</div>
-							<!-- end back -->
+
 
 						</div>
-						<!--end location mecard -->
 
 
 
@@ -1171,16 +782,7 @@ path.chord {
 								</div>
 								<div class="min-height-table">
 									<div class="chart-container">
-										<!-- 						  <div class="btn-group float-right">
-    <button id="btnGroupDrop1" type="button" class="btn btn-primary " data-toggle="dropdown" aria-expanded="false">
-      <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
-    </button>
-    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-      <a class="dropdown-item savelanguagejpg" href="#">Export as JPG</a>
-      <a class="dropdown-item savelanguagepng" href="#">Export as PNG</a>
-    </div>
-  </div> -->
-										<!-- <button id='savelanguage'>Export my D3 visualization to PNG</button> -->
+
 										<div class="chart" id="languageusage"></div>
 									</div>
 								</div>
@@ -1212,21 +814,13 @@ path.chord {
 											</tr>
 										</thead>
 										<tbody>
-											<%-- 
-											
-											System.out.println("--->"+dt+"--->"+dte+"--->"+ids);
-											String sql = post._getMostKeywordDashboard(null,dt,dte,ids);
-											JSONObject res=post._keywordTermvctors(sql);	
-											System.out.println("--->"+res);
-											 --%>
 											<%
 											JSONArray result_language = new JSONArray();
-											ArrayList language_data=new ArrayList();
+											ArrayList language_data=new ArrayList<>();
 											try{
 												language_data = DbConnection.query("SELECT language, sum(language_count) c FROM blogtrackers.language where blogsite_id in ("+ids+") and language is not null or language != 'null' group by language order by c desc limit 10");
-												//language_data= post._getMostLanguage(dt, dte, ids, 10);
 											}catch(Exception e){
-												System.out.println("Language error--"+e);
+												
 											}
 														
 											
@@ -1402,12 +996,7 @@ path.chord {
 							<p class="text-primary mt10 float-left">
 
 								Blog Distribution
-								<%-- for Past <select
-									class="text-primary filtersort sortbytimerange"><option
-										value="week" <%=(single.equals("week"))?"selected":"" %>>Week</option>
-									<option value="month" <%=(single.equals("month"))?"selected":"" %>>Month</option>
-									<option value="year" <%=(single.equals("year"))?"selected":"" %>>Year</option></select> --%>
-							</p>
+								</p>
 						</div>
 						<div class="min-height-table" style="min-height: 500px;">
 							<div class="chart-container">
@@ -1433,12 +1022,7 @@ path.chord {
 							<p class="text-primary mt10 float-left">
 
 								Blogger Distribution
-								<%-- for Past <select
-									class="text-primary filtersort sortbytimerange"><option
-										value="week" <%=(single.equals("week"))?"selected":"" %>>Week</option>
-									<option value="month" <%=(single.equals("month"))?"selected":"" %>>Month</option>
-									<option value="year" <%=(single.equals("year"))?"selected":"" %>>Year</option></select> --%>
-							</p>
+								</p>
 						</div>
 						<div class="min-height-table" style="min-height: 450px;">
 							<div class="chart-container">
@@ -1476,13 +1060,7 @@ path.chord {
 
 
 								</select>
-								<%-- 
-						   of Past <select
-									class="text-primary filtersort sortbytimerange"><option
-										value="week" <%=(single.equals("week"))?"selected":"" %>>Week</option>
-									<option value="month" <%=(single.equals("month"))?"selected":"" %>>Month</option>
-									<option value="year" <%=(single.equals("year"))?"selected":"" %>>Year</option></select>  --%>
-							</p>
+								</p>
 						</div>
 						<div class="min-height-table" style="min-height: 500px;">
 							<div class="chart-container" id="influencecontainer">
@@ -1500,36 +1078,13 @@ path.chord {
 				</div>
 
 			</div>
-
-
-			<!-- <div style="min-height: 420px;">
-							<div class="chart-container word-cld">
-								<div class="chart" id="tagcloudcontainer">
-									<div class="jvectormap-zoomin zoombutton" id="zoom_in">+</div>
-									<div class="jvectormap-zoomout zoombutton" id="zoom_out">−</div>
-								</div>
-							</div>
-						</div> -->
-
-
 			<div class="col-md-6 mt20 zoom">
 				<div class="card card-style mt20">
 					<div class="card-body   p30 pt5 pb5">
 						<div>
 							<p class="text-primary mt10 float-left">
 								Topic Model
-								<!-- <select id="swapBlogger"
-									class="text-primary filtersort sortbyblogblogger">
-									<option value="blogs">Blogs</option>
-
-									<option value="bloggers">Bloggers</option>
-								</select> -->
-								<%-- 		of Past <select
-									class="text-primary filtersort sortbytimerange" id="active-sortdate"><option
-										value="week" <%=(single.equals("week"))?"selected":"" %>>Week</option>
-									<option value="month" <%=(single.equals("month"))?"selected":"" %>>Month</option>
-									<option value="year" <%=(single.equals("year"))?"selected":"" %>>Year</option></select> --%>
-							</p>
+								</p>
 						</div>
 						<div class="min-height-table" style="min-height: 500px;">
 							<div align="center" class="chart-container chord_body"
@@ -1542,14 +1097,6 @@ path.chord {
 
 					</div>
 				</div>
-				<!--  <div class="float-right">
-					<a id = "hreftopicmodels" href="topic_distribution.jsp?tid=<%=tid%>"><button
-							class="btn buttonTopicModelling mt10">
-							<b class="float-left semi-bold-text">Topic Modelling
-								Analysis</b> <b class="fas fa-comment-alt float-right icondash2"></b>
-						</button></a>
-				</div>
-				-->
 				<div class="float-right">
 					<a id="hreftopicmodels" href="topic_distribution.jsp?tid=<%=tid%>"><button
 							disabled class="btn buttonportfolio2 buttonTopicModelling mt10">
@@ -1574,13 +1121,7 @@ path.chord {
 							<p class="text-primary mt10 float-left">
 
 								Clustering Analysis
-								<%-- 
-						   of Past <select
-									class="text-primary filtersort sortbytimerange"><option
-										value="week" <%=(single.equals("week"))?"selected":"" %>>Week</option>
-									<option value="month" <%=(single.equals("month"))?"selected":"" %>>Month</option>
-									<option value="year" <%=(single.equals("year"))?"selected":"" %>>Year</option></select>  --%>
-							</p>
+								</p>
 						</div>
 						<div id="scatter-container1" class="min-height-table"
 							style="min-height: 500px;">
@@ -1606,39 +1147,16 @@ path.chord {
 
 			</div>
 
-
-			<!-- <div style="min-height: 420px;">
-							<div class="chart-container word-cld">
-								<div class="chart" id="tagcloudcontainer">
-									<div class="jvectormap-zoomin zoombutton" id="zoom_in">+</div>
-									<div class="jvectormap-zoomout zoombutton" id="zoom_out">−</div>
-								</div>
-							</div>
-						</div> -->
-
-
-			<div class="col-md-6 mt20 zoom" >
+			<div class="col-md-6 mt20 zoom">
 				<div class="card card-style mt20">
 					<div class="card-body   p30 pt5 pb5">
 						<div>
 							<p class="text-primary mt10 float-left">
 								Narrative Analysis
-								<!-- <select id="swapBlogger"
-									class="text-primary filtersort sortbyblogblogger">
-									<option value="blogs">Blogs</option>
-
-									<option value="bloggers">Bloggers</option>
-								</select> -->
-								<%-- 		of Past <select
-									class="text-primary filtersort sortbytimerange" id="active-sortdate"><option
-										value="week" <%=(single.equals("week"))?"selected":"" %>>Week</option>
-									<option value="month" <%=(single.equals("month"))?"selected":"" %>>Month</option>
-									<option value="year" <%=(single.equals("year"))?"selected":"" %>>Year</option></select> --%>
-							</p>
+								</p>
 						</div>
 						<div class="min-height-table" style="min-height: 500px;">
 							<div align="center" class="chart-container " id="">
-								<!-- <div class="chart" id="postingfrequencybar"></div>-->
 								<div align="center" class="chart" id="narrative_analysis"></div>
 							</div>
 
@@ -1655,7 +1173,7 @@ path.chord {
 				</div>
 				-->
 				<div class="float-right">
-				<!-- <a id="" target="_blank" href="http://haydex.com/narrative/"><button -->
+					<!-- <a id="" target="_blank" href="http://haydex.com/narrative/"><button -->
 					<a id="" target="_blank" href="narrative.jsp?tid=<%=tid%>"><button
 							disabled class="btn buttonportfolio2 buttonTopicModelling mt10">
 							<b class="float-left semi-bold-text">Narrative Analysis </b> <b
@@ -1708,22 +1226,23 @@ path.chord {
 									<tbody>
 
 										<%
-											if (outlinklooper.size() > 0) {
-														//System.out.println(bloggers);
-														for (int y = 0; y < outlinklooper.size(); y++) {
-															String key = outlinklooper.get(y).toString();
-															JSONObject resu = outerlinks.getJSONObject(key);
-															if (resu.get("domain") != "") {
+											/* Dashboard d_outlinks = new Dashboard(ids, dt, dte);
+										d_outlinks.load_outlinks();
+										java.sql.ResultSet outlinks = d_outlinks.get_outlinks_result(); */
+										java.sql.ResultSet outlinks = null;
+
+										if (outlinks != null) {
+											while (outlinks.next()) {
 										%>
 										<tr>
-											<td class=""><a href="http://<%=resu.get("domain")%>"
-												target="_blank"><%=resu.get("domain")%></a></td>
-											<td><%=resu.get("value")%></td>
+											<td class=""><a
+												href="http://<%=outlinks.getString("domain")%>"
+												target="_blank"><%=outlinks.getString("domain")%></a></td>
+											<td><%=outlinks.getString("c")%></td>
 										</tr>
 										<%
 											}
-														}
-													}
+										}
 										%>
 
 									</tbody>
@@ -1733,52 +1252,6 @@ path.chord {
 					</div>
 				</div>
 			</div>
-
-			<%-- <%--  <div class="col-md-6 mt20">
-    <div class="card card-style mt20">
-      <div class="card-body  p5 pt10 pb10">
-        <div class="min-height-table"style="min-height: 420px;">
-          <!-- <div class="dropdown show"><p class="text-primary p15 pb5 pt0">List of Top URLs of <a class=" dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false" id="blogbloggermenu1" role="button">Blogs</a> of Past <b>Week</b></p>
-            <div class="dropdown-menu" aria-labelledby="blogbloggermenu1">
-               <a class="dropdown-item" href="#">Action</a>
-               <a class="dropdown-item" href="#">Another action</a>
-               <a class="dropdown-item" href="#">Something else here</a>
-             </div>
-          </div> -->
-<div class="dropdown show text-primary p15 pb20 pt0">List of Top URLs of <select class="text-primary filtersort sortbyblogblogger"><option value="blogs">Blogs</option><option value="bloggers">Bloggers</option></select> of Past <select class="text-primary filtersort sortbytimerange"><option value="week">Week</option><option value="month">Month</option><option value="year">Year</option></select>
- 
-</div>
-          <!-- Example split danger button -->
-         <!--  <div class="p15 pb5 pt0" role="group">
-          Export Options
-          </div> -->
-                <table id="DataTables_Table_1_wrapper" class="display" style="width:100%">
-                        <thead>
-                            <tr>
-                                <th>URL</th>
-                                <th>Frequency</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        <% if(bloggers.length()>0){
-							//System.out.println(bloggers);
-							for(int y=0; y<bloggers.length(); y++){
-								String key = looper.get(y).toString();
-								 JSONObject resu = bloggers.getJSONObject(key);
-						%>
-						<tr>
-                              <td><%=resu.get("blogsite_url")%></td>
-                              <td><%=resu.get("value")%></td>
-                        </tr>
-						<% }} %>
-                            
-                            
-                        </tbody>
-                    </table>
-        </div>
-          </div>
-    </div>
-  </div> --%>
 		</div>
 
 
@@ -1798,38 +1271,38 @@ path.chord {
 		<textarea style="display: none" name="blogs" id="blogs">
 			<%
 				if (blogPostFrequency.size() > 0) {
-							int p = 0;
-							for (int m = 0; m < blogPostFrequency.size(); m++) {
-								ArrayList<?> blogFreq = (ArrayList<?>) blogPostFrequency.get(m);
-								String blogName = blogFreq.get(0).toString();
-								String blogPostFreq = blogFreq.get(1).toString();
-								if (p < 10) {
-									p++;
+				int p = 0;
+				for (int m = 0; m < blogPostFrequency.size(); m++) {
+					ArrayList<?> blogFreq = (ArrayList<?>) blogPostFrequency.get(m);
+					String blogName = blogFreq.get(0).toString();
+					String blogPostFreq = blogFreq.get(1).toString();
+					if (p < 10) {
+				p++;
 			%>{letter:"<%=blogName%>", frequency:<%=blogPostFreq%>, name:"<%=blogName%>", type:"blog"},
     			 <%
 				}
-							}
-						}
+			}
+			}
 			%>
 			</textarea>
 		<textarea style="display: none" name="bloggers" id="bloggers">
 <%
 	try {
-				if (bloggerPostFrequency.size() > 0) {
-					int p = 0;
-					for (int m = 0; m < bloggerPostFrequency.size(); m++) {
-						ArrayList<?> bloggerFreq = (ArrayList<?>) bloggerPostFrequency.get(m);
-						String bloggerName = bloggerFreq.get(0).toString();
-						String bloggerPostFreq = bloggerFreq.get(1).toString();
-						if (p < 10) {
-							p++;
+	if (bloggerPostFrequency.size() > 0) {
+		int p = 0;
+		for (int m = 0; m < bloggerPostFrequency.size(); m++) {
+	ArrayList<?> bloggerFreq = (ArrayList<?>) bloggerPostFrequency.get(m);
+	String bloggerName = bloggerFreq.get(0).toString();
+	String bloggerPostFreq = bloggerFreq.get(1).toString();
+	if (p < 10) {
+		p++;
 %>{letter:"<%=bloggerName%>", frequency:<%=bloggerPostFreq%>, name:"<%=bloggerName%>", type:"blogger"},
 <%
 	}
-					}
-				}
-			} catch (Exception e) {
-			}
+}
+}
+} catch (Exception e) {
+}
 %>
 		</textarea>
 
@@ -1839,22 +1312,22 @@ path.chord {
 
 <%
 	try {
-				if (influenceBlog.size() > 0) {
-					int p = 0;
-					for (int m = 0; m < influenceBlog.size(); m++) {
-						ArrayList<?> blogInfluence = (ArrayList<?>) influenceBlog.get(m);
-						String blogInf = blogInfluence.get(0).toString();
-						String blogInfFreq = blogInfluence.get(1).toString();
-						if (p < 10) {
-							p++;
+	if (influenceBlog.size() > 0) {
+		int p = 0;
+		for (int m = 0; m < influenceBlog.size(); m++) {
+	ArrayList<?> blogInfluence = (ArrayList<?>) influenceBlog.get(m);
+	String blogInf = blogInfluence.get(0).toString();
+	String blogInfFreq = blogInfluence.get(1).toString();
+	if (p < 10) {
+		p++;
 %>
 {letter:"<%=blogInf%>", frequency:<%=blogInfFreq%>, name:"<%=blogInf%>", type:"blog"},
     			 <%
 	}
-					}
-				}
-			} catch (Exception e) {
-			}
+}
+}
+} catch (Exception e) {
+}
 %>
 			 </textarea>
 		</textarea>
@@ -1863,41 +1336,30 @@ path.chord {
 			id="InfluencialBloggers">
 			<%
 				try {
-							if (influenceBlogger.size() > 0) {
-								int k = 0;
-								for (int y = 0; y < influenceBlogger.size(); y++) {
-									ArrayList<?> bloggerInfluence = (ArrayList<?>) influenceBlogger.get(y);
-									String bloggerInf = bloggerInfluence.get(0).toString();
-									String bloggerInfFreq = bloggerInfluence.get(1).toString();
-									if (k < 10) {
-										
-										
-										
-										k++;
+				if (influenceBlogger.size() > 0) {
+					int k = 0;
+					for (int y = 0; y < influenceBlogger.size(); y++) {
+				ArrayList<?> bloggerInfluence = (ArrayList<?>) influenceBlogger.get(y);
+				String bloggerInf = bloggerInfluence.get(0).toString();
+				String bloggerInfFreq = bloggerInfluence.get(1).toString();
+				if (k < 10) {
+
+					k++;
 			%>
 		{letter:"<%=bloggerInf%>", frequency:<%=bloggerInfFreq%>, name:"<%=bloggerInf%>", type:"blogger"},
 		 <%
 				}
-								}
-							}
-						} catch (Exception e) {
-						}
+			}
+			}
+			} catch (Exception e) {
+			}
 			%>
 		</textarea>
 	</form>
 
-
-	<!-- <footer class="footer">
-  <div class="container-fluid bg-primary mt60">
-<p class="text-center text-medium pt10 pb10 mb0">Copyright &copy; Blogtrackers 2017 All Rights Reserved.</p>
-</div>
-  </footer> -->
-	<!-- <script src="pagedependencies/dashboard.js?v=209">
-</script> -->
-	<!-- Added for interactivity for selecting tracker and favorites actions -->
-
-	<!-- <script src="assets/js/generic.js">
-</script> -->
+	<script type="text/javascript">
+	
+	</script>
 
 
 	<script type="text/javascript" src="assets/js/jquery-1.11.3.min.js"></script>
@@ -2522,10 +1984,10 @@ function update(source) {
   // Creates a curved (diagonal) path from parent to the child nodes
   function diagonal(s, d) {
 
-    path = `M ${s.y} ${s.x}
-            C ${(s.y + d.y) / 2} ${s.x},
-              ${(s.y + d.y) / 2} ${d.x},
-              ${d.y} ${d.x}`
+	  path = `M ${s.y} ${s.x}
+          C ${(s.y + d.y) / 2} ${s.x},
+            ${(s.y + d.y) / 2} ${d.x},
+            ${d.y} ${d.x}`
 
     return path
   }
@@ -2567,24 +2029,26 @@ function update(source) {
 			var height = $('#scatter-container1').height() - 25;
 			 trending_words = [];
 				
-				<% 
-				String word_build = "";
-			 	for(int k = 0; k < 10; k++){
-			 		 word_build = "";
-			 		 if(source.length() > 0){ 
-					String [] splitted = source.get("cluster_" + (k + 1)).toString().split("\'topterms\':");
-							
-					List<String> termlist = Arrays.asList(splitted[1].replace("{","").replace("}","").split(","));
-					
-					for(int m = 0; m < 4; m++){
-						if(m > 0){
-							word_build += ", ";
-						}
-						word_build += termlist.get(m).split(":")[0].replace("\'","");
-					}
-					%>
-					trending_words[<%=k %>] = "<%=word_build %>";
-			 	<% } }%>
+				<%String word_build = "";
+if (source != null) {
+	for (int k = 0; k < 10; k++) {
+		word_build = "";
+		while (source.next()) {
+			String[] splitted = source.getString("cluster_" + (k + 1)).split("\'topterms\':");
+
+			List<String> termlist = Arrays.asList(splitted[1].replace("{", "").replace("}", "").split(","));
+
+			for (int m = 0; m < 4; m++) {
+				if (m > 0) {
+					word_build += ", ";
+				}
+				word_build += termlist.get(m).split(":")[0].replace("\'", "");
+			}%>
+					trending_words[<%=k%>] = "<%=word_build%>";
+			 	<%}
+}
+source.close();
+}%>
 			 	 
 			 	 //start getting max and min posts numbers
 			 	for(var i = 0; i < dataset.nodes.length; i++){
@@ -2879,35 +2343,28 @@ function cluster_matrix_loader(){
 		//end matrix_loader
 		
 		//java check
-		<% if(cluster_status.equals("1")){ 
-			
-			//ArrayList response_terms = DbConnection.query("select terms from tracker_keyword where tid = " + tid);
-			//ArrayList terms_result = (ArrayList)response_terms.get(0);
-			//System.out.println("terms_result" + res.get(0));
-			//JSONObject final_terms = new JSONObject(terms_result.get(0).toString());
-			//final_result.put("final_terms",final_terms);
-		%>	
+		<%
+	if (cluster_status.equals("1")) {%>	
 		console.log('cluster is 1')
 			$('#clusterbtn').prop("disabled", false);
 			$('#scatter-container').removeClass('hidden');
 			$('#cluster_card_div').removeClass('radial_f')
 			
 			
-			dataset = <%=final_centroids %>
+			dataset = <%=final_centroids%>
 			clusterdiagram5('#dataviz_axisZoom', dataset);
 			
 			
-	<%	}else{
-			
-			final_result.put("final_terms","");
-			
-		 %>
+	<%} else {
+
+	final_result.put("final_terms", "");%>
 		 console.log('cluster is 0')
 		 $('#clusterbtn').prop("disabled", true);
 		 $('#cluster_computing_loaader').removeClass('hidden');
 		 var cluster_refreshIntervalId = setInterval(function(){ cluster_refresh();    }, 15000);
 		 cluster_matrix_loader();
-		<% }%>
+		<%}
+	%>
 		//end java check
 		
 		//setInterval(function(){ refresh();    }, 10000);
@@ -2929,8 +2386,7 @@ function cluster_matrix_loader(){
 
 				},
 				success: function(response)
-				{   				  
-				 //console.log("This is success"+response)
+				{
 				 var data = JSON.parse(response);
 					//$(".char19").html(data.status_percentage);
 					//$(".status").html(data.status);
@@ -3012,6 +2468,7 @@ function cluster_matrix_loader(){
 
 
 	<script>
+	
 	function flip() {
 	    $('.mecard').toggleClass('flipped');
 	}
@@ -3107,9 +2564,8 @@ $(document).ready(function() {
 		}
 	 
 	 
-  $(document)
-             .ready(
-                 function() {
+  $(document).ready(function() {
+	   
                    // date range configuration
    var cb = function(start, end, label) {
           //console.log(start.toISOString(), end.toISOString(), label);
@@ -3254,11 +2710,12 @@ $(document).ready(function() {
 	<script>
 $(function () {
 	
-	<% if(date_set.toString().equals("1")){}else{ %>
+	<%if (date_set.toString().equals("1")) {
+} else {%>
     // Initialize chart
     languageusage('#languageusage', 430);
     
-	<% } %>
+	<%}%>
     // Chart setup
     function languageusage(element, height) {
       // Basic setup
@@ -3541,7 +2998,8 @@ function formatNumber(num) {
 
 	<!-- start of influence bar chart  -->
 	<script>
-	<% if(date_set.toString().equals("1")){}else{ %>
+	<%if (date_set.toString().equals("1")) {
+} else {%>
 $(function () {
     // Initialize chart
     influencebar('#influencebar', 450);
@@ -3599,20 +3057,19 @@ $(function () {
       //sort by influence score
       data = [
     	  <%if (influenceBlog.size() > 0) {
-						int p = 0;
-						//System.out.println(bloggers);
-						for (int y = 0; y < influenceBlog.size(); y++) {
-							ArrayList<?> blogInfluence = (ArrayList<?>) influenceBlog.get(y);
-							String blogInf = blogInfluence.get(0).toString();
-							String blogInfFreq = (null == blogInfluence.get(1).toString()) ? "0" : blogInfluence.get(1).toString();
-							if (p < 10) {
-								p++;%>
+			int p = 0;
+			for (int y = 0; y < influenceBlog.size(); y++) {
+				ArrayList<?> blogInfluence = (ArrayList<?>) influenceBlog.get(y);
+				String blogInf = blogInfluence.get(0).toString();
+				String blogInfFreq = (null == blogInfluence.get(1).toString()) ? "0" : blogInfluence.get(1).toString();
+				if (p < 10) {
+					p++;%>
 		{letter:"<%=blogInf%>", frequency:<%=blogInfFreq%>, name:"<%=blogInf%>", type:"blogger"},
-		 <%}else{
-			 break;
-		 }
-						}
-					}%>    
+		 <%} else {
+	break;
+}
+}
+}%>    
         ];
       data = data.sort(function(a, b){
     	    return a.frequency - b.frequency;
@@ -3804,107 +3261,11 @@ $(function () {
         }
     }
 });
-<% } %>
+<%}%>
 </script>
-
 	<!--  End of influence bar -->
-
-
 	<!-- start sample graph script -->
 	<script>
- 
-/* var width = 450,
-height = 450,
-outerRadius = Math.min(width, height) / 2 - 10,
-innerRadius = outerRadius - 24;
- 
-var formatPercent = d3.format(".1%");
- 
-var arc = d3.svg.arc()
-.innerRadius(innerRadius)
-.outerRadius(outerRadius);
- 
-var layout = d3.layout.chord()
-.padding(.04)
-.sortSubgroups(d3.descending)
-.sortChords(d3.ascending);
- 
-var path = d3.svg.chord()
-.radius(innerRadius);
- 
-var svg = d3.select("#chord_body").append("svg")
-.attr("width", width)
-.attr("height", height)
-.append("g")
-.attr("id", "circle")
-.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
- 
-svg.append("circle")
-.attr("r", outerRadius);
- 
-d3.csv("teams.csv", function(cities) {
-d3.json("matrix.json", function(matrix) {
- 
-// Compute the chord layout.
-layout.matrix(matrix);
- 
-// Add a group per neighborhood.
-var group = svg.selectAll(".group")
-.data(layout.groups)
-.enter().append("g")
-.attr("class", "group")
-.on("mouseover", mouseover);
- 
-// Add a mouseover title.
-// group.append("title").text(function(d, i) {
-// return cities[i].name + ": " + formatPercent(d.value) + " of origins";
-// });
- 
-// Add the group arc.
-var groupPath = group.append("path")
-.attr("id", function(d, i) { return "group" + i; })
-.attr("d", arc)
-.style("fill", function(d, i) { return cities[i].color; });
- 
-// Add a text label.
-var groupText = group.append("text")
-.attr("x", 6)
-.attr("dy", 15);
- 
-groupText.append("textPath")
-.attr("xlink:href", function(d, i) { return "#group" + i; })
-.text(function(d, i) { return cities[i].name; });
- 
-// Remove the labels that don't fit. :(
-groupText.filter(function(d, i) { return groupPath[0][i].getTotalLength() / 2 - 16 < this.getComputedTextLength(); })
-.remove();
- 
-// Add the chords.
-var chord = svg.selectAll(".chord")
-.data(layout.chords)
-.enter().append("path")
-.attr("class", "chord")
-.style("fill", function(d) { return cities[d.source.index].color; })
-.attr("d", path);
- 
-// Add an elaborate mouseover title for each chord.
- chord.append("title").text(function(d) {
- return cities[d.source.index].name
- + " → " + cities[d.target.index].name
- + ": " + formatPercent(d.source.value)
- + "\n" + cities[d.target.index].name
- + " → " + cities[d.source.index].name
- + ": " + formatPercent(d.target.value);
- });
- 
-function mouseover(d, i) {
-	chord.classed("fade", function(p) {
-		return p.source.index != i && p.target.index != i;
-	});
-}
-});
-}); */
- 
 </script>
 	<!-- end sample graph script -->
 
@@ -3968,26 +3329,29 @@ $(function () {
       //
       data = [
     		 <%int p = 0;
-					if (blogPostFrequency.size() > 0) {
-						for (int m = 0; m < blogPostFrequency.size(); m++) {
-							ArrayList<?> blogFreq = (ArrayList<?>) blogPostFrequency.get(m);
-							String blogName = blogFreq.get(0).toString();
-							String blogPostFreq = blogFreq.get(1).toString();
-							if (p < 10) {
-								p++;%>
+if (blogPostFrequency.size() > 0) {
+	for (int m = 0; m < blogPostFrequency.size(); m++) {
+		ArrayList<?> blogFreq = (ArrayList<?>) blogPostFrequency.get(m);
+		String blogName = blogFreq.get(0).toString();
+		String blogPostFreq = blogFreq.get(1).toString();
+		if (p < 10) {
+			p++;%>
 									{letter:"<%=blogName%>", frequency:<%=Integer.parseInt(blogPostFreq)%>, name:"<%=blogName%>", type:"blogger"},
  			 <%}
-						}
+}
 
-					}%>
-            //{letter:"Blog 5", frequency:2550, name:"Obadimu Adewale", type:"blogger"},
-            
+}else{
+
+%>
+            {letter:"Blog 5", frequency:2550, name:"Obadimu Adewale", type:"blogger"},
+            <%}%>
         ];
       
       data = data.sort(function(a, b){
   	    return a.frequency - b.frequency;
   	});
       
+      colsole.log("data freq", data)
       //
       //
       //   // Create tooltip
@@ -4193,37 +3557,34 @@ $(function () {
 	<!--  Start of sentiment Bar Chart -->
 	<script type="text/javascript">
 	//sentiment filter check
-	<% if(date_set.toString().equals("1")){}else{ %>
+	<%if (date_set.toString().equals("1")) {
+} else {%>
 	
 	  $(function () {
 	
 	 <%String pos = "";
-	 
-					String neg = "";
-					for (int i = 0; i < getPositiveEmotion.size(); i++) {
-						ArrayList<?> posi = (ArrayList<?>) getPositiveEmotion.get(i);
-						//System.out.println(posi.get(0));
-						if(posi.get(0) == null){
-							pos = "0";
-						}else{
-							pos = posi.get(0).toString();
-						}
-						//pos = () ? "" : posi.get(0).toString();
-						
-					}
-					for (int i = 0; i < getNegativeEmotion.size(); i++) {
-						ArrayList<?> nega = (ArrayList<?>) getNegativeEmotion.get(i);
-						if(nega.get(0) == null){
-							neg = "0";
-						}else{
-							neg = nega.get(0).toString();
-						}
-						
 
-					}%>
+		String neg = "";
+		for (int i = 0; i < getPositiveEmotion.size(); i++) {
+			ArrayList<?> posi = (ArrayList<?>) getPositiveEmotion.get(i);
+			if (posi.get(0) == null) {
+				pos = "0";
+			} else {
+				pos = posi.get(0).toString();
+			}
+		}
+		for (int i = 0; i < getNegativeEmotion.size(); i++) {
+			ArrayList<?> nega = (ArrayList<?>) getNegativeEmotion.get(i);
+			if (nega.get(0) == null) {
+				neg = "0";
+			} else {
+				neg = nega.get(0).toString();
+			}
+
+		}%>
       sentimentdata = [
-            {label:"Negative", value:<%=Integer.parseInt(neg)%>},
-            {label:"Positive", value:<%=Integer.parseInt(pos)%>}
+            {label:"Negative", value:<%=(neg == "" || neg == null) ? 0 : Integer.parseInt(neg)%>},
+            {label:"Positive", value:<%=(pos == "" || pos == null) ? 0 : Integer.parseInt(pos)%>}
         ];
       console.log("here---",sentimentdata);
       
@@ -4233,7 +3594,7 @@ $(function () {
   
      
 	  });
-		<% } %>
+		<%}%>
 		//end sentiment filter check
       </script>
 
@@ -4426,153 +3787,48 @@ var gdpData = {
   "ZM": 15.69,
   "ZW": 5.57
 };
-// add the list of location of craweled blog here
-/*
-    
-    /*
-    {latLng: [39.092, -94.575], name: 'Kansas City'},
-    {latLng: [25.782, -80.231], name: 'Miami'},
-    {latLng: [8.967, -79.458], name: 'Panama City'},
-    {latLng: [19.400, -99.124], name: 'Mexico City'},
-    {latLng: [40.705, -73.978], name: 'New York'},
-    {latLng: [33.98, -118.132], name: 'Los Angeles'},
-    {latLng: [47.614, -122.335], name: 'Seattle'},
-    {latLng: [44.97, -93.261], name: 'Minneapolis'},
-    {latLng: [39.73, -105.015], name: 'Denver'},
-    {latLng: [41.833, -87.732], name: 'Chicago'},
-    {latLng: [29.741, -95.395], name: 'Houston'},
-    {latLng: [23.05, -82.33], name: 'Havana'},
-    {latLng: [45.41, -75.70], name: 'Ottawa'},
-    {latLng: [53.555, -113.493], name: 'Edmonton'},
-    {latLng: [-0.23, -78.52], name: 'Quito'},
-    {latLng: [18.50, -69.99], name: 'Santo Domingo'},
-    {latLng: [4.61, -74.08], name: 'Bogotá'},
-    {latLng: [14.08, -87.21], name: 'Tegucigalpa'},
-    {latLng: [17.25, -88.77], name: 'Belmopan'},
-    {latLng: [14.64, -90.51], name: 'New Guatemala'},
-    {latLng: [-15.775, -47.797], name: 'Brasilia'},
-    {latLng: [-3.790, -38.518], name: 'Fortaleza'},
-    {latLng: [50.402, 30.532], name: 'Kiev'},
-    {latLng: [53.883, 27.594], name: 'Minsk'},
-    {latLng: [52.232, 21.061], name: 'Warsaw'},
-    {latLng: [52.507, 13.426], name: 'Berlin'},
-    {latLng: [50.059, 14.465], name: 'Prague'},
-    {latLng: [47.481, 19.130], name: 'Budapest'},
-    {latLng: [52.374, 4.898], name: 'Amsterdam'},
-    {latLng: [48.858, 2.347], name: 'Paris'},
-    {latLng: [40.437, -3.679], name: 'Madrid'},
-    {latLng: [39.938, 116.397], name: 'Beijing'},
-    {latLng: [28.646, 77.093], name: 'Delhi'},
-    {latLng: [25.073, 55.229], name: 'Dubai'},
-    {latLng: [35.701, 51.349], name: 'Tehran'},
-    {latLng: [7.11, 171.06], name: 'Marshall Islands'},
-    {latLng: [17.3, -62.73], name: 'Saint Kitts and Nevis'},
-    {latLng: [3.2, 73.22], name: 'Maldives'},
-    {latLng: [35.88, 14.5], name: 'Malta'},
-    {latLng: [12.05, -61.75], name: 'Grenada'},
-    {latLng: [13.16, -61.23], name: 'Saint Vincent and the Grenadines'},
-    {latLng: [13.16, -59.55], name: 'Barbados'},
-    {latLng: [17.11, -61.85], name: 'Antigua and Barbuda'},
-    {latLng: [-4.61, 55.45], name: 'Seychelles'},
-    {latLng: [7.35, 134.46], name: 'Palau'},
-    {latLng: [42.5, 1.51], name: 'Andorra'},
-    {latLng: [14.01, -60.98], name: 'Saint Lucia'},
-    {latLng: [6.91, 158.18], name: 'Federated States of Micronesia'},
-    {latLng: [1.3, 103.8], name: 'Singapore'},
-    {latLng: [1.46, 173.03], name: 'Kiribati'},
-    {latLng: [-21.13, -175.2], name: 'Tonga'},
-    {latLng: [15.3, -61.38], name: 'Dominica'},
-    {latLng: [-20.2, 57.5], name: 'Mauritius'},
-    {latLng: [26.02, 50.55], name: 'Bahrain'},
-    
-    {latLng: [0.33, 6.73], name: 'São Tomé and Príncipe'}
-    
-    */ 
+
 <%JSONObject location = new JSONObject();
-    
-    String csvFile = application.getRealPath("/").replace('/', '/') + "lat_long.csv";
-    BufferedReader br = null;
-    String line = "";
-    String cvsSplitBy = ",";
-    
-    try {
 
-        br = new BufferedReader(new FileReader(csvFile));
-        while ((line = br.readLine()) != null) {
+String csvFile = application.getRealPath("/").replace('/', '/') + "lat_long.csv";
+BufferedReader br = null;
+String line = "";
+String cvsSplitBy = ",";
 
-            // use comma as separator
-            String[] country = line.split(cvsSplitBy);
+try {
 
-            //System.out.println("Country [code= " + country[4] + " , name=" + country[5] + "]");
-           
-            location.put(country[1].substring(0,2) , country[3] + ","+ country[2]);
+	br = new BufferedReader(new FileReader(csvFile));
+	while ((line = br.readLine()) != null) {
+		// use comma as separator
+		String[] country = line.split(cvsSplitBy);
+		location.put(country[1].substring(0, 2), country[3] + "," + country[2]);
 
-        }
+	}
 
-    } catch (FileNotFoundException e) {
-        e.printStackTrace();
-    } catch (IOException e) {
-        e.printStackTrace();
-    } finally {
-        if (br != null) {
-            try {
-                br.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    } 
-					/* location.put("Vatican City", "41.90, 12.45");
-					location.put("Monaco", "43.73, 7.41");
-					location.put("Salt Lake City", "40.726, -111.778");
-					location.put("Kansas City", "39.092, -94.575");
-					location.put("US", "37.0902, -95.7129");
-					location.put("DE", "51.165691, 10.451526");
-					location.put("LT", "55.1694, 23.8813");
-					location.put("GB", "55.3781, -3.4360");
-					location.put("NL", "52.132633, 5.291266");
-					location.put("VE", "6.423750, -66.589729");
-					location.put("LV", "56.8796, 24.6032");
-					location.put("UA", "48.379433, 31.165581");
-					location.put("RU", "61.524010, 105.318756");
-					location.put("PA", "8.967, -79.458");
-					
-					location.put("CA", "36.7783, -119.4179");
-					location.put("BG", "42.7339, 25.4858");
-					location.put("BE", "50.503887, 4.469936");
-					location.put("DK", "56.263920, 9.501785");
-					location.put("SE", "60.128162, 18.643501");
-					
-					location.put("TR", "38.9637, 35.2433");
-					location.put("FR", "46.2276, 2.2137");
-					location.put("PL", "51.9194, 19.1451");
-					location.put("EE", "58.5953, 25.0136");
-					location.put("ZW", "-19.0154, 29.1549");
-					location.put("SK", "48.6690, 19.6990");
-					location.put("IE", "53.4129, -8.2439");
-					location.put("IT", "41.871941,12.567380");
-					location.put("ES", "40.463669,-3.749220");
-					location.put("CA", "36.514618, -119.869456");
-					location.put("AU", "-25.274399,133.775131");
-					location.put("HU", "47.162495,19.503304");
-					location.put("IS", "64.147209,-21.942400");
-					location.put("NO", "59.913818,10.738740");
-					location.put("RO", "45.943161,24.966761");
-					location.put("RS", "44.815071,20.460480"); */
-					
-					
-					%>
+} catch (FileNotFoundException e) {
+	e.printStackTrace();
+} catch (IOException e) {
+	e.printStackTrace();
+} finally {
+	if (br != null) {
+		try {
+			br.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+}%>
 // map marker location by longitude and latitude
 var mymarker = [
 	<%if (locations.size() > 0) {
-						for (int i = 0; i < locations.size(); i++) {
-							ArrayList<?> loca = (ArrayList<?>) locations.get(i);
-							String loc = loca.get(0).toString();
-							String size = loca.get(1).toString();
-							int markerSize = Integer.parseInt(loca.get(1).toString());%>
+		for (int i = 0; i < locations.size(); i++) {
+			ArrayList<?> loca = (ArrayList<?>) locations.get(i);
+			String loc = loca.get(0).toString();
+			String size = loca.get(1).toString();
+			int markerSize = Integer.parseInt(loca.get(1).toString());%>
 			{latLng: [<%=location.get(loc)%>], name: '<%=size%>' , r:<%=markerSize%>},
 	<%}
-					}%>]
+}%>]
   </script>
 	<script type="text/javascript"
 		src="assets/vendors/maps/jvectormap/jvectormap.min.js"></script>
@@ -4582,9 +3838,15 @@ var mymarker = [
 		src="assets/vendors/maps/jvectormap/map_files/countries/usa.js"></script>
 	<script type="text/javascript"
 		src="assets/vendors/maps/jvectormap/map_files/countries/germany.js"></script>
-		<%if(date_set.toString().equals("1")){}else{ %>
-	<script type="text/javascript" src="assets/vendors/maps/vector_maps_demo.js"></script>
-		<% } %>
+	<%
+		if (date_set.toString().equals("1")) {
+	} else {
+	%>
+	<script type="text/javascript"
+		src="assets/vendors/maps/vector_maps_demo.js"></script>
+	<%
+		}
+	%>
 	<script type="text/javascript"
 		src="chartdependencies/keywordtrendd3.js"></script>
 	<script type="text/javascript" src="chartdependencies/chord.js"></script>
@@ -4596,17 +3858,12 @@ var mymarker = [
 	var word_count2 = {}; 
 	
 	function load_custom_filter(type, element){
-		
 		$("#"+element).html("<img src='images/loading.gif' /> COMPUTING DISPLAY FOR SELECTED DATE RANGE:  <b style='color : blue;  font-size: 20px;'><%=dt%> - <%=dte%></b> PLEASE WAIT...."); 
-		 /* $('#keywordbtn').prop("disabled", true);
-		 $("#hrefkeyword").attr("href", ""); */
 		$.ajax({
 			url: app_url+"subpages/dashboardcharts.jsp",
 			method: 'POST',
-           /* dataType: 'json', */
 			data: {
 				action:type,
-				/* blogger:null, */
 				ids:"<%=ids%>",
 				date_start:"<%=dt%>",
 				date_end:"<%=dte%>"
@@ -4615,13 +3872,11 @@ var mymarker = [
 			{		
 				$("#"+element).html("FAILED TO COMPUTE TERMS.. RETRYING.. PLEASE WAIT.... <img src='images/loading.gif' />g");
 				$("#"+element).html("<div style='min-height: 420px;'><div class='chart-container word-cld'><div class='chart' id='tagcloudcontainer'><div class='jvectormap-zoomin zoombutton' id='zoom_in'>+</div><div class='jvectormap-zoomout zoombutton' id='zoom_out'>−</div></div></div></div>");
-				//wordtagcloud("#tagcloudcontainer99",450,{"NO KEYWORD":1});
 				console.log("This is failure"+response);
 
 			},
 			success: function(response)
-			{   	
-				
+			{  
 			$("#"+element).html("<div id='dummy'></div><div style='min-height: 420px;'><div class='chart-container word-cld'><div class='chart' id='tagcloudcontainer99'><div class='jvectormap-zoomin zoombutton' id='zoom_in'>+</div><div class='jvectormap-zoomout zoombutton' id='zoom_out'>−</div></div></div></div>");
 			  $("#"+element).html("<img src='images/loading.gif' /> COMPUTING DISPLAY PLEASE WAIT....").html(response);
 			}
@@ -4631,41 +3886,23 @@ var mymarker = [
 	
 		
 		$(document).ready(function(){
-			 <%-- <%if (null == session.getAttribute(ids + "--getkeyworddashboard")) {%>
-			  // keywords have not been computed.
-			loadKeywordDashboard(null, "<%=ids%>")
-
-			<%} else {
-				
-				Object dashboardWordCloudObject = (null == session.getAttribute(ids + "--getkeyworddashboard")) ? "": session.getAttribute(ids + "--getkeyworddashboard");
-				JSONObject o = new JSONObject(dashboardWordCloudObject.toString());
-				JSONArray out_ = new JSONArray();
-
-				//HashMap<String, String> post_id_pair = new HashMap<String, String>();
-				/* String terms = dashboardWordCloudObject.toString().replace("{","[").replace("}","]").replace("),","-").replace("(","").replace(",",":").replace("-",",").replace(")","").replace("'","").replaceAll("[0-9]", "").replace(":", ""); */
-				out_ = (JSONArray) o.get("output");
-				/*
-							Map<String, Integer> json = (HashMap<String, Integer>)json_type_2;
-							JSONObject d = new JSONObject(json);
-							String s = json_type_2.toString();
-						
-							JSONObject o = new JSONObject(json_type_2); */
-							//System.out.println("testing w" + d);%>
-							var terms = "<%=out_.toString().replace("\"","")%>";
-				 var new_dd = terms.replace('[','{').replace(']','}').replace(/\),/g,'-').replace(/\(/g,'').replace(/,/g,':').replace(/-/g,',').replace(/\)/g,'').replace(/'/g,"");
-					var newjson = new_dd.replace(/\s+/g,'').replace(/{/g,'{"').replace(/:/g,'":"').replace(/,/g,'","').replace(/}/g,'"}')
-					var jsondata = JSON.parse(newjson)
-					
-					/* data = [];
-					for (var key in jsondata) {var dic = {}; dic["text"] = key; dic["size"] = jsondata[key]; data.push(dic);} */
-					console.log("this is the response dashboard from session",new_dd);
-					wordtagcloud("#tagcloudcontainer",450,jsondata); 
-			  		<wordtagcloud("#tagcloudcontainer",450,<%=d%>);  
-			<%}%>  --%>
-			<%
-			if(status.equals("1") && date_set.toString().equals("1")){%>
+		
+				//load_custom_filter("getbloggercount","getbloggercount")
+				load_custom_filter("getlocationdashboard","getlocationdashboard")
+				load_custom_filter("getlanguagedashboard","getlanguagedashboard")
+				load_custom_filter("getsentimentdashboard","getsentimentdashboard")
+				load_custom_filter("getbloggerdashboard","getbloggerdashboard")
+				load_custom_filter("getblogdashboard","getblogdashboard")
+				load_custom_filter("getinfluencedashboard","getinfluencedashboard")
+				//load_custom_filter("getclusterdashboard","getclusterdashboard")
+				load_custom_filter("getdomaindashboard","getdomaindashboard") 
+		
 			
-			$(".word-cld").html("<img src='images/loading.gif' /> COMPUTING TERMS FOR <b style='color : blue;  font-size: 20px;'><%=NumberFormat.getNumberInstance(Locale.US).format(new Double(totalpost).intValue())%></b> POSTS PLEASE WAIT...."); 
+			
+			<%if (status != null) {
+	if (status.equals("1") && date_set.toString().equals("1")) {%>
+			
+			$(".word-cld").html("<img src='images/loading.gif' /> COMPUTING TERMS FOR POSTS PLEASE WAIT...."); 
 			 /* $('#keywordbtn').prop("disabled", true);
 			 $("#hrefkeyword").attr("href", ""); */
 			$.ajax({
@@ -4697,7 +3934,9 @@ var mymarker = [
 			});
 			 
 			
-			<%}if(date_set.toString().equals("1")){%>
+			<%}
+}
+if (date_set.toString().equals("1")) {%>
 			
 			load_custom_filter("getlocationdashboard","getlocationdashboard")
 			load_custom_filter("getlanguagedashboard","getlanguagedashboard") 
@@ -4708,71 +3947,17 @@ var mymarker = [
 			//load_custom_filter("getclusterdashboard","getclusterdashboard")
 			load_custom_filter("getdomaindashboard","getdomaindashboard") 
 			
-			
-			<%}else if (status.equals("1") && date_set.toString()!= "1" ){
-			
-			//ArrayList response_terms = DbConnection.query("select terms from tracker_keyword where tid = " + tid);
-			//ArrayList resy = (ArrayList)response_terms.get(0);
-			//System.out.println("terms_result" + res.get(0));
-			
-			//JSONObject finalres = new JSONObject(resy.get(0).toString());
-			
-			%>
-			
-			//var response = {'seun':39, 'bola':100}
-			<%-- wordtagcloud("#tagcloudcontainer",450,<%=finalres%>); 
-			
-			console.log('dt',"<%=dt%>");
-			 console.log('dte',"<%=dte%>"); --%>
-			//loadChordDashboard();
+		
 			
 			<%}%>
 		})
 		
 		
 		
-		<%-- function loadKeywordDashboard(blogger,ids){
-			 $(".word-cld").html("<img src='images/loading.gif' /> COMPUTING TERMS FOR <b style='color : blue;  font-size: 20px;'><%=NumberFormat.getNumberInstance(Locale.US).format(new Double(totalpost).intValue())%></b> POSTS PLEASE WAIT...."); 
-			 $('#keywordbtn').prop("disabled", true);
-			 $("#hrefkeyword").attr("href", "");
-			$.ajax({
-				url: app_url+"subpages/dashboardcharts.jsp",
-				method: 'POST',
-	            dataType: 'json',
-				data: {
-					action:"getkeyworddashboard",
-					blogger:null,
-					action:"<%=tid%>",
-					ids:"<%=ids%>",
-					date_start:"<%=dt%>",
-					date_end:"<%=dte%>"
-				},
-				error: function(response)
-				{		
-					$(".word-cld").html("FAILED TO COMPUTE TERMS.. RETRYING.. PLEASE WAIT.... <img src='images/loading.gif' />g");
-					$(".word-cld").html("<div style='min-height: 420px;'><div class='chart-container word-cld'><div class='chart' id='tagcloudcontainer'><div class='jvectormap-zoomin zoombutton' id='zoom_in'>+</div><div class='jvectormap-zoomout zoombutton' id='zoom_out'>−</div></div></div></div>");
-					wordtagcloud("#tagcloudcontainer",450,{"NO KEYWORD":1});
-					console.log("This is failure"+response);
-
-				},
-				success: function(response)
-				{   				  
-				 console.log(response)
-				console.log("this is the response"+data)
-				
-				    $(".word-cld").html("<div style='min-height: 420px;'><div class='chart-container word-cld'><div class='chart' id='tagcloudcontainer'><div class='jvectormap-zoomin zoombutton' id='zoom_in'>+</div><div class='jvectormap-zoomout zoombutton' id='zoom_out'>−</div></div></div></div>");
-				wordtagcloud("#tagcloudcontainer",450,response); 
-				$('#keywordbtn').prop("disabled", false);
-				$("#hrefkeyword").attr("href", "<%=request.getContextPath()%>/keywordtrend.jsp?tid=<%=tid%>");
-				}
-			});
-		} --%>
-		<%
-		String post_ids = null;
-		%>
+		<%String post_ids = null;%>
 		function loadKeywordDashboard(blogger,ids){
 			
-			 $(".word-cld").html("<img src='images/loading.gif' /> COMPUTING TERMS FOR <b style='color : blue;  font-size: 20px;'><%=NumberFormat.getNumberInstance(Locale.US).format(new Double(totalpost).intValue())%></b> POSTS PLEASE WAIT...."); 
+			 $(".word-cld").html("<img src='images/loading.gif' /> COMPUTING TERMS POSTS PLEASE WAIT...."); 
 			 $('#keywordbtn').prop("disabled", true);
 			 $("#hrefkeyword").attr("href", "");
 			 
@@ -4832,10 +4017,10 @@ var mymarker = [
 	
 	
 	
-
+	loadChordDashboard();
 	function loadChordDashboard(){
 		
-		 $(".chord_body").html("<img src='images/loading.gif' /> LOADING CHORD GRAPH FOR <b style='color : blue;  font-size: 20px;'><%=NumberFormat.getNumberInstance(Locale.US).format(new Double(totalpost).intValue())%></b> POSTS PLEASE WAIT...."); 
+		 $(".chord_body").html("<img src='images/loading.gif' /> LOADING CHORD GRAPH FOR POSTS PLEASE WAIT...."); 
 		 $('.buttonTopicModelling').prop("disabled", true);
 		 $("#hreftopicmodels").attr("href", "");
 		$.ajax({
@@ -4850,8 +4035,6 @@ var mymarker = [
 			error: function(response)
 			{		
 				$(".chord_body").html("FAILED TO LOAD CHORD GRAPH.. RETRYING.. PLEASE WAIT.... <img src='images/loading.gif' />g");
-				//$(".chord_body").html("<div style='min-height: 420px;'><div class='chart-container chord_body'><div class='chart' id='postingfrequencycontainer'><div class='jvectormap-zoomin zoombutton' id='zoom_in'>+</div><div class='jvectormap-zoomout zoombutton' id='zoom_out'>−</div></div></div></div>");
-				/* wordtagcloud("#tagcloudcontainer",450,{"NO KEYWORD":1});*/
 				console.log("This is failure"+response); 
 
 			},
@@ -4976,31 +4159,31 @@ function matrix_loader1(){
 		//end matrix_loader
 		
 		//java check
-		<% if(status.equals("1")){ 
-			
-			ArrayList response_terms = DbConnection.query("select terms from tracker_keyword where tid = " + tid);
-			ArrayList terms_result = (ArrayList)response_terms.get(0);
-			//System.out.println("terms_result" + res.get(0));
-			JSONObject final_terms = new JSONObject(terms_result.get(0).toString());
-			final_result.put("final_terms",final_terms);
-		%>	
+		
+		<%
+	if (status.equals("1")) {
+
+		ArrayList response_terms = DbConnection.query("select terms from tracker_keyword where tid = " + tid);
+		ArrayList terms_result = (ArrayList) response_terms.get(0);
+
+		JSONObject final_terms = new JSONObject(terms_result.get(0).toString());
+		final_result.put("final_terms", final_terms);%>	
 		console.log('it is 1')
 		$('#keywordbtn').prop("disabled", false);
 			$('#tagcloudcontainer99').removeClass('hidden');
 			$('#keyword_card_div').removeClass('radial_f')
 			wordtagcloud("#tagcloudcontainer99",450,<%=final_terms%>); 
-			loadChordDashboard();
-	<%	}else{
 			
-			final_result.put("final_terms","");
-			
-		 %>
+	<%} else {
+
+	final_result.put("final_terms", "");%>
 		 console.log('it is 0')
 		 $('#keywordbtn').prop("disabled", true);
 		 $('#keyword_computing_loaader').removeClass('hidden');
 		 var refreshIntervalId = setInterval(function(){ refresh();    }, 15000);
 		 matrix_loader1();
-		<% }%>
+		<%}
+	%>
 		//end java check
 		
 		//setInterval(function(){ refresh();    }, 10000);
@@ -5069,13 +4252,14 @@ function matrix_loader1(){
 		</script>
 
 	<!-- Blogger Bubble Chart -->
-	
+
 	<script>
-	<% if(date_set.toString().equals("1")){}else{ %>
+	<%if (date_set.toString().equals("1")) {
+} else {%>
 $(function () {
 	
     // Initialize chart
-    bubblesblogger('#bubblesblogger', 470);
+    //bubblesblogger('#bubblesblogger', 470);
     // Chart setup
     function bubblesblogger(element, diameter) {
         // Basic setup
@@ -5141,24 +4325,24 @@ data = {
 	 
 	 
 	 <%if (bloggerPostFrequency.size() > 0) {
-						int k = 0;
-						for (int m = 0; m < bloggerPostFrequency.size(); m++) {
-							ArrayList<?> bloggerFreq = (ArrayList<?>) bloggerPostFrequency.get(m);
-							String bloggerName = bloggerFreq.get(0).toString();
-							String bloggerPostFreq="0";
-							try{
-							bloggerPostFreq = (null ==  bloggerFreq.get(1).toString()) ? "0" :  bloggerFreq.get(1).toString();
-							}
-							catch(Exception e){
-								System.out.println(e);
-							}
-							%>
+			int k = 0;
+			for (int m = 0; m < bloggerPostFrequency.size(); m++) {
+				ArrayList<?> bloggerFreq = (ArrayList<?>) bloggerPostFrequency.get(m);
+				String bloggerName = bloggerFreq.get(0).toString();
+				String bloggerPostFreq = "0";
+				try {
+					bloggerPostFreq = (null == bloggerFreq.get(1).toString()) ? "0" : bloggerFreq.get(1).toString();
+				} catch (Exception e) {
+
+				}%>
 							
 							{"label":"<%=bloggerName.trim()%>","name":"<%=bloggerName.trim()%>", "size":<%=Integer.parseInt(bloggerPostFreq)%>},
 <%}
 
-					}%>
- /* {"label":"Blogger 2","name":"Obadimu Adewale", "size":2500},
+}else{
+
+%>
+  {"label":"Blogger 2","name":"Obadimu Adewale", "size":2500},
  {"label":"Blogger 3","name":"Oluwaseun Walter", "size":2800},
  {"label":"Blogger 4","name":"Kiran Bandeli", "size":900},
  {"label":"Blogger 5","name":"Adekunle Mayowa", "size":1400},
@@ -5167,7 +4351,7 @@ data = {
  {"label":"Blogger 8","name":"Adekunle Mayowa", "size":300},
  {"label":"Blogger 9","name":"Adekunle Mayowa", "size":350},
  {"label":"Blogger 10","name":"Adekunle Mayowa", "size":1400}
- */
+ <%}%>
  ]
     }
      
@@ -5318,18 +4502,19 @@ data = {
     var color = d3.scale.linear()
             .domain([0,1,2,3,4,5,6,10,15,20,80])
             .range(["#17394C", "#F5CC0E", "#CE0202", "#aaa", "#999", "#888", "#777", "#666", "#555", "#444", "#333", "#222"]);
-    <% } %>
+    <%}%>
 </script>
 	<!-- end of blogger bubble chart -->
 
 
 	<!-- Blog Bubble Chart -->
-	
+
 	<script>
-	<% if(date_set.toString().equals("1")){}else{ %>
+	<%if (date_set.toString().equals("1")) {
+} else {%>
 $(function () {
     // Initialize chart
-    bubblesblog('#bubblesblog', 470);
+    //bubblesblog('#bubblesblog', 470);
     // Chart setup
     function bubblesblog(element, diameter) {
         // Basic setup
@@ -5392,13 +4577,13 @@ data = {
  //"name":"flare",
  "bloggers":[
 	 <%if (blogPostFrequency.size() > 0) {
-						for (int m = 0; m < blogPostFrequency.size(); m++) {
-							ArrayList<?> blogFreq = (ArrayList<?>) blogPostFrequency.get(m);
-							String blogName = blogFreq.get(0).toString();
-							String blogPostFreq = blogFreq.get(1).toString();%>{label:"<%=blogName%>", "size":<%=Integer.parseInt(blogPostFreq)%>, name:"<%=blogName%>", type:"blog"},
+			for (int m = 0; m < blogPostFrequency.size(); m++) {
+				ArrayList<?> blogFreq = (ArrayList<?>) blogPostFrequency.get(m);
+				String blogName = blogFreq.get(0).toString();
+				String blogPostFreq = blogFreq.get(1).toString();%>{label:"<%=blogName%>", "size":<%=Integer.parseInt(blogPostFreq)%>, name:"<%=blogName%>", type:"blog"},
 		 <%}
 
-					}%>
+}%>
  ]
 }  
       
@@ -5543,7 +4728,7 @@ data = {
       	}
     }
 });
-<% } %>
+<%}%>
 </script>
 
 	<script>
@@ -5630,12 +4815,12 @@ $(".option-lable").on("click",function(e){
          // ];
          data = [	
         	[<%if (postingTrend.size() > 0) {
-						for (int key : postingTrend.keySet()) {
-							/* String postYear = postingTrend.get(key).toString(); */
-							int postCount = Integer.parseInt(postingTrend.get(key).toString());%>
+	for (int key : postingTrend.keySet()) {
+		/* String postYear = postingTrend.get(key).toString(); */
+		int postCount = Integer.parseInt(postingTrend.get(key).toString());%>
      		  			{"date":"<%=key%>","close":<%=postCount%>},
      		<%}
-					}%>
+}%>
      		]
      	  
         	 /*

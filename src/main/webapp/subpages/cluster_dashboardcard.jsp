@@ -66,6 +66,7 @@ if(action.toString().equals("getkeywordstatus")){
 	System.out.println("done with clusters");
 	JSONObject final_centroids = new JSONObject();
 	JSONObject source = new JSONObject();
+	
 try{
 	JSONObject ress = new JSONObject(result.get(0).toString());
 	System.out.println("done with res");

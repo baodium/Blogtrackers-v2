@@ -131,7 +131,6 @@ public class Blogs extends DbConnection{
 			}catch(Exception e){
 				return count;
 			}
-			//System.out.println(count);
 			return count;
 			
 	}
@@ -239,11 +238,6 @@ public class Blogs extends DbConnection{
 
 		String url = base_url+"_search?size=10000";
 
-//		System.out.println("testque--"+this._getResult(url, jsonObj).size());
-//		System.out.println("url--"+url);
-//		System.out.println("elasticquery--"+jsonObj);
-		//System.out.println("query for fetch in blogs.java "+ jsonObj);
-//		System.out.println("elasticresult--"+this._getResult(url, jsonObj));
 		return this._getResult(url, jsonObj);
 
 	}
@@ -345,7 +339,6 @@ public class Blogs extends DbConnection{
 				"and date < \""+to+"\"\r\n" + 
 				"group by "+field_name+" limit "+limit+";";
 		
-		System.out.println(query);
 		ResultSet post_all =  DbConnection.queryResultSet(query);
 		
 		while(post_all.next()){
@@ -373,8 +366,7 @@ public class Blogs extends DbConnection{
 		try {
 		result = db.query("select blogger_name, max(influence_score), blogsite_id from blogger where blogsite_id in "+
 				(blogids)+" group by blogger_name order by influence_score desc");		
-		//System.out.println("query for _getInfluencialBlogger" + "select blogger_name, max(influence_score), blogsite_id from blogger where blogsite_id in "+
-				//(blogids)+" group by blogger_name order by influence_score desc");	
+
 		}catch(Exception e){
 		}
 		return result;
@@ -412,7 +404,6 @@ public class Blogs extends DbConnection{
 			
 		}catch(Exception e){
 		}
-		//System.out.println("query for _getblogPostFrequency"+"select blogsite_name, totalposts, blogsite_id, blogsite_url from blogsites where blogsite_id in "+blogids+" order by totalposts DESC");
 		return result;
 		
 
@@ -479,7 +470,6 @@ public class Blogs extends DbConnection{
 		String toplocation="";
 		ArrayList blogs = this._fetch(blog_ids);
 		JSONArray locations = new JSONArray();	
-		//System.out.println("blog reg"+blogs);
 		HashMap<String,Integer> hm = new HashMap<String,Integer>();
 		if (blogs.size() > 0) {
 			String bres = null;
@@ -505,12 +495,10 @@ public class Blogs extends DbConnection{
 			}
 		}
 
-		//System.out.println(hm+"");
 		int highest = 0;
 		Iterator it = hm.entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry pair = (Map.Entry)it.next();
-			//System.out.println(pair.getValue()+""+pair.getKey()+"");
 			if(Integer.parseInt(pair.getValue()+"")>highest) {
 				toplocation = pair.getKey()+""; 
 			}
@@ -536,8 +524,7 @@ public class Blogs extends DbConnection{
 		int tidd = Integer.parseInt(next)+1;
 
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");  
-		LocalDateTime now = LocalDateTime.now();  
-		//System.out.println(dtf.format(now));  
+		LocalDateTime now = LocalDateTime.now(); 
 
 		JSONObject param = new JSONObject();
 		param.put("crawled_by",userid);
@@ -549,8 +536,6 @@ public class Blogs extends DbConnection{
 		param.put("date_created",dtf.format(now)+"T06:00:00.000Z");
 
 
-		//System.out.println(param);
-		//JSONObject jsonObj = new JSONObject("{\"userid\":\"wizzletest\",\"query\":\"blogsite_id in (46,62,47,49,66,52,53,65,63,54)\",\"tracker_name\":\"Wizzle\",\"description\":\"Best blogs ever\",\"blogsites_num\":10}");	 
 		String output = "false";
 
 		String url = base_url+"blogsites";	 
@@ -839,8 +824,7 @@ public class Blogs extends DbConnection{
 					"and date > \""+from+"\" and location is not null \r\n" + 
 					"and date < \""+to+"\"\r\n" + 
 					"group by "+field_name+" order by c desc limit "+limit+";";
-			
-//			System.out.println(query);
+		
 			ResultSet post_all =  DbConnection.queryResultSet(query);
 			
 			while(post_all.next()){
@@ -884,7 +868,6 @@ public class Blogs extends DbConnection{
 					"order by c desc\n" + 
 					"limit "+limit+";";
 			
-//			System.out.println(query);
 			ResultSet post_all =  DbConnection.queryResultSet(query);
 			
 			while(post_all.next()){
