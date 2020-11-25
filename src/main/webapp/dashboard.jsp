@@ -617,18 +617,18 @@ path.chord {
 						<h5 class="text-primary mb0">
 							<i class="fas fa-file-alt icondash"></i>Blogs
 						</h5>
-						<h3 class="text-blue mb0 countdash dash-label"><%=totalblog%></h3>
+						<h3 id="getblogcount" class="text-blue mb0 countdash dash-label getblogcount"><%=totalblog%></h3>
 					</div>
 				</div>
 			</div>
 
 			<div class="col-md-2">
-				<div class="card nocoloredcard mt10 mb10" id="getbloggercount">
+				<div class="card nocoloredcard mt10 mb10" id="getbloggercount1">
 					<div class="card-body p0 pt5 pb5">
 						<h5 class="text-primary mb0">
 							<i class="fas fa-user icondash"></i>Bloggers
 						</h5>
-						<h3 class="text-blue mb0 countdash dash-label blogger-count"><%=(totalbloggers == "" || totalbloggers == null) ? "" : NumberFormat.getNumberInstance(Locale.US).format(new Double(totalbloggers).intValue()) %></h3>
+						<h3 id="getbloggercount" class="text-blue mb0 countdash dash-label blogger-count getbloggercount"><%=(totalbloggers == "" || totalbloggers == null) ? "" : NumberFormat.getNumberInstance(Locale.US).format(new Double(totalbloggers).intValue()) %></h3>
 					</div>
 				</div>
 			</div>
@@ -639,7 +639,7 @@ path.chord {
 						<h5 class="text-primary mb0">
 							<i class="fas fa-file-alt icondash"></i>Posts
 						</h5>
-						<h3 class="text-blue mb0 countdash dash-label"><%=(totalpost == "" || totalpost == null) ? "" :NumberFormat.getNumberInstance(Locale.US).format(new Double(totalpost).intValue())%></h3>
+						<h3 id="getpostcount" class="text-blue mb0 countdash dash-label getpostcount"><%=(totalpost == "" || totalpost == null) ? "" :NumberFormat.getNumberInstance(Locale.US).format(new Double(totalpost).intValue())%></h3>
 					</div>
 				</div>
 			</div>
@@ -656,7 +656,7 @@ path.chord {
 							numcomments = "0";
 						}
 						%>
-						<h3 class="text-blue mb0 countdash dash-label"><%=NumberFormat.getNumberInstance(Locale.US).format(new Double(numcomments).intValue())%></h3>
+						<h3 id="getcommentcount" class="text-blue mb0 countdash dash-label getcommentcount"><%=NumberFormat.getNumberInstance(Locale.US).format(new Double(numcomments).intValue())%></h3>
 					</div>
 				</div>
 			</div>
@@ -3857,13 +3857,20 @@ var mymarker = [
 	
 	var word_count2 = {}; 
 	
-	function load_custom_filter(type, element){
-		$("."+element).html("</br><div><img src='images/loading.gif' /> COMPUTING FROM:  <b style='color : blue;  font-size: 20px;'><%=dt%> - <%=dte%></b></div>"); 
+	function load_custom_filter(type, element, status){
+		
+		if(status == 1){
+			$("."+element).html("<div><img src='images/loading.gif' /></div>"); 
+		}else{
+			$("."+element).html("</br><div><img src='images/loading.gif' /> COMPUTING FROM:  <b style='color : blue;  font-size: 20px;'><%=dt%> - <%=dte%></b></div>"); 
+		}
+		
 		$.ajax({
 			url: app_url+"subpages/dashboardcharts.jsp",
 			method: 'POST',
 			data: {
 				action:type,
+				tid:"<%=tid%>",
 				ids:"<%=ids%>",
 				date_start:"<%=dt%>",
 				date_end:"<%=dte%>"
@@ -3896,6 +3903,14 @@ var mymarker = [
 				load_custom_filter("getinfluencedashboard","getinfluencedashboard")
 				//load_custom_filter("getclusterdashboard","getclusterdashboard")
 				load_custom_filter("getdomaindashboard","getdomaindashboard") 
+				
+				
+				///count section
+				load_custom_filter("getblogcount","getblogcount", 1) 
+				load_custom_filter("getbloggercount","getbloggercount", 1) 
+				load_custom_filter("getpostcount","getpostcount", 1) 
+				load_custom_filter("getcommentcount","getcommentcount", 1) 
+				
 		
 			
 			
@@ -3946,6 +3961,13 @@ if (date_set.toString().equals("1")) {%>
 			load_custom_filter("getinfluencedashboard","getinfluencedashboard")
 			//load_custom_filter("getclusterdashboard","getclusterdashboard")
 			load_custom_filter("getdomaindashboard","getdomaindashboard") 
+			
+			
+			///count section
+			load_custom_filter("getblogcount","getblogcount", 1) 
+			load_custom_filter("getbloggercount","getbloggercount", 1) 
+			load_custom_filter("getpostcount","getpostcount", 1) 
+			load_custom_filter("getcommentcount","getcommentcount", 1)
 			
 		
 			

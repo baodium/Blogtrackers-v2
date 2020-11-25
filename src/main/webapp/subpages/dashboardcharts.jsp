@@ -25,6 +25,7 @@ Object sort = (null == request.getParameter("sort")) ? "" : request.getParameter
 Object action = (null == request.getParameter("action")) ? "" : request.getParameter("action");
 Object post_ids = (null == request.getParameter("post_ids")) ? "" : request.getParameter("post_ids");
 Object ids = (null == request.getParameter("ids")) ? "" : request.getParameter("ids");
+String tid = (null == request.getParameter("tid")) ? "" : request.getParameter("tid");
 
 String[] array = ids.toString().split(",");
 String blog_ids = "";
@@ -714,6 +715,13 @@ wordtagcloud("#tagcloudcontainer",450,jsonresult);
 		</div>
 	</div>
 </div>
+<div class="float-right">
+	<a href="<%=request.getContextPath()%>/sentiment.jsp?tid=<%=tid%>"><button
+			class="btn buttonportfolio2 mt10">
+			<b class="float-left semi-bold-text">Sentiment Analysis </b> <b
+				class="fas fa-adjust float-right icondash2"></b>
+		</button></a>
+</div>
 
 <script type="text/javascript">
 				  $(function () {
@@ -750,6 +758,13 @@ wordtagcloud("#tagcloudcontainer",450,jsonresult);
 			</div>
 		</div>
 	</div>
+</div>
+<div class="float-right">
+	<a href="bloggerportfolio.jsp?tid=<%=tid%>"><button
+			class="btn buttonportfolio2 mt10">
+			<b class="float-left semi-bold-text">Blogger Portfolio
+				Analysis </b> <b class="fas fa-user float-right icondash2"></b>
+		</button></a>
 </div>
 
 <!-- Blogger Bubble Chart -->
@@ -1002,6 +1017,13 @@ if (bloggerPostFrequency.size() > 0) {
 			</div>
 		</div>
 	</div>
+</div>
+<div class="float-right">
+	<a href="blogportfolio.jsp?tid=<%=tid%>"><button
+			class="btn buttonportfolio2 mt10">
+			<b class="float-left semi-bold-text">Blog Portfolio Analysis</b>
+			<b class="fas fa-file-alt float-right icondash2"></b>
+		</button></a>
 </div>
 
 <!-- Blog Bubble Chart -->
@@ -1283,7 +1305,13 @@ $(".option-lable").on("click",function(e){
 		</div>
 	</div>
 </div>
-
+<div class="float-right">
+	<a href="influence.jsp?tid=<%=tid%>"><button
+			class="btn buttonportfolio2 mt10">
+			<b class="float-left semi-bold-text">Influence Analysis </b> <b
+				class="fas fa-exchange-alt float-right icondash2"></b>
+		</button></a>
+</div>
 
 <!-- start of influence bar chart  -->
 <script>
@@ -1869,6 +1897,34 @@ $(function () {
 			    $('#DataTables_Table_0_wrapper').css( 'display', 'block' );
 			    $('#DataTables_Table_0_wrapper').width('100%');
 				</script>
+
+
+
+<%
+	} else if (action.toString().equals("getblogcount")) {
+%>
+
+
+505
+
+<%
+	} else if (action.toString().equals("getbloggercount")) {
+%>
+
+
+345
+<%
+	} else if (action.toString().equals("getpostcount")) {
+%>
+
+
+678
+<%
+	} else if (action.toString().equals("getcommentcount")) {
+%>
+
+
+567
 
 
 <%
