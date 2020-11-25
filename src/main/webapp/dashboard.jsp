@@ -698,7 +698,7 @@ path.chord {
 									</button>
 								</div>
 								<div style="min-height: 490px;">
-									<div class="map-container map-choropleth"></div>
+									<div class="map-container map-choropleth getlocationdashboard"></div>
 								</div>
 
 
@@ -783,7 +783,7 @@ path.chord {
 								<div class="min-height-table">
 									<div class="chart-container">
 
-										<div class="chart" id="languageusage"></div>
+										<div class="chart getlanguagedashboard" id="languageusage"></div>
 									</div>
 								</div>
 							</div>
@@ -973,7 +973,7 @@ path.chord {
 						</div>
 						<div style="min-height: 420px;">
 							<div class="chart-container text-center">
-								<div class="chart svg-center" id="sentimentpiechart"></div>
+								<div class="chart svg-center getsentimentdashboard" id="sentimentpiechart"></div>
 							</div>
 						</div>
 					</div>
@@ -1000,7 +1000,7 @@ path.chord {
 						</div>
 						<div class="min-height-table" style="min-height: 500px;">
 							<div class="chart-container">
-								<div class="chart" id="bubblesblog"></div>
+								<div class="chart getblogdashboard" id="bubblesblog"></div>
 							</div>
 						</div>
 					</div>
@@ -1026,7 +1026,7 @@ path.chord {
 						</div>
 						<div class="min-height-table" style="min-height: 450px;">
 							<div class="chart-container">
-								<div class="chart" id="bubblesblogger"></div>
+								<div class="chart getbloggerdashboard" id="bubblesblogger"></div>
 							</div>
 						</div>
 					</div>
@@ -1064,7 +1064,7 @@ path.chord {
 						</div>
 						<div class="min-height-table" style="min-height: 500px;">
 							<div class="chart-container" id="influencecontainer">
-								<div class="chart" id="influencebar"></div>
+								<div class="chart getinfluencedashboard" id="influencebar"></div>
 							</div>
 						</div>
 					</div>
@@ -1213,7 +1213,7 @@ path.chord {
 							<!--   <div class="p15 pb5 pt0" role="group">
           Export Options
           </div> -->
-							<div id="top-domain-box">
+							<div id="top-domain-box" class="getdomaindashboard">
 								<table id="DataTables_Table_0_wrapper"
 									class="display table_over_cover" style="width: 100%">
 									<thead>
@@ -3858,7 +3858,7 @@ var mymarker = [
 	var word_count2 = {}; 
 	
 	function load_custom_filter(type, element){
-		$("#"+element).html("<img src='images/loading.gif' /> COMPUTING DISPLAY FOR SELECTED DATE RANGE:  <b style='color : blue;  font-size: 20px;'><%=dt%> - <%=dte%></b> PLEASE WAIT...."); 
+		$("."+element).html("</br> <img src='images/loading.gif' /> COMPUTING DISPLAY FOR SELECTED DATE RANGE:  <b style='color : blue;  font-size: 20px;'><%=dt%> - <%=dte%></b> PLEASE WAIT...."); 
 		$.ajax({
 			url: app_url+"subpages/dashboardcharts.jsp",
 			method: 'POST',
@@ -4859,7 +4859,6 @@ $(".option-lable").on("click",function(e){
          //   {
          //     "date": "Jul",
          //     "close": 100
-         //   },
          //   {
          //     "date": "Aug",
          //     "close": 500
