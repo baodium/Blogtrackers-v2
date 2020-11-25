@@ -3858,7 +3858,7 @@ var mymarker = [
 	var word_count2 = {}; 
 	
 	function load_custom_filter(type, element){
-		$("."+element).html("</br> <img src='images/loading.gif' /> COMPUTING DISPLAY FOR SELECTED DATE RANGE:  <b style='color : blue;  font-size: 20px;'><%=dt%> - <%=dte%></b> PLEASE WAIT...."); 
+		$("."+element).html("</br><div><img src='images/loading.gif' /> COMPUTING FROM:  <b style='color : blue;  font-size: 20px;'><%=dt%> - <%=dte%></b></div>"); 
 		$.ajax({
 			url: app_url+"subpages/dashboardcharts.jsp",
 			method: 'POST',
