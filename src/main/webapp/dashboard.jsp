@@ -315,22 +315,49 @@
 
 			int b = 0;
 			ArrayList postingTotal = new ArrayList<>();
-			postingTotal = post._searchPostTotal("date", ystint, yendint, ids); 
-
-			for (int i = ystint; i <= yendint; i++) {
-				postingTrend.put(i, 0);
-			}
-			if (postingTotal.size() > 0) {
-
-				for (int m = 0; m < postingTotal.size(); m++) {
-					ArrayList<?> postCount = (ArrayList<?>) postingTotal.get(m);
-					String postyear = postCount.get(0).toString();
-					String yearcount = postCount.get(1).toString();
-					if (postingTrend.containsKey(Integer.parseInt(postyear))) {
-						postingTrend.put(Integer.parseInt(postyear), Integer.parseInt(yearcount));
+			String post_freq_status = "year";
+			if(yendint - ystint == 0){
+				
+				post_freq_status = "month";
+				//it is the same year, therefore search by month
+				postingTotal = post._searchMonthPostTotal("date", yendint, ids); 
+	
+				for (int i = 0; i < 12; i++) {
+					postingTrend.put(i, 0);
+				}
+				if (postingTotal.size() > 0) {
+	
+					for (int m = 0; m < postingTotal.size(); m++) {
+						ArrayList<?> postCount = (ArrayList<?>) postingTotal.get(m);
+						String postyear = postCount.get(0).toString();
+						String yearcount = postCount.get(1).toString();
+						if (postingTrend.containsKey(Integer.parseInt(postyear))) {
+							postingTrend.put(Integer.parseInt(postyear), Integer.parseInt(yearcount));
+						}
+					}
+				}
+			
+				
+			}else{
+				//it's not the same year
+				postingTotal = post._searchPostTotal("date", ystint, yendint, ids); 
+	
+				for (int i = ystint; i <= yendint; i++) {
+					postingTrend.put(i, 0);
+				}
+				if (postingTotal.size() > 0) {
+	
+					for (int m = 0; m < postingTotal.size(); m++) {
+						ArrayList<?> postCount = (ArrayList<?>) postingTotal.get(m);
+						String postyear = postCount.get(0).toString();
+						String yearcount = postCount.get(1).toString();
+						if (postingTrend.containsKey(Integer.parseInt(postyear))) {
+							postingTrend.put(Integer.parseInt(postyear), Integer.parseInt(yearcount));
+						}
 					}
 				}
 			}
+			
 
 			String cluster_status = "0";
 			String cluster_status_percentage = "";
@@ -892,7 +919,10 @@ path.chord {
 						<div>
 							<p class="text-primary mt10 float-left">
 
-								Posting Frequency
+								Posting Frequency  
+								<%if(post_freq_status.equals("month")){ %>
+								<i><b><%=ystint %></b></i>
+								<% } %>
 								<%-- for Past <select
 									class="text-primary filtersort sortbytimerange"><option
 										value="week" <%=(single.equals("week"))?"selected":"" %>>Week</option>
@@ -4797,6 +4827,7 @@ $(".option-lable").on("click",function(e){
      // Chart setup
      function lineBasic(element, height) {
          // Basic setup
+         var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"]
          // ------------------------------
          // Define main variables
          var d3Container = d3.select(element),
@@ -4854,17 +4885,37 @@ $(".option-lable").on("click",function(e){
         	[<%if (postingTrend.size() > 0) {
 	for (int key : postingTrend.keySet()) {
 		/* String postYear = postingTrend.get(key).toString(); */
-		int postCount = Integer.parseInt(postingTrend.get(key).toString());%>
-     		  			{"date":"<%=key%>","close":<%=postCount%>},
+		int postCount = Integer.parseInt(postingTrend.get(key).toString());
+		if(post_freq_status.equals("month")){ %>
+		
+			{"date":monthNames[<%=key%>],"close":<%=postCount%>},
+			
+		<% }else{ %>
+		
+			{"date":"<%=key%>","close":<%=postCount%>},
+		
+		<%}%>
+     		  			
      		<%}
 }%>
      		]
      	  
-        	 /*
-           [{"date":"2014","close":400},{"date":"2015","close":600},{"date":"2016","close":1300},{"date":"2017","close":1700},{"date":"2018","close":2100}],
-           [{"date":"2014","close":350},{"date":"2015","close":700},{"date":"2016","close":1500},{"date":"2017","close":1600},{"date":"2018","close":1250}],
-         	*/
+        	 
+          // [{"date":"2014","close":400},{"date":"2015","close":600},{"date":"2016","close":1300},{"date":"2017","close":1700},{"date":"2018","close":2100}],
+          // [{"date":"2014","close":350},{"date":"2015","close":700},{"date":"2016","close":1500},{"date":"2017","close":1600},{"date":"2018","close":1250}],
+         	
            ];
+         
+         //console.log("before posting frequenc data", data)
+         
+          //data = [[{"date": "Jan","close": 120},{"date": "Feb","close": 140},{"date": "Mar","close":160},{"date": "Apr","close": 180},{"date": "May","close": 200},{"date": "Jun","close": 220},{"date": "Jul","close": 240},{"date": "Aug","close": 260},{"date": "Sep","close": 280},{"date": "Oct","close": 300},{"date": "Nov","close": 320},{"date": "Dec","close": 340}],
+         // [{"date":"Jan","close":10},{"date":"Feb","close":20},{"date":"Mar","close":30},{"date": "Apr","close": 40},{"date": "May","close": 50},{"date": "Jun","close": 60},{"date": "Jul","close": 70},{"date": "Aug","close": 80},{"date": "Sep","close": 90},{"date": "Oct","close": 100},{"date": "Nov","close": 120},{"date": "Dec","close": 140}],
+         // ];
+         
+        // data = [[{"date":"2014","close":400},{"date":"2015","close":600},{"date":"2016","close":1300},{"date":"2017","close":1700},{"date":"2018","close":2100}],
+          //    [{"date":"2014","close":350},{"date":"2015","close":700},{"date":"2016","close":1500},{"date":"2017","close":1600},{"date":"2018","close":1250}],];
+         
+         //console.log("after posting frequenc data", data)
          //console.log(data);
          // data = [];
          // data = [
