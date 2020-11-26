@@ -213,6 +213,7 @@ wordtagcloud("#tagcloudcontainer",450,jsonresult);
 						
 					<%
 					JSONObject location = new JSONObject();
+					JSONObject country_name = new JSONObject();
 
 							String csvFile = application.getRealPath("/").replace('/', '/') + "lat_long.csv";
 							BufferedReader br = null;
@@ -226,6 +227,7 @@ wordtagcloud("#tagcloudcontainer",450,jsonresult);
 									// use comma as separator
 									String[] country = line.split(cvsSplitBy);
 									location.put(country[1].substring(0, 2), country[3] + "," + country[2]);
+									country_name.put(country[1].substring(0, 2), country[0]);
 
 								}
 
@@ -251,7 +253,7 @@ wordtagcloud("#tagcloudcontainer",450,jsonresult);
 								
 								
 							%>
-							{latLng: [<%=location.get(location_count._1)%>], name: '<%=location_count._2%>' , r:<%=location_count._2/1000%>},
+							{latLng: [<%=location.get(location_count._1)%>], name: '<%=country_name.get(location_count._1)%>, <%=location_count._2%>' , r:<%=location_count._2/1000%>},
 							/* {latLng: [40.463667, -3.74922], name: '101' , r:101},
 							{latLng: [37.09024, -95.712891], name: '3' , r:3},
 							{latLng: [52.132633, 5.291266], name: '10' , r:10},
@@ -1440,7 +1442,7 @@ $(function () {
     	  <%
     	  ArrayList<scala.Tuple2<String, Integer>> blogInfluence;
     	  if(action_type.equals("bloggers")){ 
-    		  blogInfluence = Blogs.getMostInfluentialBlogs("blogsite_id", blog_ids, date_start.toString(), date_end.toString(), "10");
+    		  blogInfluence = Blogs.getMostInfluentialBlogs("blogger", blog_ids, date_start.toString(), date_end.toString(), "10");
     	  }else{
     		 blogInfluence = Blogs.getMostInfluentialBlogs("blogsite_id", blog_ids, date_start.toString(), date_end.toString(), "10");
     	  }
@@ -1450,8 +1452,14 @@ $(function () {
     	  if (blogInfluence.size() > 0) {
 	
 	for (scala.Tuple2<String, Integer> y : blogInfluence) {
+		String fieldname = "";
+		if(action_type.equals("bloggers")){ 
+			fieldname = y._1.split("_______________")[1];
+		}else{
+			fieldname = y._1.split("_______________")[0];
+		}
 		%>
-		 {letter:"<%=y._1%>", frequency:<%=y._2%>, name:"<%=y._1%>", type:"blogger"},
+		 {letter:"<%=fieldname%>", frequency:<%=y._2%>, name:"<%=fieldname%>", type:"blogger"},
 		 <%
 						}
 					}%>    
@@ -1944,13 +1952,13 @@ $(function () {
 						
 						ArrayList<scala.Tuple2<String, Integer>> blogInfluence;
 						String query;
-						if(action_type.equals("bloggers")){ 
-				    		   query = "select domain, count(domain) c\r\n" + 
+						if(action_type.equals("urls")){ 
+				    		   query = "select link, count(link) c\r\n" + 
 										"from outlinks\r\n" + 
-										"where blogsite_id in ("+blog_ids+") and domain is not null and domain != '' \r\n" + 
+										"where blogsite_id in ("+blog_ids+") and link is not null and link != '' \r\n" + 
 										"and date > \""+date_start.toString()+"\" \r\n" + 
 										"and date < \""+date_end.toString()+"\"\r\n" + 
-										"group by domain\r\n" + 
+										"group by link \r\n" + 
 										"order by c desc limit 1000;";
 				    	  }else{
 				    		   query = "select domain, count(domain) c\r\n" + 

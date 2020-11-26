@@ -324,7 +324,7 @@ public class Blogs extends DbConnection{
 	 * @throws Exception - Exception
 	 * @return String result
 	 */
-	public static ArrayList<Tuple2<String, Integer> > getMostInfluentialBlogs(String field_name, String field_values, String from, String to, String limit) throws Exception {
+	public static ArrayList<Tuple2<String, Integer>> getMostInfluentialBlogs(String field_name, String field_values, String from, String to, String limit) throws Exception {
 		String result = null;
 		ArrayList<Tuple2<String, Integer> > output = new ArrayList<>();
 		Tuple2<String, Integer> v = new Tuple2<String, Integer>(null,null);
@@ -334,7 +334,7 @@ public class Blogs extends DbConnection{
 		}
 		String query = "select "+field_name+", SUBSTRING_INDEX(SUBSTRING_INDEX(SUBSTRING_INDEX(SUBSTRING_INDEX(permalink, '/', 3), '://', -1), '/', 1), '?', 1) as domain, max(influence_score) m\r\n" + 
 				"from blogposts\r\n" + 
-				"where "+field_name+" in ("+field_values+") \r\n" + 
+				"where blogsite_id in ("+field_values+") \r\n" + 
 				"and date > \""+from+"\" \r\n" + 
 				"and date < \""+to+"\"\r\n" + 
 				"group by "+field_name+" limit "+limit+";";
@@ -343,9 +343,10 @@ public class Blogs extends DbConnection{
 		
 		while(post_all.next()){
 			String domain_name = post_all.getString("domain");
+			String field_name_data = post_all.getString(field_name);
 			int count = post_all.getInt("m");
 			
-			v = new Tuple2<String, Integer>(domain_name,count);
+			v = new Tuple2<String, Integer>(domain_name+"_______________"+field_name_data,count);
 			output.add(v);
 		}
 
