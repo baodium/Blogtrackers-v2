@@ -1023,6 +1023,25 @@ public class Blogposts {
 
 		return hd;
 	}
+	
+	public ArrayList _searchMonthPostTotal(String field, int year, String blog_ids) throws Exception {
+
+		ArrayList hd = new ArrayList();
+		blog_ids = blog_ids.replaceAll(",$", "");
+		blog_ids = blog_ids.replaceAll(", $", "");
+
+		blog_ids = "(" + blog_ids + ")";
+
+		try {
+			hd = DbConnection
+					.query("select month(date) m, count(blogpost_id) from blogposts where blogsite_id in " + blog_ids + " and year(date) = "+ year +" group by m; ");
+
+		} catch (Exception e) {
+			return hd;
+		}
+
+		return hd;
+	}
 
 	public String _searchRangeTotal(String field, String greater, String less, String blog_ids) throws Exception {
 
