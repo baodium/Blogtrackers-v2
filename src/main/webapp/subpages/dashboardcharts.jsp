@@ -11,6 +11,7 @@
 <%@page import="org.json.JSONArray"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="java.util.Date"%>
+<%@page import="java.io.*"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 
@@ -209,14 +210,54 @@ wordtagcloud("#tagcloudcontainer",450,jsonresult);
 					
 					
 					$(function() {
-					
+						
+					<%
+					JSONObject location = new JSONObject();
+
+							String csvFile = application.getRealPath("/").replace('/', '/') + "lat_long.csv";
+							BufferedReader br = null;
+							String line = "";
+							String cvsSplitBy = ",";
+
+							try {
+
+								br = new BufferedReader(new FileReader(csvFile));
+								while ((line = br.readLine()) != null) {
+									// use comma as separator
+									String[] country = line.split(cvsSplitBy);
+									location.put(country[1].substring(0, 2), country[3] + "," + country[2]);
+
+								}
+
+							} catch (FileNotFoundException e) {
+								e.printStackTrace();
+							} catch (IOException e) {
+								e.printStackTrace();
+							} finally {
+								if (br != null) {
+									try {
+										br.close();
+									} catch (IOException e) {
+										e.printStackTrace();
+									}
+								}
+							}%>
 						var mymarker = [
-							{latLng: [40.463667, -3.74922], name: '101' , r:101},
+							<%
+							
+							for (scala.Tuple2<String, scala.Tuple2<String, Integer>> x : top_location) {
+								scala.Tuple2<String, Integer> location_count = x._2;
+								
+								
+								
+							%>
+							{latLng: [<%=location.get(location_count._1)%>], name: '<%=location_count._2%>' , r:<%=location_count._2/1000%>},
+							/* {latLng: [40.463667, -3.74922], name: '101' , r:101},
 							{latLng: [37.09024, -95.712891], name: '3' , r:3},
 							{latLng: [52.132633, 5.291266], name: '10' , r:10},
 							{latLng: [46.227638, 2.213749], name: '2' , r:2},
-							{latLng: [-25.274398, 133.775136], name: '50' , r:50},
-						]
+							{latLng: [-25.274398, 133.775136], name: '50' , r:50}, */
+							<%}%>]
 
 						//console.log(mymarker[2].size);
 						    // Choropleth map
@@ -498,7 +539,7 @@ wordtagcloud("#tagcloudcontainer",450,jsonresult);
 					 ];  --%>
 					
 					  data = <%=result_language%> 
-					  console.log("data--",data)
+					  //console.log("data--",data)
 					 
 					 <%-- console.log("langdata-->"+"<%=language_data%>"); --%>
 				     data.sort(function(a, b){
@@ -886,7 +927,7 @@ if (bloggerPostFrequency.size() > 0) {
 	  bloggers = alldata;
 	  
 	  data = {  bloggers } 
-	  console.log("blogger_data",data)
+	  //console.log("blogger_data",data)
             //
             // Append chart elements
             //
@@ -1271,18 +1312,18 @@ data = {
 </script>
 <script>
 $(".option-only").on("change",function(e){
-	console.log("only changed ");
+	//console.log("only changed ");
 	var valu =  $(this).val();
 	$("#single_date").val(valu);
 	$('form#customformsingle').submit();
 });
 $(".option-only").on("click",function(e){
-	console.log("only Click ");
+	//console.log("only Click ");
 	$("#single_date").val($(this).val());
 	//$('form#customformsingle').submit();
 });
 $(".option-lable").on("click",function(e){
-	console.log("Label Click ");
+	//gconsole.log("Label Click ");
 	
 	$("#single_date").val($(this).val());
 	//$('form#customformsingle').submit();
@@ -1978,7 +2019,7 @@ $(function () {
 %>
 
 
-<%=rows.get(0) %>
+<%=NumberFormat.getNumberInstance(Locale.US).format(new Double(rows.get(0).toString()).intValue())%>
 
 <%
 	} else if (action.toString().equals("getbloggercount")) {
@@ -1990,7 +2031,7 @@ $(function () {
 %>
 
 
-<%=rows.get(0) %>
+<%=NumberFormat.getNumberInstance(Locale.US).format(new Double(rows.get(0).toString()).intValue())%>
 <%
 	} else if (action.toString().equals("getpostcount")) {
 		elastic_query = new JSONObject("{\n" + 
@@ -2001,7 +2042,7 @@ $(function () {
 %>
 
 
-<%=rows.get(0) %>
+<%=NumberFormat.getNumberInstance(Locale.US).format(new Double(rows.get(0).toString()).intValue())%>
 <%
 	} else if (action.toString().equals("getcommentcount")) {
 		elastic_query = new JSONObject("{\n" + 
@@ -2012,7 +2053,7 @@ $(function () {
 %>
 
 
-<%=rows.get(0) %>
+<%=NumberFormat.getNumberInstance(Locale.US).format(new Double(rows.get(0).toString()).intValue())%>
 
 
 <%

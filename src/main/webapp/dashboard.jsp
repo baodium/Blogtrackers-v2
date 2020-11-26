@@ -302,8 +302,8 @@
 
 			String totalcomment = null;
 			//totalcomment = comment._getCommentById(ids); 
-			
-			ArrayList blogs = blog._fetch(ids); //To be removed
+			ArrayList blogs = new ArrayList<>();
+			//ArrayList blogs = blog._fetch(ids); //To be removed
 
 			String[] blogss = ids.split(",");
 			int totalblog = blogss.length;
@@ -341,16 +341,16 @@
 			java.sql.ResultSet source = null;
 			
 			Dashboard d = new Dashboard(tid.toString());
-			d.load_cluster_and_terms_dashboard();
+			//d.load_cluster_and_terms_dashboard();
 			
 			cluster_status = d.get_cluster_status();
 			cluster_status_percentage = d.get_cluster_status_percentage();
 			status = d.get_kwt_status();
 			status_percentage = d.get_kwt_status_percentage();
-			final_centroids = d.get_final_centroids();
+			/* final_centroids = d.get_final_centroids();
 			final_result = d.get_final_result();
 			
-			source = d.get_cluster_result();   
+			source = d.get_cluster_result();    */
 
 ///end clustering check
 
