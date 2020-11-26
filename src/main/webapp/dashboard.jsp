@@ -862,15 +862,6 @@ path.chord {
 						</div>
 
 
-
-
-
-
-
-
-
-
-
 					</div>
 
 
@@ -3829,7 +3820,14 @@ var mymarker = [
 			{latLng: [<%=location.get(loc)%>], name: '<%=size%>' , r:<%=markerSize%>},
 	<%}
 }%>]
-console.log(mymarker)
+
+/* var mymarker = [
+	{latLng: [40.463667, -3.74922], name: '100' , r:100},
+	{latLng: [37.09024, -95.712891], name: '3' , r:3},
+	{latLng: [52.132633, 5.291266], name: '10' , r:10},
+	{latLng: [46.227638, 2.213749], name: '2' , r:2},
+	{latLng: [-25.274398, 133.775136], name: '50' , r:50},
+] */
   </script>
 	<script type="text/javascript"
 		src="assets/vendors/maps/jvectormap/jvectormap.min.js"></script>
