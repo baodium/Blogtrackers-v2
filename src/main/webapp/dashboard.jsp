@@ -251,7 +251,6 @@
 			
 			//locations = blog._getLocation(ids);
 			
-			
 			//locations_usage = blog._getLocationUsage(ids);
 
 			//languages = blog._getLanguage(ids);
@@ -341,7 +340,7 @@
 			JSONObject final_result = new JSONObject();
 			java.sql.ResultSet source = null;
 			
-			/* Dashboard d = new Dashboard(tid.toString());
+			Dashboard d = new Dashboard(tid.toString());
 			d.load_cluster_and_terms_dashboard();
 			
 			cluster_status = d.get_cluster_status();
@@ -351,7 +350,7 @@
 			final_centroids = d.get_final_centroids();
 			final_result = d.get_final_result();
 			
-			source = d.get_cluster_result();   */
+			source = d.get_cluster_result();   
 
 ///end clustering check
 
@@ -470,6 +469,14 @@ path.chord {
 #circle:hover path.fade {
 	display: none;
 }
+
+.inner_loader {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%) }
 </style>
 <!-- end sample chord css -->
 </head>
@@ -697,8 +704,11 @@ path.chord {
 										<i class="fas fa-exchange-alt" aria-hidden="true"></i>
 									</button>
 								</div>
+								
 								<div style="min-height: 490px;">
-									<div class="map-container map-choropleth getlocationdashboard"></div>
+									<div class="chart-container text-center">
+										<div class="svg-center map-container map-choropleth getlocationdashboard"></div>
+									</div>
 								</div>
 
 
@@ -780,12 +790,13 @@ path.chord {
 										<i class="fas fa-exchange-alt" aria-hidden="true"></i>
 									</button>
 								</div>
-								<div class="min-height-table">
-									<div class="chart-container">
-
-										<div class="chart getlanguagedashboard" id="languageusage"></div>
+								<div style="min-height: 490px;">
+									<div class="chart-container text-center">
+										<div style="min-height: 400px;" class="chart getlanguagedashboard" id="languageusage"></div>
 									</div>
 								</div>
+								
+								
 							</div>
 							<div class="back p30 pt5 pb5">
 
@@ -989,7 +1000,7 @@ path.chord {
 								Blog Distribution
 								</p>
 						</div>
-						<div class="min-height-table" style="min-height: 500px;">
+						<div class="min-height-table" style="min-height: 450px;">
 							<div class="chart-container">
 								<div class="chart getblogdashboard" id="bubblesblog"></div>
 							</div>
@@ -1055,7 +1066,7 @@ path.chord {
 						</div>
 						<div class="min-height-table" style="min-height: 500px;">
 							<div class="chart-container" id="influencecontainer">
-								<div class="chart getinfluencedashboard" id="influencebar"></div>
+								<div class="chart  getinfluencedashboard" id="influencebar"></div>
 							</div>
 						</div>
 					</div>
@@ -3859,9 +3870,9 @@ var mymarker = [
 	function load_custom_filter(type, element, status){
 		
 		if(status == 1){
-			$("."+element).html("<div><img src='images/loading.gif' /></div>"); 
+			$("."+element).html("</br><div class='inner_loader' ><img src='images/loading.gif' /></div>"); 
 		}else{
-			$("."+element).html("</br><div><img src='images/loading.gif' /> COMPUTING FROM:  <b style='color : blue;  font-size: 20px;'><%=dt%> - <%=dte%></b></div>"); 
+			$("."+element).html("</br><div class='inner_loader' ><img  src='images/loading.gif' /> COMPUTING FROM:  <b style='color : blue;  font-size: 20px;'><%=dt%> - <%=dte%></b></div>"); 
 		}
 		
 		$.ajax({
@@ -3883,7 +3894,7 @@ var mymarker = [
 			},
 			success: function(response)
 			{  
-			$("#"+element).html("<div id='dummy'></div><div style='min-height: 420px;'><div class='chart-container word-cld'><div class='chart' id='tagcloudcontainer99'><div class='jvectormap-zoomin zoombutton' id='zoom_in'>+</div><div class='jvectormap-zoomout zoombutton' id='zoom_out'>−</div></div></div></div>");
+			  $("#"+element).html("<div id='dummy'></div><div style='min-height: 420px;'><div class='chart-container word-cld'><div class='chart' id='tagcloudcontainer99'><div class='jvectormap-zoomin zoombutton' id='zoom_in'>+</div><div class='jvectormap-zoomout zoombutton' id='zoom_out'>−</div></div></div></div>");
 			  $("#"+element).html("<img src='images/loading.gif' /> COMPUTING DISPLAY PLEASE WAIT....").html(response);
 			}
 		});
@@ -3892,7 +3903,13 @@ var mymarker = [
 	
 		
 		$(document).ready(function(){
-		
+				
+				///count section
+				load_custom_filter("getblogcount","getblogcount", 1) 
+				load_custom_filter("getbloggercount","getbloggercount", 1) 
+				load_custom_filter("getpostcount","getpostcount", 1) 
+				load_custom_filter("getcommentcount","getcommentcount", 1)
+			
 				//load_custom_filter("getbloggercount","getbloggercount")
 				load_custom_filter("getlocationdashboard","getlocationdashboard")
 				load_custom_filter("getlanguagedashboard","getlanguagedashboard")
@@ -3904,11 +3921,7 @@ var mymarker = [
 				load_custom_filter("getdomaindashboard","getdomaindashboard") 
 				
 				
-				///count section
-				load_custom_filter("getblogcount","getblogcount", 1) 
-				load_custom_filter("getbloggercount","getbloggercount", 1) 
-				load_custom_filter("getpostcount","getpostcount", 1) 
-				load_custom_filter("getcommentcount","getcommentcount", 1) 
+				 
 				
 		
 			
@@ -3916,6 +3929,7 @@ var mymarker = [
 			<%if (status != null) {
 	if (status.equals("1") && date_set.toString().equals("1")) {%>
 			
+	
 			$(".word-cld").html("<img src='images/loading.gif' /> COMPUTING TERMS FOR POSTS PLEASE WAIT...."); 
 			 /* $('#keywordbtn').prop("disabled", true);
 			 $("#hrefkeyword").attr("href", ""); */
@@ -3951,6 +3965,12 @@ var mymarker = [
 			<%}
 }
 if (date_set.toString().equals("1")) {%>
+
+			///count section
+			load_custom_filter("getblogcount","getblogcount", 1) 
+			load_custom_filter("getbloggercount","getbloggercount", 1) 
+			load_custom_filter("getpostcount","getpostcount", 1) 
+			load_custom_filter("getcommentcount","getcommentcount", 1)
 			
 			load_custom_filter("getlocationdashboard","getlocationdashboard")
 			load_custom_filter("getlanguagedashboard","getlanguagedashboard") 
@@ -3962,11 +3982,6 @@ if (date_set.toString().equals("1")) {%>
 			load_custom_filter("getdomaindashboard","getdomaindashboard") 
 			
 			
-			///count section
-			load_custom_filter("getblogcount","getblogcount", 1) 
-			load_custom_filter("getbloggercount","getbloggercount", 1) 
-			load_custom_filter("getpostcount","getpostcount", 1) 
-			load_custom_filter("getcommentcount","getcommentcount", 1)
 			
 		
 			
@@ -4041,7 +4056,7 @@ if (date_set.toString().equals("1")) {%>
 	loadChordDashboard();
 	function loadChordDashboard(){
 		
-		 $(".chord_body").html("<img src='images/loading.gif' /> LOADING CHORD GRAPH FOR POSTS PLEASE WAIT...."); 
+		 $(".chord_body").html("</br><div class='inner_loader' ><img  src='images/loading.gif' /> LOADING CHORD GRAPH FOR POSTS PLEASE WAIT.. </div>"); 
 		 $('.buttonTopicModelling').prop("disabled", true);
 		 $("#hreftopicmodels").attr("href", "");
 		$.ajax({
@@ -4198,6 +4213,7 @@ function matrix_loader1(){
 	<%} else {
 
 	final_result.put("final_terms", "");%>
+	
 		 console.log('it is 0')
 		 $('#keywordbtn').prop("disabled", true);
 		 $('#keyword_computing_loaader').removeClass('hidden');
@@ -5303,28 +5319,61 @@ $(".option-lable").on("click",function(e){
 	<script>
 	
  $(document).ready(function() {
-		$('#top-sorttype').on("change",function(e){	
+		
+		$(document).delegate('#top-sorttype', 'change', function(){
 			loadDomain();
 		});
 		
-		$('#top-sortdate').on("change",function(e){
+		
+		$(document).delegate('#top-sortdate', 'change', function(){
+		
 			loadDomain();
 		});
 		
-		$('#top-listtype').on("change",function(e){
-			loadDomain();		
+		$(document).delegate('#top-listtype', 'change', function(){
+			//loadDomain();
+			
+			$(".getdomaindashboard").html('<div style="text-align:center"><img src="'+app_url+'images/preloader.gif"/><br/></div>');
+			
+			var type = $('#top-listtype').val();
+			
+			$.ajax({
+				url: app_url+"subpages/dashboardcharts.jsp",
+				method: 'POST',
+				data: {
+					action:"getdomaindashboard",
+					action_type:type,
+					tid:"<%=tid%>",
+					ids:"<%=ids%>",
+					date_start:"<%=dt%>",
+					date_end:"<%=dte%>"
+				},
+				error: function(response)
+				{		
+					$("#getdomaindashboard").html("FAILED TO COMPUTE TERMS.. RETRYING.. PLEASE WAIT.... <img src='images/loading.gif' />g");
+					$("#getdomaindashboard").html("<div style='min-height: 420px;'><div class='chart-container word-cld'><div class='chart' id='tagcloudcontainer'><div class='jvectormap-zoomin zoombutton' id='zoom_in'>+</div><div class='jvectormap-zoomout zoombutton' id='zoom_out'>−</div></div></div></div>");
+					console.log("This is failure"+response);
+
+				},
+				success: function(response)
+				{  
+				
+				$("#getdomaindashboard").html("<div id='dummy'></div><div style='min-height: 420px;'><div class='chart-container word-cld'><div class='chart' id='tagcloudcontainer99'><div class='jvectormap-zoomin zoombutton' id='zoom_in'>+</div><div class='jvectormap-zoomout zoombutton' id='zoom_out'>−</div></div></div></div>");
+				  $("#getdomaindashboard").html("<img src='images/loading.gif' /> COMPUTING DISPLAY PLEASE WAIT....").html(response);
+				  $('[data-toggle="tooltip"]').tooltip();
+				}
+			});
 		});
 		
 		
-		$('.sortbytimerange').on("change",function(e){	
+		$(document).delegate('.sortbytimerange', 'change', function(){
 			var valu =  $(this).val();
 			$("#single_date").val(valu);
 			$('form#customformsingle').submit();
 		});
 		
 		
-		$('#swapBlogger').on("change",function(e){
-				
+		$(document).delegate('#swapBlogger', 'change', function(){
 			//console.log("blogger busta");
 			var type = $('#swapBlogger').val();
 			var blgss = $("#bloggers").val();
@@ -5337,7 +5386,6 @@ $(".option-lable").on("click",function(e){
 				blgss = $("#bloggers").val();
 			}
 			
-			console.log("type"+type);
 			$("#postingfrequencybar").html('<div style="text-align:center"><img src="'+app_url+'images/preloader.gif"/><br/></div>');
 			console.log(blgss);
 			$.ajax({
@@ -5361,7 +5409,8 @@ $(".option-lable").on("click",function(e){
 			
 		});
 		
- $('#swapInfluence').on("change",function(e){
+
+$(document).delegate('#swapInfluence', 'change', function(){
 			
 		var type = $('#swapInfluence').val();
 		
@@ -5373,9 +5422,8 @@ $(".option-lable").on("click",function(e){
 		}
 		
 		$("#influencecontainer").html('<div style="text-align:center"><img src="'+app_url+'images/preloader.gif"/><br/></div>');
-		console.log(blgss);
 		
-		$.ajax({
+		/* $.ajax({
 			url: app_url+'subpages/influencebar.jsp',
 			method: 'POST',
 			data: {
@@ -5392,6 +5440,33 @@ $(".option-lable").on("click",function(e){
 			{   
 				$("#influencecontainer").html(response);
 				$('[data-toggle="tooltip"]').tooltip();
+			}
+		}); */
+		
+		
+		$.ajax({
+			url: app_url+"subpages/dashboardcharts.jsp",
+			method: 'POST',
+			data: {
+				action:"getinfluencedashboard",
+				action_type:type,
+				tid:"<%=tid%>",
+				ids:"<%=ids%>",
+				date_start:"<%=dt%>",
+				date_end:"<%=dte%>"
+			},
+			error: function(response)
+			{		
+				$("#getinfluencedashboard").html("FAILED TO COMPUTE TERMS.. RETRYING.. PLEASE WAIT.... <img src='images/loading.gif' />g");
+				$("#getinfluencedashboard").html("<div style='min-height: 420px;'><div class='chart-container word-cld'><div class='chart' id='tagcloudcontainer'><div class='jvectormap-zoomin zoombutton' id='zoom_in'>+</div><div class='jvectormap-zoomout zoombutton' id='zoom_out'>−</div></div></div></div>");
+				console.log("This is failure"+response);
+
+			},
+			success: function(response)
+			{  
+			$("#getinfluencedashboard").html("<div id='dummy'></div><div style='min-height: 420px;'><div class='chart-container word-cld'><div class='chart' id='tagcloudcontainer99'><div class='jvectormap-zoomin zoombutton' id='zoom_in'>+</div><div class='jvectormap-zoomout zoombutton' id='zoom_out'>−</div></div></div></div>");
+			  $("#getinfluencedashboard").html("<img src='images/loading.gif' /> COMPUTING DISPLAY PLEASE WAIT....").html(response);
+			  $('[data-toggle="tooltip"]').tooltip();
 			}
 		});
 		

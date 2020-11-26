@@ -27,6 +27,8 @@ Object post_ids = (null == request.getParameter("post_ids")) ? "" : request.getP
 Object ids = (null == request.getParameter("ids")) ? "" : request.getParameter("ids");
 String tid = (null == request.getParameter("tid")) ? "" : request.getParameter("tid");
 
+String action_type = (null == request.getParameter("action_type")) ? "" : request.getParameter("action_type");
+
 String[] array = ids.toString().split(",");
 String blog_ids = "";
 for (String x : array) {
@@ -781,7 +783,7 @@ wordtagcloud("#tagcloudcontainer",450,jsonresult);
 <script>
 $(function () {
     // Initialize chart
-    bubblesblogger('#bubblesblogger', 470);
+    bubblesblogger('#bubblesblogger', 450);
     // Chart setup
     function bubblesblogger(element, diameter) {
         // Basic setup
@@ -1021,7 +1023,7 @@ if (bloggerPostFrequency.size() > 0) {
 		<div>
 			<p class="text-primary mt10 float-left">Blog Distribution</p>
 		</div>
-		<div class="min-height-table" style="min-height: 500px;">
+		<div class="min-height-table" style="min-height: 450px;">
 			<div class="chart-container">
 				<div class="chart" id="bubblesblog"></div>
 			</div>
@@ -1040,7 +1042,7 @@ if (bloggerPostFrequency.size() > 0) {
 <script>
 $(function () {
     // Initialize chart
-    bubblesblog('#bubblesblog', 470);
+    bubblesblog('#bubblesblog', 450);
     // Chart setup
     function bubblesblog(element, diameter) {
         // Basic setup
@@ -1294,6 +1296,17 @@ $(".option-lable").on("click",function(e){
 
 <%
 	} else if (action.toString().equals("getinfluencedashboard")) {
+		
+		String blog_active;
+		String bloggers_active;
+		if(action_type.equals("bloggers")){ 
+			bloggers_active = "selected='selected'";
+			blog_active = "";
+		}else{
+			bloggers_active = "";
+			blog_active = "selected='selected'";
+		}
+		
 %>
 
 <!-- START INFLUENCE -->
@@ -1305,8 +1318,8 @@ $(".option-lable").on("click",function(e){
 				Most Influential <select
 					class="text-primary filtersort sortbyblogblogger"
 					id="swapInfluence">
-					<option value="blogs">Blogs</option>
-					<option value="bloggers">Bloggers</option>
+					<option <%=blog_active %> value="blogs">Blogs</option>
+					<option <%=bloggers_active %> value="bloggers">Bloggers</option>
 				</select>
 			</p>
 		</div>
@@ -1384,7 +1397,15 @@ $(function () {
       //sort by influence score
       data = [
     	  <%
-    	  ArrayList<scala.Tuple2<String, Integer>> blogInfluence = Blogs.getMostInfluentialBlogs("blogsite_id", blog_ids, date_start.toString(), date_end.toString(), "10");
+    	  ArrayList<scala.Tuple2<String, Integer>> blogInfluence;
+    	  if(action_type.equals("bloggers")){ 
+    		  blogInfluence = Blogs.getMostInfluentialBlogs("blogsite_id", blog_ids, date_start.toString(), date_end.toString(), "10");
+    	  }else{
+    		 blogInfluence = Blogs.getMostInfluentialBlogs("blogsite_id", blog_ids, date_start.toString(), date_end.toString(), "10");
+    	  }
+    	  
+    	  
+    	  
     	  if (blogInfluence.size() > 0) {
 	
 	for (scala.Tuple2<String, Integer> y : blogInfluence) {
@@ -1839,6 +1860,17 @@ $(function () {
 
 <%
 	} else if (action.toString().equals("getdomaindashboard")) {
+		String url_active;
+		String domain_active;
+		if(action_type.equals("urls")){ 
+			url_active = "selected='selected'";
+			domain_active = "";
+		}else{
+			url_active = "";
+			domain_active = "selected='selected'";
+		}
+		
+		
 %>
 
 
@@ -1850,13 +1882,13 @@ $(function () {
 				<p class="text-primary p15 pb5 pt0">
 					List of Top <select id="top-listtype"
 						class="text-primary filtersort sortbydomainsrls">
-						<option value="domains">Domains</option>
-						<option value="urls">URLs</option>
+						<option <%=domain_active %> value="domains">Domains</option>
+						<option <%=url_active %> value="urls">URLs</option>
 					</select>
 				</p>
 			</div>
 
-			<div id="top-domain-box">
+			<div id="top-domain-box" class="getdomaindashboard">
 				<table id="DataTables_Table_0_wrapper"
 					class="display table_over_cover" style="width: 100%">
 					<thead>
@@ -1868,13 +1900,27 @@ $(function () {
 					<tbody>
 
 						<%
-						String query = "select domain, count(domain) c\r\n" + 
-								"from outlinks\r\n" + 
-								"where blogsite_id in ("+blog_ids+") and domain is not null and domain != '' \r\n" + 
-								"and date > \""+date_start.toString()+"\" \r\n" + 
-								"and date < \""+date_end.toString()+"\"\r\n" + 
-								"group by domain\r\n" + 
-								"order by c desc limit 1000;";
+						
+						ArrayList<scala.Tuple2<String, Integer>> blogInfluence;
+						String query;
+						if(action_type.equals("bloggers")){ 
+				    		   query = "select domain, count(domain) c\r\n" + 
+										"from outlinks\r\n" + 
+										"where blogsite_id in ("+blog_ids+") and domain is not null and domain != '' \r\n" + 
+										"and date > \""+date_start.toString()+"\" \r\n" + 
+										"and date < \""+date_end.toString()+"\"\r\n" + 
+										"group by domain\r\n" + 
+										"order by c desc limit 1000;";
+				    	  }else{
+				    		   query = "select domain, count(domain) c\r\n" + 
+										"from outlinks\r\n" + 
+										"where blogsite_id in ("+blog_ids+") and domain is not null and domain != '' \r\n" + 
+										"and date > \""+date_start.toString()+"\" \r\n" + 
+										"and date < \""+date_end.toString()+"\"\r\n" + 
+										"group by domain\r\n" + 
+										"order by c desc limit 1000;";
+				    	  }
+				    	
 						java.sql.ResultSet post_all =  DbConnection.queryResultSet(query);
 						
 						while(post_all.next()){
@@ -1884,7 +1930,7 @@ $(function () {
 
 						%>
 						<tr>
-							<td class=""><a href="http://facebook.com" target="_blank"><%=domain %></a></td>
+							<td class=""><a href="http://<%=domain %>" target="_blank"><%=domain %></a></td>
 							<td><%=count %></td>
 						</tr>
 						<%
@@ -1897,7 +1943,16 @@ $(function () {
 		</div>
 	</div>
 </div>
-
+<!-- Start for tables  -->
+	<script type="text/javascript"
+		src="assets/vendors/DataTables/datatables.min.js"></script>
+	<script type="text/javascript"
+		src="assets/vendors/DataTables/dataTables.bootstrap4.min.js"></script>
+	<script
+		src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.flash.min.js"></script>
+	<script
+		src="assets/vendors/DataTables/Buttons-1.5.1/js/dataTables.buttons.min.js"></script>
+		
 <script>
 			    $('#DataTables_Table_0_wrapper').DataTable( {
 			    	 "columnDefs": [
