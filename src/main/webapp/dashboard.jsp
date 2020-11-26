@@ -249,10 +249,10 @@
 
 
 			
-			//locations = blog._getLocation(ids);
+			locations = blog._getLocation(ids);
 			
 			
-			//locations_usage = blog._getLocationUsage(ids);
+			locations_usage = blog._getLocationUsage(ids);
 
 			//languages = blog._getLanguage(ids);
 
@@ -3829,6 +3829,7 @@ var mymarker = [
 			{latLng: [<%=location.get(loc)%>], name: '<%=size%>' , r:<%=markerSize%>},
 	<%}
 }%>]
+console.log(mymarker)
   </script>
 	<script type="text/javascript"
 		src="assets/vendors/maps/jvectormap/jvectormap.min.js"></script>
@@ -3895,7 +3896,7 @@ var mymarker = [
 		$(document).ready(function(){
 		
 				//load_custom_filter("getbloggercount","getbloggercount")
-				load_custom_filter("getlocationdashboard","getlocationdashboard")
+				//load_custom_filter("getlocationdashboard","getlocationdashboard")
 				load_custom_filter("getlanguagedashboard","getlanguagedashboard")
 				load_custom_filter("getsentimentdashboard","getsentimentdashboard")
 				load_custom_filter("getbloggerdashboard","getbloggerdashboard")
