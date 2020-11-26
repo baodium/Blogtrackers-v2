@@ -251,7 +251,6 @@
 			
 			//locations = blog._getLocation(ids);
 			
-			
 			//locations_usage = blog._getLocationUsage(ids);
 
 			//languages = blog._getLanguage(ids);
@@ -341,7 +340,7 @@
 			JSONObject final_result = new JSONObject();
 			java.sql.ResultSet source = null;
 			
-			/* Dashboard d = new Dashboard(tid.toString());
+			Dashboard d = new Dashboard(tid.toString());
 			d.load_cluster_and_terms_dashboard();
 			
 			cluster_status = d.get_cluster_status();
@@ -351,7 +350,7 @@
 			final_centroids = d.get_final_centroids();
 			final_result = d.get_final_result();
 			
-			source = d.get_cluster_result();   */
+			source = d.get_cluster_result();   
 
 ///end clustering check
 
@@ -3930,6 +3929,7 @@ var mymarker = [
 			<%if (status != null) {
 	if (status.equals("1") && date_set.toString().equals("1")) {%>
 			
+	
 			$(".word-cld").html("<img src='images/loading.gif' /> COMPUTING TERMS FOR POSTS PLEASE WAIT...."); 
 			 /* $('#keywordbtn').prop("disabled", true);
 			 $("#hrefkeyword").attr("href", ""); */
@@ -4213,6 +4213,7 @@ function matrix_loader1(){
 	<%} else {
 
 	final_result.put("final_terms", "");%>
+	
 		 console.log('it is 0')
 		 $('#keywordbtn').prop("disabled", true);
 		 $('#keyword_computing_loaader').removeClass('hidden');
