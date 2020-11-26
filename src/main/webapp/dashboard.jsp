@@ -245,14 +245,14 @@
 			
 			
 
-			totalbloggers = bloggerss._getBloggerById(ids);
+			//totalbloggers = bloggerss._getBloggerById(ids);
 
 
 			
-			locations = blog._getLocation(ids);
+			//locations = blog._getLocation(ids);
 			
 			
-			locations_usage = blog._getLocationUsage(ids);
+			//locations_usage = blog._getLocationUsage(ids);
 
 			//languages = blog._getLanguage(ids);
 
@@ -298,11 +298,11 @@
 			dispfrom = DATE_FORMAT.format(new SimpleDateFormat("yyyy-MM-dd").parse(dt));
 			dispto = DATE_FORMAT.format(new SimpleDateFormat("yyyy-MM-dd").parse(dte));
 	
-			totalpost = post._getBlogPostById(ids);
+			//totalpost = post._getBlogPostById(ids);
 			//outlinks = outl._searchByRange("date", dt, dte, ids);
 
 			String totalcomment = null;
-			totalcomment = comment._getCommentById(ids); 
+			//totalcomment = comment._getCommentById(ids); 
 			
 			ArrayList blogs = blog._fetch(ids); //To be removed
 
@@ -3894,7 +3894,7 @@ var mymarker = [
 		$(document).ready(function(){
 		
 				//load_custom_filter("getbloggercount","getbloggercount")
-				//load_custom_filter("getlocationdashboard","getlocationdashboard")
+				load_custom_filter("getlocationdashboard","getlocationdashboard")
 				load_custom_filter("getlanguagedashboard","getlanguagedashboard")
 				load_custom_filter("getsentimentdashboard","getsentimentdashboard")
 				load_custom_filter("getbloggerdashboard","getbloggerdashboard")

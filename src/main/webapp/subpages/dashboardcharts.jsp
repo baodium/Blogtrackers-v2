@@ -45,8 +45,11 @@ Blogs blog = new Blogs();
 Dashboard d  = new Dashboard(ids.toString(), date_start.toString(), date_end.toString());
 
 Terms term = new Terms();
-ArrayList<scala.Tuple2<String, scala.Tuple2<String, Integer>>> top_location = Blogs.getTopBlogs("blogsite_id", blog_ids,
-		date_start.toString(), date_end.toString(), "10");
+ArrayList<scala.Tuple2<String, scala.Tuple2<String, Integer>>> top_location = new ArrayList<>();
+JSONObject elastic_query = new JSONObject();
+JSONObject myResponse = new JSONObject();
+JSONArray rows = new JSONArray();
+
 %>
 
 
@@ -150,7 +153,7 @@ wordtagcloud("#tagcloudcontainer",450,jsonresult);
 						<tbody>
 
 							<%
-								
+							top_location = Blogs.getTopBlogs("blogsite_id", blog_ids,date_start.toString(), date_end.toString(), "10");
 							if (top_location.size() > 0) {
 								for (scala.Tuple2<String, scala.Tuple2<String, Integer>> x : top_location) {
 									scala.Tuple2<String, Integer> location_count = x._2;
@@ -769,8 +772,8 @@ wordtagcloud("#tagcloudcontainer",450,jsonresult);
 <div class="float-right">
 	<a href="bloggerportfolio.jsp?tid=<%=tid%>"><button
 			class="btn buttonportfolio2 mt10">
-			<b class="float-left semi-bold-text">Blogger Portfolio
-				Analysis </b> <b class="fas fa-user float-right icondash2"></b>
+			<b class="float-left semi-bold-text">Blogger Portfolio Analysis </b>
+			<b class="fas fa-user float-right icondash2"></b>
 		</button></a>
 </div>
 
@@ -1028,8 +1031,8 @@ if (bloggerPostFrequency.size() > 0) {
 <div class="float-right">
 	<a href="blogportfolio.jsp?tid=<%=tid%>"><button
 			class="btn buttonportfolio2 mt10">
-			<b class="float-left semi-bold-text">Blog Portfolio Analysis</b>
-			<b class="fas fa-file-alt float-right icondash2"></b>
+			<b class="float-left semi-bold-text">Blog Portfolio Analysis</b> <b
+				class="fas fa-file-alt float-right icondash2"></b>
 		</button></a>
 </div>
 
@@ -1099,7 +1102,9 @@ $(function () {
 data = {
  //"name":"flare",
  "bloggers":[
-	 <%if (top_location.size() > 0) {
+	 <%
+	 top_location = Blogs.getTopBlogs("blogsite_id", blog_ids,date_start.toString(), date_end.toString(), "10");
+	 if (top_location.size() > 0) {
 			for (scala.Tuple2<String, scala.Tuple2<String, Integer>> x : top_location) {
 				scala.Tuple2<String, Integer> location_count = x._2;
 				%>
@@ -1601,8 +1606,7 @@ $(function () {
 				<div align="center" class=" word1">
 					COMPUTING-CLUSTERS... <span id="cluster_percentage"> <%
  	int cluster_status_percentage = 34;
- %>
-						<%=cluster_status_percentage%>%
+ %> <%=cluster_status_percentage%>%
 					</span>
 				</div>
 				<div align="center" class=" overlay1"></div>
@@ -1909,29 +1913,51 @@ $(function () {
 
 <%
 	} else if (action.toString().equals("getblogcount")) {
+		String q = "{\n" + 
+				"  \"query\":\"select count(distinct(blogsite_id)) from blogposts where blogsite_id in ("+ids.toString()+") and date > '"+date_start+"' and date < '"+date_end+"'\"\n" + 
+				"}";
+		elastic_query = new JSONObject(q);
+		myResponse = Blogposts._makeElasticRequest(elastic_query, "POST", "/_xpack/sql");
+		rows = new JSONArray(myResponse.getJSONArray("rows").get(0).toString());
+		//System.out.println(rows.get(0));
 %>
 
 
-505
+<%=rows.get(0) %>
 
 <%
 	} else if (action.toString().equals("getbloggercount")) {
+		elastic_query = new JSONObject("{\n" + 
+				"  \"query\":\"select count(distinct(blogger)) from blogposts where blogsite_id in ("+ids.toString()+") and date > '"+date_start+"' and date < '"+date_end+"'\"\n" + 
+				"}");
+		myResponse = Blogposts._makeElasticRequest(elastic_query, "POST", "/_xpack/sql");
+		rows = new JSONArray(myResponse.getJSONArray("rows").get(0).toString());
 %>
 
 
-345
+<%=rows.get(0) %>
 <%
 	} else if (action.toString().equals("getpostcount")) {
+		elastic_query = new JSONObject("{\n" + 
+				"  \"query\":\"select count(distinct(blogpost_id)) from blogposts where blogsite_id in ("+ids.toString()+") and date > '"+date_start+"' and date < '"+date_end+"'\"\n" + 
+				"}");
+		myResponse = Blogposts._makeElasticRequest(elastic_query, "POST", "/_xpack/sql");
+		rows = new JSONArray(myResponse.getJSONArray("rows").get(0).toString());
 %>
 
 
-678
+<%=rows.get(0) %>
 <%
 	} else if (action.toString().equals("getcommentcount")) {
+		elastic_query = new JSONObject("{\n" + 
+				"  \"query\":\"select sum(num_comments) from blogposts where blogsite_id in ("+ids.toString()+") and date > '"+date_start+"' and date < '"+date_end+"'\"\n" + 
+				"}");
+		myResponse = Blogposts._makeElasticRequest(elastic_query, "POST", "/_xpack/sql");
+		rows = new JSONArray(myResponse.getJSONArray("rows").get(0).toString());
 %>
 
 
-567
+<%=rows.get(0) %>
 
 
 <%
