@@ -780,7 +780,7 @@ wordtagcloud("#tagcloudcontainer",450,jsonresult);
 <script>
 $(function () {
     // Initialize chart
-    bubblesblogger('#bubblesblogger', 470);
+    bubblesblogger('#bubblesblogger', 450);
     // Chart setup
     function bubblesblogger(element, diameter) {
         // Basic setup
@@ -1020,7 +1020,7 @@ if (bloggerPostFrequency.size() > 0) {
 		<div>
 			<p class="text-primary mt10 float-left">Blog Distribution</p>
 		</div>
-		<div class="min-height-table" style="min-height: 500px;">
+		<div class="min-height-table" style="min-height: 450px;">
 			<div class="chart-container">
 				<div class="chart" id="bubblesblog"></div>
 			</div>
@@ -1039,7 +1039,7 @@ if (bloggerPostFrequency.size() > 0) {
 <script>
 $(function () {
     // Initialize chart
-    bubblesblog('#bubblesblog', 470);
+    bubblesblog('#bubblesblog', 450);
     // Chart setup
     function bubblesblog(element, diameter) {
         // Basic setup

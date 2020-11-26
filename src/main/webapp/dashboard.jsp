@@ -471,9 +471,8 @@ path.chord {
 	display: none;
 }
 
-div.container4.inner_loader {
+.inner_loader {
     margin: 0;
-    background: yellow;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -706,8 +705,11 @@ div.container4.inner_loader {
 										<i class="fas fa-exchange-alt" aria-hidden="true"></i>
 									</button>
 								</div>
+								
 								<div style="min-height: 490px;">
-									<div class="map-container map-choropleth getlocationdashboard"></div>
+									<div class="chart-container text-center">
+										<div class="svg-center map-container map-choropleth getlocationdashboard"></div>
+									</div>
 								</div>
 
 
@@ -789,12 +791,13 @@ div.container4.inner_loader {
 										<i class="fas fa-exchange-alt" aria-hidden="true"></i>
 									</button>
 								</div>
-								<div class="min-height-table">
-									<div class="chart-container">
-
-										<div class="chart getlanguagedashboard" id="languageusage"></div>
+								<div style="min-height: 490px;">
+									<div class="chart-container text-center">
+										<div style="min-height: 400px;" class="chart getlanguagedashboard" id="languageusage"></div>
 									</div>
 								</div>
+								
+								
 							</div>
 							<div class="back p30 pt5 pb5">
 
@@ -998,7 +1001,7 @@ div.container4.inner_loader {
 								Blog Distribution
 								</p>
 						</div>
-						<div class="min-height-table" style="min-height: 500px;">
+						<div class="min-height-table" style="min-height: 450px;">
 							<div class="chart-container">
 								<div class="chart getblogdashboard" id="bubblesblog"></div>
 							</div>
@@ -1064,7 +1067,7 @@ div.container4.inner_loader {
 						</div>
 						<div class="min-height-table" style="min-height: 500px;">
 							<div class="chart-container" id="influencecontainer">
-								<div class="chart getinfluencedashboard" id="influencebar"></div>
+								<div class="chart  getinfluencedashboard" id="influencebar"></div>
 							</div>
 						</div>
 					</div>
@@ -3868,9 +3871,9 @@ var mymarker = [
 	function load_custom_filter(type, element, status){
 		
 		if(status == 1){
-			$("."+element).html("<div><img src='images/loading.gif' /></div>"); 
+			$("."+element).html("</br><div class='inner_loader' ><img src='images/loading.gif' /></div>"); 
 		}else{
-			$("."+element).html("</br><div class='inner_loader'><img src='images/loading.gif' /> COMPUTING FROM:  <b style='color : blue;  font-size: 20px;'><%=dt%> - <%=dte%></b></div>"); 
+			$("."+element).html("</br><div class='inner_loader' ><img  src='images/loading.gif' /> COMPUTING FROM:  <b style='color : blue;  font-size: 20px;'><%=dt%> - <%=dte%></b></div>"); 
 		}
 		
 		$.ajax({
@@ -3892,7 +3895,7 @@ var mymarker = [
 			},
 			success: function(response)
 			{  
-			$("#"+element).html("<div id='dummy'></div><div style='min-height: 420px;'><div class='chart-container word-cld'><div class='chart' id='tagcloudcontainer99'><div class='jvectormap-zoomin zoombutton' id='zoom_in'>+</div><div class='jvectormap-zoomout zoombutton' id='zoom_out'>−</div></div></div></div>");
+			  $("#"+element).html("<div id='dummy'></div><div style='min-height: 420px;'><div class='chart-container word-cld'><div class='chart' id='tagcloudcontainer99'><div class='jvectormap-zoomin zoombutton' id='zoom_in'>+</div><div class='jvectormap-zoomout zoombutton' id='zoom_out'>−</div></div></div></div>");
 			  $("#"+element).html("<img src='images/loading.gif' /> COMPUTING DISPLAY PLEASE WAIT....").html(response);
 			}
 		});
@@ -4053,7 +4056,7 @@ if (date_set.toString().equals("1")) {%>
 	loadChordDashboard();
 	function loadChordDashboard(){
 		
-		 $(".chord_body").html("<img src='images/loading.gif' /> LOADING CHORD GRAPH FOR POSTS PLEASE WAIT...."); 
+		 $(".chord_body").html("</br><div class='inner_loader' ><img  src='images/loading.gif' /> LOADING CHORD GRAPH FOR POSTS PLEASE WAIT.. </div>"); 
 		 $('.buttonTopicModelling').prop("disabled", true);
 		 $("#hreftopicmodels").attr("href", "");
 		$.ajax({
