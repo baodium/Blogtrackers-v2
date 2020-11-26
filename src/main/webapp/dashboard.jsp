@@ -470,6 +470,15 @@ path.chord {
 #circle:hover path.fade {
 	display: none;
 }
+
+div.container4.inner_loader {
+    margin: 0;
+    background: yellow;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%) }
 </style>
 <!-- end sample chord css -->
 </head>
@@ -3861,7 +3870,7 @@ var mymarker = [
 		if(status == 1){
 			$("."+element).html("<div><img src='images/loading.gif' /></div>"); 
 		}else{
-			$("."+element).html("</br><div><img src='images/loading.gif' /> COMPUTING FROM:  <b style='color : blue;  font-size: 20px;'><%=dt%> - <%=dte%></b></div>"); 
+			$("."+element).html("</br><div class='inner_loader'><img src='images/loading.gif' /> COMPUTING FROM:  <b style='color : blue;  font-size: 20px;'><%=dt%> - <%=dte%></b></div>"); 
 		}
 		
 		$.ajax({
@@ -3892,7 +3901,13 @@ var mymarker = [
 	
 		
 		$(document).ready(function(){
-		
+				
+				///count section
+				load_custom_filter("getblogcount","getblogcount", 1) 
+				load_custom_filter("getbloggercount","getbloggercount", 1) 
+				load_custom_filter("getpostcount","getpostcount", 1) 
+				load_custom_filter("getcommentcount","getcommentcount", 1)
+			
 				//load_custom_filter("getbloggercount","getbloggercount")
 				load_custom_filter("getlocationdashboard","getlocationdashboard")
 				load_custom_filter("getlanguagedashboard","getlanguagedashboard")
@@ -3904,11 +3919,7 @@ var mymarker = [
 				load_custom_filter("getdomaindashboard","getdomaindashboard") 
 				
 				
-				///count section
-				load_custom_filter("getblogcount","getblogcount", 1) 
-				load_custom_filter("getbloggercount","getbloggercount", 1) 
-				load_custom_filter("getpostcount","getpostcount", 1) 
-				load_custom_filter("getcommentcount","getcommentcount", 1) 
+				 
 				
 		
 			
@@ -3951,6 +3962,12 @@ var mymarker = [
 			<%}
 }
 if (date_set.toString().equals("1")) {%>
+
+			///count section
+			load_custom_filter("getblogcount","getblogcount", 1) 
+			load_custom_filter("getbloggercount","getbloggercount", 1) 
+			load_custom_filter("getpostcount","getpostcount", 1) 
+			load_custom_filter("getcommentcount","getcommentcount", 1)
 			
 			load_custom_filter("getlocationdashboard","getlocationdashboard")
 			load_custom_filter("getlanguagedashboard","getlanguagedashboard") 
@@ -3962,11 +3979,6 @@ if (date_set.toString().equals("1")) {%>
 			load_custom_filter("getdomaindashboard","getdomaindashboard") 
 			
 			
-			///count section
-			load_custom_filter("getblogcount","getblogcount", 1) 
-			load_custom_filter("getbloggercount","getbloggercount", 1) 
-			load_custom_filter("getpostcount","getpostcount", 1) 
-			load_custom_filter("getcommentcount","getcommentcount", 1)
 			
 		
 			
@@ -5303,28 +5315,61 @@ $(".option-lable").on("click",function(e){
 	<script>
 	
  $(document).ready(function() {
-		$('#top-sorttype').on("change",function(e){	
+		
+		$(document).delegate('#top-sorttype', 'change', function(){
 			loadDomain();
 		});
 		
-		$('#top-sortdate').on("change",function(e){
+		
+		$(document).delegate('#top-sortdate', 'change', function(){
+		
 			loadDomain();
 		});
 		
-		$('#top-listtype').on("change",function(e){
-			loadDomain();		
+		$(document).delegate('#top-listtype', 'change', function(){
+			//loadDomain();
+			
+			$(".getdomaindashboard").html('<div style="text-align:center"><img src="'+app_url+'images/preloader.gif"/><br/></div>');
+			
+			var type = $('#top-listtype').val();
+			
+			$.ajax({
+				url: app_url+"subpages/dashboardcharts.jsp",
+				method: 'POST',
+				data: {
+					action:"getdomaindashboard",
+					action_type:type,
+					tid:"<%=tid%>",
+					ids:"<%=ids%>",
+					date_start:"<%=dt%>",
+					date_end:"<%=dte%>"
+				},
+				error: function(response)
+				{		
+					$("#getdomaindashboard").html("FAILED TO COMPUTE TERMS.. RETRYING.. PLEASE WAIT.... <img src='images/loading.gif' />g");
+					$("#getdomaindashboard").html("<div style='min-height: 420px;'><div class='chart-container word-cld'><div class='chart' id='tagcloudcontainer'><div class='jvectormap-zoomin zoombutton' id='zoom_in'>+</div><div class='jvectormap-zoomout zoombutton' id='zoom_out'>−</div></div></div></div>");
+					console.log("This is failure"+response);
+
+				},
+				success: function(response)
+				{  
+				
+				$("#getdomaindashboard").html("<div id='dummy'></div><div style='min-height: 420px;'><div class='chart-container word-cld'><div class='chart' id='tagcloudcontainer99'><div class='jvectormap-zoomin zoombutton' id='zoom_in'>+</div><div class='jvectormap-zoomout zoombutton' id='zoom_out'>−</div></div></div></div>");
+				  $("#getdomaindashboard").html("<img src='images/loading.gif' /> COMPUTING DISPLAY PLEASE WAIT....").html(response);
+				  $('[data-toggle="tooltip"]').tooltip();
+				}
+			});
 		});
 		
 		
-		$('.sortbytimerange').on("change",function(e){	
+		$(document).delegate('.sortbytimerange', 'change', function(){
 			var valu =  $(this).val();
 			$("#single_date").val(valu);
 			$('form#customformsingle').submit();
 		});
 		
 		
-		$('#swapBlogger').on("change",function(e){
-				
+		$(document).delegate('#swapBlogger', 'change', function(){
 			//console.log("blogger busta");
 			var type = $('#swapBlogger').val();
 			var blgss = $("#bloggers").val();
@@ -5337,7 +5382,6 @@ $(".option-lable").on("click",function(e){
 				blgss = $("#bloggers").val();
 			}
 			
-			console.log("type"+type);
 			$("#postingfrequencybar").html('<div style="text-align:center"><img src="'+app_url+'images/preloader.gif"/><br/></div>');
 			console.log(blgss);
 			$.ajax({
@@ -5361,7 +5405,8 @@ $(".option-lable").on("click",function(e){
 			
 		});
 		
- $('#swapInfluence').on("change",function(e){
+
+$(document).delegate('#swapInfluence', 'change', function(){
 			
 		var type = $('#swapInfluence').val();
 		
@@ -5373,9 +5418,8 @@ $(".option-lable").on("click",function(e){
 		}
 		
 		$("#influencecontainer").html('<div style="text-align:center"><img src="'+app_url+'images/preloader.gif"/><br/></div>');
-		console.log(blgss);
 		
-		$.ajax({
+		/* $.ajax({
 			url: app_url+'subpages/influencebar.jsp',
 			method: 'POST',
 			data: {
@@ -5392,6 +5436,33 @@ $(".option-lable").on("click",function(e){
 			{   
 				$("#influencecontainer").html(response);
 				$('[data-toggle="tooltip"]').tooltip();
+			}
+		}); */
+		
+		
+		$.ajax({
+			url: app_url+"subpages/dashboardcharts.jsp",
+			method: 'POST',
+			data: {
+				action:"getinfluencedashboard",
+				action_type:type,
+				tid:"<%=tid%>",
+				ids:"<%=ids%>",
+				date_start:"<%=dt%>",
+				date_end:"<%=dte%>"
+			},
+			error: function(response)
+			{		
+				$("#getinfluencedashboard").html("FAILED TO COMPUTE TERMS.. RETRYING.. PLEASE WAIT.... <img src='images/loading.gif' />g");
+				$("#getinfluencedashboard").html("<div style='min-height: 420px;'><div class='chart-container word-cld'><div class='chart' id='tagcloudcontainer'><div class='jvectormap-zoomin zoombutton' id='zoom_in'>+</div><div class='jvectormap-zoomout zoombutton' id='zoom_out'>−</div></div></div></div>");
+				console.log("This is failure"+response);
+
+			},
+			success: function(response)
+			{  
+			$("#getinfluencedashboard").html("<div id='dummy'></div><div style='min-height: 420px;'><div class='chart-container word-cld'><div class='chart' id='tagcloudcontainer99'><div class='jvectormap-zoomin zoombutton' id='zoom_in'>+</div><div class='jvectormap-zoomout zoombutton' id='zoom_out'>−</div></div></div></div>");
+			  $("#getinfluencedashboard").html("<img src='images/loading.gif' /> COMPUTING DISPLAY PLEASE WAIT....").html(response);
+			  $('[data-toggle="tooltip"]').tooltip();
 			}
 		});
 		
