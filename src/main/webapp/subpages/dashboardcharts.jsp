@@ -52,7 +52,12 @@ ArrayList<scala.Tuple2<String, scala.Tuple2<String, Integer>>> top_location = ne
 JSONObject elastic_query = new JSONObject();
 JSONObject myResponse = new JSONObject();
 JSONArray rows = new JSONArray();
+/* post._getGetDateAggregate("NOBLOGGER","date","yyyy","post","1y","date_histogram", date_start.toString(), date_end.toString(), blog_ids);
 
+post._getGetDateAggregate("NOBLOGGER","date","MMM","post","month","date_histogram", dt, dte, blog_id.toString());
+post._getGetDateAggregate("NOBLOGGER","date","yyyy","post","1y","date_histogram", dt, dte, blog_id.toString());
+post._getGetDateAggregate("NOBLOGGER","date","E","post","day","date_histogram", dt, dte, blog_id.toString());
+post._getGetDateAggregate("NOBLOGGER","date","MMM","post","month","date_histogram", dt, dte, blog_id.toString()); */
 %>
 
 
@@ -249,9 +254,10 @@ wordtagcloud("#tagcloudcontainer",450,jsonresult);
 						var mymarker = [
 							<%
 							
+							
 							for (scala.Tuple2<String, scala.Tuple2<String, Integer>> x : top_location) {
 								scala.Tuple2<String, Integer> location_count = x._2;
-								
+								if(location_count._1 != null){
 								
 								
 							%>
@@ -261,7 +267,7 @@ wordtagcloud("#tagcloudcontainer",450,jsonresult);
 							{latLng: [52.132633, 5.291266], name: '10' , r:10},
 							{latLng: [46.227638, 2.213749], name: '2' , r:2},
 							{latLng: [-25.274398, 133.775136], name: '50' , r:50}, */
-							<%}%>]
+							<%}}%>]
 
 						//console.log(mymarker[2].size);
 						    // Choropleth map
@@ -1691,9 +1697,48 @@ $(function () {
 </div>
 
 <script>
-				
+<%
+String cluster_status = "0";
+String cluster_status_percent = "";
+String status = "0";
+String status_percentage = null;
+JSONObject final_centroids = new JSONObject();
+JSONObject final_result = new JSONObject();
+java.sql.ResultSet source = null;
+Dashboard dash = new Dashboard(tid.toString());
+//d.load_cluster_and_terms_dashboard();
+
+cluster_status = dash.get_cluster_status();
+cluster_status_percent = dash.get_cluster_status_percentage();
+//status = dash.get_kwt_status();
+//status_percentage = dash.get_kwt_status_percentage();
+final_centroids = dash.get_final_centroids();
+//final_result = dash.get_final_result();
+
+source = d.get_cluster_result(); 
+if (cluster_status.equals("1")) {%>	
+	console.log('cluster is 1')
+		$('#clusterbtn').prop("disabled", false);
+		$('#scatter-container').removeClass('hidden');
+		$('#cluster_card_div').removeClass('radial_f')
+		
+		
+		dataset = <%=final_centroids%>
+		clusterdiagram5('#dataviz_axisZoom', dataset);
+		
+		
+<%} else {
+
+final_result.put("final_terms", "");%>
+	 console.log('cluster is 0')
+	 $('#clusterbtn').prop("disabled", true);
+	 $('#cluster_computing_loaader').removeClass('hidden');
+	 var cluster_refreshIntervalId = setInterval(function(){ cluster_refresh();    }, 15000);
+	 cluster_matrix_loader();
+	<%}
+%>
 					
-					dataset = {}
+					//dataset = {}
 					clusterdiagram5('#dataviz_axisZoom', dataset);
 					
 					///start clustering5 funtion
@@ -1974,9 +2019,14 @@ $(function () {
 				    	  }
 				    	
 						java.sql.ResultSet post_all =  DbConnection.queryResultSet(query);
-						
+						String domain = "";
 						while(post_all.next()){
-							String domain = post_all.getString("domain");
+							if(action_type.equals("urls")){ 
+								domain = post_all.getString("link");
+							}else{
+								domain = post_all.getString("domain");
+							}
+							
 							int count = post_all.getInt("c");
 							
 

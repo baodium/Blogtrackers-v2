@@ -822,7 +822,7 @@ public class Blogs extends DbConnection{
 			String query = "select "+field_name+", location, SUBSTRING_INDEX(SUBSTRING_INDEX(SUBSTRING_INDEX(SUBSTRING_INDEX(permalink, '/', 3), '://', -1), '/', 1), '?', 1) as domain, count("+field_name+") c\r\n" + 
 					"from blogposts\r\n" + 
 					"where "+field_name+" in ("+field_values+") \r\n" + 
-					"and date > \""+from+"\" and location is not null \r\n" + 
+					"and date > \""+from+"\" and location is not null and location != '' and location != 'null'\r\n" + 
 					"and date < \""+to+"\"\r\n" + 
 					"group by "+field_name+" order by c desc limit "+limit+";";
 		
