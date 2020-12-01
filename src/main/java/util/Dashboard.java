@@ -36,16 +36,16 @@ public class Dashboard {
 				+ this.tid + ";";
 
 		this.clusters_and_terms = DbConnection.queryResultSet(q);
-		while (this.clusters_and_terms.next()) {
-			this.kwt_status = clusters_and_terms.getString("tk_status");
-			this.kwt_status_percentage = clusters_and_terms.getString("tk_status_percentage");
-
-			this.final_result.put("status_percentage", this.kwt_status_percentage);
-			this.final_result.put("status", this.kwt_status);
-
-			this.cluster_status = clusters_and_terms.getString("status");
-			this.cluster_status_percentage = clusters_and_terms.getString("status_percentage");
-		}
+//		while (this.clusters_and_terms.next()) {
+//			this.kwt_status = clusters_and_terms.getString("tk_status");
+//			this.kwt_status_percentage = clusters_and_terms.getString("tk_status_percentage");
+//
+//			this.final_result.put("status_percentage", this.kwt_status_percentage);
+//			this.final_result.put("status", this.kwt_status);
+//
+//			this.cluster_status = clusters_and_terms.getString("status");
+//			this.cluster_status_percentage = clusters_and_terms.getString("status_percentage");
+//		}
 	}
 
 	public Dashboard(String blog_ids, String start_date, String end_date) {
