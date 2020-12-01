@@ -867,9 +867,14 @@ authoryears.put(mostactiveblogger,postyear);
 							<p class="text-primary mt10">Blogger in Tracker Activity Vs
 								Influence</p>
 						</div>
-						<div style="min-height: 420px;">
+						<!-- <div style="min-height: 420px;">
 							<div class="chart-container">
 								<div class="chart" id="scatterplot" style="padding-left: 20px;"></div>
+							</div>
+						</div> -->
+						<div class="min-height-table" style="min-height: 420px;">
+							<div class="chart-container" id="influencecontainer">
+								<div class="chart  getinfluencedashboard" id="scatterplot"></div>
 							</div>
 						</div>
 					</div>
@@ -1944,8 +1949,10 @@ function color1(i, id, name){
            	//width = 300,
              width = d3Container.node().getBoundingClientRect().width - margin.left - margin.right,
              height = height - margin.top - margin.bottom;
+         
+         alert(width)
 
-
+		
          var formatPercent = d3.format("");
          // Format data
          // var parseDate = d3.time.format("%d-%b-%y").parse,
@@ -1965,6 +1972,8 @@ function color1(i, id, name){
          // Vertical
          var y = d3.scale.linear()
                 .range([height, 0]);
+         
+         
 
 
 
@@ -1995,17 +2004,23 @@ function color1(i, id, name){
          var container = d3Container.append("svg");
 
          // Add SVG group
-         var svg = container
+        /*  var svg = container
             // .attr("width", width + margin.left + margin.right)
            //  .attr("height", height + margin.top + margin.bottom)
-             .attr("width", (width+margin.bottom)+"px")
+             .attr("width", (width+margin.left)+"px")
     	    .attr("height", (height+margin.bottom)+"px")
              .style("overflow","visible")
              .append("g")
              // .attr("transform", "translate(0," + y(0) + ")");
-                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")"); */
+                 
+                 var svg = container
+                 .attr("width", width + margin.left + margin.right)
+                 .attr("height", height + margin.top + margin.bottom)
+                 .append("g")
+                     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-
+	
 
          // Construct chart layout
          // ------------------------------

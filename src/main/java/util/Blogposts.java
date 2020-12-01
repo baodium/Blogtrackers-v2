@@ -1024,7 +1024,7 @@ public class Blogposts {
 		return hd;
 	}
 	
-	public ArrayList _searchMonthPostTotal(String field, int year, String blog_ids) throws Exception {
+	public ArrayList _searchMonthPostTotal(String field, String greater, String less, String blog_ids) throws Exception {
 
 		ArrayList hd = new ArrayList();
 		blog_ids = blog_ids.replaceAll(",$", "");
@@ -1034,7 +1034,11 @@ public class Blogposts {
 
 		try {
 			hd = DbConnection
-					.query("select month(date) m, count(blogpost_id) from blogposts where blogsite_id in " + blog_ids + " and year(date) = "+ year +" group by m; ");
+					//.query("select month(date) m, count(blogpost_id) from blogposts where blogsite_id in " + blog_ids + " and year(date) = "+ year +" group by m; ");
+					.query("select monthname(date) m, count(blogpost_id) from blogposts where date > "+ greater +" and date < "+ less +" and blogsite_id in " + blog_ids + " group by m; ");
+			
+					
+			
 
 		} catch (Exception e) {
 			return hd;

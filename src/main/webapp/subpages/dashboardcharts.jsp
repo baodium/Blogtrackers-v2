@@ -2069,6 +2069,63 @@ $(function () {
 
 <%
 	} else if (action.toString().equals("getpostingfrequencydashboard")) {
+		
+		if(action_type.equals("month")){ 
+
+ 		   //put query here
+			//this was how it was used on dashboard
+			/* postingTotal = post._searchPostTotal("date", ystint, yendint, ids); 
+
+			if (postingTotal.size() > 0) {
+
+				for (int m = 0; m < postingTotal.size(); m++) {
+					ArrayList<?> postCount = (ArrayList<?>) postingTotal.get(m);
+					String postyear = postCount.get(0).toString();
+					String yearcount = postCount.get(1).toString();
+					if (postingTrend.containsKey(Integer.parseInt(postyear))) {
+						postingTrend.put(Integer.parseInt(postyear), Integer.parseInt(yearcount));
+					}
+				}
+			} */
+			
+ 	  }else if(action_type.equals("year")){
+ 		//put query here
+ 		//this was how it was used on dashboard
+ 			/* postingTotal = post._searchPostTotal("date", ystint, yendint, ids); 
+
+ 			if (postingTotal.size() > 0) {
+
+ 				for (int m = 0; m < postingTotal.size(); m++) {
+ 					ArrayList<?> postCount = (ArrayList<?>) postingTotal.get(m);
+ 					String postyear = postCount.get(0).toString();
+ 					String yearcount = postCount.get(1).toString();
+ 					if (postingTrend.containsKey(Integer.parseInt(postyear))) {
+ 						postingTrend.put(Integer.parseInt(postyear), Integer.parseInt(yearcount));
+ 					}
+ 				}
+ 			} */
+ 	  }else if(action_type.equals("week")){
+ 		  
+ 		//put query here
+ 		//this was how it was used on dashboard
+		/* postingTotal = post._searchPostTotal("date", ystint, yendint, ids); 
+
+		if (postingTotal.size() > 0) {
+
+			for (int m = 0; m < postingTotal.size(); m++) {
+				ArrayList<?> postCount = (ArrayList<?>) postingTotal.get(m);
+				String postyear = postCount.get(0).toString();
+				String yearcount = postCount.get(1).toString();
+				if (postingTrend.containsKey(Integer.parseInt(postyear))) {
+					postingTrend.put(Integer.parseInt(postyear), Integer.parseInt(yearcount));
+				}
+			}
+		} */
+		
+		
+ 	  }
+		
+	
 %>
 
 
@@ -2175,15 +2232,13 @@ $(function () {
 	for (int key : postingTrend.keySet()) {
 		/* String postYear = postingTrend.get(key).toString(); */
 		int postCount = Integer.parseInt(postingTrend.get(key).toString());
-		if(post_freq_status.equals("month")){ %>
+		 %>
 		
-			{"date":monthNames[<%=key%>],"close":<%=postCount%>},
 			
-		<% }else{ %>
 		
 			{"date":"<%=key%>","close":<%=postCount%>},
 		
-		<%}%>
+		
      		  			
      		<%}
 }%>

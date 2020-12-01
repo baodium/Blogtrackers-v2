@@ -320,11 +320,11 @@
 				
 				post_freq_status = "month";
 				//it is the same year, therefore search by month
-				postingTotal = post._searchMonthPostTotal("date", yendint, ids); 
-	
-				for (int i = 0; i < 12; i++) {
+				postingTotal = post._searchMonthPostTotal("date", dt,dte,  ids); 
+				//postingTotal = post._searchMonthPostTotal("date", ystint,  ids); 
+				 for (int i = 0; i < 12; i++) {
 					postingTrend.put(i, 0);
-				}
+				} 
 				if (postingTotal.size() > 0) {
 	
 					for (int m = 0; m < postingTotal.size(); m++) {
@@ -2689,7 +2689,7 @@ $(document).ready(function() {
             	$("#date_end").val(end);
             	$("#date_set").val(set);
             	
-            	///count section
+            	/* ///count section
 				load_custom_filter("getblogcount","getblogcount", 1) 
 				load_custom_filter("getbloggercount","getbloggercount", 1) 
 				load_custom_filter("getpostcount","getpostcount", 1) 
@@ -2703,10 +2703,10 @@ $(document).ready(function() {
 				load_custom_filter("getblogdashboard","getblogdashboard")
 				load_custom_filter("getinfluencedashboard","getinfluencedashboard")
 				//load_custom_filter("getclusterdashboard","getclusterdashboard")
-				load_custom_filter("getdomaindashboard","getdomaindashboard")
+				load_custom_filter("getdomaindashboard","getdomaindashboard") */
 				
             	//toastr.success('Date changed!','Success');
-            	//$("form#customform").submit();
+            	$("form#customform").submit();
          });
   $('#reportrange')
      .on(
@@ -3915,6 +3915,9 @@ var mymarker = [
 	
 	function load_custom_filter(type, element, status){
 		
+		
+	console.log(type)
+		
 		if(status == 1){
 			$("."+element).html("</br><div class='inner_loader' ><img src='images/loading.gif' /></div>"); 
 		}else{
@@ -3935,7 +3938,7 @@ var mymarker = [
 			{		
 				$("#"+element).html("FAILED TO COMPUTE TERMS.. RETRYING.. PLEASE WAIT.... <img src='images/loading.gif' />g");
 				$("#"+element).html("<div style='min-height: 420px;'><div class='chart-container word-cld'><div class='chart' id='tagcloudcontainer'><div class='jvectormap-zoomin zoombutton' id='zoom_in'>+</div><div class='jvectormap-zoomout zoombutton' id='zoom_out'>−</div></div></div></div>");
-				console.log("This is failure"+response);
+				console.log("This is failure "+element+""+response);
 
 			},
 			success: function(response)
@@ -4922,7 +4925,7 @@ $(".option-lable").on("click",function(e){
          	
            ];
          
-         //console.log("before posting frequenc data", data)
+         console.log("before posting frequenc data", data)
          
           //data = [[{"date": "Jan","close": 120},{"date": "Feb","close": 140},{"date": "Mar","close":160},{"date": "Apr","close": 180},{"date": "May","close": 200},{"date": "Jun","close": 220},{"date": "Jul","close": 240},{"date": "Aug","close": 260},{"date": "Sep","close": 280},{"date": "Oct","close": 300},{"date": "Nov","close": 320},{"date": "Dec","close": 340}],
          // [{"date":"Jan","close":10},{"date":"Feb","close":20},{"date":"Mar","close":30},{"date": "Apr","close": 40},{"date": "May","close": 50},{"date": "Jun","close": 60},{"date": "Jul","close": 70},{"date": "Aug","close": 80},{"date": "Sep","close": 90},{"date": "Oct","close": 100},{"date": "Nov","close": 120},{"date": "Dec","close": 140}],
