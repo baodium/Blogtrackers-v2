@@ -2119,62 +2119,14 @@ final_result.put("final_terms", "");%>
 
 <%
 	} else if (action.toString().equals("getpostingfrequencydashboard")) {
-		
+		JSONArray line_data = new JSONArray();
 		if(action_type.equals("month")){ 
-
- 		   //put query here
-			//this was how it was used on dashboard
-			/* postingTotal = post._searchPostTotal("date", ystint, yendint, ids); 
-
-			if (postingTotal.size() > 0) {
-
-				for (int m = 0; m < postingTotal.size(); m++) {
-					ArrayList<?> postCount = (ArrayList<?>) postingTotal.get(m);
-					String postyear = postCount.get(0).toString();
-					String yearcount = postCount.get(1).toString();
-					if (postingTrend.containsKey(Integer.parseInt(postyear))) {
-						postingTrend.put(Integer.parseInt(postyear), Integer.parseInt(yearcount));
-					}
-				}
-			} */
-			
+			line_data = post._getGetDateAggregate("NOBLOGGER","date","MMM-yyyy","post","month","date_histogram", date_start.toString(), date_end.toString(), blog_ids);
  	  }else if(action_type.equals("year")){
- 		//put query here
- 		//this was how it was used on dashboard
- 			/* postingTotal = post._searchPostTotal("date", ystint, yendint, ids); 
-
- 			if (postingTotal.size() > 0) {
-
- 				for (int m = 0; m < postingTotal.size(); m++) {
- 					ArrayList<?> postCount = (ArrayList<?>) postingTotal.get(m);
- 					String postyear = postCount.get(0).toString();
- 					String yearcount = postCount.get(1).toString();
- 					if (postingTrend.containsKey(Integer.parseInt(postyear))) {
- 						postingTrend.put(Integer.parseInt(postyear), Integer.parseInt(yearcount));
- 					}
- 				}
- 			} */
+ 		 line_data = post._getGetDateAggregate("NOBLOGGER","date","yyyy","post","year","date_histogram", date_start.toString(), date_end.toString(), blog_ids);
  	  }else if(action_type.equals("week")){
- 		  
- 		//put query here
- 		//this was how it was used on dashboard
-		/* postingTotal = post._searchPostTotal("date", ystint, yendint, ids); 
-
-		if (postingTotal.size() > 0) {
-
-			for (int m = 0; m < postingTotal.size(); m++) {
-				ArrayList<?> postCount = (ArrayList<?>) postingTotal.get(m);
-				String postyear = postCount.get(0).toString();
-				String yearcount = postCount.get(1).toString();
-				if (postingTrend.containsKey(Integer.parseInt(postyear))) {
-					postingTrend.put(Integer.parseInt(postyear), Integer.parseInt(yearcount));
-				}
-			}
-		} */
-		
-		
- 	  }
-		
+ 		 line_data = post._getGetDateAggregate("NOBLOGGER","date","w-yyyy","post","week","date_histogram", date_start.toString(), date_end.toString(), blog_ids);
+ 	  }		
 	
 %>
 
@@ -2304,10 +2256,31 @@ final_result.put("final_terms", "");%>
          
          //console.log("before posting frequenc data", data)
          
-          data = [[{"date": "Jan","close": 120},{"date": "Feb","close": 140},{"date": "Mar","close":160},{"date": "Apr","close": 180},{"date": "May","close": 200},{"date": "Jun","close": 220},{"date": "Jul","close": 240},{"date": "Aug","close": 260},{"date": "Sep","close": 280},{"date": "Oct","close": 300},{"date": "Nov","close": 320},{"date": "Dec","close": 340}],
-          [{"date":"Jan","close":10},{"date":"Feb","close":20},{"date":"Mar","close":30},{"date": "Apr","close": 40},{"date": "May","close": 50},{"date": "Jun","close": 60},{"date": "Jul","close": 70},{"date": "Aug","close": 80},{"date": "Sep","close": 90},{"date": "Oct","close": 100},{"date": "Nov","close": 120},{"date": "Dec","close": 140}],
-          ];
+        	 data = [[
+        		 <%
+                 for(int x= 0; x< line_data.length(); x++){
+                	 //System.out.println("");
+                	 Object date = line_data.getJSONObject(x).getJSONObject("key").get("date");
+                	 Object count = line_data.getJSONObject(x).getJSONObject("post").get("doc_count");
+                	 
+                	 String date_ = date.toString();
+                	 int count_ = Integer.parseInt(count.toString());
+                	 
+                	 if(action_type.equals("week")){
+                		 date_ = "Week" + date_;
+                	 }
+                	 
+                	 %>
+        		 {"date": "<%=date_%>","close": <%=count_%>},
+        		 <%}
+                 %>
+        		 ]]
          
+        
+          /* data = [[{"date": "Jan","close": 120},{"date": "Feb","close": 140},{"date": "Mar","close":160},{"date": "Apr","close": 180},{"date": "May","close": 200},{"date": "Jun","close": 220},{"date": "Jul","close": 240},{"date": "Aug","close": 260},{"date": "Sep","close": 280},{"date": "Oct","close": 300},{"date": "Nov","close": 320},{"date": "Dec","close": 340}],
+          [{"date":"Jan","close":10},{"date":"Feb","close":20},{"date":"Mar","close":30},{"date": "Apr","close": 40},{"date": "May","close": 50},{"date": "Jun","close": 60},{"date": "Jul","close": 70},{"date": "Aug","close": 80},{"date": "Sep","close": 90},{"date": "Oct","close": 100},{"date": "Nov","close": 120},{"date": "Dec","close": 140}],
+          ]; */
+          console.log("line--", data)
         // data = [[{"date":"2014","close":400},{"date":"2015","close":600},{"date":"2016","close":1300},{"date":"2017","close":1700},{"date":"2018","close":2100}],
           //    [{"date":"2014","close":350},{"date":"2015","close":700},{"date":"2016","close":1500},{"date":"2017","close":1600},{"date":"2018","close":1250}],];
          
