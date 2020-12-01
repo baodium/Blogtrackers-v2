@@ -912,7 +912,7 @@ path.chord {
 		</div>
 
 		<div class="row mb0">
-			<div class="col-md-12 mt20 zoom">
+			<div class="col-md-12 mt20 zoom" id="getfrequencydashboard">
 
 				<div class="card  card-style  mt20">
 					<div class="card-body  p30 pt5 pb5">
@@ -923,11 +923,11 @@ path.chord {
 								<%if(post_freq_status.equals("month")){ %>
 								<i><b><%=ystint %></b></i>
 								<% } %>
-								<%-- for Past <select
-									class="text-primary filtersort sortbytimerange"><option
-										value="week" <%=(single.equals("week"))?"selected":"" %>>Week</option>
-									<option value="month" <%=(single.equals("month"))?"selected":"" %>>Month</option>
-									<option value="year" <%=(single.equals("year"))?"selected":"" %>>Year</option></select> --%>
+								 for Past <select
+									class="text-primary filtersort sortbytimerange11 sort_frequency_range"><option
+										value="week" <%=(post_freq_status.equals("week"))?"selected":"" %>>Week</option>
+									<option value="month" <%=(post_freq_status.equals("month"))?"selected":"" %>>Month</option>
+									<option value="year" <%=(post_freq_status.equals("year"))?"selected":"" %>>Year</option></select> 
 							</p>
 						</div>
 						<div class="min-height-table" style="min-height: 300px;">
@@ -2689,8 +2689,24 @@ $(document).ready(function() {
             	$("#date_end").val(end);
             	$("#date_set").val(set);
             	
+            	///count section
+				load_custom_filter("getblogcount","getblogcount", 1) 
+				load_custom_filter("getbloggercount","getbloggercount", 1) 
+				load_custom_filter("getpostcount","getpostcount", 1) 
+				load_custom_filter("getcommentcount","getcommentcount", 1)
+			
+				//load_custom_filter("getbloggercount","getbloggercount")
+				load_custom_filter("getlocationdashboard","getlocationdashboard")
+				load_custom_filter("getlanguagedashboard","getlanguagedashboard")
+				load_custom_filter("getsentimentdashboard","getsentimentdashboard")
+				load_custom_filter("getbloggerdashboard","getbloggerdashboard")
+				load_custom_filter("getblogdashboard","getblogdashboard")
+				load_custom_filter("getinfluencedashboard","getinfluencedashboard")
+				//load_custom_filter("getclusterdashboard","getclusterdashboard")
+				load_custom_filter("getdomaindashboard","getdomaindashboard")
+				
             	//toastr.success('Date changed!','Success');
-            	$("form#customform").submit();
+            	//$("form#customform").submit();
          });
   $('#reportrange')
      .on(
@@ -5370,6 +5386,8 @@ $(".option-lable").on("click",function(e){
 	<script>
 	
  $(document).ready(function() {
+	 
+	 	$('[data-toggle="tooltip"]').tooltip();
 		
 		$(document).delegate('#top-sorttype', 'change', function(){
 			loadDomain();
@@ -5381,6 +5399,8 @@ $(".option-lable").on("click",function(e){
 			loadDomain();
 		});
 		
+		
+		//start domain/url on change funtion
 		$(document).delegate('#top-listtype', 'change', function(){
 			//loadDomain();
 			
@@ -5415,7 +5435,47 @@ $(".option-lable").on("click",function(e){
 				}
 			});
 		});
+		//end domain/url on change function
 		
+		
+		//start posting frequency on change funtion
+		$(document).delegate('.sort_frequency_range', 'change', function(){
+			//loadDomain();
+			
+			//$("#postingfrequency").html('<div style="text-align:center"><img src="'+app_url+'images/preloader.gif"/><br/></div>');
+			
+			$("#postingfrequency").html("</br><div class='inner_loader' ><img  src='images/loading.gif' /> COMPUTING FROM:  <b style='color : blue;  font-size: 20px;'><%=dt%> - <%=dte%></b></div>");
+			
+			var type = $('.sort_frequency_range').val();
+			
+			$.ajax({
+				url: app_url+"subpages/dashboardcharts.jsp",
+				method: 'POST',
+				data: {
+					action:"getpostingfrequencydashboard",
+					action_type:type,
+					tid:"<%=tid%>",
+					ids:"<%=ids%>",
+					date_start:"<%=dt%>",
+					date_end:"<%=dte%>"
+				},
+				error: function(response)
+				{		
+					$("#getfrequencydashboard").html("FAILED TO COMPUTE TERMS.. RETRYING.. PLEASE WAIT.... <img src='images/loading.gif' />g");
+					$("#getfrequencydashboard").html("<div style='min-height: 420px;'><div class='chart-container word-cld'><div class='chart' id='tagcloudcontainer'><div class='jvectormap-zoomin zoombutton' id='zoom_in'>+</div><div class='jvectormap-zoomout zoombutton' id='zoom_out'>−</div></div></div></div>");
+					console.log("This is failure"+response);
+
+				},
+				success: function(response)
+				{  
+				
+				$("#getfrequencydashboard").html("<div id='dummy'></div><div style='min-height: 420px;'><div class='chart-container word-cld'><div class='chart' id='tagcloudcontainer99'><div class='jvectormap-zoomin zoombutton' id='zoom_in'>+</div><div class='jvectormap-zoomout zoombutton' id='zoom_out'>−</div></div></div></div>");
+				  $("#getfrequencydashboard").html("<img src='images/loading.gif' /> COMPUTING DISPLAY PLEASE WAIT....").html(response);
+				  $('[data-toggle="tooltip"]').tooltip();
+				}
+			});
+		});
+		//end posting frequency on change function
 		
 		$(document).delegate('.sortbytimerange', 'change', function(){
 			var valu =  $(this).val();

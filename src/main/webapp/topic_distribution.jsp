@@ -129,7 +129,7 @@ if (detail.size() > 0) {
 <!-- Topic Modelling  -->
 <%
 	final double TOPIC_THRESHOLD = 0.1;
-	final int TOPIC_NUMBER= 10;
+	final int TOPIC_NUMBER = 10;
 	final int TOPICMODEL_MAXWORDS = 30;
 	final int WORDCLOUD_MAXWORDS = 20;
 	final int DATATABLE_MAXWORDS = 10;
@@ -316,18 +316,12 @@ if (detail.size() > 0) {
 
 <!-- Charts -->
 
-<script src="https://d3js.org/d3.v4.js"></script> 
-<script>
-    var d3v4 = window.d3;
-    window.d3 = null;
-</script>
-
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 <script type="text/javascript" src="assets/vendors/d3/d3.min.js"></script>
 <script type="text/javascript" src="assets/vendors/d3/d3.v4.min.js"></script>
 <script src="assets/vendors/wordcloud/d3.layout.cloud.js"></script>
 <script type="text/javascript" src="chartdependencies/keywordtrendd3.js"></script>
 <script type="text/javascript" src="assets/vendors/d3/d3_tooltip.js"></script>
- -->
 
 </head>
 <body>
@@ -718,17 +712,53 @@ class StackedChart {
 		this.height = 250;
 		this.blogPosts = _blogPostsData;
 		this.data = [];
+		this.colors = ["#E377C2","#8C564B", "#9467BD", "#D62728", "#2CA02C", "#FF7F0E", "#1F77B4", "#7F7F7F","#17B890", "#D35269"];
+		this.options = {
+            chart: {
+            height: this.height,
+            type: 'area'
+          },
+          colors: this.colors,
+          dataLabels: {
+            enabled: false
+          },
+          legend: {
+              show: true,
+          },
+          stroke: {
+            curve: 'smooth'
+          },
+          tooltip: {
+            x: {
+           	  format: 'yyyy' //'dd/MM/yy HH:mm'
+            },
+          },
+         };
 	}
 
 	initialize() {
 		this.processData("year");
-		this.draw('#topicstream', this.height, this.data);
+        this.chart = new ApexCharts(document.querySelector("#topicstream"), this.options);
+        this.chart.render();
+	}
+	
+	update() {
+		// Copy options and apply
+		let _options = JSON.parse(JSON.stringify(this.options));		
+		_options['series'] = _options['series'].slice(selectedTopic, selectedTopic + 1);
+		_options['colors'] = [this.colors[selectedTopic]];
+		this.chart.updateOptions(_options);
+	}
+	
+	reset() {
+		this.chart.updateOptions(this.options);
 	}
 	
 	processData(range) {
 		let distributions = {};
 		let averages = {};
 		this.data = [];
+		let categories = [];
 		
 		if (range == "year") {
 			// Collect blogs' topic distribution for each year
@@ -740,101 +770,34 @@ class StackedChart {
 					distributions[this.blogPosts[id].date.substr(0,4)] = [this.blogPosts[id].topicDistrib];
 				}
 			}
-			// Average topic distribution for each year
-			for (var year in distributions) {
+			// Average topic distribution for each year and populate time axis
+			let start = Math.min.apply(null,Object.keys(distributions));
+			let end = Math.max.apply(null,Object.keys(distributions));
+			let maxTopics = Object.values(distributions)[0][0].length;
+			for (let year = start; year <= end; year++) {
 				averages[year] = [];
-				for (let topic = 0; topic < distributions[year][0].length; topic++) {
+				for (let topic = 0; topic < maxTopics; topic++) {
 					let avg = 0;
-					for (let i = 0; i < distributions[year].length; i++) {
+					for (let i = 0; year in distributions && i < distributions[year].length; i++) {
 						avg += distributions[year][i][topic]
 					}
-					averages[year].push(avg / distributions[year].length);
+					averages[year].push(year in distributions ? avg / distributions[year].length : 0);
 				}
+				categories.push(year + "-01-01T00:00:00.000Z");
 			}
-			// Format averaged data for the line chart 
-			for (var year in averages) {
-				let dict = {}
-				dict['year'] = year;
-				for (let topic = 0; topic < averages[year].length; topic++) {
-					//Full day format (use for monthly/weekly charts - i.e. 06/30/19 0:00)
-					//formatted_date = ("0" + (date.getMonth() + 1)).slice(-2) + "/" + ("0" + date.getDate()).slice(-2) + "/" + date.getFullYear().toString().substr(-2) + " 0:00";
-					//this.data.push({"key": "Topic " + (topic + 1), "value": averages[year][topic].toFixed(3), "date": formatted_date});
-					dict['Topic ' + (topic + 1)] = parseFloat(averages[year][topic].toFixed(3));
-				}
-				this.data.push(dict);
-			}
-		}
-	}
-	
-	draw(elementName, HEIGHT, data) {
-	
-		let chartEngine = d3v4;
-		let axis_ticks = 30;
-		//let axis_height = 200000;
-		let axis_height = 5000;
-		let colors_array = ["#E377C2","#8C564B", "#9467BD", "#D62728", "#2CA02C", "#FF7F0E", "#1F77B4", "#7F7F7F","#17B890", "#D35269"];
-		
-		// set the dimensions and margins of the graph
-		var margin = {top: 10, right: 10, bottom: 50, left: 55},
-		    width = $(elementName).width() - 25, 
-		    height = HEIGHT;
-		
-		// append the svg object to the body of the page
-		var svg = chartEngine.select(elementName)
-		  .append("svg")
-		    .attr("width", width + margin.left + margin.right)
-		    .attr("height", height + margin.top + margin.bottom)
-		  .append("g")
-		    .attr("transform",
-		          "translate(" + margin.left + "," + margin.top + ")");
-		
-		// Parse the Data
-		//chartEngine.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/5_OneCatSevNumOrdered_wide.csv", function(data) {
+			this.options['xaxis'] = {type: 'datetime', categories: categories};
 			
-		// List of groups = header of the csv files
-		
-		var keys = Object.keys(data[0]); 
-		
-		// Add X axis
-		var x = chartEngine.scaleLinear()
-		  .domain(chartEngine.extent(data, function(d) { return d.year; }))
-		  .range([ 0, width ]);
-		svg.append("g")
-		  .attr("transform", "translate(0," + height + ")")
-		  .call(chartEngine.axisBottom(x).ticks(axis_ticks));
-		
-		// Add Y axis
-		var y = chartEngine.scaleLinear()
-		  .domain([0, axis_height])
-		  .range([ height, 0 ]);
-		svg.append("g")
-		  .call(chartEngine.axisLeft(y));
-		
-		// color palette
-		var color = chartEngine.scaleOrdinal()
-		  .domain(keys)
-		  .range(colors_array)
-		
-		//stack the data?
-		var stackedData = chartEngine.stack()
-		  .keys(keys)
-		  (data)
-		console.log("This is the stack result: ", stackedData)
-		
-		// Show the areas
-		svg
-		  .selectAll("mylayers")
-		  .data(stackedData)
-		  .enter()
-		  .append("path")
-		    .style("fill", function(d) { return color(d.key); })
-		    .attr("d", chartEngine.area()
-		      .x(function(d, i) { return x(d.data.year); })
-		      .y0(function(d) { return y(d[0]); })
-		      .y1(function(d) { 
-		    	  return y(d[1]); })
-		  )
-		//})
+			// Populate data
+			let series = [];
+			for (let topic = 0; topic < maxTopics; topic++) {
+				let data = []
+				for (var year in averages) {
+					data.push(parseFloat(averages[year][topic].toFixed(3)));
+				}
+				series.push({name: new String('Topic ' + (topic + 1)), data: data});
+			}
+			this.options['series'] = series;
+		}
 	}
 }
 
@@ -1277,8 +1240,8 @@ ticks.append("svg:text")
 
  </script>
 
-	<!-- Data -->
-	<script>
+<!-- Data -->
+<script>
 	
   	let _wordCloudData = [];
    
@@ -1321,13 +1284,7 @@ ticks.append("svg:text")
 			_chordDiagramMatrix[_chordDiagramMatrix.length - 1].push(blogIds);
 		<% } %>
 	<% } %>
-	console.log("matrix data")
-	console.log(_chordDiagramMatrix)
-	
-	console.log("blogPosts Data ")
-	//console.log(_blogPostsData)
-	
-	</script>
+</script>
 
 <!--  Blogposts -->
 <script>
@@ -1544,11 +1501,12 @@ $(document).delegate('.blogPostClickListener111', 'click', function(){
 <script>
 class Topics {
 	
-	constructor(topics, _statsBar, _blogPosts, _wordCloud, _chordDiagram) {
+	constructor(topics, _statsBar, _blogPosts, _wordCloud, _chordDiagram, _stackedChart) {
 		this.statsBar = _statsBar;
 		this.blogPosts= _blogPosts;
 		this.wordCloud = _wordCloud;
 		this.chordDiagram = _chordDiagram;
+		this.stackedChart = _stackedChart;
 		this.topicButtons = [];
 		this.container = document.getElementById("topicsContainer");
 		this.searchBox = document.getElementById("topicsSearch");
@@ -1577,35 +1535,45 @@ class Topics {
         this.blogPosts.update();
         this.wordCloud.update();
         this.chordDiagram.update();
+        this.stackedChart.update();
+	}
+	
+	reset() {
+		this.stackedChart.reset();
 	}
 	
 	topicButtonClickListener(event) {
 		let selectedButton = event.target;
-		
-        if (event.target.tagName == "B") {
+		// Adjust if the event caught improper tag
+        if (selectedButton.tagName == "B") {
         	selectedButton = event.target.parentElement;
         }
-		
-		// Quit if clicking on active topic
-        if (selectedButton.classList.contains("stylebuttonactive")) {
-        	return
-        }
-        
-        // Deselect current active topic
-        this.topicButtons.forEach(topicButton => {
-        	if (topicButton.classList.contains("stylebuttonactive")) {
-        		topicButton.classList.remove("btn-primary", "stylebuttonactive", "activebar")
-        		topicButton.classList.add("stylebuttoninactive", "opacity53pp", "text-primary");
-        	}
-        })        
-        
+
+		// Check whether the action is select or deselect
         if (selectedButton.classList.contains("stylebuttoninactive")) {
-        	selectedTopic = parseInt(selectedButton.getAttribute("topicNumber"));
-        	selectedButton.classList.remove("stylebuttoninactive", "opacity53pp", "text-primary");        		
-        	selectedButton.classList.add("btn-primary", "stylebuttonactive", "activebar")
+	    	selectedTopic = parseInt(selectedButton.getAttribute("topicNumber"));
+        }
+        else {
+        	selectedTopic = null;
         }
         
-		this.update();
+	    // Remove selection style on all buttons
+	    this.topicButtons.forEach(topicButton => {
+	    	if (topicButton.classList.contains("stylebuttonactive")) {
+	    		topicButton.classList.remove("btn-primary", "stylebuttonactive", "activebar")
+	    		topicButton.classList.add("stylebuttoninactive", "opacity53pp", "text-primary");
+	    	}
+	    })
+	    
+        if (selectedTopic == null) {
+        	this.reset();
+        }
+        else {
+	       	// Apply selection
+	       	selectedButton.classList.remove("stylebuttoninactive", "opacity53pp", "text-primary");        		
+	    	selectedButton.classList.add("btn-primary", "stylebuttonactive", "activebar")
+        	this.update();
+        }
     }
 	
     searchBoxKeyUpListener() {            
@@ -1681,10 +1649,11 @@ document.addEventListener("DOMContentLoaded", function() {
 	let chordDiagram = new ChordDiagram(_chordDiagramMatrix, 400);
 	let wordCloud = new WordCloud(_wordCloudData);
 	//let topicDataTable = new TopicDataTable();
-	topics = new Topics(_topicNumbers, statsBar, blogPosts, wordCloud, chordDiagram);
+	topics = new Topics(_topicNumbers, statsBar, blogPosts, wordCloud, chordDiagram, stackedChart);
 	
-	topics.initialize();
 	stackedChart.initialize();
+	topics.initialize();
+	stackedChart.reset();
 	//topicDataTable.initialize(); // DataTable formatting. Triggers error and causes other charts to disappear
 });
 
