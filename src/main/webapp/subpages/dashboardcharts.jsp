@@ -128,7 +128,9 @@ wordtagcloud("#tagcloudcontainer",450,jsonresult);
 					</button>
 				</div>
 				<div style="min-height: 490px;">
-					<div class="map-container map-choropleth"></div>
+					<div class="chart-container text-center">
+						<div class="svg-center map-container map-choropleth getlocationdashboard"></div>
+					</div>
 				</div>
 
 
@@ -373,10 +375,9 @@ wordtagcloud("#tagcloudcontainer",450,jsonresult);
 						<i class="fas fa-exchange-alt" aria-hidden="true"></i>
 					</button>
 				</div>
-				<div class="min-height-table">
-					<div class="chart-container">
-
-						<div class="chart" id="languageusage"></div>
+				<div style="min-height: 490px;">
+					<div class="chart-container text-center">
+						<div style="min-height: 400px;" class="chart getlanguagedashboard" id="languageusage"></div>
 					</div>
 				</div>
 			</div>
@@ -407,7 +408,6 @@ wordtagcloud("#tagcloudcontainer",450,jsonresult);
 							</tr>
 						</thead>
 						<tbody>
-
 							<%
 							java.sql.ResultSet language_data = d.load_filter(blog_ids, date_start.toString(), date_end.toString(), "top_language", "10");
 								/* ArrayList<scala.Tuple2<String, Integer>> language_data = LanguageMapper.getTopLanguages("blogsite_id",
@@ -771,7 +771,7 @@ wordtagcloud("#tagcloudcontainer",450,jsonresult);
 		</div>
 		<div style="min-height: 420px;">
 			<div class="chart-container text-center">
-				<div class="chart svg-center" id="sentimentpiechart"></div>
+				<div class="chart svg-center getsentimentdashboard" id="sentimentpiechart"></div>
 			</div>
 		</div>
 	</div>
@@ -815,7 +815,7 @@ wordtagcloud("#tagcloudcontainer",450,jsonresult);
 		</div>
 		<div class="min-height-table" style="min-height: 450px;">
 			<div class="chart-container">
-				<div class="chart" id="bubblesblogger"></div>
+				<div class="chart getbloggerdashboard" id="bubblesblogger"></div>
 			</div>
 		</div>
 	</div>
@@ -833,6 +833,7 @@ wordtagcloud("#tagcloudcontainer",450,jsonresult);
 $(function () {
     // Initialize chart
     bubblesblogger('#bubblesblogger', 450);
+    $('[data-toggle="tooltip"]').tooltip();
     // Chart setup
     function bubblesblogger(element, diameter) {
         // Basic setup
@@ -1074,7 +1075,7 @@ if (bloggerPostFrequency.size() > 0) {
 		</div>
 		<div class="min-height-table" style="min-height: 450px;">
 			<div class="chart-container">
-				<div class="chart" id="bubblesblog"></div>
+				<div class="chart getblogdashboard" id="bubblesblog"></div>
 			</div>
 		</div>
 	</div>
@@ -1092,6 +1093,7 @@ if (bloggerPostFrequency.size() > 0) {
 $(function () {
     // Initialize chart
     bubblesblog('#bubblesblog', 450);
+    $('[data-toggle="tooltip"]').tooltip();
     // Chart setup
     function bubblesblog(element, diameter) {
         // Basic setup
@@ -1374,7 +1376,7 @@ $(".option-lable").on("click",function(e){
 		</div>
 		<div class="min-height-table" style="min-height: 500px;">
 			<div class="chart-container" id="influencecontainer">
-				<div class="chart" id="influencebar"></div>
+				<div class="chart  getinfluencedashboard" id="influencebar"></div>
 			</div>
 		</div>
 	</div>
@@ -1998,6 +2000,7 @@ final_result.put("final_terms", "");%>
 						ArrayList<scala.Tuple2<String, Integer>> blogInfluence;
 						String query;
 						if(action_type.equals("urls")){ 
+
 				    		   query = "select link, count(link) c\r\n" + 
 										"from outlinks\r\n" + 
 										"where blogsite_id in ("+blog_ids+") and link is not null and link != '' \r\n" + 
@@ -2113,6 +2116,591 @@ final_result.put("final_terms", "");%>
 
 <%=NumberFormat.getNumberInstance(Locale.US).format(new Double(rows.get(0).toString()).intValue())%>
 
+
+<%
+	} else if (action.toString().equals("getpostingfrequencydashboard")) {
+%>
+
+
+	<div class="card  card-style  mt20">
+		<div class="card-body  p30 pt5 pb5">
+			<div>
+				<p class="text-primary mt10 float-left">
+	
+					Posting Frequency  
+					<%if(action_type.equals("month")){ %>
+					<i><b>2020</b></i>
+					<%-- <i><b><%=ystint %></b></i> --%>
+					<% } %>
+					 for Past <select
+						class="text-primary filtersort sortbytimerange11 sort_frequency_range"><option
+							value="week" <%=(action_type.equals("week"))?"selected":"" %>>Week</option>
+						<option value="month" <%=(action_type.equals("month"))?"selected":"" %>>Month</option>
+						<option value="year" <%=(action_type.equals("year"))?"selected":"" %>>Year</option></select> 
+				</p>
+			</div> 
+			<div class="min-height-table" style="min-height: 300px;">
+				<div class="chart-container">
+					<div class="chart" id="postingfrequency"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
+	<div class="float-right">
+		<a href="postingfrequency.jsp?tid=<%=tid%>"><button
+				class="btn buttonportfolio2 mt10">
+				<b class="float-left semi-bold-text">Posting Frequency
+					Analysis</b> <b class="fas fa-comment-alt float-right icondash2"></b>
+			</button></a>
+	</div>
+	
+	<!-- posting frequency -->
+	<script>
+ $(function () {
+     // Initialize chart
+     lineBasic('#postingfrequency', 300);
+     // Chart setup
+     function lineBasic(element, height) {
+         // Basic setup
+         var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"]
+         // ------------------------------
+         // Define main variables
+         var d3Container = d3.select(element),
+             margin = {top: 10, right: 10, bottom: 20, left: 50},
+             width = d3Container.node().getBoundingClientRect().width - margin.left - margin.right,
+             height = height - margin.top - margin.bottom;
+         // var formatPercent = d3.format(",.3f");
+         // Format data
+         // var parseDate = d3.time.format("%d-%b-%y").parse,
+         //     bisectDate = d3.bisector(function(d) { return d.date; }).left,
+         //     formatValue = d3.format(",.0f"),
+         //     formatCurrency = function(d) { return formatValue(d); }
+         // Construct scales
+         // ------------------------------
+         // Horizontal
+         var x = d3.scale.ordinal()
+             //.rangeRoundBands([0, width], .72, .5);
+         .rangeRoundBands([0, width]);
+         // Vertical
+         var y = d3.scale.linear()
+             .range([height, 0]);
+         // Create axes
+         // ------------------------------
+         // Horizontal
+         var xAxis = d3.svg.axis()
+             .scale(x)
+             .orient("bottom")
+            .ticks(9)
+           // .tickFormat(formatPercent);
+         // Vertical
+         var yAxis = d3.svg.axis()
+             .scale(y)
+             .orient("left")
+             .ticks(6);
+        
+         // Create chart
+         // ------------------------------
+         // Add SVG element
+         var container = d3Container.append("svg");
+         // Add SVG group
+         var svg = container
+             .attr("width", width + margin.left + margin.right)
+             .attr("height", height + margin.top + margin.bottom)
+             .append("g")
+             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+         // Construct chart layout
+         // ------------------------------
+         // Line
+         // Load data
+         // ------------------------------
+         // data = [[{"date": "Jan","close": 120},{"date": "Feb","close": 140},{"date": "Mar","close":160},{"date": "Apr","close": 180},{"date": "May","close": 200},{"date": "Jun","close": 220},{"date": "Jul","close": 240},{"date": "Aug","close": 260},{"date": "Sep","close": 280},{"date": "Oct","close": 300},{"date": "Nov","close": 320},{"date": "Dec","close": 340}],
+         // [{"date":"Jan","close":10},{"date":"Feb","close":20},{"date":"Mar","close":30},{"date": "Apr","close": 40},{"date": "May","close": 50},{"date": "Jun","close": 60},{"date": "Jul","close": 70},{"date": "Aug","close": 80},{"date": "Sep","close": 90},{"date": "Oct","close": 100},{"date": "Nov","close": 120},{"date": "Dec","close": 140}],
+         // ];
+         
+         //seun remove
+         <%-- data = [	
+        	[<%if (postingTrend.size() > 0) {
+	for (int key : postingTrend.keySet()) {
+		/* String postYear = postingTrend.get(key).toString(); */
+		int postCount = Integer.parseInt(postingTrend.get(key).toString());
+		if(post_freq_status.equals("month")){ %>
+		
+			{"date":monthNames[<%=key%>],"close":<%=postCount%>},
+			
+		<% }else{ %>
+		
+			{"date":"<%=key%>","close":<%=postCount%>},
+		
+		<%}%>
+     		  			
+     		<%}
+}%>
+     		]
+        	
+        	]; --%>
+     	  //seun remove
+        	 
+          // [{"date":"2014","close":400},{"date":"2015","close":600},{"date":"2016","close":1300},{"date":"2017","close":1700},{"date":"2018","close":2100}],
+          // [{"date":"2014","close":350},{"date":"2015","close":700},{"date":"2016","close":1500},{"date":"2017","close":1600},{"date":"2018","close":1250}],
+         	
+           
+         
+         //console.log("before posting frequenc data", data)
+         
+          data = [[{"date": "Jan","close": 120},{"date": "Feb","close": 140},{"date": "Mar","close":160},{"date": "Apr","close": 180},{"date": "May","close": 200},{"date": "Jun","close": 220},{"date": "Jul","close": 240},{"date": "Aug","close": 260},{"date": "Sep","close": 280},{"date": "Oct","close": 300},{"date": "Nov","close": 320},{"date": "Dec","close": 340}],
+          [{"date":"Jan","close":10},{"date":"Feb","close":20},{"date":"Mar","close":30},{"date": "Apr","close": 40},{"date": "May","close": 50},{"date": "Jun","close": 60},{"date": "Jul","close": 70},{"date": "Aug","close": 80},{"date": "Sep","close": 90},{"date": "Oct","close": 100},{"date": "Nov","close": 120},{"date": "Dec","close": 140}],
+          ];
+         
+        // data = [[{"date":"2014","close":400},{"date":"2015","close":600},{"date":"2016","close":1300},{"date":"2017","close":1700},{"date":"2018","close":2100}],
+          //    [{"date":"2014","close":350},{"date":"2015","close":700},{"date":"2016","close":1500},{"date":"2017","close":1600},{"date":"2018","close":1250}],];
+         
+         //console.log("after posting frequenc data", data)
+         //console.log(data);
+         // data = [];
+         // data = [
+         // [
+         //   {
+         //     "date": "Jan",
+         //     "close": 1000
+         //   },
+         //   {
+         //     "date": "Feb",
+         //     "close": 1800
+         //   },
+         //   {
+         //     "date": "Mar",
+         //     "close": 1600
+         //   },
+         //   {
+         //     "date": "Apr",
+         //     "close": 1400
+         //   },
+         //   {
+         //     "date": "May",
+         //     "close": 2500
+         //   },
+         //   {
+         //     "date": "Jun",
+         //     "close": 500
+         //   },
+         //   {
+         //     "date": "Jul",
+         //     "close": 100
+         //   {
+         //     "date": "Aug",
+         //     "close": 500
+         //   },
+         //   {
+         //     "date": "Sep",
+         //     "close": 2300
+         //   },
+         //   {
+         //     "date": "Oct",
+         //     "close": 1500
+         //   },
+         //   {
+         //     "date": "Nov",
+         //     "close": 1900
+         //   },
+         //   {
+         //     "date": "Dec",
+         //     "close": 4170
+         //   }
+         // ]
+         // ];
+         // console.log(data);
+         var line = d3.svg.line()
+         .interpolate("monotone")
+              //.attr("width", x.rangeBand())
+             .x(function(d) { return x(d.date); })
+             .y(function(d) { return y(d.close); });
+         
+	        // .x(function(d){d.forEach(function(e){return x(d.date);})})
+             // .y(function(d){d.forEach(function(e){return y(d.close);})});
+  			
+         // Create tooltip
+         var tip = d3.tip()
+                .attr('class', 'd3-tip')
+                .offset([-10, 0])
+                .html(function(d) {
+                if(d === null)
+                {
+                  return "No Information Available";
+                }
+                else if(d !== null) {
+                 return d.date+" ("+formatNumber(d.close)+")<br/>";
+                  }
+                // return "here";
+                });
+         function formatNumber(num) {
+       	  return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+       	}
+         
+            // Initialize tooltip
+            //svg.call(tip);
+           // Pull out values
+           // data.forEach(function(d) {
+           //     d.frequency = +d.close;
+           //
+           // });
+                     // Pull out values
+                     // data.forEach(function(d) {
+                     //     // d.date = parseDate(d.date);
+                     //     //d.date = +d.date;
+                     //     //d.date = d.date;
+                     //     d.close = +d.close;
+                     // });
+                     // Sort data
+                     // data.sort(function(a, b) {
+                     //     return a.date - b.date;
+                     // });
+                     // Set input domains
+                     // ------------------------------
+                     // Horizontal
+           //  console.log(data[0])
+                   // Vertical
+         // extract max value from list of json object
+         // console.log(data.length)
+             var maxvalue =
+             data.map(function(d){
+               var mvalue = [];
+               if(data.length > 1)
+             {
+               d.forEach(function(f,i){
+               mvalue[i] = f.close;
+               })
+             return d3.max(mvalue);
+             }
+             //console.log(mvalue);
+             });
+         ////console.log(data)
+         if(data.length == 1)
+         {
+           var returnedvalue = data[0].map(function(e){
+           return e.date
+           });
+         // for single json data
+         x.domain(returnedvalue);
+         // rewrite x domain
+         var maxvalue2 =
+         data.map(function(d){
+         return d3.max(d,function(t){return t.close});
+         });
+         y.domain([0,maxvalue2]);
+         }
+         else if(data.length > 1)
+         {
+         //console.log(data.length);
+         //console.log(data);
+         var returnedata = data.map(function(e){
+         // console.log(k)
+         var all = []
+         e.forEach(function(f,i){
+         all[i] = f.date;
+         //console.log(all[i])
+         })
+         return all
+         //console.log(all);
+         });
+         // console.log(returnedata);
+         // combines all the array
+         var newArr = returnedata.reduce((result,current) => {
+         return result.concat(current);
+         });
+         
+         //console.log(newArr);
+         var set = new Set(newArr);
+         var filteredArray = Array.from(set);
+         //console.log(filteredArray.sort());
+         // console.log(returnedata);
+         x.domain(filteredArray);
+         y.domain([0, d3.max(maxvalue)]);
+         }
+                     //
+                     // Append chart elements
+                     //
+         // svg.call(tip);
+                      // data.map(function(d){})
+                      if(data.length == 1)
+                      {
+                    	  
+                    	
+                      // Add line
+                      //0console.log(svg.selectAll(".tick"))
+                     // tick = svg.select(".d3-axis-horizontal").selectAll(".tick")
+                     // console.log(tick)
+                      //var transform = d3.transform(tick.attr("transform")).translate;
+                      //console.log(transform);
+                      var path = svg.selectAll('.d3-line')
+                                .data(data)
+                                .enter()
+                                .append("g")
+                                .attr("class","linecontainer")
+                               // .attr("transform", "translate(106,0)")
+                                .append("path")
+                                .attr("class", "d3-line d3-line-medium")
+                                //.attr("transform", "translate("+129.5/6+",0)")
+                                .attr("d", line)
+                                // .style("fill", "rgba(0,0,0,0.54)")
+                                //.style("fill", "#17394C")
+                                .style("stroke-width",2)
+                                .style("stroke", "#17394C")
+                                //.attr("transform", "translate("+margin.left/4.7+",0)");
+                                // .attr("transform", "translate(40,0)");
+                        
+                    /*   $(element).bind('inview', function (event, visible) {
+                    	  if (visible == true) {
+                    		  path.select("path")
+                    		  .transition()
+                              .duration(1000)
+                              .attrTween("stroke-dasharray", tweenDash);
+                              
+                    	  } else {
+                    		  //svg.selectAll("text")
+                              //.style("font-size", 0)
+                    	  }
+                    	}); */
+                      function tweenDash() {
+                          var l = this.getTotalLength(),
+                              i = d3.interpolateString("0," + l, l + "," + l);
+                          return function (t) { return i(t); };
+                      }
+                                // .datum(data)
+                     // firsttick =  return x(d.date[0]);
+                       //         console.log(firsttick);
+                       // add point
+                       
+                       //svg.call(xAxis).selectAll(".tick").each(function(tickdata) {
+                        // var tick = svg.call(xAxis).selectAll(".tick").style("stroke",0);
+                         //console.log(tick);
+                          // pull the transform data out of the tick
+                         //var transform = d3.transform(tick[0].g.attr("transform")).translate;
+                          //console.log(tick);
+                         // console.log("each tick", tickdata, transform); 
+                      // });
+                        circles =  svg.append("g").attr("class","circlecontainer")
+                                 // .attr("transform", "translate("+106+",0)")
+                        		  .selectAll(".circle-point")
+                                  .data(data[0])
+                                  .enter();
+                              circles
+                              // .enter()
+                              
+                              .append("circle")
+                              .attr("class","circle-point")
+                              .attr("r",3.0)
+                              .style("stroke", "#4CAF50")
+                              .style("fill","#4CAF50")
+                              .attr("cx",function(d) { return x(d.date); })
+                              .attr("cy", function(d){return y(d.close)})
+                              //.attr("transform", "translate("+margin.left/4.7+",0)");
+                              svg.selectAll(".circle-point").data(data[0])
+                              .on("mouseover",tip.show)
+                              .on("mouseout",tip.hide)
+                              .on("click",function(d){console.log(d.date)});
+                                                 svg.call(tip)
+                                                 
+                                                
+                      }
+                      // handles multiple json parameter
+                      else if(data.length > 1)
+                      {
+                        // add multiple line
+                        var path = svg.selectAll('.d3-line')
+                                  .data(data)
+                                  .enter()
+                                  .append("path")
+                                  .attr("class", "d3-line d3-line-medium")
+                                  .attr("d", line)
+                                  // .style("fill", "rgba(0,0,0,0.54)")
+                                  .style("stroke-width", 2)
+                                  .style("stroke", function(d,i) { return color(i);})
+                                  .attr("transform", "translate("+margin.left/4.7+",0)");
+                       // add multiple circle points
+                           // data.forEach(function(e){
+                           // console.log(e)
+                           // })
+                           // console.log(data);
+                              var mergedarray = [].concat(...data);
+                                //console.log(mergedarray);
+                                 circles = svg.selectAll(".circle-point")
+                                     .data(mergedarray)
+                                     .enter();
+                                       circles
+                                       // .enter()
+                                       .append("circle")
+                                       .attr("class","circle-point")
+                                       .attr("r",3.4)
+                                       .style("stroke", "#4CAF50")
+                                       .style("fill","#4CAF50")
+                                       .attr("cx",function(d) { return x(d.date)})
+                                       .attr("cy", function(d){return y(d.close)})
+                                       .attr("transform", "translate("+margin.left/4.7+",0)");
+                                       svg.selectAll(".circle-point").data(mergedarray)
+                                      .on("mouseover",tip.show)
+                                      .on("mouseout",tip.hide)
+                                      .on("click",function(d){console.log(d.date)});
+                                 
+                                     svg.selectAll(".circle-point").data(mergedarray)
+                                     .on("mouseover",tip.show)
+                                     .on("mouseout",tip.hide)
+                                     .on("click",function(d){console.log(d.date)});
+                                                        svg.call(tip)
+                      }
+         // show data tip
+                     // Append axes
+                     // ------------------------------
+                     // Horizontal
+                     svg.append("g")
+                         .attr("class", "d3-axis d3-axis-horizontal d3-axis-strong")
+                         .attr("transform", "translate(0," + height + ")")
+                         .call(xAxis);
+                     // Vertical
+                     var verticalAxis = svg.append("g")
+                         .attr("class", "d3-axis d3-axis-vertical d3-axis-strong")
+                         .call(yAxis);
+					
+                     // Add text label
+                     verticalAxis.append("text")
+                         .attr("transform", "rotate(-90)")
+                         .attr("y", 10)
+                         .attr("dy", ".71em")
+                         .style("text-anchor", "end")
+                         .style("fill", "#999")
+                         .style("font-size", 12)
+                         // .text("Frequency")
+                         ;
+                     
+                     if(data.length == 1 )
+                    	 {
+                    	 var tick = svg.select(".d3-axis-horizontal").select(".tick");
+                    	 var transformfirsttick;
+                    	 //transformfirsttick =  tick[0][0].attributes[2].value;
+                        //console.log(tick[0][0].attributes[2]);
+                        //transformfirsttick = "translate(31.5,0)"
+                        //console.log(tick[0][0]);
+                        // handle based on browser
+                        var browser = "";
+                        c = navigator.userAgent.search("Chrome");
+                        f = navigator.userAgent.search("Firefox");
+                        m8 = navigator.userAgent.search("MSIE 8.0");
+                        m9 = navigator.userAgent.search("MSIE 9.0");
+                        if (c > -1) {
+                            browser = "Chrome";
+                            // chrome browser
+                        transformfirsttick =  tick[0][0].attributes[1].value;
+  
+                        } else if (f > -1) {
+                            browser = "Firefox";
+                             // firefox browser
+                         transformfirsttick =  tick[0][0].attributes[2].value;
+                        } else if (m9 > -1) {
+                            browser ="MSIE 9.0";
+                        } else if (m8 > -1) {
+                            browser ="MSIE 8.0";
+                        }
+                        
+                        svg.select(".circlecontainer").attr("transform", transformfirsttick);
+                        svg.select(".linecontainer").attr("transform", transformfirsttick);
+                        
+                        
+                        
+                        //console.log(browser);
+                        
+                    	 }
+                    
+             // Append tooltip
+             // -------------------------
+         // Resize chart
+         // ------------------------------
+         // Call function on window resize
+         $(window).on('resize', resize);
+         // Call function on sidebar width change
+         $('.sidebar-control').on('click', resize);
+         // Resize function
+         //
+         // Since D3 doesn't support SVG resize by default,
+         // we need to manually specify parts of the graph that need to
+         // be updated on window resize
+         function resize() {
+           // Layout variables
+           width = d3Container.node().getBoundingClientRect().width - margin.left - margin.right;
+           //
+           //
+           // // Layout
+           // // -------------------------
+           //
+           // // Main svg width
+           container.attr("width", width + margin.left + margin.right);
+           //
+           // // Width of appended group
+           svg.attr("width", width + margin.left + margin.right);
+           //
+           //
+           // // Axes
+           // // -------------------------
+           //
+           // // Horizontal range
+           x.rangeRoundBands([0, width]);
+           //
+           // // Horizontal axis
+           svg.selectAll('.d3-axis-horizontal').call(xAxis);
+           //
+           //
+           // // Chart elements
+           // // -------------------------
+           //
+           // // Line path
+           svg.selectAll('.d3-line').attr("d", line);
+             svg.selectAll(".circle-point")
+             .attr("cx",function(d) { return x(d.date);})
+             .attr("cy", function(d){return y(d.close)});
+             
+             if(data.length == 1 )
+        	 {
+        	 var tick = svg.select(".d3-axis-horizontal").select(".tick");
+        	 var transformfirsttick;
+        	 //transformfirsttick =  tick[0][0].attributes[2].value;
+            //console.log(tick[0][0].attributes[2]);
+            //transformfirsttick = "translate(31.5,0)"
+            //console.log(tick[0][0]);
+            // handle based on browser
+            var browser = "";
+            c = navigator.userAgent.search("Chrome");
+            f = navigator.userAgent.search("Firefox");
+            m8 = navigator.userAgent.search("MSIE 8.0");
+            m9 = navigator.userAgent.search("MSIE 9.0");
+            if (c > -1) {
+                browser = "Chrome";
+                // chrome browser
+            transformfirsttick =  tick[0][0].attributes[1].value;
+            } else if (f > -1) {
+                browser = "Firefox";
+                 // firefox browser
+             transformfirsttick =  tick[0][0].attributes[2].value;
+            } else if (m9 > -1) {
+                browser ="MSIE 9.0";
+            } else if (m8 > -1) {
+                browser ="MSIE 8.0";
+            }
+            
+            svg.select(".circlecontainer").attr("transform", transformfirsttick);
+            svg.select(".linecontainer").attr("transform", transformfirsttick);
+            
+            
+            
+            //console.log(browser);
+            
+        	 }
+           //
+           // // Crosshair
+           // svg.selectAll('.d3-crosshair-overlay').attr("width", width);
+         }
+     }
+ });
+ </script>
 
 <%
 	}
