@@ -281,6 +281,11 @@
 <script src="assets/js/jquery-3.2.1.slim.min.js"></script>
 <script src="assets/js/popper.min.js"></script>
 <script src="pagedependencies/googletagmanagerscript.js"></script>
+<style>
+	.selected {
+	    background-color: #FFF;
+	}
+</style>
 </head>
 <body> 
 <%@include file="subpages/loader.jsp" %>
@@ -519,7 +524,7 @@
 	                    <div class="collapseIcon"></div>
 	                    <p class="text"><%=entity%></p>
 	                </div>
-	                <button id="radioButton" title="Select"></button>
+	                <button id="ungroupButton" title="Ungroup Keywords"></button>
 	             </div>
                 <!-- Getting Narratives for each entities-->
                 <ul id="narrative_list_<%=entity %>" class="narratives">
@@ -808,12 +813,6 @@
        	<div id="search_narrative_tree"></div>
 	</div>
 	
-	<!-- Notifications -->
-        <section id="notifications">
-            <p id="notificationsWrapper">
-                <span id="label">Click a narrative to show its posts.</span>
-            </p>
-        </section>
         
         <!-- Notifications -->
         <section id="notifications">
