@@ -27,6 +27,7 @@
     --yellowish: #FFF474;
     --whitish: white;
     --blueishDark: rgb(23, 57, 76);
+    --blueishLighter: rgba(23, 57, 76, 0.3);
     --greyishLight: #F8F8F8;
     --greenish: #5FAA78;
     --blueishLight: rgb(198, 234, 255);
@@ -56,6 +57,7 @@ html {
     font-family: "Roboto", sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-x:hidden;
     box-sizing: border-box; /* https://www.w3schools.com/css/css3_box-sizing.asp   https://www.youtube.com/watch?v=ADDvQlerEx4&list=PLu8EoSxDXHP5CIFvt9-ze3IngcdAc2xKG&index=2 */
 
 }
@@ -81,9 +83,10 @@ a:hover {
 
 }
 
-::-webkit-scrollbar {
+section#moreInfoModal div#messageBox::-webkit-scrollbar, section#moreInfoModal div#messageBox div#messageContent::-webkit-scrollbar {
     width: 0px;
     background: transparent; /* make scrollbar transparent */
+    display: none;
 }
 
 * {
@@ -183,6 +186,66 @@ ul#narrativeTree li.level {
 
 }
 
+ul#narrativeTree li.level div#keywordWrapper {
+
+    display: flex;
+
+
+}
+
+ul#narrativeTree li.level div#keywordWrapper button#ungroupButton {
+
+    visibility: hidden;
+    opacity: 0.5;
+    width: 25px;
+    height: 25px;
+    margin-left: 4px;
+    background-image: var(--interface);
+    background-position: -97px -1037px;
+    flex-grow: 0;
+    flex-shrink: 0;
+
+}
+
+ul#narrativeTree li.level div#keywordWrapper.group button#ungroupButton {
+
+    visibility: visible;
+
+}
+
+ul#narrativeTree li.level div#keywordWrapper.group button#ungroupButton:hover {
+
+    opacity: 1;
+
+}
+
+ul#narrativeTree li.level div#keywordWrapper button#radioButton {
+
+    width: 18px;
+    height: 18px;
+    align-self: center;
+    border-radius: var(--radius25);
+    border: 1px solid var(--blueishLighter);
+    margin: 4px;
+    flex-grow: 0;
+    flex-shrink: 0;
+
+}
+
+ul#narrativeTree li.level div#keywordWrapper.selected button#radioButton {
+
+    background-color: var(--greenish);
+    border-color: var(--greenish);
+
+}
+
+ul#narrativeTree li.level div#keywordWrapper button#radioButton:hover {
+
+    background-color: var(--greenish);
+    border-color: var(--greenish);
+
+}
+
 ul#narrativeTree li.level div.keyword {
 
     display: inline-grid;
@@ -195,6 +258,25 @@ ul#narrativeTree li.level div.keyword {
     padding: 10px 18px;
     border-radius: var(--radius25);
     cursor: pointer;
+
+}
+
+ul#narrativeTree li.level div.keyword {
+
+    /* border: 2px dashed var(--blueishLighter); */
+
+}
+
+ul#narrativeTree li.level div#keywordWrapper.selected div.keyword {
+
+    background-color: var(--greenish);
+    color: var(--whitish);
+
+}
+
+ul#narrativeTree li.level div#keywordWrapper.selected div.keyword:hover {
+
+    background-color: var(--greenish);
 
 }
 
@@ -218,6 +300,18 @@ ul#narrativeTree li.level div.keyword div.collapseIcon {
     height: 14px;
     background-image: var(--interface);
     background-position: -10px -975px;
+
+}
+
+ul#narrativeTree li.level.uncollapse div#keywordWrapper.selected div.keyword div.collapseIcon {
+
+    background-position: -30px -1042px;
+
+}
+
+ul#narrativeTree li.level div#keywordWrapper.selected div.keyword div.collapseIcon {
+
+    background-position: -10px -1042px;
 
 }
 
@@ -256,6 +350,7 @@ ul#narrativeTree li.level ul.narratives li.narrative div.connectorBox {
     position: relative;
     width: 50px;
     height: 100%;
+    margin-left: 25px;
 
 }
 
@@ -418,6 +513,7 @@ ul#narrativeTree li.level ul.narratives li.narrative.open div.middleSection div#
     background-image: var(--interface);
     margin-bottom: 5px;
     background-position: -105px -960px;
+    opacity: 1;
 
 }
 
@@ -621,18 +717,88 @@ ul#narrativeTree li.level ul.narratives li.narrative.open div.bottomSection div.
 
 section#notifications {
 
-    display: flex;
-    width: 100%;
-    justify-content: center;
     position: fixed;
-    bottom: 0px;
-    background-color: var(--blue);
+    width: 100%;
+    bottom: -200px;
+    background-color: var(--greenish);
     color: var(--whitish);
     text-align: center;
-    
-    padding-top: 5px;
-    padding-bottom: 5px;
+    /*left: 50%;
+    transform: translate(-50%);*/
+    padding: 10px 40px;
     z-index: 10;
+    transition: bottom 0.3s;
+
+}
+
+section#notifications p {
+
+    font-size: 16px;
+    padding: 7px 0px;
+
+}
+
+section#notifications.displayed {
+
+    bottom: 0px;
+
+}
+
+section#notifications button#closeButton {
+
+    position: absolute;
+    top: 50%;
+    transform-origin: center center;
+    transform: translate( 0, -50%) scale(1);
+    right: 20px;
+    width: 18px;
+    height: 18px;
+    background-image: var(--interface);
+    background-position: -268px -958px;
+    
+}
+
+section#notifications button#closeButton:hover {
+
+    opacity: 0.5;
+    
+}
+
+section#notifications div#mergeMessage p {
+
+    display: inline-block;
+
+}
+
+section#notifications div#mergeMessage button#mergeButton {
+
+    opacity: 0.5;
+    border: 2px solid var(--whitish);
+    padding: 5px 10px;
+    border-radius: var(--radius25);
+    color: var(--whitish);
+    font-size: 16px;
+    font-weight: 600;
+    margin-left: 5px;
+
+}
+
+section#notifications div#mergeMessage button#mergeButton.enabled {
+
+    opacity: 1;
+
+}
+
+section#notifications div#mergeMessage button#mergeButton.enabled:hover {
+
+    background-color: var(--whitish);
+    color: var(--greenish);
+
+}
+
+section#notifications div#selectMessage {
+
+    display: none;
 
 }
 

@@ -513,12 +513,14 @@
 			entity = entity.split(":")[0].trim();
 		%>
             <li class="level">
-                <div class="keyword">
-                    <div class="collapseIcon"></div>
-                    
-                    <p class="text"><%=entity%></p>
-                </div>
-                
+            	<div id="keywordWrapper" class="">
+	            	<button id="radioButton" title="Select"></button>
+	                <div class="keyword">
+	                    <div class="collapseIcon"></div>
+	                    <p class="text"><%=entity%></p>
+	                </div>
+	                <button id="radioButton" title="Select"></button>
+	             </div>
                 <!-- Getting Narratives for each entities-->
                 <ul id="narrative_list_<%=entity %>" class="narratives">
                 
@@ -811,6 +813,19 @@
             <p id="notificationsWrapper">
                 <span id="label">Click a narrative to show its posts.</span>
             </p>
+        </section>
+        
+        <!-- Notifications -->
+        <section id="notifications">
+            <button id="closeButton" title="Cancel Selection"></button>
+            <div id="mergeMessage" class="bottomMessage">
+                <p><span id="counter"></span> Item(s) Selected </p>
+                <button id="mergeButton" title="Merge Items">MERGE</button>
+            </div>
+            <div id="selectMessage" class="bottomMessage">
+                <p><span id="counter">4</span> Item(s) selected</p>
+                <button id="mergeButton">MERGE</button>
+            </div>
         </section>
 
         <!-- More Info Modal -->

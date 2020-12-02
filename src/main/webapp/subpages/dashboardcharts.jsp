@@ -2137,11 +2137,11 @@ final_result.put("final_terms", "");%>
 				<p class="text-primary mt10 float-left">
 	
 					Posting Frequency  
-					<%if(action_type.equals("month")){ %>
-					<i><b>2020</b></i>
+					
 					<%-- <i><b><%=ystint %></b></i> --%>
-					<% } %>
-					 for Past <select
+					 <!-- for Past -->
+					 
+					  <select
 						class="text-primary filtersort sortbytimerange11 sort_frequency_range"><option
 							value="week" <%=(action_type.equals("week"))?"selected":"" %>>Week</option>
 						<option value="month" <%=(action_type.equals("month"))?"selected":"" %>>Month</option>
