@@ -2118,7 +2118,7 @@ final_result.put("final_terms", "");%>
 
 
 <%
-	} else if (action.toString().equals("getpostingfrequencydashboard")) {
+	} else if (action.toString().equals("getfrequencydashboard")) {
 		JSONArray line_data = new JSONArray();
 		if(action_type.equals("month")){ 
 			line_data = post._getGetDateAggregate("NOBLOGGER","date","MMM-yyyy","post","month","date_histogram", date_start.toString(), date_end.toString(), blog_ids);

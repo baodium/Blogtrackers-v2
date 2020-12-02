@@ -187,6 +187,8 @@
 			String dte = dend;
 			String year_start = "";
 			String year_end = "";
+			String month_start = "";
+			String month_end = "";
 
 			if (!single.equals("")) {
 				month = MONTH_ONLY.format(nnow);
@@ -280,8 +282,12 @@
 			String[] yend = dte.split("-");
 			year_start = yst[0];
 			year_end = yend[0];
+			month_start = yst[1];
+			month_end = yend[1];
 			int ystint = new Double(year_start).intValue();
 			int yendint = new Double(year_end).intValue();
+			int mstint = new Double(month_start).intValue();
+			int mendint = new Double(month_end).intValue();
 
 			if (yendint > Integer.parseInt(YEAR_ONLY.format(new Date()))) {
 				dte = DATE_FORMAT2.format(new Date()).toString();
@@ -319,6 +325,10 @@
 			if(yendint - ystint == 0){
 				
 				post_freq_status = "month";
+				
+				if(mendint - mstint == 0){
+					post_freq_status = "week";
+				}
 				//it is the same year, therefore search by month
 				postingTotal = post._searchMonthPostTotal("date", dt,dte,  ids); 
 				//postingTotal = post._searchMonthPostTotal("date", ystint,  ids); 
@@ -932,7 +942,7 @@ path.chord {
 						</div>
 						<div class="min-height-table" style="min-height: 300px;">
 							<div class="chart-container">
-								<div class="chart" id="postingfrequency"></div>
+								<div class="chart getfrequencydashboard" id="postingfrequency"></div>
 							</div>
 						</div>
 					</div>
@@ -3913,10 +3923,8 @@ var mymarker = [
 	
 	var word_count2 = {}; 
 	
-	function load_custom_filter(type, element, status){
+	function load_custom_filter(type, element, status, action_type){
 		
-		
-	console.log(type)
 		
 		if(status == 1){
 			$("."+element).html("</br><div class='inner_loader' ><img src='images/loading.gif' /></div>"); 
@@ -3932,7 +3940,8 @@ var mymarker = [
 				tid:"<%=tid%>",
 				ids:"<%=ids%>",
 				date_start:"<%=dt%>",
-				date_end:"<%=dte%>"
+				date_end:"<%=dte%>",
+				action_type:action_type
 			},
 			error: function(response)
 			{		
@@ -3954,21 +3963,23 @@ var mymarker = [
 		$(document).ready(function(){
 				
 				///count section
-				load_custom_filter("getblogcount","getblogcount", 1) 
-				load_custom_filter("getbloggercount","getbloggercount", 1) 
-				load_custom_filter("getpostcount","getpostcount", 1) 
-				load_custom_filter("getcommentcount","getcommentcount", 1)
+				action_type = ""
+				load_custom_filter("getblogcount","getblogcount", 1, action_type) 
+				load_custom_filter("getbloggercount","getbloggercount", 1, action_type) 
+				load_custom_filter("getpostcount","getpostcount", 1, action_type) 
+				load_custom_filter("getcommentcount","getcommentcount", 1, action_type)
 			
 				//load_custom_filter("getbloggercount","getbloggercount")
-				load_custom_filter("getlocationdashboard","getlocationdashboard")
-				load_custom_filter("getlanguagedashboard","getlanguagedashboard")
-				load_custom_filter("getsentimentdashboard","getsentimentdashboard")
-				load_custom_filter("getbloggerdashboard","getbloggerdashboard")
-				load_custom_filter("getblogdashboard","getblogdashboard")
-				load_custom_filter("getinfluencedashboard","getinfluencedashboard")
+				load_custom_filter("getlocationdashboard","getlocationdashboard",0, action_type)
+				load_custom_filter("getlanguagedashboard","getlanguagedashboard",0, action_type)
+				load_custom_filter("getsentimentdashboard","getsentimentdashboard",0, action_type)
+				load_custom_filter("getbloggerdashboard","getbloggerdashboard",0, action_type)
+				load_custom_filter("getblogdashboard","getblogdashboard",0, action_type)
+				load_custom_filter("getinfluencedashboard","getinfluencedashboard",0, action_type)
 				//load_custom_filter("getclusterdashboard","getclusterdashboard")
-				load_custom_filter("getdomaindashboard","getdomaindashboard") 
-				
+				load_custom_filter("getdomaindashboard","getdomaindashboard",0, action_type)
+				action_type = "<%=post_freq_status %>"
+				load_custom_filter("getfrequencydashboard","getfrequencydashboard",0,action_type)
 				
 				 
 				
@@ -4014,21 +4025,24 @@ var mymarker = [
 			<%}
 }
 if (date_set.toString().equals("1")) {%>
-
-			///count section
-			load_custom_filter("getblogcount","getblogcount", 1) 
-			load_custom_filter("getbloggercount","getbloggercount", 1) 
-			load_custom_filter("getpostcount","getpostcount", 1) 
-			load_custom_filter("getcommentcount","getcommentcount", 1)
 			
-			load_custom_filter("getlocationdashboard","getlocationdashboard")
-			load_custom_filter("getlanguagedashboard","getlanguagedashboard") 
-			load_custom_filter("getsentimentdashboard","getsentimentdashboard")
-			 load_custom_filter("getbloggerdashboard","getbloggerdashboard")
-			load_custom_filter("getblogdashboard","getblogdashboard")
-			load_custom_filter("getinfluencedashboard","getinfluencedashboard")
+			action_type = ""
+			///count section
+			load_custom_filter("getblogcount","getblogcount", 1, action_type) 
+			load_custom_filter("getbloggercount","getbloggercount", 1, action_type) 
+			load_custom_filter("getpostcount","getpostcount", 1, action_type) 
+			load_custom_filter("getcommentcount","getcommentcount", 1, action_type)
+			
+			load_custom_filter("getlocationdashboard","getlocationdashboard",0, action_type)
+			load_custom_filter("getlanguagedashboard","getlanguagedashboard",0, action_type) 
+			load_custom_filter("getsentimentdashboard","getsentimentdashboard",0, action_type)
+			 load_custom_filter("getbloggerdashboard","getbloggerdashboard",0, action_type)
+			load_custom_filter("getblogdashboard","getblogdashboard",0, action_type)
+			load_custom_filter("getinfluencedashboard","getinfluencedashboard",0, action_type)
 			//load_custom_filter("getclusterdashboard","getclusterdashboard")
-			load_custom_filter("getdomaindashboard","getdomaindashboard") 
+			load_custom_filter("getdomaindashboard","getdomaindashboard",0, action_type) 
+			action_type =  "<%=post_freq_status %>"
+			load_custom_filter("getfrequencydashboard","getfrequencydashboard",0, action_type) 
 			
 			
 			
@@ -4842,7 +4856,7 @@ $(".option-lable").on("click",function(e){
 	<script>
  $(function () {
      // Initialize chart
-     lineBasic('#postingfrequency', 300);
+     //lineBasic('#postingfrequency', 300);
      // Chart setup
      function lineBasic(element, height) {
          // Basic setup
@@ -5447,7 +5461,7 @@ $(".option-lable").on("click",function(e){
 			
 			//$("#postingfrequency").html('<div style="text-align:center"><img src="'+app_url+'images/preloader.gif"/><br/></div>');
 			
-			$("#postingfrequency").html("</br><div class='inner_loader' ><img  src='images/loading.gif' /> COMPUTING FROM:  <b style='color : blue;  font-size: 20px;'><%=dt%> - <%=dte%></b></div>");
+			$(".getfrequencydashboard").html("</br><div class='inner_loader' ><img  src='images/loading.gif' /> COMPUTING FROM:  <b style='color : blue;  font-size: 20px;'><%=dt%> - <%=dte%></b></div>");
 			
 			var type = $('.sort_frequency_range').val();
 			
@@ -5455,7 +5469,7 @@ $(".option-lable").on("click",function(e){
 				url: app_url+"subpages/dashboardcharts.jsp",
 				method: 'POST',
 				data: {
-					action:"getpostingfrequencydashboard",
+					action:"getfrequencydashboard",
 					action_type:type,
 					tid:"<%=tid%>",
 					ids:"<%=ids%>",
