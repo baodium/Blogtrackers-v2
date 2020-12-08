@@ -32,7 +32,7 @@
 	<script type="text/javascript" src="assets/js/uniform.min.js"></script>
 	
 <script type="text/javascript" src="assets/js/toastr.js"></script>
- <script src="https://apis.google.com/js/platform.js" async defer></script>
+ <!-- <script src="https://apis.google.com/js/platform.js" async defer></script> -->
   <meta name="google-signin-client_id" content="600561618290-lmbuo5mamod25msuth4tutqvkbn91d6v.apps.googleusercontent.com">
 
 <!-- Base URL  -->

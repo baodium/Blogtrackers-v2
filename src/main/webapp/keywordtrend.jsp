@@ -972,6 +972,7 @@
 												//Iterator<String> iter = p.keys();
 												String post_id = null;
 												String title = null;
+												String permalink = null;
 												String post_ = null;
 												int count = 0;
 												JSONObject lineGraph = new JSONObject();
@@ -984,6 +985,7 @@
 												String max_occurence_post_title = "";
 												String max_occurence_post_blogger = "";
 												String max_occurence_id = "";
+												String max_occurence_post_perma_link = "";
 												HashMap<String,String> values = new HashMap<String,String>();
 												int i_found = 0;
 												//int i = 0;
@@ -993,6 +995,7 @@
 													JSONObject j = new JSONObject(occurenceData.get(i).toString());
 													occurence = j.get("occurence").toString();
 													title = j.get("title").toString();
+													permalink = j.get("permalink").toString();
 												
 													if (i == 0) {
 														
@@ -1019,7 +1022,7 @@
 														max_occurence_post_blogger = j.get("blogger").toString();
 														max_occurence_post_date = j.get("date").toString();
 														max_occurence_post_title = j.get("title").toString();
-														//max_occurence_post_perma_link = j1.get("permalinks").toString();
+														max_occurence_post_perma_link = j.get("permalink").toString();
 														//max_occurence_post_title = j1.get("title").toString();
 														//JSONObject j1 = new JSONObject(max_occurence_id);
 														max_occurence_post = max_occurence_post.toLowerCase().replace(mostactiveterm, replace);
@@ -1036,7 +1039,7 @@
 											<%-- <%=tobj.get("title") %> --%> <%=title%>
 									</a><br /> <a class="mt20 viewpost <%=activeDefLink%>"
 									id="viewpost_<%=post_id%>"
-										href="<%-- <%=tobj.get("permalink") %> --%><%-- <%=perma_link%> --%> XXX"
+										href="<%=permalink%>"
 										target="_blank"> <buttton
 												class="btn btn-primary btn-sm mt10 visitpost">Visit
 											Post &nbsp;<i class="fas fa-external-link-alt"></i></buttton>

@@ -72,12 +72,39 @@ public class Blogposts {
 					+ "		},\r\n" + "}");
 
 		}
-
-		String url = base_url + "_search?size=" + size + "&from=" + fr;
-		return this._getResult(url, jsonObj);
+		
+		ArrayList<String> list = new ArrayList<String>();
+		list =  _get_result(jsonObj, "POST", "blogposts/_search?size=" + size + "&from=" + fr);
+		
+		return list;
+//		String url = base_url + "_search?size=" + size + "&from=" + fr;
+//		return this._getResult(url, jsonObj);
 
 	}
 
+	public ArrayList<String> _get_result(JSONObject jsonObj, String type, String endpoint) throws Exception{
+		JSONObject myResponse = this._makeElasticRequest(jsonObj, type, endpoint);
+		ArrayList<String> list = new ArrayList<String>();
+		if (null != myResponse.get("hits")) {
+			String res = myResponse.get("hits").toString();
+			JSONObject myRes1 = new JSONObject(res);
+			String total = myRes1.get("total").toString();
+			JSONObject total_ = new JSONObject(total);
+			this.totalpost = total_.get("value").toString();
+
+			JSONArray jsonArray = new JSONArray(myRes1.get("hits").toString());
+
+			if (jsonArray != null) {
+				int len = jsonArray.length();
+				for (int i = 0; i < len; i++) {
+					list.add(jsonArray.get(i).toString());
+				}
+			}
+		}
+		
+		return list;
+	}
+	
 	public String _getTotal(String term) {
 		JSONObject query = new JSONObject();
 		if (!term.equals("")) {
@@ -135,9 +162,12 @@ public class Blogposts {
 
 
 		JSONObject jsonObj = new JSONObject(que);
-		ArrayList result = this._getResult(url, jsonObj);
-
-		return this._getResult(url, jsonObj);
+//		ArrayList result = this._getResult(url, jsonObj);
+//
+//		return this._getResult(url, jsonObj);
+		ArrayList<String> list = new ArrayList<String>();
+		list =  _get_result(jsonObj, "POST", "blogposts/_search");
+		return list;
 	}
 
 	public ArrayList _getPostByBlogpostId(String field, String greater, String less, JSONArray post_ids)
@@ -163,9 +193,12 @@ public class Blogposts {
 				+ "            }\r\n" + "	 	\r\n" + "}";
 
 		JSONObject jsonObj = new JSONObject(que);
-		ArrayList result = this._getResult(url, jsonObj);
-
-		return this._getResult(url, jsonObj);
+//		ArrayList result = this._getResult(url, jsonObj);
+//
+//		return this._getResult(url, jsonObj);
+		ArrayList<String> list = new ArrayList<String>();
+		list =  _get_result(jsonObj, "POST", "blogposts/_search");
+		return list;
 	}
 
 	public ArrayList _getBloggerByBloggerName(String field, String greater, String less, String bloggers)
@@ -630,7 +663,12 @@ public class Blogposts {
 
 		JSONObject jsonObj = new JSONObject(que);
 		String url = base_url + "_search?size=1";
-		ArrayList result = this._getResult(url, jsonObj);
+//		ArrayList result = this._getResult(url, jsonObj);
+		
+		ArrayList result =  _get_result(jsonObj, "POST", "blogposts/_search");
+
+
+		
 		String res = "0";
 
 		if (result.size() > 0) {
@@ -693,8 +731,12 @@ public class Blogposts {
 				+ "\":{\r\n" + "			\"order\":\"" + order + "\"\r\n" + "			}\r\n" + "	}\r\n" + "}";
 
 		JSONObject jsonObj = new JSONObject(que);
-		ArrayList result = this._getResult(url, jsonObj);
-		return this._getResult(url, jsonObj);
+//		ArrayList result = this._getResult(url, jsonObj);
+//		return this._getResult(url, jsonObj);
+		ArrayList<String> list = new ArrayList<String>();
+		list =  _get_result(jsonObj, "POST", "blogposts/_search?size=50");
+		
+		return list;
 	}
 
 
@@ -718,7 +760,10 @@ public class Blogposts {
 		}
 
 		JSONObject jsonObj = new JSONObject(que);
-		ArrayList result = this._getResult(url, jsonObj);
+//		ArrayList result = this._getResult(url, jsonObj);
+		ArrayList<String> result = new ArrayList<String>();
+		result =  _get_result(jsonObj, "POST", "blogposts/_search?size=1");
+
 		if (result.size() > 0) {
 			String bres = result.get(0).toString();
 			JSONObject bresp = new JSONObject(bres);
@@ -808,7 +853,11 @@ public class Blogposts {
 					+ "\",\r\n" + "			\"gte\":\"" + 0 + "\"\r\n" + "			}\r\n" + "		}\r\n" + "}");
 		}
 		String url = base_url + "_search?size=" + size + "&from=" + fr;
-		return this._getResult(url, jsonObj);
+//		return this._getResult(url, jsonObj);
+		ArrayList<String> list = new ArrayList<String>();
+		list =  _get_result(jsonObj, "POST", "blogposts/_search?size=" + size + "&from=" + fr);
+		
+		return list;
 	}
 
 	public ArrayList _searchByTitleAndBody(String term, String sortby, String start, String end) throws Exception {
@@ -826,7 +875,11 @@ public class Blogposts {
 				+ "                        }\r\n" + "                    }\r\n" + "                }\r\n"
 				+ "            }\r\n" + "        }\r\n" + "    }");
 		String url = base_url + "_search?size=" + size;
-		return this._getResult(url, jsonObj);
+//		return this._getResult(url, jsonObj);
+		ArrayList<String> list = new ArrayList<String>();
+		list =  _get_result(jsonObj, "POST", "blogposts/_search?size=" + size);
+		
+		return list;
 
 	}
 
@@ -965,7 +1018,10 @@ public class Blogposts {
 		String que = "{\"query\": {\"constant_score\":{\"filter\":{\"terms\":{\"blogsite_id\":" + arg2 + "}}}}}";
 
 		JSONObject jsonObj = new JSONObject(que);
-		ArrayList result = this._getResult(url, jsonObj);
+//		ArrayList result = this._getResult(url, jsonObj);
+		ArrayList<String> list = new ArrayList<String>();
+		list =  _get_result(jsonObj, "POST", "blogposts/_search?size=1");
+		
 		return this.totalpost;
 
 	}
@@ -1106,7 +1162,10 @@ public class Blogposts {
 				+ "					}\r\n" + "				}\r\n" + "    }\r\n" + "}");
 
 		String url = base_url + "_search?size=50";
-		return this._getResult(url, jsonObj);
+		ArrayList<String> list = new ArrayList<String>();
+		list =  _get_result(jsonObj, "POST", "blogposts/_search?size=50");
+		return list;
+//		return this._getResult(url, jsonObj);
 
 	}
 
