@@ -343,14 +343,23 @@ test = new DbConnection().queryJSON("select * from blogposts where blogpost_id="
 //System.out.println(test);
 //System.out.println(test.get(0));
 //String allblogstring = test.get(0).toString().replaceAll("\\[","").replaceAll("\\]","");
+JSONObject allblogarray = new JSONObject();
+Object eachblogpostid = "";
+Object blogposttitle = "";
+Object blogger = "";
+Object permalink = "";
+Object blogsiteid = "";
+if(test.size() > 0){
+	allblogarray = new JSONObject(test.get(0));
+	eachblogpostid = allblogarray.getJSONObject("_source").get("blogpost_id");
+	blogposttitle = allblogarray.getJSONObject("_source").get("title");
+	blogger = allblogarray.getJSONObject("_source").get("blogger");
+	permalink = allblogarray.getJSONObject("_source").get("permalink");
+	blogsiteid = allblogarray.getJSONObject("_source").get("blogsite_id");
 
-JSONObject allblogarray = new JSONObject(test.get(0));
+
 //String[] allblogarray =  test.toArray(new String[test.size()]);
-Object eachblogpostid = allblogarray.getJSONObject("_source").get("blogpost_id");
-Object blogposttitle = allblogarray.getJSONObject("_source").get("title");
-Object blogger = allblogarray.getJSONObject("_source").get("blogger");
-Object permalink = allblogarray.getJSONObject("_source").get("permalink");
-Object blogsiteid = allblogarray.getJSONObject("_source").get("blogsite_id");
+
 
 //System.out.println(permalink); 
 //JSONObject jsArray = new JSONObject(test.get(0));
@@ -377,7 +386,7 @@ Object blogsiteid = allblogarray.getJSONObject("_source").get("blogsite_id");
 </div> 
 
 
-<% } }
+<% } }}
 else
 {
 	
