@@ -89,7 +89,7 @@
 	
 	
 //start changeDataData
-function chageDataeData(){
+function changeDateData(){
 	
 	var date_start = $("#date_start").val();
 	var date_end = $("#date_end").val();
