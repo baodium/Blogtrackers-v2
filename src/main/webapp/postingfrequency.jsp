@@ -1066,7 +1066,9 @@ String formatedtotalpost = String.format("%.0f",(Double.parseDouble(totalpost)/(
  
  <script type="text/javascript" src="assets/vendors/d3/d3.min.js"></script>
  
- 
+  <script src="assets/js/generic.js"></script>
+<script src="pagedependencies/postingfrequency1.js?v=789166990"></script>
+
  <script>
     
  /////////////////////////////////////////////////////
@@ -1808,7 +1810,12 @@ String formatedtotalpost = String.format("%.0f",(Double.parseDouble(totalpost)/(
    	            	var end = picker.endDate.format('YYYY-MM-DD');
    	            	$("#date_start").val(start);
    	            	$("#date_end").val(end);
-   	            	$("form#customform").submit();
+   	            	
+   	            	//$("form#customform").submit();
+   	            	
+   	            	////start after submit new date
+   	            	chageDataeData()
+   	            	////end after submiting new date
    				});
    $('#reportrange')
    		.on(
@@ -1898,8 +1905,7 @@ $(document).ready(function(){
  </script>
 <script src="pagedependencies/baseurl.js?v=93"></script>
 
- <script src="assets/js/generic.js"></script>
-<script src="pagedependencies/postingfrequency1.js?v=789166990"></script>
+
 
 </body>
 </html>

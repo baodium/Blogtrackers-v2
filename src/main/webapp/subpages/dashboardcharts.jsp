@@ -2221,7 +2221,7 @@ final_result.put("final_terms", "");%>
 		      "value": 17381072
 		    }
 		    ] */
-	
+	loop_count = <%= line_data.length()%>
 	dataSeries1 = [
 		 <%
         for(int x= 0; x< line_data.length(); x++){
@@ -2246,7 +2246,7 @@ final_result.put("final_terms", "");%>
 	 var ts2 = 1484418600000;
 	  var dates = [];
 	  var spikes = [5, -5, 3, -3, 8, -8]
-	  for (var i = 0; i < 21; i++) {
+	  for (var i = 0; i < loop_count; i++) {
 	    ts2 = ts2 + 86400000;
 	    var innerArr = [dataSeries1[i].date, dataSeries1[i].value];
 	    dates.push(innerArr)
