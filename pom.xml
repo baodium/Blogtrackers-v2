@@ -8,6 +8,7 @@
 	<groupId>com.blogtrackers2</groupId>
 	<artifactId>Blogtrackers-v2</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>war</packaging>
 
 	<name>Blogtrackers-v2</name>
 
