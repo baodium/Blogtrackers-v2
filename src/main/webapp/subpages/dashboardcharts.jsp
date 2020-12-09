@@ -2124,9 +2124,9 @@ final_result.put("final_terms", "");%>
 		if(action_type.equals("month")){ 
 			line_data = post._getGetDateAggregate("NOBLOGGER","date","yyyy-MM-dd","post","month","date_histogram", date_start.toString(), date_end.toString(), blog_ids);
  	  }else if(action_type.equals("year")){
- 		 line_data = post._getGetDateAggregate("NOBLOGGER","date","yyyy-MM-dd","post","year","date_histogram", date_start.toString(), date_end.toString(), blog_ids);
+ 		 line_data = post._getGetDateAggregate("NOBLOGGER","date","yyyy-MM-dd","post","month","date_histogram", date_start.toString(), date_end.toString(), blog_ids);
  	  }else if(action_type.equals("week")){
- 		 line_data = post._getGetDateAggregate("NOBLOGGER","date","yyyy-MM-dd","post","week","date_histogram", date_start.toString(), date_end.toString(), blog_ids);
+ 		 line_data = post._getGetDateAggregate("NOBLOGGER","date","yyyy-MM-dd","post","month","date_histogram", date_start.toString(), date_end.toString(), blog_ids);
  	  }		
 	
 %>
@@ -2294,7 +2294,7 @@ final_result.put("final_terms", "");%>
 	         yaxis: {
 	          labels: {
 	            formatter: function (val) {
-	              return val;
+	              return parseInt(val);
 	            },
 	          },
 	          title: {
