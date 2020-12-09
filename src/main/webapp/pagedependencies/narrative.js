@@ -138,7 +138,7 @@ $("body").delegate(".merge_entity_Button", "click", function() {
 	 }
 	////////////end collecting names
 	
-	alert(all_selected_entities)
+	//alert(all_selected_entities)
 	
 	$.ajax({
 		url: app_url+"subpages/more_narrative.jsp",
@@ -169,7 +169,7 @@ $("body").delegate(".merge_entity_Button", "click", function() {
 		}
 	});
 	
-	alert(all_selected_entities)
+	//alert(all_selected_entities)
 });
 /////
 

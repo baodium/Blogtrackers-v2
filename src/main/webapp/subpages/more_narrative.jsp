@@ -266,10 +266,10 @@ if(action.toString().equals("load_more_narrative")){
 	<!-- end -->
 <% }else if(action.toString().equals("merge_narrative")){ %>
 
-<li class="level">
-                <div id="keywordWrapper" class="group">
+<li class="level level1">
+                <div id="keywordWrapper" class="group keyword1">
                     <button id="radioButton" title="Select"></button>
-                    <div class="keyword">
+                    <div class="keyword ">
                         <div class="collapseIcon"></div>
                         <p class="text"><%=selected_entity_names.toString() %></p>
                     </div>
