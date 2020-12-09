@@ -124,9 +124,15 @@ if(term.equals("")){
 }else{
 	results = post._search(term,"0",sort);
 	all_loaded_blogs = post.getBlogIdsfromsearch(term);
+	//all_loaded_blogs_name = post.getBlogIdsAndNamesfromsearch(all_loaded_blogs);
 	
-	all_loaded_blogs_name = post.getBlogIdsAndNamesfromsearch(all_loaded_blogs);
-	
+	if(!all_loaded_blogs.equals("")){
+		all_loaded_blogs_name = post.getBlogIdsAndNamesfromsearch(all_loaded_blogs);
+	}
+	/* else{
+		term = "";
+		results = post._list("DESC","0",sort);
+	} */
 	
 }
 
