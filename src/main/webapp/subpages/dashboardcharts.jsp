@@ -75,6 +75,7 @@ post._getGetDateAggregate("NOBLOGGER","date","MMM","post","month","date_histogra
 	<div class="jvectormap-zoomout zoombutton" id="zoom_out">−</div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 <script type="text/javascript" src="assets/vendors/d3/d3.min.js"></script>
 <script src="assets/vendors/wordcloud/d3.layout.cloud.js"></script>
 <script type="text/javascript" src="assets/vendors/d3/d3_tooltip.js"></script>
@@ -2121,11 +2122,11 @@ final_result.put("final_terms", "");%>
 	} else if (action.toString().equals("getfrequencydashboard")) {
 		JSONArray line_data = new JSONArray();
 		if(action_type.equals("month")){ 
-			line_data = post._getGetDateAggregate("NOBLOGGER","date","MMM-yyyy","post","month","date_histogram", date_start.toString(), date_end.toString(), blog_ids);
+			line_data = post._getGetDateAggregate("NOBLOGGER","date","yyyy-MM-dd","post","month","date_histogram", date_start.toString(), date_end.toString(), blog_ids);
  	  }else if(action_type.equals("year")){
- 		 line_data = post._getGetDateAggregate("NOBLOGGER","date","yyyy","post","year","date_histogram", date_start.toString(), date_end.toString(), blog_ids);
+ 		 line_data = post._getGetDateAggregate("NOBLOGGER","date","yyyy-MM-dd","post","year","date_histogram", date_start.toString(), date_end.toString(), blog_ids);
  	  }else if(action_type.equals("week")){
- 		 line_data = post._getGetDateAggregate("NOBLOGGER","date","w-yyyy","post","week","date_histogram", date_start.toString(), date_end.toString(), blog_ids);
+ 		 line_data = post._getGetDateAggregate("NOBLOGGER","date","yyyy-MM-dd","post","week","date_histogram", date_start.toString(), date_end.toString(), blog_ids);
  	  }		
 	
 %>
@@ -2141,20 +2142,29 @@ final_result.put("final_terms", "");%>
 					<%-- <i><b><%=ystint %></b></i> --%>
 					 <!-- for Past -->
 					 
-					  <select
+					  <%-- <select
 						class="text-primary filtersort sortbytimerange11 sort_frequency_range"><option
 							value="week" <%=(action_type.equals("week"))?"selected":"" %>>Week</option>
 						<option value="month" <%=(action_type.equals("month"))?"selected":"" %>>Month</option>
-						<option value="year" <%=(action_type.equals("year"))?"selected":"" %>>Year</option></select> 
+						<option value="year" <%=(action_type.equals("year"))?"selected":"" %>>Year</option></select>  --%>
 				</p>
 			</div> 
-			<div class="min-height-table" style="min-height: 300px;">
+			<!-- <div class="min-height-table" style="min-height: 300px;">
 				<div class="chart-container">
 					<div class="chart" id="postingfrequency"></div>
 				</div>
-			</div>
+			</div> -->
+			
+			<div class="min-height-table" style="min-height: 350px;" id="app">
+		      <div id="chart9">
+			      <apexchart type="area" height="350" :options="chartOptions" :series="series"></apexchart>
+			    </div>
+		    </div>
+		    
 		</div>
 	</div>
+	
+	
 	
 	
 	<div class="float-right">
@@ -2165,11 +2175,159 @@ final_result.put("final_terms", "");%>
 			</button></a>
 	</div>
 	
+	
+	<!-- apex chart start -->
+	<script>
+	
+	/* var dataSeries = 
+		  [{
+		      "date": "2014-01-01",
+		      "value": 20000000
+		    },
+		    {
+		      "date": "2014-01-02",
+		      "value": 10379978
+		    },
+		    {
+		      "date": "2014-01-03",
+		      "value": 30493749
+		    },
+		    {
+		      "date": "2014-01-04",
+		      "value": 10785250
+		    },
+		    {
+		      "date": "2014-01-05",
+		      "value": 33901904
+		    },
+		    {
+		      "date": "2014-01-06",
+		      "value": 11576838
+		    },
+		    {
+		      "date": "2014-01-07",
+		      "value": 14413854
+		    },
+		    {
+		      "date": "2014-01-08",
+		      "value": 15177211
+		    },
+		    {
+		      "date": "2014-01-09",
+		      "value": 16622100
+		    },
+		    {
+		      "date": "2014-01-10",
+		      "value": 17381072
+		    }
+		    ] */
+	
+	dataSeries1 = [
+		 <%
+        for(int x= 0; x< line_data.length(); x++){
+       	 //System.out.println("");
+       	 Object date = line_data.getJSONObject(x).getJSONObject("key").get("date");
+       	 Object count = line_data.getJSONObject(x).getJSONObject("post").get("doc_count");
+       	 
+       	 String date_ = date.toString();
+       	 int count_ = Integer.parseInt(count.toString());
+       	 
+       	/*  if(action_type.equals("week")){
+       		 date_ = "Week" + date_;
+       	 } */
+       	 
+       	 %>
+		 {"date": "<%=date_%>T00:00:00.000Z","value": <%=count_%>},
+		 <%}
+        %>
+		 ]
+	
+	
+	 var ts2 = 1484418600000;
+	  var dates = [];
+	  var spikes = [5, -5, 3, -3, 8, -8]
+	  for (var i = 0; i < 21; i++) {
+	    ts2 = ts2 + 86400000;
+	    var innerArr = [dataSeries1[i].date, dataSeries1[i].value];
+	    dates.push(innerArr)
+	  }
+	
+	
+	var options = {
+	          series: [{
+	          name: 'POSTING FREQUENCY',
+	          data: dates
+	        }],
+	          chart: {
+	          type: 'area',
+	          stacked: false,
+	          height: 300,
+	          zoom: {
+	            type: 'x',
+	            enabled: true,
+	            autoScaleYaxis: true
+	          },
+	          toolbar: {
+	            autoSelected: 'zoom'
+	          }
+	        },
+	        dataLabels: {
+	          enabled: false
+	        },
+	        markers: {
+	          size: 0,
+	        },
+	        /* title: {
+	          text: 'Stock Price Movement',
+	          align: 'left'
+	        }, */
+	        fill: {
+	          type: 'gradient',
+	          gradient: {
+	            shadeIntensity: 1,
+	            inverseColors: false,
+	            opacityFrom: 0.5,
+	            opacityTo: 0,
+	            stops: [0, 90, 100]
+	          },
+	        },
+	         yaxis: {
+	          labels: {
+	            formatter: function (val) {
+	              return val;
+	            },
+	          },
+	          title: {
+	            text: 'Post Count'
+	          },
+	        },
+	        xaxis: {
+	          type: 'datetime',
+	        }, 
+	        tooltip: {
+	          shared: false,
+	          y: {
+	            formatter: function (val) {
+	              return val
+	            }
+	          }
+	        }
+	        };
+
+	        var chart = new ApexCharts(document.querySelector("#chart9"), options);
+	        chart.render();
+	      
+	
+	</script>
+	<!-- apex chart end -->
+	
+	
+	
 	<!-- posting frequency -->
 	<script>
  $(function () {
      // Initialize chart
-     lineBasic('#postingfrequency', 300);
+     //lineBasic('#postingfrequency', 300);
      // Chart setup
      function lineBasic(element, height) {
          // Basic setup

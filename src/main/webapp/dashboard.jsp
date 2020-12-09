@@ -933,11 +933,11 @@ path.chord {
 								<%if(post_freq_status.equals("month")){ %>
 								<i><b><%=ystint %></b></i>
 								<% } %>
-								 for Past <select
+								 <%-- for Past <select
 									class="text-primary filtersort sortbytimerange11 sort_frequency_range"><option
 										value="week" <%=(post_freq_status.equals("week"))?"selected":"" %>>Week</option>
 									<option value="month" <%=(post_freq_status.equals("month"))?"selected":"" %>>Month</option>
-									<option value="year" <%=(post_freq_status.equals("year"))?"selected":"" %>>Year</option></select> 
+									<option value="year" <%=(post_freq_status.equals("year"))?"selected":"" %>>Year</option></select> --%> 
 							</p>
 						</div>
 						<div class="min-height-table" style="min-height: 300px;">
@@ -957,8 +957,11 @@ path.chord {
 						</button></a>
 				</div>
 			</div>
-
+	
+	
 		</div>
+		
+		
 
 		<div class="row mb0">
 
@@ -2507,7 +2510,7 @@ function cluster_matrix_loader(){
 	<script
 		src="assets/vendors/DataTables/Buttons-1.5.1/js/buttons.print.min.js"></script>
 
-
+	<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
 	<script>
 	
@@ -5400,6 +5403,10 @@ $(".option-lable").on("click",function(e){
              .domain([0,1,2,3,4,5,6,10,15,20,80])
              .range(["#17394C", "#F5CC0E", "#CE0202", "#aaa", "#999", "#888", "#777", "#666", "#555", "#444", "#333", "#222"]);
  </script>
+ 
+ 
+ 
+ 
 	<script>
 	
  $(document).ready(function() {
