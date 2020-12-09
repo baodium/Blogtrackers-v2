@@ -277,9 +277,9 @@ if(action.toString().equals("load_more_narrative")){
                 </div>
                 <%
                 List<Narrative.Data> merged_narrative =  Narrative.merge(all_selected_entities.toString());
-                int limit = 0;
-                for(Narrative.Data narr : merged_narrative){
-                	
+                int limit = 5;
+                for(int i = 0; i < limit; i++){
+                	Narrative.Data narr = merged_narrative.get(i);
                 %>
                 <ul class="narratives">
                     <li class="narrative">
@@ -315,10 +315,10 @@ if(action.toString().equals("load_more_narrative")){
                         </div>
                     </li>
                 <%
-               if(limit > 5){
+               /* if(limit > 5){
         		break; 
                 	 } 
-                	limit++;
+                	limit++; */
                 }
                 %>
                 </ul>
