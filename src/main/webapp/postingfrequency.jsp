@@ -1066,7 +1066,9 @@ String formatedtotalpost = String.format("%.0f",(Double.parseDouble(totalpost)/(
  
  <script type="text/javascript" src="assets/vendors/d3/d3.min.js"></script>
  
- 
+  <script src="assets/js/generic.js"></script>
+<script src="pagedependencies/postingfrequency1.js?v=789166990"></script>
+
  <script>
     
  /////////////////////////////////////////////////////
@@ -1808,7 +1810,66 @@ String formatedtotalpost = String.format("%.0f",(Double.parseDouble(totalpost)/(
    	            	var end = picker.endDate.format('YYYY-MM-DD');
    	            	$("#date_start").val(start);
    	            	$("#date_end").val(end);
-   	            	$("form#customform").submit();
+   	            	
+   	            	//$("form#customform").submit();
+   	            	
+   	            	////start after submit new date
+   	            	var date_start = $("#date_start").val();
+   	         	var date_end = $("#date_end").val();
+   	         	
+   	         	///////////////start collecting names
+   	         	 var count = $('.thanks').length;
+   	         	 
+   	         	 if(count > 0){
+   	         		 
+   	         		 var all_selected_names = '';
+   	         		 var all_selected_names1 = '';
+   	         		 var i = 1;
+   	         		 var total_post_counter = 0;
+   	         		 $( ".thanks" ).each(function( index ) {
+   	         			 
+   	         			 
+   	         			 if(i > 1){
+   	         				 all_selected_names += ' , ';
+   	         				 all_selected_names1 += ' , ';
+   	         			 }
+   	         			 
+   	         	    	blog_name = 	$(this).attr('name');
+   	         	    	
+   	         	    	blog_id = 	this.id;
+   	         	    	
+   	         	    	all_selected_names += '"'+blog_name+'"';
+   	         	    	all_selected_names1 += blog_name;
+   	         	    		
+   	         	    	i++;
+   	         	    	
+   	         	    	//getting total post count from each blogger
+   	         	    	total_post_counter+=parseInt($(this).attr('value'));
+   	         	    	
+   	         		});
+   	         		 
+   	         		 
+   	         	 }
+   	         	////////////end collecting names
+   	         	 
+   	         	$(".activeblogger").html(all_selected_names1);
+   	         	
+   	         	loadTerms(all_selected_names,$("#all_blog_ids").val(),date_start,date_end, all_selected_names1);
+
+   	         	loadInfluence(all_selected_names,date_start,date_end);
+   	         	
+   	         	var total_post_count = $("#total_post_count").val();
+   	         	total_post_percentage = (total_post_counter/parseInt(total_post_count) * 100);
+
+   	         	$(".total-post").html(Math.round(total_post_percentage).toString() + "%");
+   	         	//$(".total-post").html(parseInt(response).toLocaleString('en'));
+   	         	//loadChart(bloog,id,date_start,date_end);
+   	         	
+   	         	getTopLocation(all_selected_names,$("#all_blog_ids").val(),date_start,date_end);
+   	         	//loadTopKeyword(bloog,$("#all_blog_ids").val(),date_start,date_end);	
+   	         	loadSentiments(all_selected_names,$("#all_blog_ids").val(),date_start,date_end);
+
+   	            	////end after submiting new date
    				});
    $('#reportrange')
    		.on(
@@ -1898,8 +1959,7 @@ $(document).ready(function(){
  </script>
 <script src="pagedependencies/baseurl.js?v=93"></script>
 
- <script src="assets/js/generic.js"></script>
-<script src="pagedependencies/postingfrequency1.js?v=789166990"></script>
+
 
 </body>
 </html>
