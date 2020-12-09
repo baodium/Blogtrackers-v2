@@ -4,12 +4,14 @@ $(window).bind("pageshow", function(event) {
     }
 });
 
+
+
 var baseurl = app_url;
 var requests = new Array();
 var z=0;
 
 $(document).ready(function() {
-
+	
     var img = $('.post-image');
     for(i=0; i<img.length; i++){
     	var id = img[i].id;
@@ -84,6 +86,93 @@ $("body").delegate(".confirm_narrative", "click", function() {
 	
 });
 /////
+
+///////
+$("body").delegate(".entity_radio", "click", function() {
+	entity = $(this).attr("entity")
+	
+	if($(this).hasClass("entity_unselected")){
+		//add to array
+		$(this).addClass("entity_selected")
+		$(this).removeClass("entity_unselected")
+	}else{
+		//remove from array
+		$(this).removeClass("entity_selected")
+		$(this).addClass("entity_unselected")
+		
+	}	
+	
+});
+/////
+
+
+///////
+$("body").delegate(".merge_entity_Button", "click", function() {
+	
+///////////////start collecting names
+	 var count = $('.entity_selected').length;
+	 
+	 var all_selected_entities = '';
+	  var selected_entity_names = '';
+	  
+	 if(count > 0){
+		 
+		 var i = 1;
+		 $( ".entity_selected" ).each(function( index ) {
+			 
+			 
+			 if(i > 1){
+				 all_selected_entities += ' , ';
+				 selected_entity_names += ' , ';
+			 }
+			 
+	    	entity = 	$(this).attr('entity');
+	    	all_selected_entities += '"'+entity+'"';
+	    	selected_entity_names += entity;
+	    	
+	    	i++;
+		    		
+		});
+		 
+		 
+	 }
+	////////////end collecting names
+	
+	alert(all_selected_entities)
+	
+	$.ajax({
+		url: app_url+"subpages/more_narrative.jsp",
+		method: 'POST',
+		data: {
+			action:"merge_narrative",
+			all_selected_entities:all_selected_entities,
+			selected_entity_names:selected_entity_names,
+			tid:$('#tracker_id').val(),
+			blog_ids:$('#all_blog_ids').val()
+		},
+		error: function(response)
+		{		
+			console.log("error");
+			console.log(response);
+		},
+		success: function(response)
+		{  
+			console.log('success')
+			$(".current_narrative_tree").prepend(response)
+			
+			var img = $('.new_narrative_image');
+		    for(i=0; i<img.length; i++){
+		    	var id = img[i].id;
+				var url = img[i].value;
+				getImage(id,url);
+		    }
+		}
+	});
+	
+	alert(all_selected_entities)
+});
+/////
+
 
 
 /*START ON SEARCH FOR NARRATIVE EDIT */

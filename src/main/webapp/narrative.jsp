@@ -519,7 +519,7 @@
 		%>
             <li class="level">
             	<div id="keywordWrapper" class="">
-	            	<button id="radioButton" title="Select"></button>
+	            	<button entity="<%=entity %>" class="entity_unselected entity_radio" id="radioButton" title="Select"></button>
 	                <div class="keyword">
 	                    <div class="collapseIcon"></div>
 	                    <p class="text"><%=entity%></p>
@@ -819,12 +819,12 @@
             <button id="closeButton" title="Cancel Selection"></button>
             <div id="mergeMessage" class="bottomMessage">
                 <p><span id="counter"></span> Item(s) Selected </p>
-                <button id="mergeButton" title="Merge Items">MERGE</button>
+                <button id="mergeButton" class="merge_entity_Button" title="Merge Items">MERGE</button>
             </div>
-            <div id="selectMessage" class="bottomMessage">
+            <!-- <div id="selectMessage" class="bottomMessage">
                 <p><span id="counter">4</span> Item(s) selected</p>
                 <button id="mergeButton">MERGE</button>
-            </div>
+            </div> -->
         </section>
 
         <!-- More Info Modal -->

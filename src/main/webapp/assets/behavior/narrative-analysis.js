@@ -108,7 +108,7 @@ document.addEventListener("DOMContentLoaded", function() {
             this.moreInfoCloseButton.addEventListener("click", this.moreInfoCloseButtonClickListener.bind(this));
             this.moreInfoModalShadow.addEventListener("click", this.moreInfoModalShadowClickListener.bind(this));
             this.notifications.addEventListener("click", this.notificationsClickListener.bind(this));
-            this.notificationsMergeButton.addEventListener("click", this.notificationsMergeButtonClickListener.bind(this));
+           // this.notificationsMergeButton.addEventListener("click", this.notificationsMergeButtonClickListener.bind(this));
             document.addEventListener("keydown", this.escapeKeyListener.bind(this));
             
             ////////START CUSTOM
