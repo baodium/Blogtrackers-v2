@@ -294,7 +294,7 @@ if(action.toString().equals("load_more_narrative")){
                                 <div class="dot"></div>
                             </div>
                             <div class="narrativeTextWrapper">
-                                <p class="narrativeText"><%=narr.getNarrative() %></p>
+                                <p class="narrativeText narrative_text_input"><%=narr.getNarrative() %></p>
                                 <p class="counter"><span class="number"><%=narr.getBlogpostIds().size() %></span>Posts</p>
                             </div>
                         </div>
