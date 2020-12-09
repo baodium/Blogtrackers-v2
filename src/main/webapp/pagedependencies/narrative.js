@@ -109,6 +109,9 @@ $("body").delegate(".entity_radio", "click", function() {
 ///////
 $("body").delegate(".merge_entity_Button", "click", function() {
 	
+	$('.current_narrative_tree').addClass('hidden');
+    $('#current_narrative_loader').removeClass('hidden');
+	
 ///////////////start collecting names
 	 var count = $('.entity_selected').length;
 	 
@@ -159,6 +162,9 @@ $("body").delegate(".merge_entity_Button", "click", function() {
 		{  
 			console.log('success')
 			$(".current_narrative_tree").prepend(response)
+			
+			$('.current_narrative_tree').removeClass('hidden');
+			$('#current_narrative_loader').addClass('hidden');
 			
 			var img = $('.new_narrative_image');
 		    for(i=0; i<img.length; i++){
