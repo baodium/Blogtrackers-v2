@@ -280,6 +280,7 @@ if(action.toString().equals("load_more_narrative")){
                 int limit = 5;
                 for(int i = 0; i < limit; i++){
                 	Narrative.Data narr = merged_narrative.get(i);
+                	List<Integer> blogpost_ids = narr.getBlogpostIds();
                 %>
                 <ul class="narratives">
                     <li class="narrative">
@@ -303,14 +304,69 @@ if(action.toString().equals("load_more_narrative")){
                                 <div class="connector"></div>
                             </div>
                             <div class="posts">
+                                <%
+                                String [] blogposts_data = blogpost_ids.toString().split(",");
+                                List<?> permalink_data = new ArrayList<>();
                                 
-                                    <div class="post">
-                                        <img class="postImage" src="assets/images/posts/1.jpg">
-                                        <h2 class="postTitle">Russia Belatedly Begins to Awaken to the Coronavirus Awaken to the Coronavirus</h2>
-                                        <p class="postDate">Sep 12 2020 - 9:00 PM</p>
-                                        <p class="postSource">www.cnn.net</p>
+                                int length = blogpost_ids.toString().length();
+                                String post_ids = (blogpost_ids.toString().substring(length - 1).equals(",")) ? blogpost_ids.toString().substring(0,length -1) : blogpost_ids.toString();
+                                try{
+                               	 String query = "SELECT blogpost_id, permalink, title, date, post from blogposts where blogpost_id in ("+post_ids.toString().replace("]","").replace("[","")+") and blogsite_id in ("+blog_ids+") order by date desc;";
+                                    permalink_data = db.queryJSON(query);
+                                }catch(Exception e){
+                               	 System.out.println("here");
+                                }
+                                
+                                Object permalink = "";
+                                Object date = "";
+                				Object title = "";
+                				Object post_detail = "";
+                				String domain = "";
+                				String bp_id = "";
+                 
+                       		for(int b = 0; b < permalink_data.size(); b++){
+                       				//Extract blogposts and entities
+   									if(b == 10){
+   										break;
+   									}
+                       				try{
+                       				
+                       				if(permalink_data.size() > 0){
+                       					JSONObject permalink_data_index = new JSONObject(permalink_data.get(b).toString());
+                           				permalink = permalink_data_index.getJSONObject("_source").get("permalink");
+                           				
+                           				bp_id = permalink_data_index.getJSONObject("_source").get("blogpost_id").toString();
+                           				
+                           				date = permalink_data_index.getJSONObject("_source").get("date");
+                           				LocalDate datee = LocalDate.parse(date.toString().split(" ")[0]);
+   										DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");
+   										date = dtf.format(datee);
+                           				
+                           				title = permalink_data_index.getJSONObject("_source").get("title");
+                           				post_detail = permalink_data_index.getJSONObject("_source").get("post");
+                           				URI uri = new URI(permalink.toString());
+                           				domain = uri.getHost();
+                       				}
+                       				
+                       				}catch(Exception e){
+                       					System.out.println(e);
+                       				}
+                                %>
+                                    <div post_id=<%=bp_id %> class="post missingImage post_id_<%=bp_id%>">
+                                        <div class="<%=bp_id%>">
+                                        	<input type="hidden" class="post-image" id="<%=bp_id%>" name="pic" value="<%=permalink.toString()%>">
+                                        </div> 
+                                        
+                                        <h2 id="post_title_<%=bp_id %>" class="postTitle"><%=title.toString() %></h2>
+                                        <p id="post_date_<%=bp_id %>" class="postDate"><%=date.toString()%></p>
+                                        <p id="post_source_<%=bp_id %>" post_permalink="<%=permalink.toString()%>" class="postSource"><%=domain %></p>
+                                        <input id="post_detail_<%=bp_id %>" type="hidden" value="<%=post_detail.toString() %>" >
                                     </div>
-                                
+                                <%
+                                b++;
+                    		} 
+                    		
+                    		%>  
                             </div>
                         </div>
                     </li>
