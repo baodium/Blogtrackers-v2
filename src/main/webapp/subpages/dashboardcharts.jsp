@@ -2255,7 +2255,7 @@ final_result.put("final_terms", "");%>
 	
 	var options = {
 	          series: [{
-	          name: 'POSTING FREQUENCY',
+	          name: 'No. of Posts',
 	          data: dates
 	        }],
 	          chart: {
