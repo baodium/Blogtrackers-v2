@@ -2130,7 +2130,7 @@ final_result.put("final_terms", "");%>
 %>
 
 
-<%=NumberFormat.getNumberInstance(Locale.US).format(new Double(rows.get(0).toString()).intValue())%>
+<%=rows.get(0).toString().equals("null") ? 0 :NumberFormat.getNumberInstance(Locale.US).format(new Double(rows.get(0).toString()).intValue())%>
 
 
 <%
@@ -2237,6 +2237,7 @@ final_result.put("final_terms", "");%>
 		    }
 		    ] */
 	loop_count = <%= line_data.length()%>
+	
 	dataSeries1 = [
 		 <%
         for(int x= 0; x< line_data.length(); x++){
