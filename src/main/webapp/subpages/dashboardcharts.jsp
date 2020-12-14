@@ -832,6 +832,7 @@ wordtagcloud("#tagcloudcontainer",450,jsonresult);
 <!-- Blogger Bubble Chart -->
 <script>
 $(function () {
+	console.log("startssssssssssssss")
     // Initialize chart
     bubblesblogger('#bubblesblogger', 450);
     $('[data-toggle="tooltip"]').tooltip();
@@ -990,7 +991,11 @@ if (bloggerPostFrequency.size() > 0) {
             		}
                 	
                 });
-     
+     			
+            node.selectAll("circle").transition()
+            .delay(200)
+            .duration(1000)
+            .attr("r", function(d) { return d.r; })
             
             
             // animation effect for bubble chart
@@ -1263,6 +1268,11 @@ data = {
                 
                 	
                 });
+            
+            node.selectAll("circle").transition()
+            .delay(200)
+            .duration(1000)
+            .attr("r", function(d) { return d.r; })
             
             // animation effect on bubble chart
             $(element).bind('inview', function (event, visible) {
@@ -1589,6 +1599,12 @@ $(function () {
                   })
                   .on('mouseover', tip.show)
                   .on('mouseout', tip.hide);
+          transitionbarinfluence.transition()
+          .delay(200)
+          .duration(1000)
+          .attr("width", function(d) { return x(d.frequency); })
+          .attr('transform', 'translate(0, '+(y.rangeBand()/2-14.5)+')');
+          
           $(element).bind('inview', function (event, visible) {
         	  if (visible == true) {
         	    // element is now visible in the viewport
@@ -1598,7 +1614,6 @@ $(function () {
                   .attr("width", function(d) { return x(d.frequency); })
                   .attr('transform', 'translate(0, '+(y.rangeBand()/2-14.5)+')');
         	  } else {
-        		  
         		  transitionbarinfluence.attr("width", 0)
         	    // element has gone out of viewport
         	  }

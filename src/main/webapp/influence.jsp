@@ -1067,7 +1067,7 @@ authoryears.put(mostactiveblogger,postyear);
   </footer> -->
 
 
-	<script type="text/javascript" src="assets/js/jquery-1.11.3.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
 	<script src="assets/bootstrap/js/bootstrap.js">
  </script>
 <!-- 	<script src="assets/js/generic.js"></script> -->
@@ -1950,8 +1950,7 @@ function color1(i, id, name){
              width = d3Container.node().getBoundingClientRect().width - margin.left - margin.right,
              height = height - margin.top - margin.bottom;
          
-         alert(width)
-
+        
 		
          var formatPercent = d3.format("");
          // Format data
