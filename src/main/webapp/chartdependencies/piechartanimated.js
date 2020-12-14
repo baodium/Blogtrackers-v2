@@ -54,7 +54,7 @@
                   d.value = +d.value;
               });
               
-              console.log(data);
+             // console.log(data);
               
               var totalValue = 0;
               
@@ -62,7 +62,7 @@
             	totalValue = totalValue + d.value;  
               });
               
-              console.log(totalValue);
+             // console.log(totalValue);
               
               
               var tip = d3.tip()
@@ -70,7 +70,7 @@
               .offset([-10, 0])
               .html(function(d) {
             	  
-           	console.log(d)
+           //	console.log(d)
                // console.log(d);
               if(d === null)
               {
@@ -113,6 +113,27 @@
 //                              .ease("bounce")
 //                              .duration(2000)
 //                              .attrTween("d", tweenPie);
+                      
+                      svg.selectAll(".d3-arc")
+                		.selectAll("path")
+                		.attr("d", arc)
+                      .style("stroke", "#fff")
+                      .style("fill", function(d) {
+                      customcolor = "";
+                      if(d.data.label == "Positive")
+                      {
+                        customcolor = "#72C28E";
+                      }
+                      else if(d.data.label == "Negative") {
+                        customcolor = "#FF7D7D";
+                      }
+                      return customcolor;
+
+                    })
+                      .transition()
+                      .ease("bounce")
+                       .duration(2000)
+                       .attrTween("d", tweenPie);
                      
                       
                  	 $(element).bind('inview', function (event, visible) {
