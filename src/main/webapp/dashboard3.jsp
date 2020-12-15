@@ -446,7 +446,7 @@
 <!--end of bootsrap -->
 <link rel="stylesheet" href="assets/css/toastr.css">
 
-<script src="assets/js/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
 <script src="assets/js/popper.min.js"></script>
 <script type="text/javascript" src="assets/js/toastr.js"></script>
 

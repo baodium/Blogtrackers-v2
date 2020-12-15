@@ -186,7 +186,7 @@ String total = NumberFormat.getNumberInstance(Locale.US).format(Integer.parseInt
 <link rel="stylesheet" href="assets/css/toastr.css" />
 <!--end of bootsrap -->
 
-<script src="assets/js/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
 <script src="assets/js/popper.min.js" ></script>
 
 <script type="text/javascript" src="assets/js/uniform.min.js"></script>

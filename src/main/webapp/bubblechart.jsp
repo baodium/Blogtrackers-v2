@@ -63,7 +63,7 @@ width: 600px;
 	<!-- <script type="text/javascript" src="assets/vendors/d3/d3_tooltip.js"></script> -->
 	<!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script> -->
 	<script src="https://d3js.org/d3.v4.js"></script>
-	<script src="assets/js/jquery.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
 	 
 	<script>
 		console.log('seun')
