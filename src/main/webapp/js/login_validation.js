@@ -401,7 +401,7 @@ $("#change_password").validate({
 });
 */
 
-//$(window).load(function(){	
+//$(window).on('load', function () {	
 	
 //})
 

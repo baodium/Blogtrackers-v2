@@ -1,6 +1,6 @@
 //console.log("Window is loading ");
 
-//$(window).load(function(){		})
+//$(window).on('load', function () {		})
 
 //$(window).on('load', function() {}
 
