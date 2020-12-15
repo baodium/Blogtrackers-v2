@@ -401,9 +401,9 @@ $("#change_password").validate({
 });
 */
 
-$(window).load(function(){	
+//$(window).load(function(){	
 	
-})
+//})
 
 $("body").removeClass("loaded");
 $(document).ready(function(e)
