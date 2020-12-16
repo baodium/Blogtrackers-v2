@@ -39,7 +39,7 @@ pageEncoding="UTF-8"%>
 	        System.out.println("View Type: "+viewtype);
 	        String cpage = request.getParameter("from");
 	        selected_all = request.getParameter("selected_all");
-	        int from = Integer.parseInt(cpage);
+	        int from = Integer.parseInt(cpage.replaceAll("[\\-\\+\\.\\^:,]",""));
 			Blogposts post  = new Blogposts();
 			String term =  request.getParameter("term");
 			ArrayList results = null;
