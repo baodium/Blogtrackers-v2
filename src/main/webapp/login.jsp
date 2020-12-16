@@ -53,6 +53,7 @@ System.out.println("LOGIN_EMAIL--" + email);
 <link rel="stylesheet" href="assets/css/toastr.css">
 <!--end of bootsrap -->
 <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+<!-- <script src="https://code.jquery.com/jquery-migrate-3.3.2.js"></script> -->
 <script src="assets/js/popper.min.js"></script>
 
 <!-- JavaScript to be reviewed thouroughly by me -->

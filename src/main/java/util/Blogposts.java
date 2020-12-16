@@ -830,6 +830,8 @@ public class Blogposts {
 
 		int size = 100;
 		int fr = 0;
+//		term = term.replaceAll("[\\-\\+\\.\\^:,]","");
+		term = term.replaceAll("[^A-Za-z0-9]","");
 		JSONObject jsonObj = new JSONObject("{\r\n" + "  \"query\": {\r\n" + "        \"query_string\" : {\r\n"
 				+ "            \"fields\" : [\"title\",\"blogger\",\"post\"],\r\n" + "            \"query\" : \"" + term
 				+ "\"\r\n" + "        }\r\n" + "  },\r\n" + "   \"sort\":{\r\n" + "		\"" + sortby + "\":{\r\n"

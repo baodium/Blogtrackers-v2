@@ -649,7 +649,7 @@ JSONObject allposts = new JSONObject();
 <link rel="stylesheet" href="assets/css/daterangepicker.css" />
   <link rel="stylesheet" href="assets/css/style.css" />
   <!--end of bootsrap -->
-  <script src="assets/js/jquery-3.2.1.slim.min.js" ></script>
+  <!-- <script src="assets/js/jquery-3.2.1.slim.min.js" ></script> -->
 <script src="assets/js/popper.min.js"></script>
 <script type="text/javascript" src="assets/vendors/animations/animations_css3.js"></script>
   <script src="pagedependencies/googletagmanagerscript.js"></script>

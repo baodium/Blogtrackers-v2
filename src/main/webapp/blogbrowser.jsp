@@ -112,7 +112,7 @@ if (path_new.exists()) {
 
 Blogposts post  = new Blogposts();
 String term =  (null == request.getParameter("term")) ? "" : request.getParameter("term").toString().toLowerCase();//.replaceAll("[^a-zA-Z]", " ");
-
+term = term.replaceAll("[^A-Za-z0-9]","");
 String sort =  (null == request.getParameter("sortby")) ? "date" : request.getParameter("sortby").toString();
 
 ArrayList results = null;
