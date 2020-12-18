@@ -356,10 +356,17 @@ public class TopicModelling {
 				blog_title = blogpost.title;
 				blog_post = blogpost.post;
 				blog_date = blogpost.date;
-				if (blogpost.title.contains("Super Bowl LV")){
-					System.out.print(blogpost.blogger);
+				//blog_author = blogpost.blogger.split("\n")[0];
+				blog_author = "Author";
+				/*
+				System.out.println("Test");
+				if (blog_title.contains("Super Bowl LV")) {
+					System.out.println(blogpost.blogger);
 				}
-				blog_author= blogpost.blogger.split("\n")[0];
+				else {
+					System.out.println(blogpost.blogger);
+				}
+				*/
 				blog_location = blogpost.location;
 				blog_numComments = blogpost.numComments;
 				//Read file and initialize word index array
