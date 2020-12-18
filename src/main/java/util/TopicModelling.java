@@ -356,10 +356,10 @@ public class TopicModelling {
 				blog_title = blogpost.title;
 				blog_post = blogpost.post;
 				blog_date = blogpost.date;
-				//blog_author = blogpost.blogger.split("\n")[0];
+				System.out.println("Test");
+				//blog_author = blogpost.blogger.split("\n")[0];				
 				blog_author = "Author";
 				/*
-				System.out.println("Test");
 				if (blog_title.contains("Super Bowl LV")) {
 					System.out.println(blogpost.blogger);
 				}
