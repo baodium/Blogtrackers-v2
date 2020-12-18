@@ -18,6 +18,10 @@ import java.util.TreeMap;
 import util.Stopwords;
 import util.TopicModelling.Documents.Document;
 
+import java.nio.charset.StandardCharsets; 
+
+
+
 public class TopicModelling {
 
 	public class modelparameters {
@@ -356,10 +360,7 @@ public class TopicModelling {
 				blog_title = blogpost.title;
 				blog_post = blogpost.post;
 				blog_date = blogpost.date;
-				if (blogpost.title.contains("Super Bowl LV")){
-					System.out.print(blogpost.blogger);
-				}
-				blog_author= blogpost.blogger.split("\n")[0];
+				blog_author= blogpost.blogger.split("[^\\S ]+")[0];
 				blog_location = blogpost.location;
 				blog_numComments = blogpost.numComments;
 				//Read file and initialize word index array
