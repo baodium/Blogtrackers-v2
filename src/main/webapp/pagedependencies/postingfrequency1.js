@@ -27,6 +27,8 @@
 	///////////////start collecting names
 	 var count = $('.thanks').length;
 	 
+	 console.log("count",count)
+	 
 	 if(count > 0){
 		 
 		 var all_selected_names = '';
@@ -68,7 +70,7 @@
 	$("#blogid").val(blg[1]);
 	
 
-	//alert(all_selected_names)
+	alert(all_selected_names)
 	loadTerms(all_selected_names,$("#all_blog_ids").val(),date_start,date_end, all_selected_names1);
 	//console.log(blogger+$("#all_blog_ids").val()+date_start+date_end)
 	loadInfluence(all_selected_names,date_start,date_end);
@@ -340,6 +342,7 @@ function loadTerms(blogger,blog_id,start_date,end_date, activeTerms){
 	/*$("#tagcloudbox").html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />");*/
 	$("#tagcloudbox").html("<img src='images/loading.gif' /> COMPUTING TERMS PLEASE WAIT....");
 	$(".most-used-keyword").html("<img src='images/loading.gif'/>");
+	console.log(blogger)
 	var blger = blogger.replaceAll(" ","__");
 	$.ajax({
 		url: app_url+"subpages/postingfrequencyterm.jsp",
