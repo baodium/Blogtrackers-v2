@@ -1,7 +1,6 @@
 <%@page import="java.net.HttpURLConnection"%>
 <%@page import="authentication.*"%>
 <%@page import="java.util.*"%>
-<%@page import="java.util.*"%>
 <%@page import="java.io.File"%>
 <%@page import="util.*"%>
 <%@page import="java.util.ArrayList"%>

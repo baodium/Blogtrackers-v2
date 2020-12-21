@@ -68,8 +68,7 @@ if (detail.size() > 0) {
 		ids = query;
 	}
 }
-	//TODO - These are arbitrary blogs, send selected tracker's blogs in this format
-	/* String blogIds = "1,2,3,4,5,6,7,8,9,10"; */
+
 	String blogIds = ids;
 	System.out.println(blogIds);
 	String DUMMYSTR = "";

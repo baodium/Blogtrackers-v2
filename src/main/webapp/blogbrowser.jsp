@@ -12,6 +12,63 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%
+
+/*Checking for improper inputs*/
+Object page_from = request.getParameter("page_from");
+Object page_id = request.getParameter("page_id");
+Object negative_page = request.getParameter("negative_page");
+Object has_more = request.getParameter("has_more");
+Object current_page = request.getParameter("current_page");
+boolean flag = true;
+//Object page_id = request.getParameter("term");
+if (page_from != null){
+	try{
+		int p_from = Integer.parseInt(page_from.toString());
+	}catch(NumberFormatException e){
+		System.out.println(page_from);
+		flag = false;
+		request.setAttribute("error", "An error occurred");
+	}
+}
+
+if (page_id != null){
+	try{
+		int p_id = Integer.parseInt(page_id.toString());
+	}catch(NumberFormatException e){
+		System.out.println(page_id);
+		flag = false;
+		request.setAttribute("error", "An error occurred");
+	}
+}
+if (negative_page != null){
+	try{
+		int neg_p = Integer.parseInt(negative_page.toString());
+	}catch(NumberFormatException e){
+		System.out.println(negative_page);
+		flag = false;
+		request.setAttribute("error", "An error occurred");
+		//response.sendRedirect(request.getRequestURI());
+	}
+}
+if (has_more != null){
+	try{
+		int h_more = Integer.parseInt(has_more.toString());
+	}catch(NumberFormatException e){
+		System.out.println(has_more);
+		flag = false;
+		request.setAttribute("error", "An error occurred");
+	}
+}
+if (current_page != null && !current_page.equals("blogbrowser")){
+	request.setAttribute("error", "An error occurred");
+	flag = false;
+	
+	//request.getRequestDispatcher("index.jsp").forward(request,response);
+	
+	//System.out.println(current_page);
+}
+
+if(flag != false){
 Object email = (null == session.getAttribute("email")) ? "" : session.getAttribute("email");
 
 ArrayList<?> userinfo = new ArrayList();//null;
@@ -588,8 +645,8 @@ for(int j=0; j<allblogarray.length; j++)
 <input type="hidden" id="selected_tracker" name="selected_tracker" value="" />
 <form name="page_form" id="page_form" method="post" action="">
     <input type="hidden" id="page_id" name="page_id" value="0" />
-	<input type="hidden" name="negative_page" id="negative_page" value="1" />
-	<input type="hidden" id="hasmore" name="hasmore" value="1" />
+	 <input type="hidden" name="negative_page" id="negative_page" value="1" />
+	 <input type="hidden" id="hasmore" name="hasmore" value="1" />
 	<input type="hidden" id="current_page" name="current_page" value="blogbrowser" />
 	<input type="hidden" id="term" name="term" value="<%=term%>" />
  </form>
@@ -959,3 +1016,16 @@ $(window).scroll(function() {
 </script>
 </body>
 </html>
+<%} else{
+	Object error = request.getAttribute("error");
+	if(error.toString().equals("An error occurred")){
+		request.setAttribute("page_from", null);
+		request.setAttribute("page_id", null);
+		request.setAttribute("negative_page", null);
+		request.setAttribute("has_more", null);
+		request.setAttribute("current_page", null);
+		response.sendRedirect(request.getRequestURI());
+		//request.getRequestDispatcher("blogbrowser.jsp").forward(request,response);
+	}
+	//request.getRequestDispatcher("blogbrowser.jsp").forward(request,response);
+}%>
