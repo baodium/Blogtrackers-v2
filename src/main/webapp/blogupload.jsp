@@ -78,7 +78,7 @@ if(username.equals("")){
 							 String blogsite_url = temp;
 							 Matcher m = p.matcher(blogsite_url);  
 							 if(m.matches()){  
-								 blogsite_url = bs.cleanUrl(blogsite_url);
+								 //blogsite_url = bs.cleanUrl(blogsite_url);
 								 String output = wblog._addBlog(username, blogsite_url, "not_crawled");						
 					         }
 						}	
