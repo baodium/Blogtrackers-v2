@@ -276,11 +276,11 @@ if(action.toString().equals("load_more_narrative")){
                     <button id="ungroupButton" title="Ungroup Keywords"></button>
                 </div>
                 <%
-                List<Narrative.Data> merged_narrative =  Narrative.merge(all_selected_entities.toString());
+                List<Narrative.Data_> merged_narrative =  Narrative.merge_(all_selected_entities.toString(), blog_ids.toString());
                 int limit = 5;
                 for(int i = 0; i < limit; i++){
-                	Narrative.Data narr = merged_narrative.get(i);
-                	List<Integer> blogpost_ids = narr.getBlogpostIds();
+                	Narrative.Data_ narr = merged_narrative.get(i);
+                	Set<String> blogpost_ids = narr.getBlogpostIds();
                 %>
                 <ul class="narratives">
                     <li class="narrative">
@@ -363,7 +363,7 @@ if(action.toString().equals("load_more_narrative")){
                                         <input id="post_detail_<%=bp_id %>" type="hidden" value="<%=post_detail.toString() %>" >
                                     </div>
                                 <%
-                                b++;
+                                //b++;
                     		} 
                     		
                     		%>  
@@ -391,31 +391,52 @@ if(action.toString().equals("load_more_narrative")){
 	String domain ="";
 	String post_detail ="";
 	String date="";
+	JSONObject elastic_query = new JSONObject();
+	JSONObject myResponse = new JSONObject();
+	JSONArray rows = new JSONArray();
+	int limit = 10;
 	
-	JSONObject res = Narrative.search_narratives_post(blog_ids.toString(), search_value.toString(), "10");
+	
+	JSONObject res = Narrative.search_narratives_post(blog_ids.toString(), search_value.toString(), "100");
 	JSONArray x = new JSONArray(res.getJSONObject("hits").getJSONArray("hits").toString());
+	Set<String> blogpost_ids_unq = new HashSet<>();
 	//for(Object x: res) {
 	for(int i = 0; i < x.length(); i++) {
-		try{
+		if(blogpost_ids_unq.size() == 10){
+			break;
+		}
+		/* try{ */
 			JSONObject source = new JSONObject(x.get(i).toString());
 			
 			bp_id = source.getJSONObject("_source").get("blogpost_id").toString();
-			permalink = source.getJSONObject("_source").get("permalink").toString();
-			title = source.getJSONObject("_source").get("title").toString();
-			
-			URI uri = new URI(permalink.toString());
-			domain = uri.getHost();
-			
-			
-			date = source.getJSONObject("_source").get("date").toString();
-			LocalDate datee = LocalDate.parse(date.toString().split("T")[0]);
-			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");
-			date = dtf.format(datee);
-			
-			post_detail = source.getJSONObject("_source").get("post").toString();
-		}catch(Exception e){ 
+			if(!blogpost_ids_unq.contains(bp_id)){
+				blogpost_ids_unq.add(bp_id);
+				/* permalink = source.getJSONObject("_source").get("permalink").toString(); */
+				String q = "{\n" + 
+					"  \"query\":\"select permalink, title, post from blogposts where blogpost_id = "+bp_id+" \"\n" + 
+					"}";
+				elastic_query = new JSONObject(q);
+				myResponse = Blogposts._makeElasticRequest(elastic_query, "POST", "/_xpack/sql");
+				rows = new JSONArray(myResponse.getJSONArray("rows").get(0).toString());
+				
+				permalink = rows.get(0).toString();
+				/* title = source.getJSONObject("_source").get("title").toString(); */
+				title = rows.get(1).toString();
+				
+				URI uri = new URI(permalink.toString());
+				domain = uri.getHost();
+				
+				
+				date = source.getJSONObject("_source").get("date").toString();
+				LocalDate datee = LocalDate.parse(date.toString().split("T")[0]);
+				DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");
+				date = dtf.format(datee);
+				
+				/* post_detail = source.getJSONObject("_source").get("post").toString(); */
+				post_detail = rows.get(2).toString();
+		/* }catch(Exception e){ 
 			System.out.println("");
-		}
+		} */
 	/* }
 	
 	for (int i = 1; i <= 10; i++){
@@ -444,7 +465,9 @@ if(action.toString().equals("load_more_narrative")){
      </div>
 	
 	
-<%  }}
+<%  }
+	}
+	}
 	
 	%>
 	
