@@ -511,7 +511,6 @@ userinfo = (ArrayList<?>)userinfo.get(0);
   <input class="form-control inputboxstyle" placeholder="| Search" />
   </div>
 </div> -->
-
 <div class="row mt20">
 <div class="col-md-3">
 
@@ -587,7 +586,7 @@ userinfo = (ArrayList<?>)userinfo.get(0);
 					/>
 	    			<a name="<%=bloggerName%>" value="<%=post_counter %>"
 	    			data-toggle="tooltip" data-placement="top" data-original-title="<%=bloggerName%>"
-	    			 class="topics topics1 blogger-select btn btn-primary select-term form-control bloggerinactive mb20 <%=activew %> <%=dselected%>" style="overflow:hidden;"  id="<%=blogsiteId%>" ><b><%=bloggerName%></b></a>
+	    			 class="load_active_line topics topics1 blogger-select btn btn-primary select-term form-control bloggerinactive mb20 <%=activew %> <%=dselected%>" style="overflow:hidden;"  id="<%=blogsiteId%>" ><b><%=bloggerName%></b></a>
 	    			<% 
 					//JSONObject jsonObj = bloggersort.getJSONObject(m);
 				}
@@ -717,7 +716,11 @@ totalpost =  post._searchRangeTotalByBlogger("date", dt, dte, mostactiveblogger)
 String formatedtotalpost = String.format("%.0f",(Double.parseDouble(totalpost)/(double)total) * 100) + "%";
 %>
 
+
 <div class="col-md-9">
+
+
+
   <div class="card card-style mt20">
     <div class="card-body  p30 pt5 pb5">
       <div style="min-height: 250px;">
@@ -731,11 +734,15 @@ String formatedtotalpost = String.format("%.0f",(Double.parseDouble(totalpost)/(
 				<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />
 			</div>
 		  
-		  
-		   <div class="chart line_graph" id="chart"></div>
+		   <div id="newy_chart"></div>
 		</div>
 		</div>
       </div>
+      
+    
+      
+      
+      
         </div>
   </div>
   <div class="card card-style mt20">
@@ -804,7 +811,7 @@ String formatedtotalpost = String.format("%.0f",(Double.parseDouble(totalpost)/(
                 
                   </div> 
                   <div id="entity_table">
-                        <table id="DataTables_Table_1_wrapper" class="display table_over_cover" style="width:100%">
+                        <table id="DataTables_Table_15_wrapper" class="display table_over_cover" style="width:100%">
                                 <thead>
                                     <tr>
                                         <th>Entity</th>
@@ -1069,6 +1076,25 @@ String formatedtotalpost = String.format("%.0f",(Double.parseDouble(totalpost)/(
   <script src="assets/js/generic.js"></script>
 <script src="pagedependencies/postingfrequency1.js?v=789166990"></script>
 
+
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+<script>
+      window.Promise ||
+        document.write(
+          '<script src="https://cdn.jsdelivr.net/npm/promise-polyfill@8/dist/polyfill.min.js"><\/script>'
+        )
+      window.Promise ||
+        document.write(
+          '<script src="https://cdn.jsdelivr.net/npm/eligrey-classlist-js-polyfill@1.2.20171210/classList.min.js"><\/script>'
+        )
+      window.Promise ||
+        document.write(
+          '<script src="https://cdn.jsdelivr.net/npm/findindex_polyfill_mdn"><\/script>'
+        )
+    </script>
+<script src="irregular-data-series.js"></script>
+<script src="irregular-data.js"></script>
  <script>
     
  /////////////////////////////////////////////////////
@@ -1086,49 +1112,49 @@ String formatedtotalpost = String.format("%.0f",(Double.parseDouble(totalpost)/(
     
  
     var uche = [];
-     
+    var data = [];
     
 
   function color1(i, id, name){
     	
     	var t = parseFloat(i);
-
+		
     	switch(t) {
-
+    	//colors: ["#E377C2","#8C564B", "#9467BD", "#D62728", "#", "#", "#", "#","#", "#"],
         //case 0:
           //var hex = 'yellow';
+        /* case 1:
+          var hex = '#E377C2'; 
+          break; */
         case 1:
-          var hex = '#e50471'; 
+          var hex = '#8C564B';
           break;
         case 2:
-          var hex = '#0571a0';
+          var hex = '#9467BD';
           break;
         case 3:
-          var hex = '#038a2c';
+          var hex = '#D62728';
           break;
         case 4:
-          var hex = '#6b8a03';
+          var hex = '#2CA02C';
           break;
         case 5:
-          var hex = '#a02f05';
+          var hex = '#FF7F0E';
           break;
         case 6:
-          var hex = '#b770e1';
+          var hex = '#1F77B4';
           break;
         case 7:
-          var hex = '#1fa701';
+          var hex = '#7F7F7F';
           break;
         case 8:
-          var hex = '#011aa7';
+          var hex = '#17B890';
           break;
         case 9:
-          var hex = '#a78901';
-          break;
-        case 10:
-          var hex = '#981010';
+          var hex = '#D35269';
           break;
         default:
-          var hex = '#6b085e';
+          var hex = '#E377C2';
 
       }
 
@@ -1160,61 +1186,253 @@ String formatedtotalpost = String.format("%.0f",(Double.parseDouble(totalpost)/(
         $('#line_graph_loader').removeClass('hidden');
         
         finalGraph();
-    	 // setTimeout(function()  {  finalGraph();}, 1000)
     });
     
-    
-    $(document).delegate('.topics1', 'click', function(){
-
-        var id = this.id;
-        var name = $(this).attr('name');
+      
+      
+////////START APEX CHART
+  	var chart;
+  	
+  	function beginApexChartBuild(data){
+  		
+	    var ts2 = 1484418600000;
+	    var dates = [];
+	    var spikes = [5, -5, 3, -3, 8, -8]
+	    for (var i = 0; i < 7; i++) {
+	      ts2 = ts2 + 86400000;
+	      //var innerArr = [ts2, dataSeries[i].value];
+	      var innerArr = [dataSeries[0][i].date, dataSeries[0][i].value];
+	      dates.push(innerArr)
+	    }
+	    
+	    
+	    var ts2 = 1484418600000;
+	    var dates1 = [];
+	    var spikes = [5, -5, 3, -3, 8, -8]
+	    for (var i = 0; i < 7; i++) {
+	      ts2 = ts2 + 86400000;
+	      //var innerArr = [ts2, dataSeries1[i].value];
+	      var innerArr = [dataSeries1[0][i].date, dataSeries1[0][i].value];
+	      dates1.push(innerArr)
+	    }
+   
+      var options = {
+        series: data,
+      chart: {
+          type: 'area',
+          stacked: false,
+          height: 350,
+          zoom: {
+            type: 'x',
+            enabled: true,
+            autoScaleYaxis: true
+          },
+          toolbar: {
+            autoSelected: 'zoom'
+          }
+        },
+        colors: ["#E377C2","#8C564B", "#9467BD", "#D62728", "#2CA02C", "#FF7F0E", "#1F77B4", "#7F7F7F","#17B890", "#D35269"],
+        dataLabels: {
+          enabled: false
+        },
+        markers: {
+          size: 0,
+        },
+        title: {
+          align: 'left'
+        },
+        fill: {
+          type: 'gradient',
+          gradient: {
+            shadeIntensity: 1,
+            inverseColors: false,
+            opacityFrom: 0.5,
+            opacityTo: 0,
+            stops: [0, 90, 100]
+          },
+        },
+        yaxis: {
+          labels: {
+            formatter: function (val) {
+              //return (val / 10000).toFixed(0);
+          	  return parseInt(val);
+            },
+          },
+          title: {
+            text: 'Post Count'
+          },
+        },
+        xaxis: {
+          type: 'datetime',
+        },
+        tooltip: {
+          shared: false,
+          y: {
+            formatter: function (val) {
+              //return (val / 10000).toFixed(0)
+              return val
+            }
+          },
         
-       $('.line_graph').addClass('hidden');
-       $('#line_graph_loader').removeClass('hidden');
-       
-       $("#scroll_list_loader").removeClass("hidden");
-   	   $("#scroll_list").addClass("hidden");
-       
-       $('#chart').html('');
+            x: {
+              format: 'yyyy'
+            },
+         
+        }
+        };
 
-       if ( $(this).hasClass("thanks") ) {
-           
-           $(this).removeClass("thanks"); 
-
-           $(this).addClass('white_bac');
- 		
-           $(this).addClass("bloggerinactive"); 
-           
-           $(this).removeClass('selectionactive');
-           
-           $(this).css('font-weight', 400);
-
-         }else{
-
-        	 $(this).removeClass("white_bac");
-        	 
-           $(this).removeClass('nobccolor');
-
-           $(this).addClass("thanks"); 
-           
-
-         }
-
-       finalGraph();
-       //setTimeout(function() {  finalGraph(); }, 2000)
+      chart = new ApexCharts(document.querySelector("#newy_chart"), options);
+      chart.render();
+      $('.line_graph').removeClass('hidden');
+      $('#line_graph_loader').addClass('hidden');
       
+      $("#scroll_list_loader").addClass("hidden");
+  	  $("#scroll_list").removeClass("hidden");
+	   	  
+	   	   
+  	}
+  ////END APEX CHART
+  
+////////START APEX CHART UPDATE
+	function updateApexChartBuild(graph_data){
+			
+	
+    var ts2 = 1484418600000;
+    var dates = [];
+    var spikes = [5, -5, 3, -3, 8, -8]
+    for (var i = 0; i < 7; i++) {
+      ts2 = ts2 + 86400000;
+      //var innerArr = [ts2, dataSeries[i].value];
+      var innerArr = [dataSeries[0][i].date, dataSeries[0][i].value];
+      dates.push(innerArr)
+    }
+    
+    
+    var ts2 = 1484418600000;
+    var dates1 = [];
+    var spikes = [5, -5, 3, -3, 8, -8]
+    for (var i = 0; i < 7; i++) {
+      ts2 = ts2 + 86400000;
+      //var innerArr = [ts2, dataSeries1[i].value];
+      var innerArr = [dataSeries1[0][i].date, dataSeries1[0][i].value];
+      dates1.push(innerArr)
+    }
+  
+    var options = {
+      series: graph_data,
+    chart: {
+        type: 'area',
+        stacked: false,
+        height: 350,
+        zoom: {
+          type: 'x',
+          enabled: true,
+          autoScaleYaxis: true
+        },
+        toolbar: {
+          autoSelected: 'zoom'
+        }
+      },
+      colors: ["#E377C2","#8C564B", "#9467BD", "#D62728", "#2CA02C", "#FF7F0E", "#1F77B4", "#7F7F7F","#17B890", "#D35269"],
+      dataLabels: {
+        enabled: false
+      },
+      markers: {
+        size: 0,
+      },
+      title: {
+        align: 'left'
+      },
+      fill: {
+        type: 'gradient',
+        gradient: {
+          shadeIntensity: 1,
+          inverseColors: false,
+          opacityFrom: 0.5,
+          opacityTo: 0,
+          stops: [0, 90, 100]
+        },
+      },
+      yaxis: {
+        labels: {
+          formatter: function (val) {
+            //return (val / 10000).toFixed(0);
+        	  return parseInt(val);
+          },
+        },
+        title: {
+          text: 'Post Count'
+        },
+      },
+      xaxis: {
+        type: 'datetime',
+      },
+      tooltip: {
+        shared: false,
+        y: {
+          formatter: function (val) {
+            //return (val / 10000).toFixed(0)
+            return val
+          }
+        },
       
+          x: {
+            format: 'yyyy'
+          },
+       
+      }
+      };
 
-      })
+    //var chart = new ApexCharts(document.querySelector("#newy_chart"), options);
+    chart.updateOptions(options);
+    $('.line_graph').removeClass('hidden');
+	       $('#line_graph_loader').addClass('hidden');
+	       
+	      $("#scroll_list_loader").addClass("hidden");
+	   	   $("#scroll_list").removeClass("hidden");
+	   	  
+	}
+////END APEX CHART UPDATE
+  
+  
+  //start buildNewfinalGraph
+    function buildNewfinalGraph(){
+     	
+     	 var count = $('.thanks').length;
+     	 
+     	 graph_data = []
+     	 
+     	 if(count > 0){
+     		 
+     		 var t = 0;
+     		
+     		 $( ".thanks" ).each(function( index ) {
+     			 
+        		  	var ind = index;
+     		    	blog_name = $(this).attr('name');
+     		    	blog_id = 	this.id;
+     		    	color1(t, blog_id, blog_name)
+     		    	let obj = data.find(obj => obj.name == blog_name);
+     		    	graph_data.push(obj)
+     		    	t++;
+     		    });
+     		 /////end for each for active
+     		 updateApexChartBuild(graph_data);
+     	 }
+     	
+     }
+  //end buildNewfinalGraph
+  
+  
+  
       
     
       
-    
+   
+  
    function finalGraph(){
     	
     	var data1 = [];
-    	
-    	var data = [];
     	
     	var highest_date_index = 0;
    		var highest_price_index = 0;
@@ -1225,7 +1443,7 @@ String formatedtotalpost = String.format("%.0f",(Double.parseDouble(totalpost)/(
   		var highest_date = 0;
   		var highest_price = 0;
     	
-    	 var count = $('.thanks').length;
+    	 var count = $('.load_active_line').length;
     	 
     
     	 
@@ -1233,7 +1451,7 @@ String formatedtotalpost = String.format("%.0f",(Double.parseDouble(totalpost)/(
     		 
     		 var t = 0;
     		
-    		 $( ".thanks" ).each(function( index ) {
+    		 $( ".load_active_line" ).each(function( index ) {
     			 
        		  		var ind = index;
        		  		
@@ -1270,7 +1488,7 @@ String formatedtotalpost = String.format("%.0f",(Double.parseDouble(totalpost)/(
     		  			success: function(response)
     		  			{   
     		  				var arr1 = [];
-    		  	
+    		  				var ts2 = 1484418600000;
     		  				$.each(response.values, function( key, value ) {
     		  					
     		  				
@@ -1295,21 +1513,49 @@ String formatedtotalpost = String.format("%.0f",(Double.parseDouble(totalpost)/(
     		  					
     		  					var string2 = key.toString();
     		  				
-    		  					var string3 = value.toString();
-    		  				
-    		  					arr1.push({date: string2 ,close: string3, name:response.name});
+    		  					//var string3 = value.toString();
     		  					
-    			  				
+    		  					//var string2 = key;
+        		  				
+    		  					var string3 = value;
+    		  					var dateee = new Date(""+string2+"-01-01").getTime() / 1000
+    		  					//arr1.push({date: string2 ,close: string3, name:response.name});
+    		  					//arr1.push({date: ""+string2+"" ,value: parseInt(string3), name:response.name});
+    		  					//var temp_date_in = ""+string2+"-01-01;
+    		  					ts2 = ts2 + 86400000;
+    		  					var innerArr = [string2+"-01-01T00:00:00.000Z", parseInt(string3)];
+    		  					//var innerArr = [dateee, parseInt(string3)];
+    		  					arr1.push(innerArr)
     				  		});
     		  				
     		  				
-    		  				data1.push({name: response.name,identify: response.identify,values:  arr1 });
+    		  				//data1.push({name: response.name,identify: response.identify,values:  arr1 });
+    		  				data1.push({name: response.name,identify: response.identify,data:  arr1 });
     		  				
     		  				t++;
     	    		    	
     			    		if(count == t){
     			    			data1.forEach((arrayItem) => {data.push(arrayItem) });
-    		  					beginBuilder(data)
+    			    			graph_data = []
+	    			    		/////start calling instantiate function
+	    			    			
+	    			    		/////end for each for active
+	    			    		$( ".thanks" ).each(function( index ) {
+	     			 
+				        		  	var ind = index;
+				     		    	blog_name = $(this).attr('name');
+				     		    	blog_id = 	this.id;
+				     		    	color1(t, blog_id, blog_name)
+				     		    	let obj = data.find(obj => obj.name == blog_name);
+				     		    	graph_data.push(obj)
+				     		    	t++;
+				     		    	
+				     		    });
+			     		 		/////end for each for active
+			     		 
+			     				beginApexChartBuild(graph_data)
+    			    			////end calling in=stantiate function
+    			    			
     		  				}
     		  				
     		  				
@@ -1320,334 +1566,8 @@ String formatedtotalpost = String.format("%.0f",(Double.parseDouble(totalpost)/(
     		    		
     		    	
     		    
-    		    
     		    });
-    		 /////end for each for active 
-    		 
-    		 
-    		 
-    	    	
-    	    		///start begin builder function
-    	    		    function beginBuilder(data){
-    			 
-    	    			/////////start graph stuff
-    	    				indexy = data.findIndex(x => x.name === highest_date_name);
-  	    				   
-  				 			//var width = 750;
-  				 			var width = $('#chart-container').width();
-  				 		    var height = 200;
-  				 		    var margin = 30;
-  				 		    var duration = 250;
-
-  				 		    var lineOpacity = "0.25";
-  				 		    var lineOpacityHover = "0.85";
-  				 		    var otherLinesOpacityHover = "0.1";
-  				 		    var lineStroke = "1.5px";
-  				 		    var lineStrokeHover = "2.5px";
-
-  				 		    var circleOpacity = '0.85';
-  				 		    var circleOpacityOnLineHover = "0.25"
-  				 		    var circleRadius = 3;
-  				 		    var circleRadiusHover = 6;
-
-
-  				 		    /* Format Data */
-  				 		    var parseDate = d3.time.format("%Y").parse;
-  				 		    data.forEach(function(d, i) {
-  				 		    	
-  				 		      d.values.forEach(function(d) {
-  				 		        d.date = parseDate(d.date);
-  				 		        d.close = +d.close;    
-  				 		      });
-  				 		      
-  				 		    });
-
-
-  				 		    /* Scale */
-  				 		    var xScale = d3.time.scale()
-  				 		   // var xScale = d3.scaleTime()
-  				 		      .domain(d3.extent(data[indexy].values, d => d.date))
-  				 		      .range([0, width-margin]);
-
-  				 		   //var yScale = d3.scaleLinear()
-				 		      //.domain([0, d3.max(data[highest_price_index].values, d => d.price)])
-				 		     // .range([height-margin, 0]);
-  				 		   
-  				 		    var yScale = d3.scale.linear()
-  				 		      .domain([0, highest_price])
-  				 		      .range([height-margin, 0]);
-  				 		  
-  				 		     
-
-  				 		    var color = d3.scale.ordinal(d3.schemeCategory10);
-
-  				 		    /* Add SVG */
-  				 		    var svg = d3.select("#chart").append("svg")
-  				 		      .attr("width", (width+margin)+"px")
-  				 		      .attr("height", (height+margin)+"px")
-  				 		      .style("overflow", "visible")
-  				 		      .append('g')
-  				 		      .attr("transform", `translate(${margin}, ${margin})`);
-
-
-  				 		    /* Add line into SVG */
-  				 		    var line = d3.svg.line()
-  				 		      .x(d => xScale(d.date))
-  				 		      .y(d => yScale(d.close));
-
-  				 		    let lines = svg.append('g')
-  				 		      .attr('class', 'lines');
-
-
-  				 		    lines.selectAll('.line-group')
-  				 		      .data(data).enter()
-  				 		      .append('g')
-  				 		      .attr('class', 'line-group')  
-  				 		      .on("mouseover", function(d, i) {
-  				 		    	  
-  				 		          svg.append("text")
-  				 		            .attr("class", "title-text")
-  				 		            .style("fill", color1(i, d.identify, d.name))        
-  				 		            .text(d.name)
-  				 		            .attr("text-anchor", "middle")
-  				 		            .attr("x", (width-margin)/2)
-  				 		            .attr("y", 5);
-  				 		        })
-  				 		      .on("mouseout", function(d) {
-  				 		          svg.select(".title-text").remove();
-  				 		        })
-  				 		      .append('path')
-  				 		      .attr('class', 'line')  
-  				 		      .attr('d', d => line(d.values))
-  				 		      .style('stroke', (d, i) => color1(i, d.identify, d.name))
-  				 		      .style('opacity', lineOpacity)
-  				 		      .on("mouseover", function(d) {
-  				 		          d3.selectAll('.line')
-  				 		              .style('opacity', otherLinesOpacityHover);
-  				 		          d3.selectAll('.circle')
-  				 		              .style('opacity', circleOpacityOnLineHover);
-  				 		          d3.select(this)
-  				 		            .style('opacity', lineOpacityHover)
-  				 		            .style("stroke-width", lineStrokeHover)
-  				 		            .style("cursor", "pointer");
-  				 		        })
-  				 		      .on("mouseout", function(d) {
-  				 		          d3.selectAll(".line")
-  				 		              .style('opacity', lineOpacity);
-  				 		          d3.selectAll('.circle')
-  				 		              .style('opacity', circleOpacity);
-  				 		          d3.select(this)
-  				 		            .style("stroke-width", lineStroke)
-  				 		            .style("cursor", "none");
-  				 		        });
-
-
-  				 		    /* Add circles in the line */
-  				 		    lines.selectAll("circle-group")
-  				 		      .data(data).enter()
-  				 		      .append("g")
-  				 		      .style("fill", (d, i) => color1(i, d.identify, d.name))
-  				 		     
-  				 		      .selectAll("circle")
-  				 		       
-  				 		      .data(d => d.values).enter()
-  				 		      .append("g")
-  				 		      .attr("class", "circle") 
-  				 		      
-  				 		      
-  				 		      .on("click",function(d){
-  				 		    	  
-  				 		    	 
-  				 		       var tempYear = convertTime(d.date);
-                        	   var d1 = 	  tempYear + "-01-01";
-                        	   var d2 = 	  tempYear + "-12-31";
-                        	 
-                        	   bloog = d.name.replaceAll("__"," ");
-                        	   
-                 ///////////////start collecting names
-                        		 var count = $('.thanks').length;
-                        		 
-                        		 if(count > 0){
-                        			 
-                        			 var all_selected_names = '';
-                        			 var all_selected_names1 = '';
-                        			 var i = 1;
-                        			 var total_post_counter = 0;
-                        			 $( ".thanks" ).each(function( index ) {
-                        				 
-                        				 
-                        				 if(i > 1){
-                        					 all_selected_names += ' , ';
-                        					 all_selected_names1 += ' , ';
-                        				 }
-                        				 
-                        		    	blog_name = 	$(this).attr('name');
-                        		    	
-                        		    	blog_id = 	this.id;
-                        		    	
-                        		    	all_selected_names += '"'+blog_name+'"';
-                        		    	all_selected_names1 += blog_name;
-                        		    		
-                        		    	i++;
-                        		    	
-                        		    	//getting total post count from each blogger
-                        		    	total_post_counter+=parseInt($(this).attr('value'));
-                        		    	
-                        			});
-                        			 
-                        			 
-                        		 }
-                        		////////////end collecting names
-                        		
-                        	   $('.activeblogger').html(bloog);
-                        	   
-                        	   var temp_blog = '"'+bloog+'"';
-                        	   getTopLocation(bloog,$("#all_blog_ids").val(),d1,d2);
-                        	   
-                        	   loadTerms(temp_blog,$("#blogid").val(),d1,d2);	
-                        		loadSentiments(all_selected_names,$("#all_blog_ids").val(),d1,d2);
-                        		getTotalPost(bloog,"",d1,d2);
-                        	  // loadInfluence(d1,d2); 
-                        	   
-                           })
-                           
-                           
-  				 		      .on("mouseover", function(d) {
-  				 		          d3.select(this)     
-  				 		            .style("cursor", "pointer")
-  				 		            .append("text")
-  				 		            .attr("class", "text d3-tip")
-  				 		            .text(function(d) {
-  				 		                if(d.close === 0)
-  				 		                {
-  				 		                  return "No Information Available";
-  				 		                }
-  				 		                else if(d.close !== 0) {
-  				 		                 return d.close+"(Click for more information)";
-  				 		                  }
-  				 		                // return "here";
-  				 		                })
-  				 		            .attr("x", d => xScale(d.date) + 5)
-  				 		            .attr("y", d => yScale(d.close) - 10);
-  				 		        })
-  				 		      .on("mouseout", function(d) {
-  				 		          d3.select(this)
-  				 		            .style("cursor", "none")  
-  				 		            .transition()
-  				 		            .duration(duration)
-  				 		            .selectAll(".text").remove();
-  				 		        })
-  				 		      .append("circle")
-  				 		      .attr("cx", d => xScale(d.date))
-  				 		      .attr("cy", d => yScale(d.close))
-  				 		      .attr("r", circleRadius)
-  				 		      .style('opacity', circleOpacity)
-  				 		      .on("mouseover", function(d) {
-  				 		            d3.select(this)
-  				 		              .transition()
-  				 		              .duration(duration)
-  				 		              .attr("r", circleRadiusHover);
-  				 		          })
-  				 		        .on("mouseout", function(d) {
-  				 		            d3.select(this) 
-  				 		              .transition()
-  				 		              .duration(duration)
-  				 		              .attr("r", circleRadius);  
-  				 		          });
-
-
-  				 		    /* Add Axis into SVG */
-  				 		    //var xAxis = d3.svg.axis(xScale).ticks(9);
-  				 		    //var yAxis = d3.svg.axis(yScale).ticks(6);
-  				 		    
-  				 		    
-  				 		     // Construct scales
-				          // ------------------------------
-				
-				          // Horizontal
-				          var x = d3.scale.ordinal()
-				              .rangeRoundBands([0, width]);
-				
-				          // Vertical
-				          var y = d3.scale.linear()
-				              .range([height, 0]);
-				
-				
-				          // Create axes
-				          // ------------------------------
-				
-				          // Horizontal
-				          var xAxis = d3.svg.axis()
-				              .scale(xScale)
-				              .orient("bottom")
-				             .ticks(5)
-				
-				            // .tickFormat(formatPercent);
-				
-				
-				          // Vertical
-				          var yAxis = d3.svg.axis()
-				              .scale(yScale)
-				              .orient("left")
-				              .ticks(5);
-				          
-				          
-				          ///////////////////
-
-  				 		 //   svg.append("g")
-  				 		    //  .attr("class", "x axis")
-  				 		   //   .attr("transform", `translate(0, ${height-margin})`)
-  				 		    //  .call(xAxis);
-
-  				 		   // svg.append("g")
-  				 		     // .attr("class", "y axis")
-  				 		    //  .call(yAxis)
-  				 		    //  .append('text')
-  				 		     // .attr("y", 15)
-  				 		     // .attr("transform", "rotate(-90)")
-  				 		     // .attr("fill", "black")
-  				 		     // .text("Total values");
-  				 		    
-  				 		    //////////////
-  				 		    
-  				 		    
-  				 		    
-  				 		    // Append axes
-			              // ------------------------------
-			
-			              // Horizontal
-			              svg.append("g")
-			                  .attr("class", "x axis d3-axis d3-axis-horizontal d3-axis-strong")
-			                  .attr("transform", `translate(0, ${height-margin})`)
-			                  .call(xAxis);
-			
-			              // Vertical
-			               svg.append("g")
-			                  .attr("class", "y axis d3-axis d3-axis-vertical d3-axis-strong")
-			                  .call(yAxis)
-			                  .append('text')
-			                  .attr("y", 15)
-			                  .attr("fill", "black")
-			              	  .text("Total values");
-			              
-			                
-  				 		
-  				 	/////////end graph stuff	
-    	    				  
-   				 		   $('.line_graph').removeClass('hidden');
-   				 	       $('#line_graph_loader').addClass('hidden');
-   				 	       
-   				 	      $("#scroll_list_loader").addClass("hidden");
-   				 	   	   $("#scroll_list").removeClass("hidden");
-    	    				  
-    	    				  
-    	    			  }
-    	    			  //end begiBuilder function
-    		 
-    		 
-    		 
-    		 
-    		 
+    		 /////end for each for active
     		 
     	 }else{
     		 alert("no active selection");
@@ -1656,20 +1576,15 @@ String formatedtotalpost = String.format("%.0f",(Double.parseDouble(totalpost)/(
     	
     	
     	
-    	
-    	
-    	
-    	
-    	
-    	
-    	
-    	
-
-    	
-    	
     }
     
     </script>
+    
+    
+    
+    
+    
+    
 
  <script>
  $(document).ready(function() {
@@ -1678,7 +1593,7 @@ String formatedtotalpost = String.format("%.0f",(Double.parseDouble(totalpost)/(
 			print();
 		}) ;
 	 
-     $('#DataTables_Table_1_wrapper').DataTable( {
+     $('#DataTables_Table_15_wrapper').DataTable( {
          "scrollY": 250,
          "scrollX": true,
           "pagingType": "simple"
@@ -1813,7 +1728,7 @@ String formatedtotalpost = String.format("%.0f",(Double.parseDouble(totalpost)/(
    	            	
    	            	//$("form#customform").submit();
    	            	
-   	            	////start after submit new date
+   	            	////start submit new date
    	            	var date_start = $("#date_start").val();
    	         	var date_end = $("#date_end").val();
    	         	
@@ -1855,21 +1770,14 @@ String formatedtotalpost = String.format("%.0f",(Double.parseDouble(totalpost)/(
    	         	$(".activeblogger").html(all_selected_names1);
    	         	
    	         	loadTerms(all_selected_names,$("#all_blog_ids").val(),date_start,date_end, all_selected_names1);
-
    	         	loadInfluence(all_selected_names,date_start,date_end);
-   	         	
    	         	var total_post_count = $("#total_post_count").val();
    	         	total_post_percentage = (total_post_counter/parseInt(total_post_count) * 100);
-
    	         	$(".total-post").html(Math.round(total_post_percentage).toString() + "%");
-   	         	//$(".total-post").html(parseInt(response).toLocaleString('en'));
-   	         	//loadChart(bloog,id,date_start,date_end);
-   	         	
    	         	getTopLocation(all_selected_names,$("#all_blog_ids").val(),date_start,date_end);
-   	         	//loadTopKeyword(bloog,$("#all_blog_ids").val(),date_start,date_end);	
    	         	loadSentiments(all_selected_names,$("#all_blog_ids").val(),date_start,date_end);
 
-   	            	////end after submiting new date
+   	            	////end  submiting new date
    				});
    $('#reportrange')
    		.on(

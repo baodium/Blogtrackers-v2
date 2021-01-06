@@ -58,10 +58,10 @@ allauthors = post._newGetBloggerByBloggerName("date", dt, dte, blogger.toString(
 %>
 <link rel="stylesheet" href="assets/css/table.css" />
 <link rel="stylesheet" href="assets/css/style.css" />
-    <table id="DataTables_Table_6_wrapper" class="display" style="width:100%">
+    <table id="DataTables_Table_0_wrapper" class="display" style="width:100%">
                         <thead>
                             <tr>
-                                <th>Post title</th>
+                                <th>Post title1</th>
                                 <th><% if(sort.toString().equals("date")){ %> Date<% }else{ %>Influence Score <% }  %></th>
                             </tr>
                         </thead>
@@ -160,7 +160,7 @@ allauthors = post._newGetBloggerByBloggerName("date", dt, dte, blogger.toString(
 		    $('[data-toggle="tooltip"]').tooltip()
 		  })
 		  
-		     $('#DataTables_Table_6_wrapper').DataTable( {
+		     $('#DataTables_Table_0_wrapper').DataTable( {
 		         "scrollY": 430,
 		         "scrollX": true,
 		         "order": [],

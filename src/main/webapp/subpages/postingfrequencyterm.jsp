@@ -89,7 +89,7 @@ for(var i = 0; i < terms.length; i++){
 }
 
 //var new_dd = terms.replace('[','{').replace(']','}').replace(/\),/g,'-').replace(/\(/g,'').replace(/,/g,':').replace(/-/g,',').replace(/\)/g,'').replace(/'/g,'');
-console.log('terms',jsonresult);
+//console.log('terms',jsonresult);
 wordtagcloud("#tagcloudcontainer",450,jsonresult); 
 $(".most-used-keyword").html(currentkey);
 
