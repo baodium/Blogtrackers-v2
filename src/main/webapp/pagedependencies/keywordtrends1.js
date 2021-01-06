@@ -2,8 +2,6 @@
 
 $(document).delegate('.topics1', 'click', function(){
 	
-	
-	
 	$(".topics1").removeClass("abloggerselected");
 	//$(this).addClass("abloggerselected");
 
@@ -49,24 +47,13 @@ $(document).delegate('.topics1', 'click', function(){
 	$(".active-term").html(all_selected_names1);
 	
 	$(".keyword-count").html(total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-
-	// loadInfluence(bloog,blg[1]);
-	//$("#term").val(all_selected_names);
 	$('#d3-line-basic').html('');
 	$("#term").val(all_selected_names);
+	loadBlogMentioned(all_selected_names,date_start, date_end);
 	
-	
-	/* $("#term_id").val(term_id); */
-	loadBlogMentioned($("#term").val(),date_start, date_end);
-	
-	loadMostLocation($("#term").val(), date_start, date_end);
-	loadMostPost($("#term").val(), date_start, date_end);
-	//getLineData(name);
-
-	/* loadStat(tm); */
-	/* loadChart(tm); */
-
-	loadTable($("#term").val(), date_start, date_end, all_selected_names1);
+	loadMostLocation(all_selected_names, date_start, date_end);
+	loadMostPost(all_selected_names, date_start, date_end);
+	loadTable(all_selected_names, date_start, date_end, all_selected_names1);
 });
 
 
@@ -347,6 +334,7 @@ function loadGraphData(term) {
 }
 
 function loadBlogMentioned(term, date_start,date_end) {
+	console.log("most mentioned", date_start, date_end)
 	$(".blog-mentioned").html("<img src='images/loading.gif' />");
 	$.ajax({
 		url : app_url + "KeywordTrend1",
@@ -370,6 +358,7 @@ function loadBlogMentioned(term, date_start,date_end) {
 }
 
 function loadMostLocation(term, date_start,date_end) {
+	console.log("most location", date_start, date_end)
 	$(".top-location").html("<img src='images/loading.gif' />");
 	$.ajax({
 		url : app_url + "KeywordTrend1",
@@ -402,6 +391,7 @@ function loadMostLocation(term, date_start,date_end) {
 
 
 function loadMostPost(term, date_start,date_end) {
+	console.log("most post", date_start, date_end)
 	$(".post-mentioned").html("<img src='images/loading.gif' />");
 	$.ajax({
 		url : app_url + "KeywordTrend1",
@@ -512,7 +502,7 @@ function updateTable(response) {
 }*/
 
 function loadTable(term, date_start, date_end, term_string, tempYear) {
-	
+	console.log("table", date_start, date_end)
 	$("#post-list")
 			.html(
 					"<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />");

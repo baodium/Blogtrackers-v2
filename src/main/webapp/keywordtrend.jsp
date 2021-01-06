@@ -1443,11 +1443,53 @@ $(document).ready(function() {
 													+ " to "
 													+ picker.endDate
 															.format('MMMM D, YYYY')); */
-									var start = picker.startDate.format('YYYY-MM-DD');
-									var end = picker.endDate.format('YYYY-MM-DD');
-									$("#date_start").val(start);
-									$("#date_end").val(end);
-									$("form#customform").submit();
+									var date_start = picker.startDate.format('YYYY-MM-DD');
+									var date_end = picker.endDate.format('YYYY-MM-DD');
+									$("#date_start").val(date_start);
+									$("#date_end").val(date_end);
+									//$("form#customform").submit();
+									
+									///start submit new date
+						///////////////start collecting names
+									 var count = $('.thanks').length;
+									 
+									 if(count > 0){
+										 
+										 var all_selected_names = '';
+										 var all_selected_names1 = '';
+										 var total = 0;
+										 var i = 1;
+										 $( ".thanks" ).each(function( index ) {
+											 
+											 if(i > 1){
+												 all_selected_names += ' , ';
+												 all_selected_names1 += ' , ';
+											 }
+											 
+									    	blog_name = 	$(this).attr('name');
+									    	blog_id = 	this.id;
+									    	all_selected_names += '"'+blog_name+'"';
+									    	all_selected_names1 += blog_name;
+									    	total+=parseInt($(this).attr('value'));
+									    		
+									    	i++;
+										    		
+										});
+										 
+										 
+									 }
+									////////////end collecting names
+									
+									$(".active-term").html(all_selected_names1);
+									$(".keyword-count").html(total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+									//$('#d3-line-basic').html('');
+									$("#term").val(all_selected_names);
+									loadBlogMentioned($("#term").val(),date_start, date_end);
+									loadMostLocation($("#term").val(), date_start, date_end);
+									loadMostPost($("#term").val(), date_start, date_end);
+									loadTable($("#term").val(), date_start, date_end, all_selected_names1);
+									
+									///end submit new date
 								});
 						$('#reportrange')
 							.on(
