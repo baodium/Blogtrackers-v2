@@ -56,10 +56,15 @@ if(action.toString().equals("search_narrative")){
 			entity_string = x.getEntity();
         %>
 	<li class="level level1">
-		<div class="keyword keyword1">
-			<div class="collapseIcon"></div>
-			<p class="text"><%= entity_string%></p>
-		</div> <!-- Getting Narratives for each entities-->
+		<div id="keywordWrapper" class="">
+         	<button entity="<%=entity_string %>" class="entity_unselected entity_radio" id="radioButton" title="Select"></button>
+             <div class="keyword keyword1">
+                 <div class="collapseIcon"></div>
+                 <p class="text"><%=entity_string%></p>
+             </div>
+             <button id="ungroupButton" title="Ungroup Keywords"></button>
+          </div>
+		<!-- Getting Narratives for each entities-->
 		<ul id="narrative_list_<%=entity %>" class="narratives">
 
 			<%
@@ -90,10 +95,17 @@ if(action.toString().equals("search_narrative")){
 						<div class="dot"></div>
 					</div>
 					<div class="narrativeTextWrapper">
-						<p class="narrativeText narrative_text_input"><%=narrative %></p>
-						<p class="counter">
-							<span class="number"><%=blogpost_ids.size() %></span>Posts
-						</p>
+						<div id="editWrapper">
+                            <textarea id="<%=entity %>" entity="<%=entity %>" name="narrativeTextInput" class="narrativeText narrative_text_input"><%=narrative %></textarea>
+                            <div id="editControls">
+                                <button id="editButton" class="editButtons" title="Edit" entity="<%=entity %>"></button>
+                                <button id="cancelButton" class="editButtons cancel_narrative" title="Cancel" entity="<%=entity %>"></button>
+                                <button id="confirmButton" class="editButtons confirm_narrative" title="Confirm" entity="<%=entity %>"></button>
+                            </div>
+                        </div>
+                        <p class="counter"><span class="number"><%=blogpost_ids.size() %></span>Post </p>
+                        
+						
 					</div>
 				</div>
 				<div class="bottomSection">

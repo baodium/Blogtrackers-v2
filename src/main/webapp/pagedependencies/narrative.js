@@ -76,13 +76,23 @@ function load_more_entity(entity, level){
 }
 
 
+function strip_entity(entity){
+	//console.log(entity)
+	var regex = /[.,\s]/g;
+
+	var result = entity.replace(regex, '');
+	//console.log(result)
+	return result;
+}
+
 
 
 ///////
 $("body").delegate(".confirm_narrative", "click", function() {
-	entity = $(this).attr("entity")
+	temp_entity = $(this).attr("entity")
+	entity = strip_entity(temp_entity);
 	search_key = $("#"+entity).val()
-	search_new_narrative(entity, search_key);
+	search_new_narrative(entity, search_key, temp_entity);
 	
 });
 /////
@@ -93,14 +103,35 @@ $("body").delegate(".entity_radio", "click", function() {
 	
 	if($(this).hasClass("entity_unselected")){
 		//add to array
+		$(this).parent('div').addClass("selected");
 		$(this).addClass("entity_selected")
 		$(this).removeClass("entity_unselected")
 	}else{
 		//remove from array
+		$(this).parent('div').removeClass("selected");
 		$(this).removeClass("entity_selected")
 		$(this).addClass("entity_unselected")
 		
 	}	
+	
+///////////////start 
+	 var count = $('.entity_selected').length;
+	 
+	  
+	 if(count > 0){
+		 
+		 $("#notifications").addClass("displayed");
+		 if(count > 1){
+			 
+			 $("#mergeButton").addClass("enabled");
+		 }else{
+			 $("#mergeButton").removeClass("enabled");
+		 }
+		 
+	 }else{
+		 $("#notifications").removeClass("displayed");
+	 }
+	 
 	
 });
 /////
@@ -186,7 +217,8 @@ $('.narrative_text_input').keydown(function(e) {
 	
 	var key = e.which;
 	var search_key = $(this).val();
-	var entity = $(this).attr('entity');
+	temp_entity = $(this).attr("entity")
+	entity = strip_entity(temp_entity);
 	
 
 	
@@ -196,8 +228,8 @@ $('.narrative_text_input').keydown(function(e) {
 		if(search_key === ""){
 			alert("narrarive cannot be emoty!")
 		}else{
-			
-			search_new_narrative(entity, search_key);
+			console.log("final entity", entity)
+			search_new_narrative(entity, search_key, temp_entity);
 
 		}
 		
@@ -210,7 +242,7 @@ $('.narrative_text_input').keydown(function(e) {
 
 /* NARRATIVE EDIT FUNCTION */
 
-function search_new_narrative(entity, search_key){
+function search_new_narrative(entity, search_key, raw_entity){
 	
 	$("#narrative_posts_"+entity).css("height", "300px");
 

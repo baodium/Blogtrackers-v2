@@ -124,11 +124,10 @@ document.addEventListener("DOMContentLoaded", function() {
             
             //START Keyword click delegate
             $("body").delegate(".keyword1", "click", function() {
-            	
-            	if ($(this).parent('li').hasClass("uncollapse")){
-            		$(this).parent('li').removeClass("uncollapse");
+            	if ($(this).parent('div').parent('li').hasClass("uncollapse")){
+            		$(this).parent('div').parent('li').removeClass("uncollapse");
         		} else {
-        			$(this).parent('li').addClass("uncollapse");
+        			$(this).parent('div').parent('li').addClass("uncollapse");
         		}
             	
             });

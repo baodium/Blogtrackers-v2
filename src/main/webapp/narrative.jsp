@@ -515,14 +515,16 @@
 			if(entity != null){
 				
 			
-			entity = entity.split(":")[0].trim();
+			String temp_entity = entity.split(":")[0].trim();
+			
+			entity = temp_entity.replace(".", "");
 		%>
             <li class="level">
             	<div id="keywordWrapper" class="">
 	            	<button entity="<%=entity %>" class="entity_unselected entity_radio" id="radioButton" title="Select"></button>
 	                <div class="keyword">
 	                    <div class="collapseIcon"></div>
-	                    <p class="text"><%=entity%></p>
+	                    <p class="text"><%=temp_entity%></p>
 	                </div>
 	                <button id="ungroupButton" title="Ungroup Keywords"></button>
 	             </div>
@@ -533,7 +535,7 @@
                 String blogpost_narratives_query = "select  COUNT(n.narrative) AS total_narrative_count, n.narrative, group_concat(n.blogpost_id separator ',') blogpost_id_concatenated, count(n.blogpost_id) c " + 
                 		"from tracker_narratives, " +
                 		"json_table(blogpost_narratives," +
-                		  "'$.*.\""+ entity +"\"[*]' columns(" +
+                		  "'$.*.\""+ temp_entity +"\"[*]' columns(" +
                 		     "narrative varchar(128) path '$.narrative'," +
                 		    "blogpost_id int(11) path '$.blogpost_id'" +
                 		    ")" +
