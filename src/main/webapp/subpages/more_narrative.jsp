@@ -283,7 +283,7 @@ if(action.toString().equals("load_more_narrative")){
                 	Narrative.Data_ narr = merged_narrative.get(i);
                 	Set<String> blogpost_ids = narr.getBlogpostIds();
                 %>
-                <ul class="narratives">
+                <ul id="narrative_list_<%=selected_entity_names.toString() %>" class="narratives">
                     <li class="narrative">
                         <div class="topSection">
                             <div class="connectorBox">
@@ -296,8 +296,15 @@ if(action.toString().equals("load_more_narrative")){
                                 <div class="dot"></div>
                             </div>
                             <div class="narrativeTextWrapper">
-                                <p class="narrativeText narrative_text_input"><%=narr.getNarrative() %></p>
-                                <p class="counter"><span class="number"><%=narr.getBlogpostIds().size() %></span>Posts</p>
+                                <div id="editWrapper">
+		                            <textarea id="<%=selected_entity_names.toString() %>" entity="<%=selected_entity_names.toString() %>" name="narrativeTextInput" class="narrativeText narrative_text_input"><%=narr.getNarrative() %></textarea>
+		                            <div id="editControls">
+		                                <button id="editButton" class="editButtons" title="Edit" entity="<%=entity %>"></button>
+		                                <button id="cancelButton" class="editButtons cancel_narrative" title="Cancel" entity="<%=entity %>"></button>
+		                                <button id="confirmButton" class="editButtons confirm_narrative" title="Confirm" entity="<%=entity %>"></button>
+		                            </div>
+		                        </div>
+		                        <p class="counter"><span class="number"><%=narr.getBlogpostIds().size() %></span>Post </p>
                             </div>
                         </div>
                         <div class="bottomSection">
