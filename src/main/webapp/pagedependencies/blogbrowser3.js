@@ -817,7 +817,7 @@ else
 					uploadTerms(response,"create")
 					uploadClusters(response)
 					
-					toastr.success('Tracker2222 successfully created and Updated!','Success');
+					toastr.success('Tracker successfully created and Updated!','Success');
 					$('#newtracker_name').html('');
 					$('#newtracker_description').html('');
 					$('.trackcreationsection2').addClass("hidden");
