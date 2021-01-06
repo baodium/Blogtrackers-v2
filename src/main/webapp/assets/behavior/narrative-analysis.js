@@ -136,10 +136,10 @@ document.addEventListener("DOMContentLoaded", function() {
             //START Narrative click delegate
 	        $("body").delegate(".narrative_text_input", "click", function() {
 	        	
-	        	if ($(this).parent('div').parent('div').parent('li').hasClass("open")){
-	        		$(this).parent('div').parent('div').parent('li').removeClass("open");
+	        	if ($(this).parent('div').parent('div').parent('div').parent('li').hasClass("open")){
+	        		$(this).parent('div').parent('div').parent('div').parent('li').removeClass("open");
 	    		} else {
-	    			$(this).parent('div').parent('div').parent('li').addClass("open");
+	    			$(this).parent('div').parent('div').parent('div').parent('li').addClass("open");
 	    		}
 	        	
 	        });
