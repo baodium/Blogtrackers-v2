@@ -1221,7 +1221,7 @@ String formatedtotalpost = String.format("%.0f",(Double.parseDouble(totalpost)/(
       chart: {
           type: 'area',
           stacked: false,
-          height: 210,
+          height: 222,
           zoom: {
             type: 'x',
             enabled: true,
