@@ -267,14 +267,15 @@ if(action.toString().equals("load_more_narrative")){
 <% }else if(action.toString().equals("merge_narrative")){ %>
 
 <li class="level level1">
-                <div id="keywordWrapper" class="group keyword1">
-                    <button id="radioButton" title="Select"></button>
-                    <div class="keyword ">
-                        <div class="collapseIcon"></div>
-                        <p class="text"><%=selected_entity_names.toString() %></p>
-                    </div>
-                    <button id="ungroupButton" title="Ungroup Keywords"></button>
-                </div>
+                
+                <div id="keywordWrapper" class="">
+		         	<button entity="<%=selected_entity_names.toString() %>" class="entity_unselected entity_radio" id="radioButton" title="Select"></button>
+		             <div class="keyword keyword1">
+		                 <div class="collapseIcon"></div>
+		                 <p class="text"><%=selected_entity_names.toString() %></p>
+		             </div>
+		             <button id="ungroupButton" title="Ungroup Keywords"></button>
+		          </div>
                 <%
                 List<Narrative.Data_> merged_narrative =  Narrative.merge_(all_selected_entities.toString(), blog_ids.toString());
                 int limit = 5;
