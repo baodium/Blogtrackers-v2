@@ -255,20 +255,25 @@ wordtagcloud("#tagcloudcontainer",450,jsonresult);
 						var mymarker = [
 							<%
 							
-							
+							Map<String, Integer> final_location_map = new HashMap<>();
 							for (scala.Tuple2<String, scala.Tuple2<String, Integer>> x : top_location) {
 								scala.Tuple2<String, Integer> location_count = x._2;
 								if(location_count._1 != null){
-								
-								
+									
+									final_location_map.put(location_count._1, final_location_map.getOrDefault(location_count._1, 0) + location_count._2);
+								}
+							}
 							%>
-							{latLng: [<%=location.get(location_count._1)%>], name: '<%=country_name.get(location_count._1)%>, <%=location_count._2%>' , r:<%=location_count._2/1000%>},
+							
+							<%for(String key: final_location_map.keySet()){%>
+							<%-- {latLng: [<%=location.get(location_count._1)%>], name: '<%=country_name.get(location_count._1)%>, <%=location_count._2%>' , r:<%=location_count._2/1000%>}, --%>
+							{latLng: [<%=location.get(key)%>], name: '<%=country_name.get(key)%>, <%=final_location_map.get(key)%>' , r:<%=final_location_map.get(key)/10000%>},
 							/* {latLng: [40.463667, -3.74922], name: '101' , r:101},
 							{latLng: [37.09024, -95.712891], name: '3' , r:3},
 							{latLng: [52.132633, 5.291266], name: '10' , r:10},
 							{latLng: [46.227638, 2.213749], name: '2' , r:2},
 							{latLng: [-25.274398, 133.775136], name: '50' , r:50}, */
-							<%}}%>]
+							<%}%>]
 
 						//console.log(mymarker[2].size);
 						    // Choropleth map

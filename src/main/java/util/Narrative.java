@@ -19,7 +19,11 @@ import com.google.gson.Gson;
  */
 @WebServlet("/NARRATIVE")
 public class Narrative extends HttpServlet {
-//	private static final long serialVersionUID = 1L;
+	/**
+		 * 
+		 */
+	private static final long serialVersionUID = 1L;
+	// private static final long serialVersionUID = 1L;
 //       
 //    /**
 //     * @see HttpServlet#HttpServlet()
@@ -124,7 +128,7 @@ public class Narrative extends HttpServlet {
 //		        
 		JSONObject query = new JSONObject("{\r\n" + "    \"size\": \"" + limit + "\",\r\n" + "    \"query\": {\r\n"
 				+ "        \"bool\": {\r\n" + "            \"must\": [\r\n" + "                {\r\n"
-				+ "                    \"wildcard\": {\r\n" + "                        \"post\": {\r\n"
+				+ "                    \"wildcard\": {\r\n" + "                        \"narrative\": {\r\n"
 				+ "                            \"wildcard\": \"*" + search_value + "*\",\r\n"
 				+ "                            \"boost\": 1.0\r\n" + "                        }\r\n"
 				+ "                    }\r\n" + "                },\r\n" + "                {\r\n"
@@ -136,7 +140,8 @@ public class Narrative extends HttpServlet {
 				+ "            }\r\n" + "        }\r\n" + "    ]\r\n" + "}");
 		try {
 			// blogposts_result = db.queryJSON(query);
-			result = Blogposts._makeElasticRequest(query, "GET", "blogposts_keyword/_search");
+//			result = Blogposts._makeElasticRequest(query, "GET", "blogposts_keyword/_search");
+			result = Blogposts._makeElasticRequest(query, "GET", "entity_narratives/_search");
 		} catch (Exception e) {
 			System.out.println(e);
 		}
@@ -192,6 +197,97 @@ public class Narrative extends HttpServlet {
 		return res;
 	}
 
+	public static List<Entity_> search_(String search_string) {
+		JSONObject result = new JSONObject();
+
+		JSONObject query = new JSONObject(
+				"{\r\n" + "    \"size\": 100,\r\n" + "     \"query\": {\r\n" + "        \"match\" : {\r\n"
+						+ "            \"narrative_keyword\" : {\r\n" + "                \"query\" : \"" + search_string
+						+ "\",\r\n" + "                \"fuzziness\": \"auto\"\r\n" + "            }\r\n"
+						+ "        }\r\n" + "    }\r\n" + "}");
+
+		try {
+			result = Blogposts._makeElasticRequest(query, "GET", "entity_narratives/_search");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		Object hits = result.getJSONObject("hits").getJSONArray("hits");
+		JSONArray hit = new JSONArray(hits.toString());
+		List<Entity_> res = wrangleJson(hit);
+
+		return res;
+	}
+
+	public static List<Entity_> wrangleJson(JSONArray hit) {
+		List<Entity_> final_array = new ArrayList<>();
+		Map<String, List<Data_>> entity_map = new HashMap<>();
+
+		for (int i = 0; i < hit.length(); i++) {
+			JSONObject x = new JSONObject(hit.get(i).toString());
+			String entity = x.getJSONObject("_source").get("entity").toString();
+			String narrative = x.getJSONObject("_source").get("narrative").toString();
+			String blogpost_id = x.getJSONObject("_source").get("blogpost_id").toString();
+
+			Data_ temp_array = new Data_(null, new HashSet<String>());
+			Set<String> bp_temp = new HashSet<>();
+			List<Data_> t = new ArrayList<>();
+
+			if (!entity_map.containsKey(entity)) {
+				bp_temp = new HashSet<>();
+				bp_temp.add(blogpost_id);
+
+				t = new ArrayList<>();
+
+				temp_array = new Data_(narrative, bp_temp);
+				t.add(temp_array);
+
+				entity_map.put(entity, t);
+			} else {
+				List<Data_> data = entity_map.get(entity);
+				Set<String> blogpost_ids = new HashSet<>();
+				int found = -1;
+				for (int j = 0; j < data.size(); j++) {
+
+					Data_ d = data.get(j);
+					if (d.getNarrative().equals(narrative)) {
+						found = j;
+						blogpost_ids = d.getBlogpostIds();
+						break;
+					}
+				}
+				if (found == -1) {
+					bp_temp = new HashSet<>();
+					bp_temp.add(blogpost_id);
+
+					temp_array = new Data_(narrative, bp_temp);
+
+					data.add(temp_array);
+
+					entity_map.put(entity, data);
+				} else if (!blogpost_ids.contains(blogpost_id)) {
+					blogpost_ids.add(blogpost_id);
+					entity_map.put(entity, data);
+				}
+			}
+		}
+
+		for (String key : entity_map.keySet()) {
+			List<Data_> temp_ = entity_map.get(key);
+			Collections.sort(temp_);
+			final_array.add(new Entity_(key, temp_));
+		}
+
+		Collections.sort(final_array, (a, b) -> {
+			Integer x = a.data.size();
+			Integer y = b.data.size();
+			return y.compareTo(x);
+		});
+
+		return final_array;
+	}
+
 	public static List<Data> merge(String merge_string) {
 		JSONObject result = new JSONObject();
 
@@ -221,7 +317,7 @@ public class Narrative extends HttpServlet {
 		Object data = null;
 		Gson gson = new Gson();
 		Source s = null;
-		
+
 		if (hit.length() > 0) {
 			x = new JSONObject(hit.get(0).toString());
 			entity = x.getJSONObject("_source").get("entity");
@@ -249,22 +345,65 @@ public class Narrative extends HttpServlet {
 		return merged_data;
 	}
 
+	public static List<Data_> merge_(String merge_string, String blogsite_ids) {
+		JSONObject result = new JSONObject();
+
+		JSONObject query = new JSONObject("{\r\n" + "    \"size\": 1000,\r\n" + "    \"query\": {\r\n"
+				+ "        \"bool\": {\r\n" + "            \"must\": [\r\n" + "                {\r\n"
+				+ "                    \"terms\": {\r\n" + "                        \"entity\": [" + merge_string
+				+ "],\r\n" + "                        \"boost\": 1\r\n" + "                    }\r\n"
+				+ "                },\r\n" + "                {\r\n" + "                    \"match\": {\r\n"
+				+ "                        \"narrative_keyword\": \"" + merge_string.replace("\"", "").replace(",", " ")
+				+ "\"\r\n" + "                    }\r\n" + "                },\r\n" + "                {\r\n"
+				+ "                    \"terms\": {\r\n" + "                        \"blogsite_id\": [" + blogsite_ids
+				+ "],\r\n" + "                        \"boost\": 1.0\r\n" + "                    }\r\n"
+				+ "                }\r\n" + "            ]\r\n" + "        }\r\n" + "    }\r\n" + "}");
+
+		try {
+			result = Blogposts._makeElasticRequest(query, "GET", "entity_narratives/_search");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		Object hits = result.getJSONObject("hits").getJSONArray("hits");
+		JSONArray hit = new JSONArray(hits.toString());
+		List<Entity_> res = wrangleJson(hit);
+
+		List<Data_> merged_data = new ArrayList<>();
+		JSONObject x = new JSONObject();
+		Object entity = null;
+		Object data = null;
+		Gson gson = new Gson();
+		Source s = null;
+
+
+		if (res.size() > 0) {
+			for (int i = 0; i < res.size(); i++) {
+				List<Data_> d = res.get(i).getData();
+				merged_data.addAll(d);
+			}
+		}
+
+		Collections.sort(merged_data);
+		return merged_data;
+	}
+
 	public static List<Data> unmerge(String entity_string) {
 		JSONObject result = new JSONObject();
 
 		JSONObject query = new JSONObject("{\r\n" + "    \"size\": 1000,\r\n" + "    \"query\": {\r\n"
-				+ "        \"term\": {\r\n" + "            \"entity.keyword\": {\r\n"
-				+ "                \"value\": \""+entity_string+"\",\r\n" + "                \"boost\": 1.0\r\n"
-				+ "            }\r\n" + "        }\r\n" + "    },\r\n" + "    \"_source\": {\r\n"
-				+ "        \"includes\": [\r\n" + "            \"@version\",\r\n"
-				+ "            \"data.blogpost_ids\",\r\n" + "            \"data.narrative\",\r\n"
-				+ "            \"entity\"\r\n" + "        ],\r\n" + "        \"excludes\": []\r\n" + "    },\r\n"
-				+ "    \"docvalue_fields\": [\r\n" + "        {\r\n" + "            \"field\": \"@timestamp\",\r\n"
-				+ "            \"format\": \"epoch_millis\"\r\n" + "        },\r\n" + "        {\r\n"
-				+ "            \"field\": \"last_modified_time\",\r\n" + "            \"format\": \"epoch_millis\"\r\n"
-				+ "        }\r\n" + "    ],\r\n" + "    \"sort\": [\r\n" + "        {\r\n"
-				+ "            \"_doc\": {\r\n" + "                \"order\": \"asc\"\r\n" + "            }\r\n"
-				+ "        }\r\n" + "    ]\r\n" + "}");
+				+ "        \"term\": {\r\n" + "            \"entity.keyword\": {\r\n" + "                \"value\": \""
+				+ entity_string + "\",\r\n" + "                \"boost\": 1.0\r\n" + "            }\r\n"
+				+ "        }\r\n" + "    },\r\n" + "    \"_source\": {\r\n" + "        \"includes\": [\r\n"
+				+ "            \"@version\",\r\n" + "            \"data.blogpost_ids\",\r\n"
+				+ "            \"data.narrative\",\r\n" + "            \"entity\"\r\n" + "        ],\r\n"
+				+ "        \"excludes\": []\r\n" + "    },\r\n" + "    \"docvalue_fields\": [\r\n" + "        {\r\n"
+				+ "            \"field\": \"@timestamp\",\r\n" + "            \"format\": \"epoch_millis\"\r\n"
+				+ "        },\r\n" + "        {\r\n" + "            \"field\": \"last_modified_time\",\r\n"
+				+ "            \"format\": \"epoch_millis\"\r\n" + "        }\r\n" + "    ],\r\n"
+				+ "    \"sort\": [\r\n" + "        {\r\n" + "            \"_doc\": {\r\n"
+				+ "                \"order\": \"asc\"\r\n" + "            }\r\n" + "        }\r\n" + "    ]\r\n" + "}");
 
 		try {
 			result = Blogposts._makeElasticRequest(query, "GET", "entity_narratives_testing/_search");
@@ -283,7 +422,7 @@ public class Narrative extends HttpServlet {
 		Object data = null;
 		Gson gson = new Gson();
 		Source s = null;
-		
+
 		if (hit.length() > 0) {
 			x = new JSONObject(hit.get(0).toString());
 			entity = x.getJSONObject("_source").get("entity");
@@ -300,6 +439,11 @@ public class Narrative extends HttpServlet {
 		String entity;
 		List<Data> data;
 
+		public Source(String entity, List<Data> data) {
+			this.entity = entity;
+			this.data = data;
+		}
+
 		public String toString() {
 			return entity + "-------" + data;
 		}
@@ -308,6 +452,13 @@ public class Narrative extends HttpServlet {
 	public class Data implements Comparable<Data> {
 		String narrative;
 		List<Integer> blogpost_ids = new ArrayList<>();
+
+		public Data(String narrative, List<Integer> blogpost_ids) {
+			this.narrative = narrative;
+			this.blogpost_ids = blogpost_ids;
+		}
+
+//		public void setData()
 
 		public String toString() {
 			return narrative + "-------" + blogpost_ids;
@@ -322,6 +473,34 @@ public class Narrative extends HttpServlet {
 		}
 
 		public int compareTo(Data d) {
+			return d.blogpost_ids.size() - this.blogpost_ids.size();
+		}
+	}
+
+	public static class Data_ implements Comparable<Data_> {
+		String narrative;
+		Set<String> blogpost_ids = new HashSet<>();
+
+		public Data_(String narrative, Set<String> blogpost_ids) {
+			this.narrative = narrative;
+			this.blogpost_ids = blogpost_ids;
+		}
+
+//		public void setData()
+
+		public String toString() {
+			return narrative + "-------" + blogpost_ids;
+		}
+
+		public String getNarrative() {
+			return narrative;
+		}
+
+		public Set<String> getBlogpostIds() {
+			return blogpost_ids;
+		}
+
+		public int compareTo(Data_ d) {
 			return d.blogpost_ids.size() - this.blogpost_ids.size();
 		}
 	}
@@ -348,12 +527,34 @@ public class Narrative extends HttpServlet {
 		}
 	}
 
+	public static class Entity_ {
+		String entity;
+		List<Data_> data;
+
+		public Entity_(String entity, List<Data_> data) {
+			this.entity = entity;
+			this.data = data;
+		}
+
+		public List<Data_> getData() {
+			return data;
+		}
+
+		public String getEntity() {
+			return entity;
+		}
+
+		public String toString() {
+			return entity + "-------" + data;
+		}
+	}
+
 	public static void main(String[] args) {
 //		String [] test =  get_entities("7", 5, 10);
 //		ArrayList narra = get_narratives("Trump", "7", "10", "20");
-//		JSONObject res = search_narratives_post("6,10,23,1030", "test", "10");
-		// List<Entity> res = search("trump");
-		List<Data> res = merge("\"Obama\",\"Trump\"");
+//		JSONObject res = search_narratives_post("1", "west", "10");
+//		 List<Entity_> res = search_("trump");
+		List<Data_> res = merge_("\"Obama\",\"Trump\"", "88,267,127,1806");
 //		List<Data> res = unmerge("trump");
 		System.out.println("done");
 	}

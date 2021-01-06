@@ -423,7 +423,6 @@ public class DbConnection {
 	}
 
 	public static void main(String[] args) {
-
 		System.out.println("started");
 		// String q = "SELECT date,\r\n" +
 		// "sum(ROUND ((LENGTH(lower(post)) - LENGTH(REPLACE (lower(post), \"people\",

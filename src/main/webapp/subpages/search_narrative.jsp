@@ -31,7 +31,7 @@ Narrative n = new Narrative();
 
 
 if(action.toString().equals("search_narrative")){
-	List<Narrative.Entity> res = Narrative.search(search_value.toString());
+	List<Narrative.Entity_> res = Narrative.search_(search_value.toString());
 	//JSONObject result = Narrative.search(search_value.toString());
 	//Object hits = result.getJSONObject("hits").getJSONArray("hits");
 	//JSONArray hit = new JSONArray(hits.toString());
@@ -52,7 +52,7 @@ if(action.toString().equals("search_narrative")){
         	//entity_string = x.getJSONObject("_source").get("entity").toString();
 			//Object data = x.getJSONObject("_source").getJSONArray("data");
 		for(int k = 0; k < res.size(); k++){	
-        	Narrative.Entity x = res.get(k);
+        	Narrative.Entity_ x = res.get(k);
 			entity_string = x.getEntity();
         %>
 	<li class="level level1">
@@ -65,7 +65,7 @@ if(action.toString().equals("search_narrative")){
 			<%
                 //JSONArray narratives = new JSONArray(x.toString().split("-------")[1]);
 			    //JSONArray narratives = new JSONArray(data.toString());
-				List<Narrative.Data> narratives = x.getData();
+				List<Narrative.Data_> narratives = x.getData();
                 for(int i = 0; i < narratives.size(); i++){
                 	if(i == 5){
                 		break;
@@ -74,7 +74,7 @@ if(action.toString().equals("search_narrative")){
                 	//JSONObject narr = new JSONObject(narratives.get(i).toString());
                 	String narrative = narratives.get(i).getNarrative();
                 	//String narrative = narr.get("narrative").toString();
-                	List<Integer> blogpost_ids = narratives.get(i).getBlogpostIds();
+                	Set<String> blogpost_ids = narratives.get(i).getBlogpostIds();
                 	//JSONArray blogpost_ids = new JSONArray(narr.get("blogpost_ids").toString());
                 %>
 			<!-- <ul class="narratives"> -->

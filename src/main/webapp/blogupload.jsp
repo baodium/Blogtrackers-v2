@@ -6,7 +6,7 @@
 <%@ page import="org.apache.commons.fileupload.servlet.*" %>
 <%@ page import="org.apache.commons.io.output.*" %>
 <%@page import="authentication.*"%>
-<%@page import="wrapper.Blogsite"%>
+<%-- <%@page import="authentication.Blogsite"%> --%>
 <%@page import="util.Weblog"%>
 <%@page import="java.util.logging.Level"%>
 <%@page import="java.util.logging.Logger"%>
@@ -31,7 +31,7 @@ if(username.equals("")){
    Pattern p = Pattern.compile(validator);//. represents single character  
   
    Weblog wblog =new Weblog();
-   Blogsite bs =new Blogsite();
+   //Blogsite bs =new Blogsite();
    
    String filePath = path;//"c:/apache-tomcat/"; 
    String contentType = request.getContentType();
@@ -78,7 +78,7 @@ if(username.equals("")){
 							 String blogsite_url = temp;
 							 Matcher m = p.matcher(blogsite_url);  
 							 if(m.matches()){  
-								 blogsite_url = bs.cleanUrl(blogsite_url);
+								 //blogsite_url = bs.cleanUrl(blogsite_url);
 								 String output = wblog._addBlog(username, blogsite_url, "not_crawled");						
 					         }
 						}	
