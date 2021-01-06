@@ -88,6 +88,7 @@ function loadtermss(blogger){
 }
 
 function loadInfluence(blogger,start_date,end_date){
+	console.log("influence",blogger,start_date,end_date);
 	$("#influence_table").html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />");
 	$("#blogpost_detail").html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />");
 	

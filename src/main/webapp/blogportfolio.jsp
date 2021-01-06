@@ -1473,14 +1473,33 @@ import java.io.OutputStreamWriter; -->
    	                       .format('MMMM D, YYYY')); 
    	            	console.log("applied");
    	            	
-   	            	var start = picker.startDate.format('YYYY-MM-DD');
-   	            	var end = picker.endDate.format('YYYY-MM-DD');
+   	            	var date_start = picker.startDate.format('YYYY-MM-DD');
+   	            	var date_end = picker.endDate.format('YYYY-MM-DD');
    	            	//console.log("End:"+end);
    	            	
-   	            	$("#date_start").val(start);
-   	            	$("#date_end").val(end);
+   	            	$("#date_start").val(date_start);
+   	            	$("#date_end").val(date_end);
    	            	//toastr.success('Date changed!','Success');
-   	            	$("form#customform").submit();	
+   	            	//$("form#customform").submit();	
+   	            	///start submit new date
+   	            	var blogger = $("#blogger-changed").val();
+	
+					var blg = blogger.split("_");
+					
+					var blog_id = blg[0];
+					
+					var all_blogs = $("#all_blogs").val();
+					
+					loadInfluence(blog_id,date_start,date_end);
+				
+					loadStat(blog_id, all_blogs);
+					loadChart(blog_id);
+					loadYearlyChart(blog_id, date_start, date_end);
+					loadDailyChart(blog_id, date_start, date_end);
+					loadUrls(date_start,date_end);
+					loadtermss(blog_id)
+   	            	
+   	            	///end submit new date
    	            	
    			  });
    $('#reportrange')

@@ -651,7 +651,7 @@ JSONObject allposts = new JSONObject();
   <!--end of bootsrap -->
   <!-- <script src="assets/js/jquery-3.2.1.slim.min.js" ></script> -->
 <script src="assets/js/popper.min.js"></script>
-<script type="text/javascript" src="assets/vendors/animations/animations_css3.js"></script>
+
   <script src="pagedependencies/googletagmanagerscript.js"></script>
 </head>
 <body>
@@ -1233,6 +1233,7 @@ JSONObject allposts = new JSONObject();
  <script src="assets/bootstrap/js/bootstrap.js">
 
  </script>
+ <script type="text/javascript" src="assets/vendors/animations/animations_css3.js"></script>
  <script src="assets/js/generic.js">
  </script>
 
@@ -1421,16 +1422,31 @@ JSONObject allposts = new JSONObject();
    									+ " to "
    									+ picker.endDate
    											.format('MMMM D, YYYY'));
-   					var start = picker.startDate.format('YYYY-MM-DD');
-   	            	var end = picker.endDate.format('YYYY-MM-DD');
-   	            console.log("End:"+end);
-
-   	            	
-   	            	$("#date_start").val(start);
-   	            	$("#date_end").val(end);
+   					var date_start = picker.startDate.format('YYYY-MM-DD');
+   	            	var date_end = picker.endDate.format('YYYY-MM-DD');
+   	              	            	
+   	            	$("#date_start").val(date_start);
+   	            	$("#date_end").val(date_end);
    	            	//toastr.success('Date changed!','Success');
-
-   	            	$("form#customform").submit();
+   	            	//$("form#customform").submit();
+   	            	
+   	            	//start submit new date 
+   	            	var all_ids = $("#id__").val();
+					var blogger = $("#blogger-changed").val();
+					var blg = blogger.split("______");
+					
+					var blog_id = blg[0];
+					
+					var all_bloggers = $("#all_bloggers").val();
+					
+					loadStat(blg[1], all_bloggers,all_ids, date_start, date_end);
+					loadChart(blg[1],all_ids, date_start, date_end);
+					loadYearlyChart(blg[1],all_ids, date_start, date_end);
+					loadDailyChart(blg[1],all_ids, date_start, date_end);
+					loadUrls(date_start,date_end,all_ids, blog_id);
+					loadInfluence(blg[1],date_start,date_end);
+					loadtermss(blg[1]);
+   	            	//end submit new date
    					 
    				});
 
