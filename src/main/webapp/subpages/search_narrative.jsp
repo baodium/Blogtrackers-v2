@@ -52,6 +52,9 @@ if(action.toString().equals("search_narrative")){
         	//entity_string = x.getJSONObject("_source").get("entity").toString();
 			//Object data = x.getJSONObject("_source").getJSONArray("data");
 		for(int k = 0; k < res.size(); k++){	
+			if (k == 10){
+				break;
+			}
         	Narrative.Entity_ x = res.get(k);
 			entity_string = x.getEntity();
         %>
