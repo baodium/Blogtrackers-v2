@@ -11,6 +11,7 @@
 <%@page import="org.json.JSONObject"%>
 <%@page import="org.json.*"%>
 <%@page import="javafx.util.Pair"%>
+<%@page import="java.text.SimpleDateFormat"%>
 <%@page import="java.time.*"%>
 
 
@@ -20,6 +21,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%
+  
+
 Instant start = Instant.now();
 	Object email = (null == session.getAttribute("email")) ? "" : session.getAttribute("email");
 	Object tid = (null == request.getParameter("tid")) ? "" : request.getParameter("tid");
@@ -831,15 +834,18 @@ Instant start = Instant.now();
 							
 						</div>
 						
-						<div id="new_word">
-							<div id="tagcloudcontainer1" class="hidden " style="min-height: 300px;"></div>
+						<div id="loadkeywords">
+							<div id="new_word">
+								<div id="tagcloudcontainer1" class="hidden " style="min-height: 300px;"></div>
+							</div>
+							
+							
+							
+							<div class="chart-container keyword_display" id="keyword_display">
+								<div id="tagcloudcontainer" style="min-height: 480px;"></div>
+							</div>
 						</div>
 						
-						
-						
-						<div class="chart-container keyword_display" id="keyword_display">
-							<div id="tagcloudcontainer" style="min-height: 480px;"></div>
-						</div>
 						
 						
 						<div style="height: 250px; padding-right: 10px !important;" id="keyword_display_loader" class="hidden">
@@ -860,7 +866,7 @@ Instant start = Instant.now();
 									class="text-success"> Common Terms</b>
 							</p>
 						</div>
-						<div class="chart-container">
+						<div id="clusterchord" class="chart-container">
 							<div class="chart svg-center " id="chorddiagram"></div>
 
 							<div id="chorddiagram_loader" class="">
@@ -1072,7 +1078,7 @@ Instant start = Instant.now();
 				<div class="card card-style mt20">
 					<div class="card-body p10 pt20 pb5">
 
-						<div style="min-height: 420px;">
+						<div style="min-height: 420px;" id="clusterwordcount">
 							<!-- <p class="text-primary">Top keywords of <b>Past Week</b></p> -->
 							<div class="p15 pb5 pt0" role="group"></div>
 							<table id="DataTables_Table_3_wrapper" class="display table_over_cover"
@@ -1159,6 +1165,14 @@ Instant start = Instant.now();
 	<!-- <script type="text/javascript" src="assets/vendors/d3/d3.v4.min.js"></script> -->
 	<!-- <script type="text/javascript"
 		src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script> -->
+		
+		<form action="" name="customform" id="customform" method="post">
+			<input type="hidden" name="tid" id="tid" value="<%=tid%>" /> 
+			<input type="hidden" name="date_start" id="date_start" value="" /> 
+			<input type="hidden" name="date_end" id="date_end" value="" />
+			<input type="hidden" name="total_post_count" id="total_post_count" value="<%=total%>" />
+				
+		</form>
 
 	<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
 
@@ -1354,6 +1368,18 @@ Instant start = Instant.now();
    									+ " to "
    									+ picker.endDate
    											.format('MMMM D, YYYY')); */
+   											
+   					var date_start = picker.startDate.format('YYYY-MM-DD');
+   	            	var date_end = picker.endDate.format('YYYY-MM-DD');
+   	            	$("#date_start").val(date_start);
+   	            	$("#date_end").val(date_end);
+   	            	idname = "cluster_1"
+   	            	
+   	            	
+   	            	filter_cluster_details(idname, date_start,date_end)
+   	            	
+   	            	
+   	            	
    				});
    $('#reportrange')
    		.on(
@@ -2176,7 +2202,7 @@ $('.blogpost_link').on("click", function(){
 	
 	
 	
-	
+	console.log(jsondata, "jsonresult")
 	doCloud(jsondata,elem)
 
 	 /* d3version3 = d3

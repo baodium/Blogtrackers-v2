@@ -19,6 +19,7 @@ $(document).ready(function() {
 		var cluster = idName.split("_")[1]
 		$(".activeblog").html("Cluster "+cluster);
 		console.log("this is cluster" + idName)
+		console.log("this is cluster" + cluster)
 		loadblogdistribution(idName)
 		loadpostmentioned(idName)
 		loadbloggersmentioned(idName)
@@ -60,6 +61,54 @@ $("body").delegate(".blogPostClickListener", "click", function() {
 
 
 
+///start cluster change function
+function filter_cluster_details(idName, date_start, date_end){
+	
+	custom_cluster_details("blogdistribution", idName, date_start, date_end)
+	custom_cluster_details("postmentioned", idName, date_start, date_end)
+	custom_cluster_details("bloggersmentioned", idName, date_start, date_end)
+	custom_cluster_details("postinglocation", idName, date_start, date_end)
+	custom_cluster_details("post_detail_row", idName, date_start, date_end)
+	custom_cluster_details("loadkeywords", idName, date_start, date_end)
+	custom_cluster_details("blogdistribution", idName, date_start, date_end)
+	custom_cluster_details("clusterchord", idName, date_start, date_end)
+	custom_cluster_details("clusterwordcount", idName, date_start, date_end)
+	
+}
+///end cluster change function
+
+
+function custom_cluster_details(filter_type,clusterid, date_start, date_end ){
+	$("#"+filter_type).html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />");
+
+	
+	$.ajax({
+		url: app_url+"subpages/cluster_details.jsp",
+		method: 'POST',
+		data: {
+			action:filter_type,
+			cluster:clusterid,
+			date_start:date_start,
+			date_end:date_end,
+			tid:$('#tid').val()
+		},
+		error: function(response)
+		{	
+			console.log("error");
+			console.log(response);
+			//$("#").html(response);
+		},
+		success: function(response)
+		{   
+			//console.log(response);
+			//$("#blogpost_detail").html(response);
+			$("#"+filter_type).html(response);	
+			
+	
+		}
+	});
+	
+}
 
 
 
@@ -607,7 +656,7 @@ ticks.append("svg:text")
 .attr("dy", ".35em")
 .attr("transform", function(d) { return d.angle > Math.PI ? "rotate(180)translate(-16)" : null; })
 .style("text-anchor", function(d) { return d.angle > Math.PI ? "end" : null; })
-.text(function(d) { console.log('ddd',d); return d.label; });
+.text(function(d) { return d.label; });
 
 
     
