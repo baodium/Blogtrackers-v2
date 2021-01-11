@@ -201,7 +201,7 @@ public class Narrative extends HttpServlet {
 		JSONObject result = new JSONObject();
 
 		JSONObject query = new JSONObject(
-				"{\r\n" + "    \"size\": 100,\r\n" + "     \"query\": {\r\n" + "        \"match\" : {\r\n"
+				"{\r\n" + "    \"size\": 10000,\r\n" + "     \"query\": {\r\n" + "        \"match\" : {\r\n"
 						+ "            \"narrative_keyword\" : {\r\n" + "                \"query\" : \"" + search_string
 						+ "\",\r\n" + "                \"fuzziness\": \"auto\"\r\n" + "            }\r\n"
 						+ "        }\r\n" + "    }\r\n" + "}");
@@ -553,8 +553,8 @@ public class Narrative extends HttpServlet {
 //		String [] test =  get_entities("7", 5, 10);
 //		ArrayList narra = get_narratives("Trump", "7", "10", "20");
 //		JSONObject res = search_narratives_post("1", "west", "10");
-//		 List<Entity_> res = search_("trump");
-		List<Data_> res = merge_("\"Obama\",\"Trump\"", "88,267,127,1806");
+		 List<Entity_> res = search_("trump");
+//		List<Data_> res = merge_("\"Obama\",\"Trump\"", "88,267,127,1806");
 //		List<Data> res = unmerge("trump");
 		System.out.println("done");
 	}
