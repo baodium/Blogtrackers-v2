@@ -240,6 +240,49 @@ $('.narrative_text_input').keydown(function(e) {
 /*END ON SEARCH FOR NARRATIVE EDIT */
 
 
+
+/* fetch_custom_narrative FUNCTION */
+
+function fetch_custom_narrative(date_start, date_end){
+	
+	 $('.current_narrative_tree').addClass('hidden');
+	 $('#current_narrative_loader').removeClass('hidden');
+	    
+	    $.ajax({
+			url: app_url+"subpages/more_narrative.jsp",
+			method: 'POST',
+			data: {
+				action:"fetch_custom_narrative",
+				date_start:date_start,
+				date_end:date_end,
+				tid:$('#tracker_id').val(),
+				blog_ids:$('#all_blog_ids').val()
+			},
+			error: function(response)
+			{		
+				console.log("error");
+				console.log(response);
+			},
+			success: function(response)
+			{  
+				$('#current_narrative_loader').addClass('hidden');
+				$("#search_narrative_tree").removeClass('hidden');
+				$("#search_narrative_tree").html(response);
+				var img = $('.new_search_image');
+			    for(i=0; i<img.length; i++){
+			    	var id = img[i].id;
+					var url = img[i].value;
+					getImage(id,url);
+			    }
+			}
+		});
+	
+}
+
+
+/* END fetch_custom_narrative FUNCTION */
+
+
 /* NARRATIVE EDIT FUNCTION */
 
 function search_new_narrative(entity, search_key, raw_entity){
