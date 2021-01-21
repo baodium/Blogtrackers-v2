@@ -1,5 +1,9 @@
 # Blogtracker Readme<h1></center>
-
+```
+git init
+git clone https://github.com/baodium/Blogtrackers-v2.git
+git remote add origin git@github.com:User/UserRepo.git
+```
 
 
 - __Create a new maven Project of archetype webapps__
@@ -42,10 +46,6 @@
 
   - __To contribute__
 
-```
-git init
-git clone https://github.com/baodium/Blogtrackers-v2.git
-git remote add origin git@github.com:User/UserRepo.git
-```
+
 
  _Get more info about how to clone a repo *here*: [Clone a repo ](https://help.github.com/articles/fork-a-repo/ "Cloning a repo")_
