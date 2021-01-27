@@ -44,7 +44,7 @@ function load_more_entity(entity, level){
 		
 		
 		$.ajax({
-			url: app_url+"subpages/more_narrative.jsp",
+			url: app_url+"subpages/more_narrative1.jsp",
 			method: 'POST',
 			data: {
 				action:"load_more_narrative",
@@ -60,7 +60,7 @@ function load_more_entity(entity, level){
 				$("#blogdistribution").html(response);
 			},
 			success: function(response)
-			{   
+			{   //alert("success")
 				$("#secondli_"+entity+"").remove();
 				$("#narrative_list_"+entity+"").append(response);
 				$.getScript("assets/behavior/narrative-analysis.js");
@@ -98,7 +98,9 @@ $("body").delegate(".confirm_narrative", "click", function() {
 /////
 
 ///////
-$("body").delegate(".entity_radio", "click", function() {
+$("body").delegate(".entity_radio1", "click", function() {
+	
+	//alert("folllow up")
 	entity = $(this).attr("entity")
 	
 	if($(this).hasClass("entity_unselected")){
@@ -136,9 +138,44 @@ $("body").delegate(".entity_radio", "click", function() {
 });
 /////
 
+//START Keyword click delegate
+$("body").delegate(".keyword1", "click", function() {
+	//alert("uncc")
+	if ($(this).parent('div').parent('li').hasClass("uncollapse")){
+		$(this).parent('div').parent('li').removeClass("uncollapse");
+	} else {
+		$(this).parent('div').parent('li').addClass("uncollapse");
+	}
+	
+});
+//END Keyword click delegate
 
-///////
-$("body").delegate(".merge_entity_Button", "click", function() {
+//start handling collapse icon
+$("body").delegate(".new_collapseIcon", "click", function() {
+	//alert("c icon")
+	if ($(this).parent('div').parent('div').parent('li').hasClass("uncollapse")){
+		$(this).parent('div').parent('div').parent('li').removeClass("uncollapse");
+	} else {
+		$(this).parent('div').parent('div').parent('li').addClass("uncollapse");
+	}
+	
+});
+//end handling collapse icon
+
+//START Narrative click delegate
+$("body").delegate(".new_narrativeText", "click", function() {
+	
+	if ($(this).parent('div').parent('div').parent('div').parent('li').hasClass("open")){
+		$(this).parent('div').parent('div').parent('div').parent('li').removeClass("open");
+	} else {
+		$(this).parent('div').parent('div').parent('div').parent('li').addClass("open");
+	}
+	
+});
+//END Narrative click delegate
+
+
+function merge_entities(){
 	
 	$('.current_narrative_tree').addClass('hidden');
     $('#current_narrative_loader').removeClass('hidden');
@@ -175,7 +212,7 @@ $("body").delegate(".merge_entity_Button", "click", function() {
 	//alert(all_selected_entities)
 	
 	$.ajax({
-		url: app_url+"subpages/more_narrative.jsp",
+		url: app_url+"subpages/more_narrative1.jsp",
 		method: 'POST',
 		data: {
 			action:"merge_narrative",
@@ -207,6 +244,16 @@ $("body").delegate(".merge_entity_Button", "click", function() {
 	});
 	
 	//alert(all_selected_entities)
+}
+
+
+
+
+///////
+$("body").delegate(".merge_entity_Button", "click", function() {
+	
+	merge_entities();
+	
 });
 /////
 
@@ -352,7 +399,7 @@ $('#searchBox').keydown(function(e) {
 		    $('#current_narrative_loader').removeClass('hidden');
 		    
 		    $.ajax({
-				url: app_url+"subpages/search_narrative.jsp",
+				url: app_url+"subpages/search_narrative1.jsp",
 				method: 'POST',
 				data: {
 					action:"search_narrative",
@@ -365,7 +412,7 @@ $('#searchBox').keydown(function(e) {
 					console.log(response);
 				},
 				success: function(response)
-				{   
+				{   //alert("success")
 					$('#current_narrative_loader').addClass('hidden');
 					$("#search_narrative_tree").removeClass('hidden');
 					$("#search_narrative_tree").html(response);

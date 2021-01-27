@@ -1,0 +1,1267 @@
+/*
+
+
+
+	" Reimplement the wheel to either learn, or make it better. "
+
+    http://www.haydex.com/
+    https://www.youtube.com/watch?v=QOlTGA3RE8I
+    
+    Product Name: Btracker
+	Description: Tracking Blog's data.
+	Beneficiary: COSMOS
+	
+	Copyright © 1988 - 2021 HAYDEX, All Rights Reserved.
+	
+	
+	
+*/
+
+/** Global settings **/
+
+:root {
+    
+    /* theme */
+
+    --reddish: #fd4444;
+    --yellowish: #fffa56;
+    --highlighter: #d8ff3e;
+    --whitish: white;
+    --blueishDark: rgb(23, 57, 76);
+    --blueishLighter: rgba(23, 57, 76, 0.3);
+    --blueishLightest: rgba(23, 57, 76, 0.2);
+    --greyishLight: #F8F8F8;
+    --greyishLight2: rgb(234 234 234);
+    --greenish: #41c16c;
+    --greenishLight: #b4ffb45c;
+    --greenishLight2: #eff9f2;
+    --greenishDark: rgb(184 255 184);
+    --blueishLight: rgb(151 244 255);
+    --yellow: yellow;
+    --yellowLight: rgb(255, 255, 223);
+    --blue: rgb(0, 162, 255);
+    --blackishTransparent2: rgba(0, 0, 0, 0.2);
+    --blueishDarkScroll: rgba(23, 57, 76, 0.8);
+    --blueishDarkScrollHover: rgba(23, 57, 76, 1);
+
+    /* radius */
+
+    --radius5: 5px;
+    --radius13: 13px;
+    --radius15: 15px;
+    --radius25: 25px;
+    --radius1000: 1000px;
+
+    --interface: url(../interface/interface.svg);
+    --cursor: url(../interface/cursor.svg);
+    
+}
+
+html {
+
+    color: var(--blueishDark);
+    font-family: "Roboto", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x:hidden;
+    box-sizing: border-box; /* https://www.w3schools.com/css/css3_box-sizing.asp   https://www.youtube.com/watch?v=ADDvQlerEx4&list=PLu8EoSxDXHP5CIFvt9-ze3IngcdAc2xKG&index=2 */
+
+}
+
+body {
+
+	background-color:var(--whitish);
+    margin: 0px;
+    box-sizing: inherit;
+
+}
+
+body.editing {
+
+	background-color:var(--greenishLight);
+
+}
+
+a {
+
+    text-decoration: none;
+    color: inherit;
+
+}
+
+a:hover {
+
+    color: inherit;
+
+}
+
+section#moreInfoModal div#messageBox::-webkit-scrollbar, section#moreInfoModal div#messageBox div#messageContent::-webkit-scrollbar {
+    width: 0px;
+    background: transparent; /* make scrollbar transparent */
+    display: none;
+}
+
+* {
+
+    margin: 0;
+    padding: 0;
+    box-sizing: inherit;
+    -ms-overflow-style: none;
+    scrollbar-width: none !important;
+
+}
+
+ul {
+
+    list-style: none;
+
+}
+
+body.freeze {
+
+    overflow: hidden;
+    
+}
+
+button {
+
+    background-color: transparent;
+    border: 0px;
+    outline: 0px;
+    cursor: hand;
+    cursor: pointer;
+
+}
+
+span.highlighter {
+
+    background-color: var(--highlighter);
+    font-size: 24px;
+    line-height: 26px;
+
+}
+
+textarea {
+
+    color: var(--blueishDark);
+    font-family: "Roboto", sans-serif;
+
+}
+
+/** Search **/
+
+form#search {
+
+    margin: 0px auto;
+    margin-top: 50px;
+    max-width: 500px;
+    padding: 0px 10px;
+ 
+ }
+ 
+ form#search label {
+ 
+    display: none;
+ 
+ }
+ 
+ form#search input#searchBox {
+ 
+     border-radius: var(--radius25);
+     border: 2px solid var(--blackishTransparent2);
+     width: 100%;
+     font-size: 22px;
+     color: var(--blueishDark);
+     padding: 10px 20px;
+     outline: none;
+     text-align: center;
+
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+ 
+ }
+
+/** Narrative Tree **/
+
+ul#narrativeTree {
+
+    max-width: 500px;
+    margin: 0px auto;
+    margin-top: 100px;
+    padding: 0px 10px;
+    padding-bottom: 30px;
+
+}
+
+ul#narrativeTree li.level {
+
+    margin-bottom: 100px;
+
+}
+
+ul#narrativeTree li.level div#keywordWrapper {
+
+    display: flex;
+    margin-bottom: -5px;
+
+
+}
+
+ul#narrativeTree li.level div#keywordWrapper.group div#keywordList {
+
+    padding: 10px;
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+    border: 2px dashed var(--blueishLighter);
+    border-radius: var(--radius25);
+
+}
+
+ul#narrativeTree li.level div#keywordWrapper.group:hover div#keywordList {
+
+    border-color: var(--blueishDark);
+    cursor: pointer;
+
+}
+
+ul#narrativeTree.editing li.level div#keywordWrapper.group:hover div#keywordList {
+
+    border-color: var(--greenish);
+
+}
+
+ul#narrativeTree.editing li.level div#keywordWrapper.group div#keywordList.selected {
+
+    border-color: var(--greenish);
+    background-color: var(--greenishLight);
+
+}
+
+ul#narrativeTree:not(.editing) li.level div#keywordWrapper.group:hover div.keyword  {
+
+    border-color: transparent;
+
+}
+
+ul#narrativeTree li.level div#keywordWrapper div#precisionWrapper {
+
+    display: flex;
+
+}
+
+ul#narrativeTree li.level div#keywordWrapper button#ungroupButton {
+
+    visibility: hidden;
+    opacity: 1;
+    width: 30px;
+    height: 30px;
+    margin-left: -12px;
+    margin-top: -18px;
+    background-image: var(--interface);
+    background-position: -95px -1040px;
+    flex-grow: 0;
+    flex-shrink: 0;
+
+}
+
+ul#narrativeTree.editing li.level div#keywordWrapper.group button#ungroupButton {
+
+    visibility: visible;
+
+}
+
+ul#narrativeTree li.level div#keywordWrapper.group button#ungroupButton:hover {
+
+    opacity: 0.5;
+
+}
+
+ul#narrativeTree li.level div#keywordWrapper button#radioButton {
+
+    width: 18px;
+    height: 18px;
+    align-self: center;
+    border-radius: var(--radius25);
+    border: 1px solid var(--blueishLighter);
+    margin: 4px;
+    flex-grow: 0;
+    flex-shrink: 0;
+
+}
+
+ul#narrativeTree li.level div#keywordWrapper.selected button#radioButton {
+
+    background-color: var(--greenish);
+    border-color: var(--greenish);
+
+}
+
+ul#narrativeTree li.level div#keywordWrapper button#radioButton:hover {
+
+    background-color: var(--greenish);
+    border-color: var(--greenish);
+
+}
+
+ul#narrativeTree li.level div.keyword {
+
+    display: inline-grid;
+    grid-template-columns: auto auto;
+    align-items: center;
+    font-size: 18px;
+    font-weight: 600;
+    background-color: var(--yellowish);
+    padding: 10px 18px;
+    border-radius: var(--radius25);
+    border: 2px solid transparent;
+    cursor: pointer;
+    margin-bottom: 5px;
+    margin-right: 4px;
+    margin-right: 4px;
+
+}
+
+ul#narrativeTree.editing li.level div.keyword {
+
+    background-color: var(--greenishDark);
+
+}
+
+ul#narrativeTree.editing li.level.uncollapse div.keyword {
+
+    background-color: var(--greenishDark);
+
+}
+
+ul#narrativeTree.editing li.level div#keywordWrapper.group div.keyword button#removeKeyword {
+
+    width: 20px;
+    height: 20px;
+    background-image: var(--interface);
+    background-position: -311px -958px;
+    margin-left: 7px;
+    margin-right: -7px;
+
+}
+
+ul#narrativeTree.editing li.level div#keywordWrapper.group div.keyword.selected button#removeKeyword {
+
+    background-position-x: -268px;
+
+}
+
+ul#narrativeTree.editing li.level div#keywordWrapper.group div.keyword button#removeKeyword:hover {
+
+    opacity: 0.5;
+
+}
+
+ul#narrativeTree.editing li.level div.keyword:hover, ul#narrativeTree.editing li.level.uncollapse div.keyword:hover {
+
+    border-color: var(--greenish);
+
+}
+
+ul#narrativeTree.editing li.level div.keyword.selected, ul#narrativeTree.editing li.level.uncollapse div.keyword.selected {
+
+    background-color: var(--greenish);
+    color: var(--whitish);
+
+}
+
+ul#narrativeTree.editing li.level div.keyword.selected:hover, ul#narrativeTree.editing li.level.uncollapse div.keyword.selected:hover {
+
+    border-color: var(--blueishLighter);
+
+}
+
+ul#narrativeTree li.level div#keywordWrapper.selected div.keyword {
+
+    background-color: var(--greenish);
+    color: var(--whitish);
+
+}
+
+ul#narrativeTree li.level div#keywordWrapper.selected div.keyword:hover {
+
+    background-color: var(--greenish);
+
+}
+
+ul#narrativeTree li.level div.keyword:hover {
+
+    border: 2px solid var(--blueishLighter);
+
+}
+
+ul#narrativeTree li.level.uncollapse div.keyword {
+
+    background-color: var(--blueishLight);
+
+}
+
+ul#narrativeTree li.level.uncollapse div.keyword:hover {
+
+    border: 2px solid var(--blueishLighter);
+
+}
+
+ul#narrativeTree li.level div.keyword p.text {
+
+    display: inline-block;
+
+}
+
+ul#narrativeTree li.level div#keywordWrapper div#collapseIcon {
+
+    margin-right: 10px;
+    width: 9px;
+    height: 14px;
+    background-image: var(--interface);
+    background-position: -20px -826px;
+    align-self: center;
+    transform-origin: center center;
+    transition: transform 0.2s;
+    cursor: pointer;
+    flex-grow: 0;
+    flex-shrink: 0;
+
+}
+
+ul#narrativeTree li.level.uncollapse div#keywordWrapper div#precisionWrapper div#collapseIcon {
+
+    transform: rotate(90deg);
+    
+
+}
+
+ul#narrativeTree li.level div#keywordWrapper div#precisionWrapper div#collapseIcon:hover {
+
+    opacity: 0.5;
+
+}
+
+ul#narrativeTree li.level.uncollapse div#keywordWrapper.selected div.keyword div.collapseIcon {
+
+    background-position: -30px -1042px;
+
+}
+
+ul#narrativeTree li.level div#keywordWrapper.selected div.keyword div.collapseIcon {
+
+    background-position: -10px -1042px;
+
+}
+
+ul#narrativeTree li.level.uncollapse div.keyword div.collapseIcon {
+
+    background-position-x: -30px;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative {
+
+    display: none;
+
+}
+
+ul#narrativeTree li.level.uncollapse ul.narratives li.narrative.hidden {
+
+    display: none;
+
+}
+
+ul#narrativeTree li.level.uncollapse ul.narratives li.narrative {
+
+    display: block;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative div.topSection {
+
+    height: 30px;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative div.connectorBox {
+
+    position: relative;
+    width: 50px;
+    height: 100%;
+    margin-left: 15px;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative div.connectorBox div.connector {
+
+    width: 2px;
+    height: 100%;
+    background-color: var(--blueishDark);
+    margin: 0px auto;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative div.connectorBox div.dot {
+
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    top: 7px;
+    left: 50%;
+    margin-left: -5px;
+    background-color: var(--blueishDark);
+    border-radius: var(--radius1000);
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative div.middleSection {
+
+    display: flex;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative div.middleSection div.connectorBox {
+
+    flex: 0 0 50px;
+    height: auto;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative.last div.middleSection div.connectorBox {
+
+    height: 7px;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative div.middleSection div.narrativeTextWrapper {
+
+    width: 100%;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative.more div.middleSection div.narrativeTextWrapper p.narrativeText {
+
+    font-weight: 600;
+    font-size: 18px;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative.editing div.middleSection div#editWrapper div#editControls button#editButton {
+
+    display:none;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative:not(.editing) div.middleSection div#editWrapper div#editControls button#cancelButton {
+
+    display:none;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative:not(.editing) div.middleSection div#editWrapper div#editControls button#confirmButton {
+
+    display:none;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative div.middleSection div#editWrapper {
+
+    display: grid;
+    grid-template-columns: auto 24px;
+    grid-gap: 10px;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative.open div.middleSection div#editWrapper {
+
+    grid-template-columns: auto 24px;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative div.middleSection p.narrativeText {
+
+    font-size: 18px;
+    outline: 0px;
+    /* padding: 5px 5px; */
+    opacity: 1;
+    border-radius: var(--radius5);
+    transition: font-size .2s ease;
+    cursor: pointer;
+    border: 2px solid transparent;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative.editing div.middleSection p.narrativeText {
+
+    border-bottom-color: var(--blueishLighter);
+    border-radius: 0px;
+    padding-bottom: 5px;
+    cursor: auto;
+
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative.editing div.middleSection p.narrativeText:hover {
+
+    background-color: transparent;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative.open div.middleSection textarea.narrativeText {
+
+    font-size: 30px;
+    line-height: 30px;
+    font-weight: 600;
+    height: 120px;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative div.middleSection textarea.narrativeText:hover {
+
+    background-color: var(--blueishLight);
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative div.middleSection p.narrativeText:hover {
+
+    background-color: var(--greyishLight2);
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative.open div.middleSection p.narrativeText {
+
+    font-size: 30px;
+    line-height: 30px;
+    font-weight: 600;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative div.middleSection textarea.narrativeText {
+
+    transition: height .2s ease, font-size .2s ease;
+    flex-grow: 1;
+    font-size: 18px;
+    border: 0px;
+    resize: none;
+    height: 50px;
+    outline: 0px;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative div.middleSection div#editControls {
+
+    margin-left: 0px;    
+
+}
+
+ul#narrativeTree.editing li.level ul.narratives li.narrative div.middleSection div#editControls button.editButtons {
+
+    display: block;
+    width: 25px;
+    height: 25px;
+    background-image: var(--interface);
+    margin-bottom: 5px;
+    background-position: -105px -960px;
+    opacity: 1;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative div.middleSection div#editControls button.editButtons:hover {
+
+    opacity: 0.5;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative div.middleSection div#editControls button#cancelButton {
+
+    background-position: -156px -957px;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative div.middleSection div#editControls button#confirmButton {
+
+    background-position: -200px -955px;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative div.middleSection p.counter {
+
+    display: inline-flex;
+    font-size: 16px;
+    font-weight: 500;
+    border-radius: var(--radius25);
+    border: 1px solid var(--blueishDark);
+    padding: 3px 8px;
+    margin-top: 10px;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative div.middleSection p.counter span.number {
+
+    margin-right: 5px;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative.open div.bottomSection {
+
+    position: relative;
+    height: 320px;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative.last div.bottomSection div.connectorBox {
+
+    height: 0px;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative.open div.bottomSection div.posts {
+
+    display: block;
+    position: absolute;
+    top: 20px;
+    overflow-x: scroll;
+    -ms-overflow-style: auto;
+    scrollbar-width: auto !important;
+    white-space: nowrap;
+    width: calc(50vw + 220px);
+    padding-bottom: 4px;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative.open div.bottomSection div.posts::-webkit-scrollbar {
+    -webkit-appearance: none;
+    height: 8px;
+    width: 7px;
+    cursor: pointer;
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative.open div.bottomSection div.posts::-webkit-scrollbar-thumb {
+    border-radius: 25px;
+    background-color: var(--blueishDarkScroll);
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative.open div.bottomSection div.posts::-webkit-scrollbar-thumb:hover {
+    background-color: var(--blueishDarkScrollHover);
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative.open div.bottomSection div.posts::-webkit-scrollbar-track {
+    background-color: rgba(0,0,0,0);
+    height: 2px;
+    width: 7px;
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative div.bottomSection div.posts {
+
+    display: none;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative.open div.bottomSection div.posts div.post {
+
+    display: inline-block;
+    width: 210px;
+    height: 280px;
+    vertical-align: top;
+    background-color: var(--greyishLight);
+    border-radius: var(--radius15);
+    cursor: pointer;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative.open div.bottomSection div.posts div.post:hover {
+
+    background-color: var(--greyishLight2);
+    cursor: var(--cursor) 20 20, auto;
+
+}
+
+body.editing ul#narrativeTree li.level ul.narratives li.narrative.open div.bottomSection div.posts div.post:hover {
+
+    background-color: var(--whitish);
+    cursor: var(--cursor) 20 20, auto;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative.open div.bottomSection div.posts div.post img {
+
+    width: 100%;
+    height: 130px;
+    object-fit: cover;
+    border-radius: 15px 15px 0px 0px;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative.open div.bottomSection div.posts div.post.missingImage img {
+
+    display: none;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative.open div.bottomSection div.posts div.post h2.postTitle {
+
+    white-space: normal;
+    font-size: 18px;
+    line-height: 18px;
+    font-weight: 600;
+    padding: 0px 20px;
+    margin-top: 10px;
+    height: 70px;
+    overflow: hidden;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative.open div.bottomSection div.posts div.post.missingImage h2.postTitle {
+
+    padding-top: 10px;
+    height: auto;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative.open div.bottomSection div.posts div.post p.postDate {
+
+    white-space: normal;
+    font-size: 12px;
+    line-height: 12px;
+    font-weight: 400;
+    padding: 0px 20px;
+    margin-top: 20px;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative.open div.bottomSection div.posts div.post.missingImage p.postDate {
+
+    position: absolute;
+    bottom: 37px;
+    width: 200px;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative.open div.bottomSection div.posts div.post p.postSource {
+
+    white-space: normal;
+    font-size: 12px;
+    line-height: 12px;
+    font-weight: 600;
+    padding: 0px 20px;
+
+}
+
+ul#narrativeTree li.level ul.narratives li.narrative.open div.bottomSection div.posts div.post.missingImage p.postSource {
+
+    position: absolute;
+    bottom: 25px;
+    width: 200px;
+
+}
+
+/* Notifications */
+
+section#notifications {
+
+    display: flex;
+    justify-content: center;
+
+}
+
+section#notifications button#editKeywords {
+
+    position: fixed;
+    right: 30px;
+    width: 56px;
+    height: 56px;
+    bottom: 30px;
+    border-radius: var(--radius1000);
+    border: 2px solid transparent;
+    background-color: var(--greyishLight);
+    background-image: var(--interface);
+    background-position: -40px -815px;
+    transition: transform 0.1s, bottom 0.5s;
+    box-shadow: 4px 4px 8px var(--blueishLightest);
+
+}
+
+section#notifications button#editKeywords div#counter {
+
+    display: none;
+    position: absolute;
+    right: -8px;
+    top: -10px;
+    padding: 5px 9px;
+    font-size: 15px;
+    font-weight: bold;
+    border-radius: var(--radius1000);
+    background-color: var(--reddish);
+    color: var(--whitish);
+
+}
+
+section#notifications button#editKeywords div#counter.displayed {
+
+    display: block;
+
+}
+
+section#notifications button#cancelEditing {
+
+    display: none;
+    position: fixed;
+    right: 95px;
+    bottom: 30px;
+    width: 56px;
+    height: 56px;
+    border-radius: var(--radius1000);
+    border: 2px solid transparent;
+    background-color: var(--greyishLight);
+    background-image: var(--interface);
+    background-position: -159px -815px;
+    box-shadow: 4px 4px 8px var(--blueishLightest);
+
+}
+
+section#notifications button#cancelEditing.editing {
+
+    display: block;
+
+}
+
+section#notifications button#cancelEditing:hover {
+
+    border-color: var(--blueishLighter);
+
+}
+
+
+
+section#notifications button#editKeywords.hidden {
+
+    background-position-x: -99px;
+    background-color: var(--greenish);
+
+}
+
+section#notifications button#editKeywords:hover {
+
+    border: 2px solid var(--blueishLighter);
+    /* transform: rotate(-45deg); */
+
+}
+
+section#notifications p {
+
+    font-size: 16px;
+    padding: 7px 0px;
+
+}
+
+section#notifications.displayed {
+
+    bottom: 0px;
+
+}
+
+section#notifications button#closeButton {
+
+    position: absolute;
+    top: 50%;
+    transform-origin: center center;
+    transform: translate( 0, -50%) scale(1);
+    right: 20px;
+    width: 18px;
+    height: 18px;
+    background-image: var(--interface);
+    background-position: -268px -958px;
+    
+}
+
+section#notifications button#closeButton:hover {
+
+    opacity: 0.5;
+    
+}
+
+section#notifications div#mergeMessage p {
+
+    display: inline-block;
+
+}
+
+section#notifications div#mergeMessage button#mergeButton {
+
+    opacity: 0.5;
+    border: 2px solid var(--whitish);
+    padding: 5px 10px;
+    border-radius: var(--radius25);
+    color: var(--whitish);
+    font-size: 16px;
+    font-weight: 600;
+    margin-left: 5px;
+
+}
+
+section#notifications div#mergeMessage button#mergeButton.enabled {
+
+    opacity: 1;
+
+}
+
+section#notifications div#mergeMessage button#mergeButton.enabled:hover {
+
+    background-color: var(--whitish);
+    color: var(--greenish);
+
+}
+
+section#notifications div#selectMessage {
+
+    display: none;
+
+}
+
+/* More Info Modal */
+
+section#moreInfoModal {
+
+    display: none;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    justify-content: center;
+    z-index: 1000;
+
+}
+
+section#moreInfoModal.displayed {
+
+    display: flex;
+
+}
+
+section#moreInfoModal div#shadow {
+
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--blackishTransparent2);
+    opacity: 0.5;
+    
+}
+
+section#moreInfoModal div#messageBox {
+
+    position: fixed;
+    margin: 0px auto;
+    align-self: center;
+    height: 95vh;
+    width: calc(95vh / 1.3);
+    max-width: 500px;
+    max-height: 770px;
+    overflow: scroll;
+    padding-bottom: 30px;
+    background-color: var(--whitish);
+    border-radius: 15px;
+    
+}
+
+section#moreInfoModal div#messageBox button#closeButton {
+
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 36px;
+    height: 36px;
+    background-image: var(--interface);
+    background-position: -474px -427px;
+    
+}
+
+/** Misinfo **/
+
+section#moreInfoModal div#messageBox div#messageContent img.postImageModal {
+
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    border-radius: var(--radius15) var(--radius15) 0px 0px;
+
+}
+
+section#moreInfoModal div#messageBox div#messageContent {
+
+    overflow: scroll;
+    
+}
+
+section#moreInfoModal div#messageBox div#messageContent div.detailsWrapper {
+
+    padding: 40px;
+    
+}
+
+section#moreInfoModal div#messageBox p#title {
+
+    font-size: 36px;
+    line-height: 36px;
+    font-weight: 600;
+
+}
+
+section#moreInfoModal div#messageBox p#title span#tag {
+
+    color: var(--reddish);
+
+}
+
+section#moreInfoModal div#messageBox ul#details {
+
+    margin-top: 20px;
+    list-style: none;
+    opacity: 0.6;
+
+}
+
+section#moreInfoModal div#messageBox ul#details div.detailsIcon {
+
+    display: inline-block;
+    width: 20px;
+    height: 26px;
+    background-image: var(--interface);
+
+}
+
+section#moreInfoModal div#messageBox ul#details li {
+
+    display: inline-block;
+    margin-right: 10px;
+    height: 20px;
+    overflow: hidden;
+
+}
+
+section#moreInfoModal div#messageBox ul#details li p {
+
+    display: inline-block;
+    vertical-align: top;
+
+}
+
+/** Debunk Date **/
+
+section#moreInfoModal div#messageBox ul#details li#debunkDate div#icon {
+
+    background-position: -454px -272px;
+
+}
+
+/** Debunked By **/
+
+section#moreInfoModal div#messageBox ul#details li#debunkedBy div#icon {
+
+    background-position: -477px -272px;
+    transform: scale(0.9);
+
+}
+
+/** Published **/
+
+section#moreInfoModal div#messageBox ul#details li#published {
+
+    display: none;
+
+}
+
+section#moreInfoModal div#messageBox ul#details li#published div#icon {
+
+    background-position: -503px -273px;
+
+}
+
+/** Location **/
+
+section#moreInfoModal div#messageBox ul#details li#location div#icon {
+
+    width: 15px;
+    background-position: -558px -273px;
+
+}
+
+/** Description **/
+
+section#moreInfoModal div#messageBox p#description {
+
+    margin-top: 30px;
+    line-height: 23px;
+
+}
+
+/** Sources **/
+
+section#moreInfoModal div#messageBox div#sources {
+
+    margin-top: 30px;
+
+}
+
+section#moreInfoModal div#messageBox div#sources p {
+
+    display: inline-block;
+    vertical-align: top;
+    font-weight: 500;
+    word-wrap: break-word;
+    word-break: break-all;
+
+}
+
+section#moreInfoModal div#messageBox li#Source div.detailsIcon {
+
+    display: inline-block;
+    width: 19px;
+    height: 32px;
+    background-image: var(--interface);
+
+}
+
+section#moreInfoModal div#messageBox li#Source div.detailsIcon {
+
+    background-position: -578px -270px;
+
+}
+
+section#moreInfoModal div#messageBox div#messageContent {
+
+    overflow: scroll;
+    height: 100%;
+    
+}
+
+@media only screen and (max-width: 500px) {
+
+    ul#narrativeTree li.level ul.narratives li.narrative.open div.bottomSection div.posts {
+
+        width: 100%;
+    
+    }
+
+    /** More Information Modal **/
+
+    section#moreInfoModal div#messageBox {
+
+        width: 100vw;
+        height: 100vh;
+        max-height: 1000px;
+        
+    }
+
+    section#moreInfoModal div#messageBox div#messageContent div.detailsWrapper {
+
+        padding: 30px;
+        
+    }
+
+    section#moreInfoModal div#messageBox div#messageContent {
+
+        padding-bottom: 100px;
+        
+    }
+
+}
