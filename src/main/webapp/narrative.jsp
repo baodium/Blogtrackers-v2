@@ -1071,14 +1071,20 @@
    									+ " to "
    									+ picker.endDate
    											.format('MMMM D, YYYY')); */
-   					var start = picker.startDate.format('YYYY-MM-DD');
-   	            	var end = picker.endDate.format('YYYY-MM-DD');
+   					var date_start = picker.startDate.format('YYYY-MM-DD');
+   	            	var date_end = picker.endDate.format('YYYY-MM-DD');
    	            	//console.log("End:"+end);
    	            	
-   	            	$("#date_start").val(start);
-   	            	$("#date_end").val(end);
+   	            	$("#date_start").val(date_start);
+   	            	$("#date_end").val(date_end);
+   	            	
+   	            	fetch_custom_narrative(date_start, date_end)
+   	            	
+   	            	
+   	            	
+   	            	
    	            	//toastr.success('Date changed!','Success');
-   	            	$("form#customform").submit();
+   	            	//$("form#customform").submit();
    				});
    $('#reportrange')
    		.on(
