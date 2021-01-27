@@ -1229,14 +1229,26 @@ String formatedtotalpost = String.format("%.0f",(Double.parseDouble(totalpost)/(
           },
           toolbar: {
             autoSelected: 'zoom'
-          }
+          },
+          events: {
+
+              markerClick: function(event, chartContext, { seriesIndex, dataPointIndex, config}) {
+            	  
+              	console.log(seriesIndex, dataPointIndex, config)
+                console.log(chartContext)
+                console.log(event)
+                console.log(data[seriesIndex].data[dataPointIndex][0])
+               // console.log(config['dataPontIndex'])
+               // console.log(val)
+              }
+            }
         },
         colors: ["#E377C2","#8C564B", "#9467BD", "#D62728", "#2CA02C", "#FF7F0E", "#1F77B4", "#7F7F7F","#17B890", "#D35269"],
         dataLabels: {
           enabled: false
         },
         markers: {
-          size: 0,
+          size: 1,
         },
         title: {
           align: 'left'
@@ -1267,6 +1279,7 @@ String formatedtotalpost = String.format("%.0f",(Double.parseDouble(totalpost)/(
         },
         tooltip: {
           shared: false,
+          intersect: true,
           y: {
             formatter: function (val) {
               //return (val / 10000).toFixed(0)
@@ -1552,7 +1565,7 @@ String formatedtotalpost = String.format("%.0f",(Double.parseDouble(totalpost)/(
 				     		    	
 				     		    });
 			     		 		/////end for each for active
-			     		 
+			     		 console.log(graph_data)
 			     				beginApexChartBuild(graph_data)
     			    			////end calling in=stantiate function
     			    			

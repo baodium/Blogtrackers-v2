@@ -114,7 +114,7 @@ var currentvalue = null;
 	
 } */
 console.log(jsonresult, "jsonresult")
-terms1 = {"teump":234,"fdereal":34,"ragolis":123,"thor":500,"memus":3,}
+terms1 = {"teump":234,"fdereal":34,"ragolis":123,"thor":500,"memus":3}
 wordtagcloud("#tagcloudcontainer",450,terms1);
 </script>
 
