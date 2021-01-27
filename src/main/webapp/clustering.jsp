@@ -659,21 +659,10 @@ Instant start = Instant.now();
 
 								for (Map.Entry<Pair<String, String>, ArrayList<JSONObject>> entry : clusterResult.entrySet()) {
 									Pair<String, String> key = entry.getKey();
-									
-									//String temp_terms = topterms.get("cluster_" + (i + 1));
-									//System.out.println("terms ---" + terms);
 									String word_build = "";
-									
-									//System.out.println("terms ---" + terms);
 									String [] splitted = source.get("cluster_" + (i + 1)).toString().split("\'topterms\':");
-											//System.out.println("terms ---" + terms);
-											//terms = terms.replace("{","").replace("}","").replace("[","").replace("]", "").replace("),", "-").replace("(", "").replace("\'", "").replace("\"", "");
-											//String [] splitted2 = splitted[1].replace("{","").replace("}","").split(",");
-											//List<String> termlist = Arrays.asList(terms.split(","));
 									List<String> termlist = Arrays.asList(splitted[1].replace("{","").replace("}","").split(","));
-									//max = Integer.parseInt(termlist.get(k).split(":")[1].trim());
-									//temp_terms = temp_terms.replace("{","").replace("}", "").replace("[","").replace("]", "").replace("),", "-").replace("(", "").replace("\'", "").replace("\"", "");;
-									//List<String> termlist = Arrays.asList(temp_terms.split(","));
+							
 									
 									for(int m = 0; m < 10; m++){
 										if(m > 0){
@@ -682,33 +671,20 @@ Instant start = Instant.now();
 										if(m < termlist.size()){
 										word_build += termlist.get(m).split(":")[0].replace("\'","");
 										}
-										//System.out.println("original--" + termlist.get(m));
-										//System.out.println("building--" + termlist.get(m).split(":")[0]);
-									
 									}
-									//System.out.println("original--" + word_build);
 
 									if (key.getKey().equals("cluster_1")) {
 
 										currentKey = key;
 
-										/* System.out.println(postData.length()); */
-
 										String value = key.getValue();
-										//System.out.println("This is key--" + key.getKey());
-										/* currentPostIds = clusterResult.get("cluster_" + String.valueOf((i + 1)));  */
 										currentPostIds = value.toString();
 										String[] arr = currentPostIds.split(",");
 										currentPostIdsCount = String.valueOf(arr.length);
-										//String str = currentPostIds.toString().replaceAll("\\[", "").replaceAll("\\]", "").replace("\"", "");
 										bloggersMentioned = cluster.getBloggersMentioned(currentPostIds);
 										topPostingLocation = cluster.getTopPostingLocation(currentPostIds);
-										//System.out.println(currentPostIds);
-										//System.out.println(total);
 										blogdistribution = cluster.getBlogDistribution(currentPostIds, (double) Integer.parseInt(total));
 
-										/* postData = cluster.getPosts(currentPostIds, "", "", "__ONLY__POST__ID__");
-										System.out.println(postData.length()); */
 							%>
 							<a cluster_number="<%=i + 1%>" loaded_color="<%=colors[i]%>"  cluster_id="CLUSTER_<%=i + 1%>"  data-toggle="tooltip" data-placement="top" title="<%=word_build%>" class="clusters_ btn  form-control stylebuttonactive mb20 cluster_visual"
 								id="cluster_<%=i + 1%>" counter_value="<%=i  +1%>"
@@ -727,21 +703,6 @@ Instant start = Instant.now();
 									i++;
 								}
 							%>
-							<!-- <a
-								class="btn form-control stylebuttoninactive opacity53 text-primary mb20"><b>Cluster
-									2</b></a> <a
-								class="btn form-control stylebuttoninactive opacity53 text-primary mb20"><b>Cluster
-									3</b></a> <a
-								class="btn form-control stylebuttoninactive opacity53 text-primary mb20"><b>Cluster
-									4</b></a> <a
-								class="btn form-control stylebuttoninactive opacity53 text-primary mb20"><b>Cluster
-									5</b></a> <a
-								class="btn form-control stylebuttoninactive opacity53 text-primary mb20"><b>Cluster
-									6</b></a> <a
-								class="btn form-control stylebuttoninactive opacity53 text-primary mb20"><b>Cluster
-									7</b></a> <a
-								class="btn form-control stylebuttoninactive opacity53 text-primary mb20"><b>Cluster
-									8</b></a> -->
 
 						</div>
 
@@ -1165,12 +1126,15 @@ Instant start = Instant.now();
 	<!-- <script type="text/javascript" src="assets/vendors/d3/d3.v4.min.js"></script> -->
 	<!-- <script type="text/javascript"
 		src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script> -->
-		
+		<%
+ 	            	String post_ids = key_val_posts.get("cluster_1");
+ 	            	 %>
 		<form action="" name="customform" id="customform" method="post">
 			<input type="hidden" name="tid" id="tid" value="<%=tid%>" /> 
 			<input type="hidden" name="date_start" id="date_start" value="" /> 
 			<input type="hidden" name="date_end" id="date_end" value="" />
 			<input type="hidden" name="total_post_count" id="total_post_count" value="<%=total%>" />
+			<input type="hidden" name="post_ids" id="post_ids" value="<%=post_ids %>" />
 				
 		</form>
 
@@ -1374,9 +1338,15 @@ Instant start = Instant.now();
    	            	$("#date_start").val(date_start);
    	            	$("#date_end").val(date_end);
    	            	idname = "cluster_1"
+   	            	//alert("idname")
    	            	
+ 	            	/* 
+ 	            	
+ 	            	 */
+ 	            	 
+ 	            	compute_post_ids(idname, $("#post_ids").val(), date_start, date_end)
+ 	            	
    	            	
-   	            	filter_cluster_details(idname, date_start,date_end)
    	            	
    	            	
    	            	

@@ -62,6 +62,76 @@ public class Narrative extends HttpServlet {
 		return blogpost_narratives;
 	}
 
+	public static List<Entity_> get_narratives(String blog_ids, String date_from, String date_end, String size,
+			String field, String sort_field) throws Exception {
+		// query to get top entities
+		JSONObject query = new JSONObject("{\r\n" + "    \"size\": 0,\r\n" + "    \"query\": {\r\n"
+				+ "        \"bool\": {\r\n" + "            \"must\": [\r\n" + "                {\r\n"
+				+ "                    \"terms\": {\r\n" + "                        \"blogsite_id\": [" + blog_ids
+				+ "],\r\n" + "                        \"boost\": 1.0\r\n" + "                    }\r\n"
+				+ "                },\r\n" + "                {\r\n" + "                    \"range\": {\r\n"
+				+ "                        \"date\": {\r\n" + "                            \"from\": \"" + date_from
+				+ "\",\r\n" + "                            \"to\": \"" + date_end + "\",\r\n"
+				+ "                            \"include_lower\": false,\r\n"
+				+ "                            \"include_upper\": false,\r\n"
+				+ "                            \"boost\": 1.0\r\n" + "                        }\r\n"
+				+ "                    }\r\n" + "                }\r\n" + "            ],\r\n"
+				+ "            \"adjust_pure_negative\": true,\r\n" + "            \"boost\": 1.0\r\n" + "        }\r\n"
+				+ "    },\r\n" + "    \"aggs\": {\r\n" + "        \"" + field + "\": {\r\n"
+				+ "            \"terms\": {\r\n" + "                \"size\": " + size + ",\r\n"
+				+ "                \"field\": \"" + field + "\"\r\n" + "            }\r\n" + "        }\r\n"
+				+ "    }\r\n" + "}");
+
+		JSONObject top_entity_result = Blogposts._makeElasticRequest(query, "GET", "entity_narratives/_search");
+		Object aggregations = top_entity_result.getJSONObject("aggregations").getJSONObject(field)
+				.getJSONArray("buckets");
+		JSONArray buckets = new JSONArray(aggregations.toString());
+
+		// build string with comma separated top entities
+		StringBuilder top_entities = new StringBuilder();
+		for (int i = 0; i < buckets.length(); i++) {
+			Object entity = buckets.getJSONObject(i).get("key");
+			top_entities.append(entity.toString() + ",");
+		}
+		String top_entities_str = new String(top_entities.deleteCharAt(top_entities.length() - 1));
+
+		JSONObject get_all_query = new JSONObject("{\r\n" + "    \"size\": 50000,\r\n" + "    \"query\": {\r\n"
+				+ "        \"bool\": {\r\n" + "            \"must\": [\r\n" + "                {\r\n"
+				+ "                    \"bool\": {\r\n" + "                        \"must\": [\r\n"
+				+ "                            {\r\n" + "                                \"terms\": {\r\n"
+				+ "                                    \"entity\": [" + top_entities_str + "],\r\n"
+				+ "                                    \"boost\": 1.0\r\n" + "                                }\r\n"
+				+ "                            },\r\n" + "                            {\r\n"
+				+ "                                \"terms\": {\r\n"
+				+ "                                    \"blogsite_id\": [" + blog_ids + "],\r\n"
+				+ "                                    \"boost\": 1.0\r\n" + "                                }\r\n"
+				+ "                            }\r\n" + "                        ],\r\n"
+				+ "                        \"adjust_pure_negative\": true,\r\n"
+				+ "                        \"boost\": 1.0\r\n" + "                    }\r\n" + "                },\r\n"
+				+ "                {\r\n" + "                    \"range\": {\r\n"
+				+ "                        \"date\": {\r\n" + "                            \"from\": \"" + date_from
+				+ "\",\r\n" + "                            \"to\": \"" + date_end + "\",\r\n"
+				+ "                            \"include_lower\": false,\r\n"
+				+ "                            \"include_upper\": false,\r\n"
+				+ "                            \"boost\": 1.0\r\n" + "                        }\r\n"
+				+ "                    }\r\n" + "                }\r\n" + "            ],\r\n"
+				+ "            \"adjust_pure_negative\": true,\r\n" + "            \"boost\": 1.0\r\n" + "        }\r\n"
+				+ "    },\r\n" + "    \"_source\": {\r\n" + "        \"includes\": [\r\n"
+				+ "            \"blogpost_id\",\r\n" + "            \"entity\",\r\n" + "            \"narrative\"\r\n"
+				+ "        ],\r\n" + "        \"excludes\": []\r\n" + "    },\r\n" + "    \"sort\": [\r\n"
+				+ "        {\r\n" + "            \"" + sort_field + "\": {\r\n"
+				+ "                \"order\": \"asc\",\r\n" + "                \"missing\": \"_last\",\r\n"
+				+ "                \"unmapped_type\": \"" + sort_field + "\"\r\n" + "            }\r\n"
+				+ "        }\r\n" + "    ]\r\n" + "}");
+		JSONObject top_all_result = Blogposts._makeElasticRequest(get_all_query, "GET", "entity_narratives/_search");
+		Object hits = top_all_result.getJSONObject("hits").getJSONArray("hits");
+		JSONArray hit = new JSONArray(hits.toString());
+		List<Entity_> res = wrangleJson(hit);
+
+		return res;
+
+	}
+
 	/**
 	 * Query to get top entities by tracker_id
 	 * 
@@ -377,7 +447,6 @@ public class Narrative extends HttpServlet {
 		Gson gson = new Gson();
 		Source s = null;
 
-
 		if (res.size() > 0) {
 			for (int i = 0; i < res.size(); i++) {
 				List<Data_> d = res.get(i).getData();
@@ -549,11 +618,12 @@ public class Narrative extends HttpServlet {
 		}
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 //		String [] test =  get_entities("7", 5, 10);
 //		ArrayList narra = get_narratives("Trump", "7", "10", "20");
 //		JSONObject res = search_narratives_post("1", "west", "10");
-		 List<Entity_> res = search_("trump");
+//		List<Entity_> res = search_("trump");
+		List<Entity_> res = get_narratives("1,2,3", "2000-01-01", "2020-11-11", "10", "entity", "date");
 //		List<Data_> res = merge_("\"Obama\",\"Trump\"", "88,267,127,1806");
 //		List<Data> res = unmerge("trump");
 		System.out.println("done");
