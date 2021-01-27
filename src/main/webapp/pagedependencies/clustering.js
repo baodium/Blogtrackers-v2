@@ -62,23 +62,23 @@ $("body").delegate(".blogPostClickListener", "click", function() {
 
 
 ///start cluster change function
-function filter_cluster_details(idName, date_start, date_end){
+function filter_cluster_details(idName, date_start, date_end, total, post_ids){
 	
-	custom_cluster_details("blogdistribution", idName, date_start, date_end)
-	custom_cluster_details("postmentioned", idName, date_start, date_end)
-	custom_cluster_details("bloggersmentioned", idName, date_start, date_end)
-	custom_cluster_details("postinglocation", idName, date_start, date_end)
-	custom_cluster_details("post_detail_row", idName, date_start, date_end)
-	custom_cluster_details("loadkeywords", idName, date_start, date_end)
-	custom_cluster_details("blogdistribution", idName, date_start, date_end)
-	custom_cluster_details("clusterchord", idName, date_start, date_end)
-	custom_cluster_details("clusterwordcount", idName, date_start, date_end)
+	custom_cluster_details("blogdistribution", idName, date_start, date_end, total, post_ids)
+	custom_cluster_details("postmentioned", idName, date_start, date_end, total, post_ids)
+	custom_cluster_details("bloggersmentioned", idName, date_start, date_end, total, post_ids)
+	custom_cluster_details("postinglocation", idName, date_start, date_end, total, post_ids)
+	custom_cluster_details("post_detail_row", idName, date_start, date_end, total, post_ids)
+	custom_cluster_details("loadkeywords", idName, date_start, date_end, total, post_ids)
+	custom_cluster_details("blogdistribution", idName, date_start, date_end, total, post_ids)
+	custom_cluster_details("clusterchord", idName, date_start, date_end, total, post_ids)
+	//custom_cluster_details("clusterwordcount", idName, date_start, date_end, total, post_ids)
 	
 }
 ///end cluster change function
 
 
-function custom_cluster_details(filter_type,clusterid, date_start, date_end ){
+function custom_cluster_details(filter_type,clusterid, date_start, date_end, total, post_ids){
 	$("#"+filter_type).html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />");
 
 	
@@ -90,7 +90,9 @@ function custom_cluster_details(filter_type,clusterid, date_start, date_end ){
 			cluster:clusterid,
 			date_start:date_start,
 			date_end:date_end,
-			tid:$('#tid').val()
+			tid:$('#tid').val(),
+			total:total,
+			post_ids:post_ids
 		},
 		error: function(response)
 		{	
@@ -110,7 +112,39 @@ function custom_cluster_details(filter_type,clusterid, date_start, date_end ){
 	
 }
 
-
+function compute_post_ids(clusterid, post_ids, date_start, date_end ){
+	var result = "";
+//	alert("post_ids");
+//	alert(date_start);
+//	alert(date_end);
+	$.ajax({
+		url: app_url+"subpages/cluster_details.jsp",
+		method: 'POST',
+		data: {
+			tid:$('#tid').val(),
+			action:"recompute_posts",
+			cluster:clusterid,
+			date_start:date_start,
+			date_end:date_end,
+			post_ids:post_ids
+		},
+		error: function(response)
+		{	
+			console.log("error");
+			console.log(response);
+		},
+		success: function(response)
+		{   
+			
+			$("#post_ids").val(response);	
+			//alert($("#post_ids").val())
+			filter_cluster_details(idname, date_start,date_end, 10, $("#post_ids").val())
+		}
+	});
+	
+//	return result;
+	
+}
 
 
 

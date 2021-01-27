@@ -550,15 +550,43 @@ public class Clustering extends HttpServlet {
 		return result;
 	}
 
-	public  String getTopTermsFromBlogIds2(String ids, String from, String to, String limit) throws Exception {
+	public String getTopTermsFromBlogIds2(String ids, String from, String to, String limit) throws Exception {
 		String result = null;
 
 		List<JSONObject> postDataAll = getPosts(ids, from, to, "__ONLY__TERMS__BLOGSITE_IDS__", "blogpost_terms");
 
 		return result;
 	}
-
 	
+	public static String filterPosts(String post_ids, String date_from, String date_to) throws SQLException {
+		String result = "";
+		StringBuilder wordList = new StringBuilder();
+		String query = "SELECT blogpost_id "
+				+ "FROM blogposts "
+				+ "WHERE blogpost_id in ("+post_ids+")"
+				+ " AND date > \""+date_from+"\" "
+				+ " AND date < \""+date_to+"\"";
+		
+		ResultSet post_result =  DbConnection.queryResultSet(query);
+		
+		while(post_result.next()){
+			wordList.append(post_result.getString("blogpost_id") + ",");
+		}
+		post_result.close();
+		if(wordList.length() > 0) {
+			return new String(wordList.deleteCharAt(wordList.length() - 1));
+		}
+		return "";
+	}
+
+	public static void main(String [] args) {
+		try {
+			filterPosts("1,2,3,4,5,6", "2001-01-01", "2020-01-01");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
@@ -623,7 +651,7 @@ public class Clustering extends HttpServlet {
 			topPostingLocation = this.getTopPostingLocation(post_ids);
 			postData = clusterResult.get(key_val);
 		} catch (NumberFormatException e) {
-			// TODO Auto-generated catch block
+//			 TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (Exception e) {
 //			 TODO Auto-generated catch block

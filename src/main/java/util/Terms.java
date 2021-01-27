@@ -230,7 +230,7 @@ public class Terms extends HttpServlet implements Runnable {
 			return hd.get(3).toString();
 
 		} catch (Exception e) {
-			System.out.println(e);
+			//System.out.println(e);
 			return "";
 		}
 
@@ -553,7 +553,7 @@ public class Terms extends HttpServlet implements Runnable {
 
 		} catch (Exception e) {
 			esClient.close();
-			System.out.println("Error for elastic request -- > "+e);
+			//System.out.println("Error for elastic request -- > "+e);
 		}
 		esClient.close();
 		return myResponse;
@@ -695,13 +695,13 @@ public class Terms extends HttpServlet implements Runnable {
 		JSONObject myResponse;
 		try {
 			myResponse = this._makeElasticRequest(query, "POST", url);
-			System.out.println(myResponse);
+			//System.out.println(myResponse);
 			if (null != myResponse.get("count")) {
 				Object hits = myResponse.get("count");
 				total = hits.toString();
 			}
 			
-			System.out.println("count query" + query);
+			//System.out.println("count query" + query);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -714,7 +714,7 @@ public class Terms extends HttpServlet implements Runnable {
 
 		String source = null;
 
-		System.out.println("this is the query-" + query);
+		//System.out.println("this is the query-" + query);
 		JSONArray jsonArray = new JSONArray();
 
 		JSONObject all_data = new JSONObject();
@@ -820,7 +820,7 @@ public class Terms extends HttpServlet implements Runnable {
 		String terms = null;
 		new JSONArray();
 
-		System.out.println("DONE GETTING POSTS FOR BLOGGER");
+		//System.out.println("DONE GETTING POSTS FOR BLOGGER");
 		if (jsonArray != null) {
 			for (int i = 0; i < jsonArray.length(); i++) {
 				String indx = jsonArray.get(i).toString();
@@ -878,8 +878,8 @@ public class Terms extends HttpServlet implements Runnable {
 			new ArrayList<Tuple2<String, Integer>>();
 
 			if (type.contentEquals("topterm")) {
-				System.out.println("i am here");
-				System.out.println(data.size());
+				//System.out.println("i am here");
+				//System.out.println(data.size());
 				result2 = pairRdd.reduceByKey((a, b) -> (a + b)).max(new DummyComparator()).toString();
 				sc.stop();
 			} else if (type.contentEquals("dashboard")) {
@@ -913,7 +913,7 @@ public class Terms extends HttpServlet implements Runnable {
 				+ "occurr int(11) path '$.occurrence' " + ") " + ") " + "as n " + "where blogger in  (" + blogger
 				+ ") and date > \"" + from + "\" and date < \"" + to + "\" " + "group by n.term "
 				+ "order by occurrence desc " + "limit " + limit + "";
-		System.out.println(query);
+		//System.out.println(query);
 		ResultSet post_all =  DbConnection.queryResultSet(query);
 		
 		while(post_all.next()){
@@ -940,25 +940,28 @@ public class Terms extends HttpServlet implements Runnable {
 	public static String getTopTerms(String field_name, String field_values, String from, String to, String limit) throws Exception {
 		String result = null;
 		JSONArray output = new JSONArray();
-		if (field_values.indexOf("\"") != 0) {
-			field_values = "\"" + field_values + "\"";
-		}
+//		if (field_values.indexOf("\"") != 0) {
+//			field_values = "\"" + field_values + "\"";
+//		}
 		String query = "select n.term, sum(n.occurr) occurrence " + "from blogpost_terms_api, "
 				+ "json_table(terms_test, " + "'$[*]' columns( " + "term varchar(128) path '$.term', "
 				+ "occurr int(11) path '$.occurrence' " + ") " + ") " + "as n " + "where "+field_name+" in  (" + field_values
 				+ ") and date > \"" + from + "\" and date < \"" + to + "\" " + "group by n.term "
 				+ "order by occurrence desc " + "limit " + limit + "";
-		System.out.println(query);
+//		System.out.println(query);
 		ResultSet post_all =  DbConnection.queryResultSet(query);
 		
-		while(post_all.next()){
-			String term = post_all.getString("term");
-			int occurrence = post_all.getInt("occurrence");
-			Tuple2<String, Integer> v = new Tuple2<String, Integer>(term,occurrence);
-			output.put(v);
+		if(post_all != null) {
+			while(post_all.next()){
+				String term = post_all.getString("term");
+				int occurrence = post_all.getInt("occurrence");
+				Tuple2<String, Integer> v = new Tuple2<String, Integer>(term,occurrence);
+				output.put(v);
+			}
+			post_all.close();
 		}
 
-		post_all.close();
+		
 		return output.toString();
 	}
 	
@@ -1019,12 +1022,12 @@ public class Terms extends HttpServlet implements Runnable {
 		JSONObject o = new JSONObject();
 
 		if (action.toString().equals("getkeyworddashboard")) {
-			System.out.println("action is getkeyworddashboard and ids are " + ids.toString());
+			//System.out.println("action is getkeyworddashboard and ids are " + ids.toString());
 			try {
 				new JSONObject();
 				output = cluster.getTopTermsFromBlogIds(ids.toString(), date_start.toString(), date_end.toString(),"100");
 				JSONObject pp = (JSONObject)o.get("post_id_post");
-				System.out.println("pp --" + pp.length());
+				//System.out.println("pp --" + pp.length());
 				if(pp.length() > 0) {
 					
 				session.setAttribute(ids.toString() + "--" + action.toString(), o);

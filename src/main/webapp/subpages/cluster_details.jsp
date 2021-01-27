@@ -18,14 +18,14 @@
 <%
 	Object date_start = (null == request.getParameter("date_start")) ? "" : request.getParameter("date_start");
 Object date_end = (null == request.getParameter("date_end")) ? "" : request.getParameter("date_end");
-Object blogger = (null == request.getParameter("blogger")) ? "" : request.getParameter("blogger");
+//Object blogger = (null == request.getParameter("blogger")) ? "" : request.getParameter("blogger");
 
-Object all_bloggers = (null == request.getParameter("all_bloggers")) ? "" : request.getParameter("all_bloggers");
+//Object all_bloggers = (null == request.getParameter("all_bloggers")) ? "" : request.getParameter("all_bloggers");
 
 Object sort = (null == request.getParameter("sort")) ? "" : request.getParameter("sort");
 Object action = (null == request.getParameter("action")) ? "" : request.getParameter("action");
 Object cluster = (null == request.getParameter("cluster")) ? "" : request.getParameter("cluster");
-Object post_ids = (null == request.getParameter("post_ids")) ? "" : request.getParameter("post_ids");
+Object postids = (null == request.getParameter("post_ids")) ? "" : request.getParameter("post_ids");
 Object ids = (null == request.getParameter("ids")) ? "" : request.getParameter("ids");
 String tid = (null == request.getParameter("tid")) ? "" : request.getParameter("tid");
 
@@ -53,20 +53,23 @@ ArrayList<scala.Tuple2<String, scala.Tuple2<String, Integer>>> top_location = ne
 JSONObject elastic_query = new JSONObject();
 JSONObject myResponse = new JSONObject();
 JSONArray rows = new JSONArray();
-/* post._getGetDateAggregate("NOBLOGGER","date","yyyy","post","1y","date_histogram", date_start.toString(), date_end.toString(), blog_ids);
 
-post._getGetDateAggregate("NOBLOGGER","date","MMM","post","month","date_histogram", dt, dte, blog_id.toString());
-post._getGetDateAggregate("NOBLOGGER","date","yyyy","post","1y","date_histogram", dt, dte, blog_id.toString());
-post._getGetDateAggregate("NOBLOGGER","date","E","post","day","date_histogram", dt, dte, blog_id.toString());
-post._getGetDateAggregate("NOBLOGGER","date","MMM","post","month","date_histogram", dt, dte, blog_id.toString()); */
+Object result_key_val = (null == session.getAttribute(tid.toString() + "cluster_result_key_val")) ? ""
+		: session.getAttribute(tid.toString() + "cluster_result_key_val");
+HashMap<String, String> key_val_posts = (HashMap<String, String>) result_key_val;
+//String post_ids = key_val_posts.get(cluster.toString());
+String post_ids = postids.toString();
+Clustering clustering = new Clustering();
 %>
 
 
 <%
 	if (action.toString().equals("loadkeywords")) {
 
-	/* String dashboardterms = null;
-	dashboardterms = Terms.getTopTerms("blogsiteid", blog_ids, date_start.toString(), date_end.toString(), "100"); */
+	String dashboardterms = null;
+	//post_ids = Clustering.filterPosts(post_ids, date_start.toString(), date_end.toString());
+	dashboardterms = Terms.getTopTerms("blogpost_id", post_ids, date_start.toString(), date_end.toString(), "100");
+	System.out.println("here");
 %>
 
 <%-- //<%=result.toString()%> --%>
@@ -94,15 +97,15 @@ post._getGetDateAggregate("NOBLOGGER","date","MMM","post","month","date_histogra
 
 <script>
  
-     var terms = [{"text":"study","size":40},{"text":"motion","size":15},{"text":"forces","size":10},{"text":"electricity","size":15},{"text":"movement","size":10},{"text":"relation","size":5},{"text":"things","size":10},{"text":"force","size":5},{"text":"ad","size":5},{"text":"energy","size":85},{"text":"living","size":5},{"text":"nonliving","size":5},{"text":"laws","size":15},{"text":"speed","size":45},{"text":"velocity","size":30},{"text":"define","size":5},{"text":"constraints","size":5},{"text":"universe","size":10},{"text":"distinguished","size":5},{"text":"chemistry","size":5},{"text":"biology","size":5},{"text":"includes","size":5},{"text":"radiation","size":5},{"text":"sound","size":5},{"text":"structure","size":5},{"text":"atoms","size":5},{"text":"including","size":10},{"text":"atomic","size":10},{"text":"nuclear","size":10},{"text":"cryogenics","size":10},{"text":"solid-state","size":10},{"text":"particle","size":10},{"text":"plasma","size":10},{"text":"deals","size":5},{"text":"merriam-webster","size":5},{"text":"dictionary","size":10},{"text":"analysis","size":5},{"text":"conducted","size":5},{"text":"order","size":5},{"text":"understand","size":5},{"text":"behaves","size":5},{"text":"en","size":5},{"text":"wikipedia","size":5},{"text":"wiki","size":5},{"text":"physics-","size":5},{"text":"physical","size":5},{"text":"behaviour","size":5},{"text":"collinsdictionary","size":5},{"text":"english","size":5},{"text":"time","size":35},{"text":"distance","size":35},{"text":"wheels","size":5},{"text":"revelations","size":5},{"text":"minute","size":5},{"text":"acceleration","size":20},{"text":"torque","size":5},{"text":"wheel","size":5},{"text":"rotations","size":5},{"text":"resistance","size":5},{"text":"momentum","size":5},{"text":"measure","size":10},{"text":"direction","size":10},{"text":"car","size":5},{"text":"add","size":5},{"text":"traveled","size":5},{"text":"weight","size":5},{"text":"electrical","size":5},{"text":"power","size":5}];
+     //var terms = [{"text":"study","size":40},{"text":"motion","size":15},{"text":"forces","size":10},{"text":"electricity","size":15},{"text":"movement","size":10},{"text":"relation","size":5},{"text":"things","size":10},{"text":"force","size":5},{"text":"ad","size":5},{"text":"energy","size":85},{"text":"living","size":5},{"text":"nonliving","size":5},{"text":"laws","size":15},{"text":"speed","size":45},{"text":"velocity","size":30},{"text":"define","size":5},{"text":"constraints","size":5},{"text":"universe","size":10},{"text":"distinguished","size":5},{"text":"chemistry","size":5},{"text":"biology","size":5},{"text":"includes","size":5},{"text":"radiation","size":5},{"text":"sound","size":5},{"text":"structure","size":5},{"text":"atoms","size":5},{"text":"including","size":10},{"text":"atomic","size":10},{"text":"nuclear","size":10},{"text":"cryogenics","size":10},{"text":"solid-state","size":10},{"text":"particle","size":10},{"text":"plasma","size":10},{"text":"deals","size":5},{"text":"merriam-webster","size":5},{"text":"dictionary","size":10},{"text":"analysis","size":5},{"text":"conducted","size":5},{"text":"order","size":5},{"text":"understand","size":5},{"text":"behaves","size":5},{"text":"en","size":5},{"text":"wikipedia","size":5},{"text":"wiki","size":5},{"text":"physics-","size":5},{"text":"physical","size":5},{"text":"behaviour","size":5},{"text":"collinsdictionary","size":5},{"text":"english","size":5},{"text":"time","size":35},{"text":"distance","size":35},{"text":"wheels","size":5},{"text":"revelations","size":5},{"text":"minute","size":5},{"text":"acceleration","size":20},{"text":"torque","size":5},{"text":"wheel","size":5},{"text":"rotations","size":5},{"text":"resistance","size":5},{"text":"momentum","size":5},{"text":"measure","size":10},{"text":"direction","size":10},{"text":"car","size":5},{"text":"add","size":5},{"text":"traveled","size":5},{"text":"weight","size":5},{"text":"electrical","size":5},{"text":"power","size":5}];
 
 
-<%-- var terms = <%=dashboardterms.toString()%> --%>
+var terms = <%=dashboardterms.toString()%> 
 var jsonresult = {}
 var currenttuple = null;
 var currentkey = null;
 var currentvalue = null;
-/* for(var i = 0; i < terms.length; i++){
+for(var i = 0; i < terms.length; i++){
 	if (i == 0){
 		var tuple_ = terms[0].replace('(','').replace(')','').replace(' ','');
 		currentkey = tuple_.split(',')[0]
@@ -112,14 +115,19 @@ var currentvalue = null;
 	var value = tuple.split(',')[1]
 	jsonresult[key]=value;
 	
-} */
+} 
 console.log(jsonresult, "jsonresult")
-terms1 = {"teump":234,"fdereal":34,"ragolis":123,"thor":500,"memus":3}
-wordtagcloud("#tagcloudcontainer",450,terms1);
+
+terms1 = {"teump":234,"fdereal":34,"ragolis":123,"thor":500,"memus":3,}
+wordtagcloud("#tagcloudcontainer",450,jsonresult);
 </script>
 
 <%
 	} else if (action.toString().equals("post_detail_row")) {
+		//post_ids = Clustering.filterPosts(post_ids, date_start.toString(), date_end.toString());
+		String query = "SELECT * FROM blogposts WHERE blogpost_id in ("+ post_ids +")";
+		java.sql.ResultSet post_result =  DbConnection.queryResultSet(query);
+
 %>
 
 <!-- START LOCATION  -->
@@ -127,7 +135,7 @@ wordtagcloud("#tagcloudcontainer",450,terms1);
 				class="col-md-6 mt20 card card-style nobordertopright noborderbottomright">
 				<div class="card-body p0 pt20 pb20" style="min-height: 420px;">
 					<p>
-						Posts from <b class="text-success activeblog">Cluster 1</b>
+						Posts from <b class="text-success activeblog"><%=cluster %></b>
 					</p>
 					<!-- <div class="p15 pb5 pt0" role="group">
           Export Options
@@ -165,15 +173,73 @@ wordtagcloud("#tagcloudcontainer",450,terms1);
 							</tr>
 						</thead>
 						<tbody id="">
+							<%
+							String blogpost_id = "";
+							String title = "";
+							String permalink = "";
+							String blogger = "";
+							String num_comments = "";
+							String posts = "";
+							Object distances = (null == session.getAttribute(tid.toString() + "cluster_distances")) ? ""
+									: session.getAttribute(tid.toString() + "cluster_distances");
+							JSONObject cluster_distances = new JSONObject(distances.toString());
+							String currentBlogpost_id = "";
+							String currentTitle = "";
+							String currentPermalink = "";
+							String currentNumComment = "";
+							String currentPost = "";
+							String currentBlogger = "";
+							float max_distance_id = 0;
+							String activeDefLink = "";
+							String activeDef = "";
+							String max_post_id = "";
+							int x = 0;
+							if(post_result != null){
+							while(post_result.next()){
+								blogpost_id = post_result.getString("blogpost_id");
+								title = post_result.getString("title");
+								permalink = post_result.getString("permalink");
+								blogger = post_result.getString("blogger");
+								num_comments = post_result.getString("num_comments");
+								posts = post_result.getString("post");
+								
+								if (x == 0) {
+									max_distance_id = (float)Float.parseFloat(cluster_distances.get(blogpost_id).toString());
+								}else{
+									activeDefLink = "makeinvisible";
+									activeDef = "";
+								}
+								
+								if(max_distance_id > (float)Float.parseFloat(cluster_distances.get(blogpost_id).toString())){
+									
+									max_distance_id = (float)Float.parseFloat(cluster_distances.get(blogpost_id).toString());
+									max_post_id = blogpost_id;
+									
+									currentTitle = title;
+									currentBlogger = blogger;
+
+									try {
+										currentNumComment = num_comments;
+									}catch(Exception e){
+										currentNumComment = "0";
+										
+									}
+									currentPost = posts;
+									activeDef = "activeselectedblog";
+									activeDefLink = "";
+								}
 							
+							%>
 							<tr>
 							
-								<td><a class="blogpost_link cursor-pointer active" id="344" >post title</a><br/>
-								<a id="viewpost_344" class="mt20 viewpost erer" href="www.facebook.com" target="_blank"><buttton class="btn btn-primary btn-sm mt10 visitpost">Visit Post &nbsp;<i class="fas fa-external-link-alt"></i></buttton></a></td>
-								<%-- <td><%=(double) Math.round(Double.parseDouble(distances.get(blog_post_id.toString()))) / 100000%></td> --%>
-								<td>3453424.234323</td>
+								<td><a class="blogpost_link cursor-pointer active" id="<%=blogpost_id%>" ><%=title%></a><br/>
+								<a id="viewpost_<%= blogpost_id%>" class="mt20 viewpost erer" href="<%=permalink %>" target="_blank"><buttton class="btn btn-primary btn-sm mt10 visitpost">Visit Post &nbsp;<i class="fas fa-external-link-alt"></i></buttton></a></td>
+								<td><%=String.format("%.5f", (float)Float.parseFloat(cluster_distances.get(blogpost_id).toString()))%></td>
 
-							</tr>
+							</tr>							
+							 <%
+							x++; 
+							} }%>
 							
 						</tbody>
 					</table>
@@ -195,24 +261,24 @@ wordtagcloud("#tagcloudcontainer",450,terms1);
 			<div id="blogPostContainer"
 				class="col-md-6 mt20 card card-style nobordertopleft noborderbottomleft">
 				<div id="posts_details" style="" class="pt20">
-					<h5 id="titleContainer" class="text-primary p20 pt0 pb0">test post</h5>
+					<h5 id="titleContainer" class="text-primary p20 pt0 pb0"><%=currentTitle%></h5>
 					<div class="text-center mb20 mt20">
-					<button class="btn stylebuttonblue" onclick="window.location.href = '<%=request.getContextPath()%>/bloggerportfolio.jsp?tid=344&blogger=testblogger'">
+					<button class="btn stylebuttonblue" onclick="window.location.href = '<%=request.getContextPath()%>/bloggerportfolio.jsp?tid=<%=tid%>&blogger=<%=currentBlogger%>'">
 						<%-- <button class="btn stylebuttonblue">
 							<b id="authorContainer" class="float-left ultra-bold-text"><%=currentBlogger%></b> <i
 								class="far fa-user float-right blogcontenticon"></i>--%>
-						<b class="float-left ultra-bold-text">test case</b> <i
+						<b class="float-left ultra-bold-text"><%=currentBlogger%></b> <i
 													class="far fa-user float-right blogcontenticon"></i>
 											</button>
 						<button id="dateContainer" class="btn stylebuttonnocolor">02-01-2018, 5:30pm</button>
 						<button class="btn stylebuttonorange">
-							<b id="numCommentsContainer" class="float-left ultra-bold-text">34
+							<b id="numCommentsContainer" class="float-left ultra-bold-text"><%=currentNumComment%>
 								comments</b><i class="far fa-comments float-right blogcontenticon"></i>
 						</button>
 					</div>
 					<div style="height: 600px;">
 						<div id="postContainer" class="p20 pt0 pb20 text-blog-content text-primary"
-							style="height: 550px; overflow-y: scroll;">67</div>
+							style="height: 550px; overflow-y: scroll;"><%=currentPost%></div>
 					</div>
 				</div>
 				
@@ -220,6 +286,7 @@ wordtagcloud("#tagcloudcontainer",450,terms1);
 					<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />
 				</div>
 			</div>
+		</div>
 		
 
 <script>
@@ -249,32 +316,50 @@ wordtagcloud("#tagcloudcontainer",450,terms1);
 
 <%
 	} else if (action.toString().equals("blogdistribution")) {
+		int total = 0;
+		for(String key:key_val_posts.keySet()){
+			String[] postIdCount = Clustering.filterPosts(key_val_posts.get(key), date_start.toString(), date_end.toString()).split(",");
+			if(postIdCount[0] != ""){
+				total+=postIdCount.length;
+			}
+		}
+		
 %>
 
 
 
-45%
+<%=clustering.getBlogDistribution(post_ids.toString(), (double) total)%>
 
 
 
 <%
 	} else if (action.toString().equals("postinglocation")) {
+		//post_ids = Clustering.filterPosts(post_ids, date_start.toString(), date_end.toString());
+		
 %>
 
-ZIM
+<%=clustering.getTopPostingLocation(post_ids) %>
 
 <%
 	} else if (action.toString().equals("bloggersmentioned")) {
+		//post_ids = Clustering.filterPosts(post_ids, date_start.toString(), date_end.toString());
 %>
 
 
-567
+<%=clustering.getBloggersMentioned(post_ids) %>
 
 <%
 	} else if (action.toString().equals("postmentioned")) {
-%>
+		//post_ids = Clustering.filterPosts(post_ids, date_start.toString(), date_end.toString());
+		String[] postIdCount = post_ids.split(",");
+		double count = 0;
+		if(postIdCount[0] != ""){
+			count = postIdCount.length;
+		}
+		
+		%>
 
-219
+<%=String.valueOf(count).replace(".0","")%>
 
 <%
 	} else if (action.toString().equals("clusterchord")) {
@@ -354,16 +439,16 @@ ZIM
 		class="display table_over_cover" style="width: 100%">
 		<thead>
 			<tr>
-				<th>Domain1</th>
-				<th>Frequency 2</th>
-				<th>Frequency 3</th>
-				<th>Frequency 4</th>
-				<th>Frequency 5</th>
-				<th>Frequency 6</th>
-				<th>Frequency 7</th>
-				<th>Frequency 8</th>
-				<th>Frequency 9</th>
-				<th>Frequency 10</th>
+				<th>Cluster 1</th>
+				<th>Cluster 2</th>
+				<th>Cluster 3</th>
+				<th>Cluster 4</th>
+				<th>Cluster 5</th>
+				<th>Cluster 6</th>
+				<th>Cluster 7</th>
+				<th>Cluster 8</th>
+				<th>Cluster 9</th>
+				<th>Cluster 10</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -417,9 +502,20 @@ ZIM
 
 
 <%
-	} 
+	} else if (action.toString().equals("recompute_posts")){
+		
+		post_ids = Clustering.filterPosts(post_ids, date_start.toString(), date_end.toString());
+		//System.out.println(post_ids);
+		//out_.println(post_ids);
+		
 		
 %>
+<%= post_ids%>
+<%
+	}
+%>
+
+
 
 
 
