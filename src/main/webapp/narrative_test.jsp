@@ -212,34 +212,7 @@
 			
 			DbConnection db = new DbConnection();
 			//Getting high-level entities for tracker
-			String top_entities_query = "SELECT top_entities from tracker_narratives where tid = " + tid;
-			ArrayList narratives_top_entities = db.queryJSON(top_entities_query);
-					
-			JSONObject source = new JSONObject();
-			Object top_entities = null;
-			String [] slice = new String[10];
-			
-			if(narratives_top_entities.size() > 0){
-				source = new JSONObject(narratives_top_entities.get(0).toString());
-				top_entities = source.getJSONObject("_source").get("top_entities"); 
-				//Getting top 10 entities
-				
-				String [] slicer = top_entities.toString().replace("{","").replace("}","").replace("\"","").split(",");
-				int a = 0;
-				for(String x: slicer){
-					if(a == 10){
-						break;
-					}
-					if(x.indexOf("div.") == -1){
-						slice[a] = x;
-						a++;
-					}
-				}
-				//slice = Arrays.copyOfRange(, 0, 10); 
-				
-				System.out.println(Arrays.toString(slice)); 
-				System.out.println("processed");
-			}
+			List<Narrative.Entity_> slice = Narrative.get_narratives(ids, dt, dte, "10", "entity", "date");
 			
 			
 			
@@ -511,7 +484,9 @@
         <ul class="current_narrative_tree" id="narrativeTree">
         
 	        <%
-			for(String entity: slice){
+	        for(int i = 0; i < slice.size(); i++){
+				Narrative.Entity_ x = slice.get(i);
+				String entity = x.getEntity();
 				if(entity != null){
 					
 				
@@ -539,40 +514,19 @@
                 <ul id="narrative_list_<%=entity %>" class="narratives">
                 
                 	<%
-		                String blogpost_narratives_query = "select  COUNT(n.narrative) AS total_narrative_count, n.narrative, group_concat(n.blogpost_id separator ',') blogpost_id_concatenated, count(n.blogpost_id) c " + 
-		                		"from tracker_narratives, " +
-		                		"json_table(blogpost_narratives," +
-		                		  "'$.*.\""+ temp_entity +"\"[*]' columns(" +
-		                		     "narrative varchar(128) path '$.narrative'," +
-		                		    "blogpost_id int(11) path '$.blogpost_id'" +
-		                		    ")" +
-		                		  ") " +
-		                		  "as n " +
-		                		  "where tid ="+ tid +" and n.narrative is not null " +
-		                		  "group by n.narrative " +
-		                		  "order by c desc " +
-		                		  "limit 5;";
-		                		
-		                ArrayList blogpost_narratives = new ArrayList();
-		                try{
-		                	blogpost_narratives = db.queryJSON(blogpost_narratives_query);
-		                	
-		                }catch(Exception e){
-		                	System.out.println(e);
-		                }
-		                
-		                
-		        		 for(int i = 0; i < blogpost_narratives.size(); i++){ 
-		        			JSONObject narratives_data = new JSONObject(blogpost_narratives.get(i).toString());
-		        			Object narrative = narratives_data.getJSONObject("_source").get("narrative");
-		        			Object blogpost_ids = narratives_data.getJSONObject("_source").get("blogpost_id_concatenated");
-		        			Object total_narrative_count = narratives_data.getJSONObject("_source").get("total_narrative_count");
-		        			
-		        		 String replace = "<span style=background:red;color:#fff>" + entity + "</span>";
-		        		 if(narrative.toString().toLowerCase().indexOf(entity.toLowerCase()) != -1){
-		        			 
-		        		 }
-		        		 //String narrative_replaced = narrative.replace(entity, replace);
+                	List<Narrative.Data_> narratives = x.getData();
+    	            for(int j = 0; j < narratives.size(); j++){
+    	               	if(j == 5){
+    	               		break;
+    	               	}
+    	               	String narrative = narratives.get(j).getNarrative();
+    	               	Set<String> blogpost_ids = narratives.get(j).getBlogpostIds();
+            			String total_narrative_count = String.valueOf(blogpost_ids.size());
+            			
+            		 String replace = "<span style=background:red;color:#fff>" + entity + "</span>";
+            		 if(narrative.toString().toLowerCase().indexOf(entity.toLowerCase()) != -1){
+            			 
+            		 }
 		        		
 		                %>
                 
@@ -620,7 +574,7 @@
                              int length = blogpost_ids.toString().length();
                              String post_ids = (blogpost_ids.toString().substring(length - 1).equals(",")) ? blogpost_ids.toString().substring(0,length -1) : blogpost_ids.toString();
                              try{
-                            	 String query = "SELECT blogpost_id, permalink, title, date, post from blogposts where blogpost_id in ("+post_ids+") and blogsite_id in ("+ids+") order by date desc;";
+                            	 String query = "SELECT blogpost_id, permalink, title, date, post from blogposts where blogpost_id in ("+post_ids.replace("[","").replace("]","")+") and blogsite_id in ("+ids+") order by date desc;";
                                  permalink_data = db.queryJSON(query);
                              }catch(Exception e){
                             	 System.out.println("here");
