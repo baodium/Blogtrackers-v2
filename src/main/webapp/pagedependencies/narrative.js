@@ -139,16 +139,40 @@ $("body").delegate(".entity_radio1", "click", function() {
 /////
 
 //START Keyword click delegate
-$("body").delegate(".keyword1", "click", function() {
+$("body").delegate(".new_keyword", "click", function() {
 	//alert("uncc")
-	if ($(this).parent('div').parent('li').hasClass("uncollapse")){
-		$(this).parent('div').parent('li').removeClass("uncollapse");
+	if ($(this).parent('div').parent('div').parent('div').parent('li').hasClass("uncollapse")){
+		$(this).parent('div').parent('div').parent('div').parent('li').removeClass("uncollapse");
 	} else {
-		$(this).parent('div').parent('li').addClass("uncollapse");
+		$(this).parent('div').parent('div').parent('div').parent('li').addClass("uncollapse");
 	}
 	
 });
 //END Keyword click delegate
+
+
+//START new_keywordList click delegate
+$("body").delegate(".new_keywordList", "click", function() {
+	//alert("uncc")
+	if ($(this).parent('div').parent('div').parent('li').hasClass("uncollapse")){
+		$(this).parent('div').parent('div').parent('li').removeClass("uncollapse");
+	} else {
+		$(this).parent('div').parent('div').parent('li').addClass("uncollapse");
+	}
+	
+});
+//END new_keywordList click delegate
+
+//START new_keywordList click delegate
+$("body").delegate(".new_post", "click", function() {
+	//alert("uncc")
+	$("body").addClass("freeze")
+	$("#moreInfoModal").addClass("displayed")
+	$("section#moreInfoModal div#messageContent").scrollTop = 0;
+
+});
+//END new_keywordList click delegate
+
 
 //start handling collapse icon
 $("body").delegate(".new_collapseIcon", "click", function() {
@@ -258,9 +282,45 @@ $("body").delegate(".merge_entity_Button", "click", function() {
 /////
 
 
+///////
+$("body").delegate(".new_editButtons", "click", function() {
+	//alert("ed")
+	//entity = $(this).attr("entity")
+	//$("#".entity).setAttribute("contenteditable", "true");
+//	event.currentTarget.classList.toggle("editing");
+//    event.currentTarget.getElementsByClassName("narrativeText")[0].setAttribute("contenteditable", "true");
+//    event.currentTarget.getElementsByClassName("narrativeText")[0].focus();
+//    this.previousContent = event.currentTarget.getElementsByClassName("narrativeText")[0].textContent;
+	
+});
+/////
+
+///////
+$("body").delegate(".cancel_narrative", "click", function() {
+	entity = $(this).attr("entity")
+	$("#".entity).setAttribute("contenteditable", "true");
+	
+	
+});
+/////
+
+///////
+$("body").delegate(".confirm_narrative", "click", function() {
+	
+	entity = $(this).attr("entity")
+	$("#".entity).setAttribute("contenteditable", "false");
+	
+	
+});
+/////
+
+
+
+
+
 
 /*START ON SEARCH FOR NARRATIVE EDIT */
-$('.narrative_text_input').keydown(function(e) {
+$('.new_narrativeText').keydown(function(e) {
 	
 	var key = e.which;
 	var search_key = $(this).val();
@@ -339,7 +399,7 @@ function search_new_narrative(entity, search_key, raw_entity){
 	 $("#narrative_posts_"+entity).html("<img style='position: absolute;top: 50%;left: 50%;' src='images/loading.gif' />");
 	    
 	    $.ajax({
-			url: app_url+"subpages/more_narrative.jsp",
+			url: app_url+"subpages/more_narrative1.jsp",
 			method: 'POST',
 			data: {
 				action:"search_narrative_post",

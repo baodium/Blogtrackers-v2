@@ -86,11 +86,11 @@ if(action.toString().equals("load_more_narrative")){
 	                            </div>
 	                            <div class="narrativeTextWrapper">
 	                                <div id="editWrapper">
-	                                    <p count="<%=i %>" id="<%=entity %>" entity="<%=entity %>" class="narrativeText narrative_text_input"><%=narrative.toString() %></p>
+	                                    <p count="<%=i %>" id="<%=entity %>" entity="<%=entity %>" class="narrativeText new_narrativeText"><%=narrative.toString() %></p>
 	                                    <div id="editControls">
 	                                        <button id="editButton" class="editButtons" entity="<%=entity %>" title="Edit"></button>
-	                                        <button id="cancelButton" class="editButtons" entity="<%=entity %>" title="Cancel"></button>
-	                                        <button id="confirmButton" class="editButtons" entity="<%=entity %>" title="Confirm"></button>
+	                                        <button id="cancelButton" class="editButtons cancel_narrative" entity="<%=entity %>" title="Cancel"></button>
+	                                        <button id="confirmButton" class="editButtons confirm_narrative" entity="<%=entity %>" title="Confirm"></button>
 	                                    </div>
 	                                </div>
 	                                <p class="counter"><span class="number"><%=total_narrative_count.toString() %></span>Posts</p>
@@ -253,28 +253,17 @@ if(action.toString().equals("load_more_narrative")){
                             </div>
                         </div>
                     </li>
-                
-	<script src="assets/behavior/narrative-analysis.js"></script>
+  
 	<!-- end -->
 <% }else if(action.toString().equals("merge_narrative")){ %>
 
 <li class="level level1">
                 
-                <%-- <div id="keywordWrapper" class="">
-		         	<button entity="<%=selected_entity_names.toString() %>" class="entity_unselected entity_radio" id="radioButton" title="Select"></button>
-		             <div class="keyword keyword1">
-		                 <div class="collapseIcon"></div>
-		                 <p class="text"><%=selected_entity_names.toString() %></p>
-		             </div>
-		             <button id="ungroupButton" title="Ungroup Keywords"></button>
-		          </div> --%>
-		          
-		          
-		          
+                  
 		          <div id="keywordWrapper" class="group">
                     <div id="precisionWrapper">
                         <div id="collapseIcon" class="new_collapseIcon"></div>
-                        <div id="keywordList" class="keywordList">
+                        <div id="keywordList" class="new_keywordList">
                         	
                         	
                         <% String[] result_entity = selected_entity_names.toString().split(",");
@@ -282,7 +271,7 @@ if(action.toString().equals("load_more_narrative")){
                         	for(String temp_entity : result_entity){ %>
                         		
                         		
-                        		<div class="keyword keyword1">
+                        		<div class="keyword new_keyword">
 	                                <p style="margin-bottom: 0;" class="text"><%= temp_entity %></p>
 	                                <button id="removeKeyword"></button>
 	                            </div>
@@ -321,7 +310,7 @@ if(action.toString().equals("load_more_narrative")){
                                 <div id="editWrapper">
 		                            <p id="<%=selected_entity_names.toString() %>" entity="<%=selected_entity_names.toString() %>" class="narrativeText new_narrativeText"><%=narr.getNarrative() %></p>
                                     <div id="editControls">
-                                        <button id="editButton" class="editButtons" title="Edit" entity="<%=entity %>"></button>
+                                        <button id="editButton" class="editButtons new_editButtons" title="Edit" entity="<%=entity %>"></button>
                                         <button id="cancelButton" class="editButtons cancel_narrative" title="Cancel" entity="<%=entity %>"></button>
                                         <button id="confirmButton" class="editButtons confirm_narrative" title="Confirm" entity="<%=entity %>"></button>
                                     </div>
@@ -333,7 +322,7 @@ if(action.toString().equals("load_more_narrative")){
                             <div class="connectorBox">
                                 <div class="connector"></div>
                             </div>
-                            <div class="posts">
+                            <div id="narrative_posts_<%=entity %>" style="overflow-y:hidden;" class="posts">
                                 <%
                                 String [] blogposts_data = blogpost_ids.toString().split(",");
                                 List<?> permalink_data = new ArrayList<>();
@@ -382,7 +371,7 @@ if(action.toString().equals("load_more_narrative")){
                        					System.out.println(e);
                        				}
                                 %>
-                                    <div post_id=<%=bp_id %> class="post missingImage post_id_<%=bp_id%>">
+                                    <div post_id=<%=bp_id %> class="post missingImage post_id_<%=bp_id%> new_post">
                                         <div class="<%=bp_id%>">
                                         	<input type="hidden" class="post-image" id="<%=bp_id%>" name="pic" value="<%=permalink.toString()%>">
                                         </div> 
@@ -480,7 +469,7 @@ if(action.toString().equals("load_more_narrative")){
 		
 	%>
 
-	<div post_id=<%=bp_id %> class="post missingImage post_id_<%=bp_id%>">
+	<div post_id=<%=bp_id %> class="post missingImage post_id_<%=bp_id%> new_post">
         <!-- <img class="postImage" src="assets/images/posts/1.jpg"> -->
        <div class="<%=bp_id%>">
        	<input type="hidden" class="post-image <%=entity %>_image new_narrative_image" id="<%=bp_id%>" name="pic" value="<%=permalink.toString()%>">
@@ -572,7 +561,7 @@ if(action.toString().equals("load_more_narrative")){
 					</div>
 					<div class="narrativeTextWrapper">
 						<div id="editWrapper">
-                            <textarea id="<%=entity %>" entity="<%=entity %>" name="narrativeTextInput" class="narrativeText narrative_text_input"><%=narrative %></textarea>
+                            <textarea id="<%=entity %>" entity="<%=entity %>" name="narrativeTextInput" class="narrativeText new_narrativeText"><%=narrative %></textarea>
                             <div id="editControls">
                                 <button id="editButton" class="editButtons" title="Edit" entity="<%=entity %>"></button>
                                 <button id="cancelButton" class="editButtons cancel_narrative" title="Cancel" entity="<%=entity %>"></button>
@@ -588,7 +577,7 @@ if(action.toString().equals("load_more_narrative")){
 					<div class="connectorBox">
 						<div class="connector"></div>
 					</div>
-					<div class="posts">
+					<div id="narrative_posts_<%=entity %>" style="overflow-y:hidden;" class="posts">
 						<%
                             		String [] blogposts_data = blogpost_ids.toString().split(",");
                                     Object permalink = "";
