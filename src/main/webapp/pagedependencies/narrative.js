@@ -350,18 +350,18 @@ $('.new_narrativeText').keydown(function(e) {
 
 /* fetch_custom_narrative FUNCTION */
 
-function fetch_custom_narrative(date_start, date_end){
+function fetch_custom_narrative(date_start, date_end1){
 	
 	 $('.current_narrative_tree').addClass('hidden');
 	 $('#current_narrative_loader').removeClass('hidden');
 	    
 	    $.ajax({
-			url: app_url+"subpages/more_narrative.jsp",
+			url: app_url+"subpages/more_narrative1.jsp",
 			method: 'POST',
 			data: {
 				action:"fetch_custom_narrative",
 				date_start:date_start,
-				date_end:date_end,
+				date_end:date_end1,
 				tid:$('#tracker_id').val(),
 				blog_ids:$('#all_blog_ids').val()
 			},

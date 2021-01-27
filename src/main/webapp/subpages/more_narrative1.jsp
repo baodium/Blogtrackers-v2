@@ -22,6 +22,8 @@ Object level = (null == request.getParameter("level")) ? "" : request.getParamet
 Object tid = (null == request.getParameter("tid")) ? "" : request.getParameter("tid");
 Object blog_ids = (null == request.getParameter("blog_ids")) ? "" : request.getParameter("blog_ids");
 Object search_value = (null == request.getParameter("search_value")) ? "" : request.getParameter("search_value");
+Object date_start = (null == request.getParameter("date_start")) ? "" : request.getParameter("date_start");
+Object date_end = (null == request.getParameter("date_end")) ? "" : request.getParameter("date_end");
 
 Object all_selected_entities = (null == request.getParameter("all_selected_entities")) ? "" : request.getParameter("all_selected_entities");
 Object selected_entity_names = (null == request.getParameter("selected_entity_names")) ? "" : request.getParameter("selected_entity_names");
@@ -492,8 +494,7 @@ if(action.toString().equals("load_more_narrative")){
 	
 <%  }else if(action.toString().equals("fetch_custom_narrative")){
 	
-	Narrative n = new Narrative();
-	List<Narrative.Entity_> res = Narrative.search_("trump");
+	List<Narrative.Entity_> res = Narrative.get_narratives(blog_ids.toString(), date_start.toString(), date_end.toString(), "10", "entity", "date");
 	//JSONObject result = Narrative.search(search_value.toString());
 	//Object hits = result.getJSONObject("hits").getJSONArray("hits");
 	//JSONArray hit = new JSONArray(hits.toString());
@@ -502,8 +503,6 @@ if(action.toString().equals("load_more_narrative")){
 	%>
 
 <!-- Narrative Tree -->
-<link rel="stylesheet" href="assets/presentation/narrative-analysis.css" />
-<script src="assets/behavior/narrative-analysis.js"></script>
 
 <ul id="narrativeTree">
 	<%
@@ -520,17 +519,22 @@ if(action.toString().equals("load_more_narrative")){
         	Narrative.Entity_ x = res.get(k);
 			entity_string = x.getEntity();
         %>
-	<li class="level level1">
-		<div id="keywordWrapper" class="">
-         	<button entity="<%=entity_string %>" class="entity_unselected entity_radio" id="radioButton" title="Select"></button>
-             <div class="keyword keyword1">
-                 <div class="collapseIcon"></div>
-                 <p class="text"><%=entity_string%></p>
-             </div>
-             <button id="ungroupButton" title="Ungroup Keywords"></button>
-          </div>
-		<!-- Getting Narratives for each entities-->
-		<ul id="narrative_list_<%=entity %>" class="narratives">
+		<!-- start displaying narrative entity -->
+            <li class="level">
+                <div id="keywordWrapper" class="">
+                    <div id="precisionWrapper">
+                        <div id="collapseIcon" class="new_collapseIcon"></div>
+                        <div id="keywordList">
+                            <div class="keyword new_keyword">
+                                <p style="margin-bottom: 0;" class="text"><%=entity_string%></p>
+                                <button id="removeKeyword"></button>
+                            </div>
+                        </div>
+                        <button id="ungroupButton"></button>
+                    </div>
+                </div>
+                
+                <ul id="narrative_list_<%=entity_string %>" class="narratives">
 
 			<%
                 //JSONArray narratives = new JSONArray(x.toString().split("-------")[1]);
@@ -560,18 +564,16 @@ if(action.toString().equals("load_more_narrative")){
 						<div class="dot"></div>
 					</div>
 					<div class="narrativeTextWrapper">
-						<div id="editWrapper">
-                            <textarea id="<%=entity %>" entity="<%=entity %>" name="narrativeTextInput" class="narrativeText new_narrativeText"><%=narrative %></textarea>
-                            <div id="editControls">
-                                <button id="editButton" class="editButtons" title="Edit" entity="<%=entity %>"></button>
-                                <button id="cancelButton" class="editButtons cancel_narrative" title="Cancel" entity="<%=entity %>"></button>
-                                <button id="confirmButton" class="editButtons confirm_narrative" title="Confirm" entity="<%=entity %>"></button>
-                            </div>
-                        </div>
-                        <p class="counter"><span class="number"><%=blogpost_ids.size() %></span>Post </p>
-                        
-						
-					</div>
+                       <div id="editWrapper">
+                           <p id="<%=entity %>" entity="<%=entity %>" class="narrativeText new_narrativeText"><%=narrative %></p>
+                           <div id="editControls">
+                               <button id="editButton" class="editButtons" entity="<%=entity %>" title="Edit"></button>
+                               <button id="cancelButton" class="editButtons cancel_narrative" entity="<%=entity %>" title="Cancel"></button>
+                               <button id="confirmButton" class="editButtons confirm_narrative" entity="<%=entity %>" title="Confirm"></button>
+                           </div>
+                       </div>
+                       <p class="counter"><span class="number"><%=blogpost_ids.size() %></span>Posts</p>
+                   </div>
 				</div>
 				<div class="bottomSection">
 					<div class="connectorBox">
@@ -630,23 +632,18 @@ if(action.toString().equals("load_more_narrative")){
                             					System.out.println(e);
                             				}
                             		%>
-						<div post_id=<%=bp_id %>
-							class="post missingImage post_id_<%=bp_id%>">
-							<!-- <img class="postImage" src="assets/images/posts/1.jpg"> -->
-							<div class="<%=bp_id%>">
-								<input type="hidden" class="post-image new_search_image"
-									id="<%=bp_id%>" name="pic" value="<%=permalink.toString()%>">
-							</div>
-
-							<h2 id="post_title_<%=bp_id %>" class="postTitle"><%=title.toString() %></h2>
-							<p id="post_date_<%=bp_id %>" class="postDate"><%=date.toString()%></p>
-							<p id="post_source_<%=bp_id %>"
-								post_permalink="<%=permalink.toString()%>" class="postSource"><%=domain %></p>
-							<input id="post_detail_<%=bp_id %>" type="hidden"
-								value="<%=post_detail.toString() %>">
-							<%-- <input type="hidden" class="post-image" id="<%=bp_id%>" name="pic" value="<%=permalink.toString()%>"> --%>
-							<%-- <p class="postSource"><%=bp_id %></p> --%>
-						</div>
+						
+						<div post_id=<%=bp_id %> class="post missingImage post_id_<%=bp_id%> new_post">
+						
+                             <div class="<%=bp_id%>">
+                             	<input type="hidden" class="post-image new_search_image" id="<%=bp_id%>" name="pic" value="<%=permalink.toString()%>">
+                             </div>
+                             
+                             <h2 id="post_title_<%=bp_id %>" class="postTitle"><%=title.toString() %></h2>
+                             <p id="post_date_<%=bp_id %>" class="postDate"><%=date.toString()%></p>
+                             <p id="post_source_<%=bp_id %>" post_permalink="<%=permalink.toString()%>" class="postSource"><%=domain %></p>
+                             <input id="post_detail_<%=bp_id %>" type="hidden" value="<%=post_detail.toString() %>" >
+                         </div>
 						<%} %>
 					</div>
 				</div>

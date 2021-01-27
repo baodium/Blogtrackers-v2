@@ -922,21 +922,19 @@
    		.on(
    				'apply.daterangepicker',
    				function(ev, picker) {
-   					/* console
+   					 console
    							.log("apply event fired, start/end dates are "
-   									+ picker.startDate
-   											.format('MMMM D, YYYY')
+   									+ picker.startDate.format('MMMM D, YYYY')
    									+ " to "
-   									+ picker.endDate
-   											.format('MMMM D, YYYY')); */
+   									+ picker.endDate.format('MMMM D, YYYY')); 
    					var date_start = picker.startDate.format('YYYY-MM-DD');
-   	            	var date_end = picker.endDate.format('YYYY-MM-DD');
+   	            	var date_end1 = picker.endDate.format('YYYY-MM-DD');
    	            	//console.log("End:"+end);
-   	            	
+   	            	//alert(date_start + " to "+ date_end1)
    	            	$("#date_start").val(date_start);
-   	            	$("#date_end").val(date_end);
+   	            	$("#date_end").val(date_end1);
    	            	
-   	            	fetch_custom_narrative(date_start, date_end)
+   	            	fetch_custom_narrative(date_start, date_end1)
    	            	
    	            	
    	            	
