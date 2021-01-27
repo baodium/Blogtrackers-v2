@@ -22,6 +22,9 @@ Object level = (null == request.getParameter("level")) ? "" : request.getParamet
 Object tid = (null == request.getParameter("tid")) ? "" : request.getParameter("tid");
 Object blog_ids = (null == request.getParameter("blog_ids")) ? "" : request.getParameter("blog_ids");
 Object search_value = (null == request.getParameter("search_value")) ? "" : request.getParameter("search_value");
+Object date_start = (null == request.getParameter("date_start")) ? "" : request.getParameter("date_start");
+Object date_end = (null == request.getParameter("date_end")) ? "" : request.getParameter("date_end");
+
 
 Object all_selected_entities = (null == request.getParameter("all_selected_entities")) ? "" : request.getParameter("all_selected_entities");
 Object selected_entity_names = (null == request.getParameter("selected_entity_names")) ? "" : request.getParameter("selected_entity_names");
@@ -481,8 +484,7 @@ if(action.toString().equals("load_more_narrative")){
 	
 <%  }else if(action.toString().equals("fetch_custom_narrative")){
 	
-	Narrative n = new Narrative();
-	List<Narrative.Entity_> res = Narrative.search_("trump");
+	List<Narrative.Entity_> res = Narrative.get_narratives(blog_ids.toString(), date_start.toString(), date_end.toString(), "10", "entity", "date");
 	//JSONObject result = Narrative.search(search_value.toString());
 	//Object hits = result.getJSONObject("hits").getJSONArray("hits");
 	//JSONArray hit = new JSONArray(hits.toString());
@@ -584,7 +586,7 @@ if(action.toString().equals("load_more_narrative")){
                                     post_ids = (post_ids.substring(length - 1).equals(",")) ?post_ids.substring(0,length -1) : post_ids;
                                     try{
                                    	 	//String query = "SELECT blogpost_id, permalink, title, date, post from blogposts where blogpost_id in ("+post_ids+") and blogsite_id in ("+blog_ids.toString()+") order by date desc;";
-                                   	 	String query = "SELECT blogpost_id, permalink, title, date, post from blogposts where blogpost_id in ("+post_ids+") order by date desc;";
+                                   	 	String query = "SELECT blogpost_id, permalink, title, date, post from blogposts where blogpost_id in ("+post_ids.replace("[","").replace("]","")+") order by date desc;";
                                         permalink_data = db.queryJSON(query);
                                     }catch(Exception e){
                                    	 System.out.println("here");
