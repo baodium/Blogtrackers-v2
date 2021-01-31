@@ -267,14 +267,39 @@ public class Narrative extends HttpServlet {
 		return res;
 	}
 
-	public static List<Entity_> search_(String search_string) {
+	public static List<Entity_> search_(String search_string, String date_start, String date_end) {
 		JSONObject result = new JSONObject();
-
-		JSONObject query = new JSONObject(
-				"{\r\n" + "    \"size\": 10000,\r\n" + "     \"query\": {\r\n" + "        \"match\" : {\r\n"
-						+ "            \"narrative_keyword\" : {\r\n" + "                \"query\" : \"" + search_string
-						+ "\",\r\n" + "                \"fuzziness\": \"auto\"\r\n" + "            }\r\n"
-						+ "        }\r\n" + "    }\r\n" + "}");
+		JSONObject query = new JSONObject();
+		if(date_start == null & date_end == null || date_start == "" & date_end == "") {
+			query = new JSONObject("{\r\n" + 
+					"    \"size\": 10000,\r\n" + 
+					"    \"query\": {\r\n" + 
+					"        \"match\": {\r\n" + 
+					"            \"narrative_keyword\": {\r\n" + 
+					"                \"fuzziness\": \"auto\",\r\n" + 
+					"                \"query\": \""+search_string+"\"\r\n" + 
+					"            }\r\n" + 
+					"        }\r\n" + 
+					"    }\r\n" + 
+					"}");
+		}else {
+			query = new JSONObject("{\r\n" + "    \"size\": 10000,\r\n" + "    \"query\": {\r\n"
+					+ "        \"bool\": {\r\n" + "            \"adjust_pure_negative\": true,\r\n"
+					+ "            \"must\": [\r\n" + "                {\r\n" + "                    \"match\": {\r\n"
+					+ "                        \"narrative_keyword\": {\r\n"
+					+ "                            \"fuzziness\": \"auto\",\r\n"
+					+ "                            \"query\": \"" + search_string + "\"\r\n"
+					+ "                        }\r\n" + "                    }\r\n" + "                },\r\n"
+					+ "                {\r\n" + "                    \"range\": {\r\n"
+					+ "                        \"date\": {\r\n"
+					+ "                            \"include_lower\": false,\r\n"
+					+ "                            \"include_upper\": false,\r\n"
+					+ "                            \"from\": \"" + date_start + "\",\r\n"
+					+ "                            \"boost\": 1,\r\n" + "                            \"to\": \"" + date_end
+					+ "\"\r\n" + "                        }\r\n" + "                    }\r\n" + "                }\r\n"
+					+ "            ]\r\n" + "        }\r\n" + "    }\r\n" + "}");
+		}
+		
 
 		try {
 			result = Blogposts._makeElasticRequest(query, "GET", "entity_narratives/_search");
@@ -622,8 +647,8 @@ public class Narrative extends HttpServlet {
 //		String [] test =  get_entities("7", 5, 10);
 //		ArrayList narra = get_narratives("Trump", "7", "10", "20");
 //		JSONObject res = search_narratives_post("1", "west", "10");
-//		List<Entity_> res = search_("trump");
-		List<Entity_> res = get_narratives("1,2,3", "2000-01-01", "2020-11-11", "10", "entity", "date");
+		List<Entity_> res = search_("trump","2000-01-01", "2020-11-11");
+//		List<Entity_> res = get_narratives("1,2,3", "2000-01-01", "2020-11-11", "10", "entity", "date");
 //		List<Data_> res = merge_("\"Obama\",\"Trump\"", "88,267,127,1806");
 //		List<Data> res = unmerge("trump");
 		System.out.println("done");

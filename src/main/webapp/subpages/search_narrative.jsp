@@ -23,6 +23,10 @@ Object level = (null == request.getParameter("level")) ? "" : request.getParamet
 Object tid = (null == request.getParameter("tid")) ? "" : request.getParameter("tid");
 Object search_value = (null == request.getParameter("search_value")) ? "" : request.getParameter("search_value");
 Object blog_ids = (null == request.getParameter("blog_ids")) ? "" : request.getParameter("blog_ids");
+Object date_start = (null == request.getParameter("date_start")) ? "" : request.getParameter("date_start");
+Object date_end = (null == request.getParameter("date_end")) ? "" : request.getParameter("date_end");
+
+
 
 
 
@@ -31,7 +35,7 @@ Narrative n = new Narrative();
 
 
 if(action.toString().equals("search_narrative")){
-	List<Narrative.Entity_> res = Narrative.search_(search_value.toString());
+	List<Narrative.Entity_> res = Narrative.search_(search_value.toString(), date_start.toString(), date_end.toString());
 	//JSONObject result = Narrative.search(search_value.toString());
 	//Object hits = result.getJSONObject("hits").getJSONArray("hits");
 	//JSONArray hit = new JSONArray(hits.toString());
@@ -54,6 +58,7 @@ if(action.toString().equals("search_narrative")){
 		for(int k = 0; k < res.size(); k++){	
 			if (k == 10){
 				break;
+				
 			}
         	Narrative.Entity_ x = res.get(k);
 			entity_string = x.getEntity();
