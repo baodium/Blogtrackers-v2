@@ -17,7 +17,7 @@
 <%
 Object action = (null == request.getParameter("action")) ? "" : request.getParameter("action");
 Object entity = (null == request.getParameter("entity")) ? "" : request.getParameter("entity");
-Object offset = (null == request.getParameter("entity")) ? "" : request.getParameter("offset");
+Object offset = (null == request.getParameter("offset")) ? "" : request.getParameter("offset");
 Object level = (null == request.getParameter("level")) ? "" : request.getParameter("level");
 Object tid = (null == request.getParameter("tid")) ? "" : request.getParameter("tid");
 Object blog_ids = (null == request.getParameter("blog_ids")) ? "" : request.getParameter("blog_ids");

@@ -63,7 +63,7 @@ if(action.toString().equals("search_narrative")){
                     <div id="precisionWrapper">
                         <div id="collapseIcon" class="new_collapseIcon"></div>
                         <div id="keywordList">
-                            <div class="keyword">
+                            <div class="keyword new_keyword">
                                 <p style="margin-bottom: 0;" class="text"><%=entity_string%></p>
                                 <button id="removeKeyword"></button>
                             </div>
@@ -100,8 +100,8 @@ if(action.toString().equals("search_narrative")){
                            <p id="<%=entity %>" entity="<%=entity %>" class="narrativeText new_narrativeText"><%=narrative %></p>
                            <div id="editControls">
                                <button id="editButton" class="editButtons" entity="<%=entity %>" title="Edit"></button>
-                               <button id="cancelButton" class="editButtons" entity="<%=entity %>" title="Cancel"></button>
-                               <button id="confirmButton" class="editButtons" entity="<%=entity %>" title="Confirm"></button>
+                               <button id="cancelButton" class="editButtons cancel_narrative" entity="<%=entity %>" title="Cancel"></button>
+                               <button id="confirmButton" class="editButtons confirm_narrative" entity="<%=entity %>" title="Confirm"></button>
                            </div>
                        </div>
                        <p class="counter"><span class="number"><%=blogpost_ids.size() %></span>Posts</p>
@@ -162,7 +162,7 @@ if(action.toString().equals("search_narrative")){
                             				}
                             		%>
 						
-						<div post_id=<%=bp_id %> class="post missingImage post_id_<%=bp_id%>">
+						<div post_id=<%=bp_id %> class="post missingImage post_id_<%=bp_id%> new_post">
 						
                              <div class="<%=bp_id%>">
                              	<input type="hidden" class="post-image new_search_image" id="<%=bp_id%>" name="pic" value="<%=permalink.toString()%>">

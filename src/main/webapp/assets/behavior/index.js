@@ -115,6 +115,18 @@ document.addEventListener("DOMContentLoaded", function() {
             for (let i = 0; i < this.narratives.length; i++) {
 
                 this.narratives[i].addEventListener("click", this.narrativesClickListener.bind(this));
+                
+                ///////
+                $("body").delegate(".new_editButtons", "click", function(event) {
+                	//alert("ed")
+                	console.log("event",event)
+                	event.currentTarget.classList.toggle(this.editingClass);
+                        event.currentTarget.getElementsByClassName(this.narrativeText)[0].setAttribute("contenteditable", "true");
+                        event.currentTarget.getElementsByClassName(this.narrativeText)[0].focus();
+                        this.previousContent = event.currentTarget.getElementsByClassName(this.narrativeText)[0].textContent;
+                	
+                });
+                /////
 
             }
 
@@ -596,12 +608,14 @@ document.addEventListener("DOMContentLoaded", function() {
             }
             
         }
+        
+
 
         narrativesClickListener(event) {
 
-
+console.log(event)
             if (event.target.id == this.narrativeEditButton) {
-
+            	//alert("pdf")
                 event.currentTarget.classList.toggle(this.editingClass);
                 event.currentTarget.getElementsByClassName(this.narrativeText)[0].setAttribute("contenteditable", "true");
                 event.currentTarget.getElementsByClassName(this.narrativeText)[0].focus();
