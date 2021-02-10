@@ -40,7 +40,7 @@ if(action.toString().equals("search_narrative")){
 	%>
 
 <!-- Narrative Tree -->
-<ul id="narrativeTree">
+<ul id="narrativeTree" class="new_narrativeTree">
 	<%
         //for(Narrative.Entity x: res){
         	//System.out.println(res);
@@ -95,11 +95,11 @@ if(action.toString().equals("search_narrative")){
                    </div>
 					<div class="narrativeTextWrapper">
                        <div id="editWrapper">
-                           <p id="<%=entity %>" entity="<%=entity %>" class="narrativeText new_narrativeText"><%=narrative %></p>
+                           <p id="<%=entity_string %>_new_search" entity="<%=entity_string %>_new_search" class="narrativeText new_narrativeText"><%=narrative %></p>
                            <div id="editControls">
-                               <button id="editButton" class="editButtons" entity="<%=entity %>" title="Edit"></button>
-                               <button id="cancelButton" class="editButtons cancel_narrative" entity="<%=entity %>" title="Cancel"></button>
-                               <button id="confirmButton" class="editButtons confirm_narrative" entity="<%=entity %>" title="Confirm"></button>
+                               <button id="editButton" class="editButtons new_editButtons" entity="<%=entity_string %>_new_search" title="Edit"></button>
+                               <button id="cancelButton" class="editButtons cancel_narrative" entity="<%=entity_string %>_new_search" title="Cancel"></button>
+                               <button id="confirmButton" class="editButtons confirm_narrative" entity="<%=entity_string %>_new_search" title="Confirm"></button>
                            </div>
                        </div>
                        <p class="counter"><span class="number"><%=blogpost_ids.size() %></span>Posts</p>
@@ -109,7 +109,7 @@ if(action.toString().equals("search_narrative")){
                    <div class="connectorBox">
                        <div class="connector"></div>
                    </div>
-                   <div id="narrative_posts_<%=entity %>" style="overflow-y:hidden;" class="posts">
+                   <div id="narrative_posts_<%=entity_string %>_new_search" style="overflow-y:hidden;" class="posts">
 						<%
                             		String [] blogposts_data = blogpost_ids.toString().split(",");
                                     Object permalink = "";

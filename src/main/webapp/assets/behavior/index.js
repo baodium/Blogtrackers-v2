@@ -116,18 +116,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
                 this.narratives[i].addEventListener("click", this.narrativesClickListener.bind(this));
                 
-                ///////
-                $("body").delegate(".new_editButtons", "click", function(event) {
-                	//alert("ed")
-                	console.log("event",event)
-                	event.currentTarget.classList.toggle(this.editingClass);
-                        event.currentTarget.getElementsByClassName(this.narrativeText)[0].setAttribute("contenteditable", "true");
-                        event.currentTarget.getElementsByClassName(this.narrativeText)[0].focus();
-                        this.previousContent = event.currentTarget.getElementsByClassName(this.narrativeText)[0].textContent;
-                	
-                });
-                /////
-
             }
 
             for (let i = 0; i < this.posts.length; i++) {
@@ -143,7 +131,33 @@ document.addEventListener("DOMContentLoaded", function() {
             document.addEventListener("keydown", this.escapeKeyListener.bind(this));
             this.cancelEditingButton.addEventListener("click", this.cancelEditingButtonClickListener.bind(this));
             this.editKeywordsButton.addEventListener("click", this.editKeywordsButtonClickListener.bind(this));
-
+            
+            
+      ///////
+//            $("body").delegate("#editKeywords", "click", function() {
+//            	alert("eddy")
+//            	//this.editKeywordsButtonClickListener.bind(this)
+//            	if (!this.editMode) {
+//                	
+//                	
+//                    this.cancelEditingButton.classList.toggle(this.editingClass);
+//                    this.editMode = !this.editMode;
+//                    this.editKeywordsButton.classList.toggle(this.hiddenClass);
+//                    this.tree.classList.toggle(this.editingClass);
+//                    this.editKeywordsButton.querySelector("div#counter").classList.remove(this.displayedClass);
+//                    this.editKeywordsButton.querySelector("div#counter").classList.remove("hidden");
+//                    alert("edit mode 122")
+//                    $("#editKeywords").removeClass('hidden');
+//                } 
+//            	//entity = $(this).attr("entity")
+//            	//$("#".entity).setAttribute("contenteditable", "true");
+////            	event.currentTarget.classList.toggle("editing");
+////                event.currentTarget.getElementsByClassName("narrativeText")[0].setAttribute("contenteditable", "true");
+////                event.currentTarget.getElementsByClassName("narrativeText")[0].focus();
+////                this.previousContent = event.currentTarget.getElementsByClassName("narrativeText")[0].textContent;
+//            	
+//            });
+            /////
         }
 
         removeKeywordClickListener(event) {
@@ -179,11 +193,11 @@ document.addEventListener("DOMContentLoaded", function() {
                 this.tree.classList.toggle(this.editingClass);
                 this.editKeywordsButton.querySelector("div#counter").classList.remove(this.displayedClass);
                 this.editKeywordsButton.querySelector("div#counter").classList.remove("hidden");
-                //alert("edit mode 122")
+                alert("edit mode 122")
                 $("#editKeywords").removeClass('hidden');
             } else {
             	
-            	//alert("not edit mode")
+            	alert("not edit mode")
 
                 if (this.selectionCounter > 1) {
                 	

@@ -90,8 +90,11 @@ function strip_entity(entity){
 ///////
 $("body").delegate(".confirm_narrative", "click", function() {
 	temp_entity = $(this).attr("entity")
+	
 	entity = strip_entity(temp_entity);
-	search_key = $("#"+entity).val()
+	
+	search_key = $("#"+entity).text();
+	
 	search_new_narrative(entity, search_key, temp_entity);
 	
 });
@@ -164,6 +167,22 @@ $("body").delegate(".new_keywordList", "click", function() {
 //END new_keywordList click delegate
 
 //START new_keywordList click delegate
+$("body").delegate(".new_editButtons", "click", function() {
+	//alert("uncc")
+	entity = $(this).attr("entity");
+	if ($(this).parent('div').parent('div').parent('div').parent('div').parent('li').hasClass("editing")){
+		$('#'+entity).attr("contenteditable","false");
+		$(this).parent('div').parent('div').parent('div').parent('div').parent('li').removeClass("editing");
+	} else {
+		$('#'+entity).attr("contenteditable","true");
+		$('#'+entity).focus();
+		$(this).parent('div').parent('div').parent('div').parent('div').parent('li').addClass("editing");
+	}
+	
+});
+//END new_keywordList click delegate
+
+//START new_keywordList click delegate
 $("body").delegate(".new_post", "click", function() {
 	//alert("uncc")
 	$("body").addClass("freeze")
@@ -189,10 +208,14 @@ $("body").delegate(".new_collapseIcon", "click", function() {
 //START Narrative click delegate
 $("body").delegate(".new_narrativeText", "click", function() {
 	
-	if ($(this).parent('div').parent('div').parent('div').parent('li').hasClass("open")){
-		$(this).parent('div').parent('div').parent('div').parent('li').removeClass("open");
-	} else {
-		$(this).parent('div').parent('div').parent('div').parent('li').addClass("open");
+	if ($(this).parent('div').parent('div').parent('div').parent('li').hasClass("editing")){
+	
+	}else{
+		if ($(this).parent('div').parent('div').parent('div').parent('li').hasClass("open")){
+			$(this).parent('div').parent('div').parent('div').parent('li').removeClass("open");
+		} else {
+			$(this).parent('div').parent('div').parent('div').parent('li').addClass("open");
+		}
 	}
 	
 });
@@ -295,11 +318,24 @@ $("body").delegate(".new_editButtons", "click", function() {
 });
 /////
 
+
+///////
+$("body").delegate("#editKeywords", "click", function() {
+	
+	if ($(".new_narrativeTree").hasClass("editing")){
+		$(".new_narrativeTree").removeClass("editing")
+	} else {
+		$(".new_narrativeTree").addClass("editing")
+	}
+	
+});
+/////
+
 ///////
 $("body").delegate(".cancel_narrative", "click", function() {
 	entity = $(this).attr("entity")
-	$("#".entity).setAttribute("contenteditable", "true");
-	
+	$("#"+entity).attr("contenteditable", "true");
+	$(this).parent('div').parent('div').parent('div').parent('div').parent('li').removeClass("editing");
 	
 });
 /////
@@ -308,7 +344,7 @@ $("body").delegate(".cancel_narrative", "click", function() {
 $("body").delegate(".confirm_narrative", "click", function() {
 	
 	entity = $(this).attr("entity")
-	$("#".entity).setAttribute("contenteditable", "false");
+	$("#"+entity).attr("contenteditable", "false");
 	
 	
 });
@@ -416,6 +452,7 @@ function search_new_narrative(entity, search_key, raw_entity){
 			{  
 				console.log('success')
 				$("#narrative_posts_"+entity).html(response)
+				$("#"+entity).parent('div').parent('div').parent('div').parent('li').addClass("open");
 				var img = $('.new_narrative_image');
 			    for(i=0; i<img.length; i++){
 			    	var id = img[i].id;

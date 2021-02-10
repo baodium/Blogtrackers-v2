@@ -1482,7 +1482,7 @@ String formatedtotalpost = String.format("%.0f",(Double.parseDouble(totalpost)/(
     		  			method: 'POST',
     		  			dataType: 'json',
     		  			data: {
-    		  				action:"getchart",
+    		  				action:"getchart1",
     		  				blogger:blog_name,
     		  				blog_id:blog_id,
     		  				index:ind,
@@ -1499,10 +1499,31 @@ String formatedtotalpost = String.format("%.0f",(Double.parseDouble(totalpost)/(
     		  			//	$("#chart-container").html(response);
     		  			},
     		  			success: function(response)
-    		  			{   
+    		  			{  /*  console.log("responseeeeeee",response) */
     		  				var arr1 = [];
     		  				var ts2 = 1484418600000;
-    		  				$.each(response.values, function( key, value ) {
+    		  				
+    		  				for (var key1 in response.post_years1) {
+    		  				
+    		  					if(response.post_years1[key1].length == 0){
+    		  						
+    		  						var innerArr1 = [key1+"-01-01T00:00:00.000Z", 0];
+    	 		  					arr1.push(innerArr1)
+    		  					}else{
+    		  						
+    		  						for(var c = 0; c < response.post_years1[key1].length; c++) {
+    		    		  				   
+    	    		  				    //console.log(response.line_Data[c].doc_count +"-->"+response.line_Data[c].key.date);
+    		    		  				var string2 = response.post_years1[key1][c].key.date.toString();
+    		 		  					var innerArr = [string2+"T00:00:00.000Z", parseInt(response.post_years1[key1][c].doc_count)];
+    		 		  					arr1.push(innerArr)
+    	    		  				}
+    		  						
+    		  					}
+    		  					
+    		  				}
+    		  				/* console.log(response.name, arr1); */
+    		  				/* $.each(response.values, function( key, value ) {
     		  					
     		  				
     		  					var d = parseFloat(key);
@@ -1539,7 +1560,7 @@ String formatedtotalpost = String.format("%.0f",(Double.parseDouble(totalpost)/(
     		  					var innerArr = [string2+"-01-01T00:00:00.000Z", parseInt(string3)];
     		  					//var innerArr = [dateee, parseInt(string3)];
     		  					arr1.push(innerArr)
-    				  		});
+    				  		}); */
     		  				
     		  				
     		  				//data1.push({name: response.name,identify: response.identify,values:  arr1 });
@@ -1565,7 +1586,7 @@ String formatedtotalpost = String.format("%.0f",(Double.parseDouble(totalpost)/(
 				     		    	
 				     		    });
 			     		 		/////end for each for active
-			     		 console.log(graph_data)
+			     			 console.log("graph",graph_data)
 			     				beginApexChartBuild(graph_data)
     			    			////end calling in=stantiate function
     			    			

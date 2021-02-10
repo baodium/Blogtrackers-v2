@@ -269,9 +269,12 @@ if(action.toString().equals("load_more_narrative")){
                         	
                         	
                         <% String[] result_entity = selected_entity_names.toString().split(",");
-                        	
-                        	for(String temp_entity : result_entity){ %>
+                        	String all_entity_id = "";
+                        	for(String temp_entity : result_entity){ 
                         		
+                        		temp_entity= temp_entity.replaceAll("\\s+", "");
+                        		all_entity_id += temp_entity+"_";
+                        	%>
                         		
                         		<div class="keyword new_keyword">
 	                                <p style="margin-bottom: 0;" class="text"><%= temp_entity %></p>
@@ -296,7 +299,7 @@ if(action.toString().equals("load_more_narrative")){
                 	Narrative.Data_ narr = merged_narrative.get(i);
                 	Set<String> blogpost_ids = narr.getBlogpostIds();
                 %>
-                <ul id="narrative_list_<%=selected_entity_names.toString() %>" class="narratives">
+                <ul id="narrative_list_<%=all_entity_id %>" class="narratives">
                     <li class="narrative">
                         <div class="topSection">
                             <div class="connectorBox">
@@ -310,11 +313,11 @@ if(action.toString().equals("load_more_narrative")){
                             </div>
                             <div class="narrativeTextWrapper">
                                 <div id="editWrapper">
-		                            <p id="<%=selected_entity_names.toString() %>" entity="<%=selected_entity_names.toString() %>" class="narrativeText new_narrativeText"><%=narr.getNarrative() %></p>
+		                            <p id="<%=all_entity_id %>" entity="<%=all_entity_id %>" class="narrativeText new_narrativeText"><%=narr.getNarrative() %></p>
                                     <div id="editControls">
-                                        <button id="editButton" class="editButtons new_editButtons" title="Edit" entity="<%=entity %>"></button>
-                                        <button id="cancelButton" class="editButtons cancel_narrative" title="Cancel" entity="<%=entity %>"></button>
-                                        <button id="confirmButton" class="editButtons confirm_narrative" title="Confirm" entity="<%=entity %>"></button>
+                                        <button id="editButton" class="editButtons new_editButtons" title="Edit" entity="<%=all_entity_id %>"></button>
+                                        <button id="cancelButton" class="editButtons cancel_narrative" title="Cancel" entity="<%=all_entity_id %>"></button>
+                                        <button id="confirmButton" class="editButtons confirm_narrative" title="Confirm" entity="<%=all_entity_id %>"></button>
                                     </div>
 		                        </div>
 		                        <p class="counter"><span class="number"><%=narr.getBlogpostIds().size() %></span>Post </p>
@@ -324,7 +327,7 @@ if(action.toString().equals("load_more_narrative")){
                             <div class="connectorBox">
                                 <div class="connector"></div>
                             </div>
-                            <div id="narrative_posts_<%=entity %>" style="overflow-y:hidden;" class="posts">
+                            <div id="narrative_posts_<%=all_entity_id %>" style="overflow-y:hidden;" class="posts">
                                 <%
                                 String [] blogposts_data = blogpost_ids.toString().split(",");
                                 List<?> permalink_data = new ArrayList<>();
@@ -537,19 +540,14 @@ if(action.toString().equals("load_more_narrative")){
                 <ul id="narrative_list_<%=entity_string %>" class="narratives">
 
 			<%
-                //JSONArray narratives = new JSONArray(x.toString().split("-------")[1]);
-			    //JSONArray narratives = new JSONArray(data.toString());
-				List<Narrative.Data_> narratives = x.getData();
+                List<Narrative.Data_> narratives = x.getData();
                 for(int i = 0; i < narratives.size(); i++){
                 	if(i == 5){
                 		break;
                 	}
                 
-                	//JSONObject narr = new JSONObject(narratives.get(i).toString());
                 	String narrative = narratives.get(i).getNarrative();
-                	//String narrative = narr.get("narrative").toString();
                 	Set<String> blogpost_ids = narratives.get(i).getBlogpostIds();
-                	//JSONArray blogpost_ids = new JSONArray(narr.get("blogpost_ids").toString());
                 %>
 			<!-- <ul class="narratives"> -->
 			<li class="narrative">
