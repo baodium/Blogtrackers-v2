@@ -686,6 +686,12 @@
                 <button id="cancelEditing" title="Exit Editing"></button>
             
         </section>
+        
+        <section id="notifications" class="hidden new_notifications">
+                <button id="editKeywords" class="new_editKeywords" title="Edit Tree"><div class="new_counter" id="counter">0</div></button>
+                <button id="cancelEditing" class="new_cancelEditing hidden" title="Exit Editing"></button>
+            
+        </section>
 
         <!-- More Info Modal -->
         <section id="moreInfoModal" class="">

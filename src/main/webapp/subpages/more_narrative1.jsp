@@ -257,7 +257,146 @@ if(action.toString().equals("load_more_narrative")){
                     </li>
   
 	<!-- end -->
-<% }else if(action.toString().equals("merge_narrative")){ %>
+<% }else if(action.toString().equals("load_refined_narrative")){
+	String[] result_entity = selected_entity_names.toString().split(",");
+	String all_entity_id = "";
+	for(String temp_entity : result_entity){ 
+		
+		temp_entity= temp_entity.replaceAll("\\s+", "");
+		all_entity_id += temp_entity+"_";
+		
+	}
+	%>
+	
+	<!-- start -->
+    
+	<!-- Getting Narratives for each entities-->
+               <%
+                List<Narrative.Data_> merged_narrative =  Narrative.merge_(all_selected_entities.toString(), blog_ids.toString());
+                int limit = 5;
+                for(int i = 0; i < limit; i++){
+                	Narrative.Data_ narr = merged_narrative.get(i);
+                	Set<String> blogpost_ids = narr.getBlogpostIds();
+                %>
+                
+                    <li class="narrative">
+                        <div class="topSection">
+                            <div class="connectorBox">
+                                <div class="connector"></div>
+                            </div>
+                        </div>
+                        <div class="middleSection">
+                            <div class="connectorBox">
+                                <div class="connector"></div>
+                                <div class="dot"></div>
+                            </div>
+                            <div class="narrativeTextWrapper">
+                                <div id="editWrapper">
+		                            <p id="<%=all_entity_id %>" entity="<%=all_entity_id %>" class="narrativeText new_narrativeText"><%=narr.getNarrative() %></p>
+                                    <div id="editControls">
+                                        <button id="editButton" class="editButtons new_editButtons" title="Edit" entity="<%=all_entity_id %>"></button>
+                                        <button id="cancelButton" class="editButtons cancel_narrative" title="Cancel" entity="<%=all_entity_id %>"></button>
+                                        <button id="confirmButton" class="editButtons confirm_narrative" title="Confirm" entity="<%=all_entity_id %>"></button>
+                                    </div>
+		                        </div>
+		                        <p class="counter"><span class="number"><%=narr.getBlogpostIds().size() %></span>Post </p>
+                            </div>
+                        </div>
+                        <div class="bottomSection">
+                            <div class="connectorBox">
+                                <div class="connector"></div>
+                            </div>
+                            <div id="narrative_posts_<%=all_entity_id %>" style="overflow-y:hidden;" class="posts">
+                                <%
+                                String [] blogposts_data = blogpost_ids.toString().split(",");
+                                List<?> permalink_data = new ArrayList<>();
+                                
+                                int length = blogpost_ids.toString().length();
+                                String post_ids = (blogpost_ids.toString().substring(length - 1).equals(",")) ? blogpost_ids.toString().substring(0,length -1) : blogpost_ids.toString();
+                                try{
+                               	 String query = "SELECT blogpost_id, permalink, title, date, post from blogposts where blogpost_id in ("+post_ids.toString().replace("]","").replace("[","")+") and blogsite_id in ("+blog_ids+") order by date desc;";
+                                    permalink_data = db.queryJSON(query);
+                                }catch(Exception e){
+                               	 System.out.println("here");
+                                }
+                                
+                                Object permalink = "";
+                                Object date = "";
+                				Object title = "";
+                				Object post_detail = "";
+                				String domain = "";
+                				String bp_id = "";
+                 
+                       		for(int b = 0; b < permalink_data.size(); b++){
+                       				//Extract blogposts and entities
+   									if(b == 10){
+   										break;
+   									}
+                       				try{
+                       				
+                       				if(permalink_data.size() > 0){
+                       					JSONObject permalink_data_index = new JSONObject(permalink_data.get(b).toString());
+                           				permalink = permalink_data_index.getJSONObject("_source").get("permalink");
+                           				
+                           				bp_id = permalink_data_index.getJSONObject("_source").get("blogpost_id").toString();
+                           				
+                           				date = permalink_data_index.getJSONObject("_source").get("date");
+                           				LocalDate datee = LocalDate.parse(date.toString().split(" ")[0]);
+   										DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMM dd, yyyy");
+   										date = dtf.format(datee);
+                           				
+                           				title = permalink_data_index.getJSONObject("_source").get("title");
+                           				post_detail = permalink_data_index.getJSONObject("_source").get("post");
+                           				URI uri = new URI(permalink.toString());
+                           				domain = uri.getHost();
+                       				}
+                       				
+                       				}catch(Exception e){
+                       					System.out.println(e);
+                       				}
+                                %>
+                                    <div post_id=<%=bp_id %> class="post missingImage post_id_<%=bp_id%> new_post">
+                                        <div class="<%=bp_id%>">
+                                        	<input type="hidden" class="post-image" id="<%=bp_id%>" name="pic" value="<%=permalink.toString()%>">
+                                        </div> 
+                                        
+                                        <h2 id="post_title_<%=bp_id %>" class="postTitle"><%=title.toString() %></h2>
+                                        <p id="post_date_<%=bp_id %>" class="postDate"><%=date.toString()%></p>
+                                        <p id="post_source_<%=bp_id %>" post_permalink="<%=permalink.toString()%>" class="postSource"><%=domain %></p>
+                                        <input id="post_detail_<%=bp_id %>" type="hidden" value="<%=post_detail.toString() %>" >
+                                    </div>
+                                <%
+                                //b++;
+                    		} 
+                    		
+                    		%>  
+                            </div>
+                        </div>
+                    </li>
+                <%
+               /* if(limit > 5){
+        		break; 
+                	 } 
+                	limit++; */
+                }
+                %>
+                
+              
+	<!-- end -->
+<% }else if(action.toString().equals("merge_narrative")){ 
+	
+	String[] result_entity = selected_entity_names.toString().split(",");
+	String all_entity_id = "";
+	for(String temp_entity : result_entity){ 
+		
+		temp_entity= temp_entity.replaceAll("\\s+", "");
+		all_entity_id += temp_entity+"_";
+		
+	}
+%>
+
+
+
 
 <li class="level level1">
                 
@@ -268,17 +407,17 @@ if(action.toString().equals("load_more_narrative")){
                         <div id="keywordList" class="new_keywordList">
                         	
                         	
-                        <% String[] result_entity = selected_entity_names.toString().split(",");
-                        	String all_entity_id = "";
+                        <% 
+                        	
                         	for(String temp_entity : result_entity){ 
                         		
                         		temp_entity= temp_entity.replaceAll("\\s+", "");
-                        		all_entity_id += temp_entity+"_";
+                        		
                         	%>
                         		
                         		<div class="keyword new_keyword">
 	                                <p style="margin-bottom: 0;" class="text"><%= temp_entity %></p>
-	                                <button id="removeKeyword"></button>
+	                                <button all_entity=<%=all_entity_id %> entity="<%= temp_entity %>" class="new_removeKeyword new_<%=all_entity_id %>" id="removeKeyword"></button>
 	                            </div>
                         		
                         		
@@ -286,11 +425,11 @@ if(action.toString().equals("load_more_narrative")){
                         
                             
                         </div>
-                        <button id="ungroupButton"></button>
+                        <button entity="<%=all_entity_id %>" class="new_ungroupButton" id="ungroupButton"></button>
                     </div>
                 </div>
 		          
-		          
+		          <ul id="narrative_list_<%=all_entity_id %>" class="narratives">
 		          
                 <%
                 List<Narrative.Data_> merged_narrative =  Narrative.merge_(all_selected_entities.toString(), blog_ids.toString());
@@ -299,7 +438,7 @@ if(action.toString().equals("load_more_narrative")){
                 	Narrative.Data_ narr = merged_narrative.get(i);
                 	Set<String> blogpost_ids = narr.getBlogpostIds();
                 %>
-                <ul id="narrative_list_<%=all_entity_id %>" class="narratives">
+                
                     <li class="narrative">
                         <div class="topSection">
                             <div class="connectorBox">
@@ -507,7 +646,7 @@ if(action.toString().equals("load_more_narrative")){
 
 <!-- Narrative Tree -->
 
-<ul id="narrativeTree">
+<ul id="narrativeTree" class="new_narrativeTree">
 	<%
         //for(Narrative.Entity x: res){
         	//System.out.println(res);
@@ -528,7 +667,7 @@ if(action.toString().equals("load_more_narrative")){
                     <div id="precisionWrapper">
                         <div id="collapseIcon" class="new_collapseIcon"></div>
                         <div id="keywordList">
-                            <div class="keyword new_keyword">
+                            <div entity="<%=entity_string%>" class="keyword new_keyword">
                                 <p style="margin-bottom: 0;" class="text"><%=entity_string%></p>
                                 <button id="removeKeyword"></button>
                             </div>

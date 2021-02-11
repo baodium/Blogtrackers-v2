@@ -61,7 +61,7 @@ if(action.toString().equals("search_narrative")){
                     <div id="precisionWrapper">
                         <div id="collapseIcon" class="new_collapseIcon"></div>
                         <div id="keywordList">
-                            <div class="keyword new_keyword">
+                            <div entity="<%=entity_string%>" class="keyword new_keyword">
                                 <p style="margin-bottom: 0;" class="text"><%=entity_string%></p>
                                 <button id="removeKeyword"></button>
                             </div>

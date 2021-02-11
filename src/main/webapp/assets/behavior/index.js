@@ -193,11 +193,11 @@ document.addEventListener("DOMContentLoaded", function() {
                 this.tree.classList.toggle(this.editingClass);
                 this.editKeywordsButton.querySelector("div#counter").classList.remove(this.displayedClass);
                 this.editKeywordsButton.querySelector("div#counter").classList.remove("hidden");
-                alert("edit mode 122")
+                //alert("edit mode 122")
                 $("#editKeywords").removeClass('hidden');
             } else {
             	
-            	alert("not edit mode")
+            	//alert("not edit mode")
 
                 if (this.selectionCounter > 1) {
                 	

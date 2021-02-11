@@ -144,11 +144,38 @@ $("body").delegate(".entity_radio1", "click", function() {
 //START Keyword click delegate
 $("body").delegate(".new_keyword", "click", function() {
 	//alert("uncc")
-	if ($(this).parent('div').parent('div').parent('div').parent('li').hasClass("uncollapse")){
-		$(this).parent('div').parent('div').parent('div').parent('li').removeClass("uncollapse");
+	
+	if ($(".new_narrativeTree").hasClass("editing")){
+		
+		
+		if ($(this).hasClass('selected')){
+			$(this).removeClass('selected')
+			$(this).removeClass('new_entity_selected')
+			$(this).parent('div').removeClass("selected")
+		} else {
+			$(this).addClass('selected')
+			$(this).addClass('new_entity_selected')
+			$(this).parent('div').addClass("selected")
+		}
+		
+		var count = $(".new_entity_selected").length;
+		if(count > 1){
+			$(".new_counter").html(count)
+			$(".new_counter").addClass("displayed")
+		}else{
+			$(".new_counter").removeClass("displayed")
+		}
+		
+		
 	} else {
-		$(this).parent('div').parent('div').parent('div').parent('li').addClass("uncollapse");
+		
+		if ($(this).parent('div').parent('div').parent('div').parent('li').hasClass("uncollapse")){
+			$(this).parent('div').parent('div').parent('div').parent('li').removeClass("uncollapse");
+		} else {
+			$(this).parent('div').parent('div').parent('div').parent('li').addClass("uncollapse");
+		}
 	}
+	
 	
 });
 //END Keyword click delegate
@@ -220,6 +247,162 @@ $("body").delegate(".new_narrativeText", "click", function() {
 	
 });
 //END Narrative click delegate
+
+
+function merge_refined_entities(all_entity){
+	
+   // $("#narrative_list_"+all_entity).css("height", "300px");
+    
+    $("#narrative_list_"+all_entity).parent('li').addClass("uncollapse");
+
+	 $("#narrative_list_"+all_entity).html("<img style='position: absolute;left: 50%;' src='images/loading.gif' />");
+	
+///////////////start collecting names
+	 var count = $('.new_'+all_entity).length;
+	 
+	 var all_selected_entities = '';
+	  var selected_entity_names = '';
+	  
+	 if(count > 0){
+		 
+		 var i = 1;
+		 $( ".new_"+all_entity ).each(function( index ) {
+			 
+			 
+			 if(i > 1){
+				 all_selected_entities += ' , ';
+				 selected_entity_names += ' , ';
+			 }
+			 
+	    	entity = 	$(this).attr('entity');
+	    	all_selected_entities += '"'+entity+'"';
+	    	selected_entity_names += entity;
+	    	
+	    	i++;
+		    		
+		});
+		 
+		 
+	 }
+	////////////end collecting names
+	
+	//alert(all_selected_entities)
+	
+	$.ajax({
+		url: app_url+"subpages/more_narrative1.jsp",
+		method: 'POST',
+		data: {
+			action:"load_refined_narrative",
+			all_selected_entities:all_selected_entities,
+			selected_entity_names:selected_entity_names,
+			tid:$('#tracker_id').val(),
+			blog_ids:$('#all_blog_ids').val()
+		},
+		error: function(response)
+		{		
+			console.log("error");
+			console.log(response);
+		},
+		success: function(response)
+		{  
+			console.log('success')
+//			$(".current_narrative_tree").prepend(response)
+			
+			
+			$("#narrative_list_"+all_entity).html(response)
+			
+			$("#narrative_list_"+all_entity).parent('li').addClass("uncollapse");
+//			$("#"+entity).parent('div').parent('div').parent('div').parent('li').addClass("open");
+			var img = $('.new_narrative_image');
+		    for(i=0; i<img.length; i++){
+		    	var id = img[i].id;
+				var url = img[i].value;
+				getImage(id,url);
+		    }
+		}
+	});
+	
+	//alert(all_selected_entities)
+}
+
+
+
+
+
+function merge_search_refined_entities(){
+	
+	$('.new_narrativeTree ').addClass('hidden');
+    $('#current_narrative_loader').removeClass('hidden');
+	
+///////////////start collecting names
+	 var count = $('.new_entity_selected').length;
+	 
+	 var all_selected_entities = '';
+	  var selected_entity_names = '';
+	  
+	 if(count > 0){
+		 
+		 var i = 1;
+		 $( ".new_entity_selected" ).each(function( index ) {
+			 
+			 
+			 if(i > 1){
+				 all_selected_entities += ' , ';
+				 selected_entity_names += ' , ';
+			 }
+			 
+	    	entity = 	$(this).attr('entity');
+	    	all_selected_entities += '"'+entity+'"';
+	    	selected_entity_names += entity;
+	    	
+	    	i++;
+		    		
+		});
+		 
+		 
+	 }
+	////////////end collecting names
+	
+	//alert(all_selected_entities)
+	
+	$.ajax({
+		url: app_url+"subpages/more_narrative1.jsp",
+		method: 'POST',
+		data: {
+			action:"merge_narrative",
+			all_selected_entities:all_selected_entities,
+			selected_entity_names:selected_entity_names,
+			tid:$('#tracker_id').val(),
+			blog_ids:$('#all_blog_ids').val()
+		},
+		error: function(response)
+		{		
+			console.log("error");
+			console.log(response);
+		},
+		success: function(response)
+		{  
+			console.log('success')
+			$(".new_narrativeTree ").prepend(response)
+			
+			$('.new_narrativeTree ').removeClass('hidden');
+			$('#current_narrative_loader').addClass('hidden');
+			
+			var img = $('.new_narrative_image');
+		    for(i=0; i<img.length; i++){
+		    	var id = img[i].id;
+				var url = img[i].value;
+				getImage(id,url);
+		    }
+		}
+	});
+	
+	//alert(all_selected_entities)
+}
+
+
+
+
 
 
 function merge_entities(){
@@ -323,13 +506,38 @@ $("body").delegate(".new_editButtons", "click", function() {
 $("body").delegate("#editKeywords", "click", function() {
 	
 	if ($(".new_narrativeTree").hasClass("editing")){
-		$(".new_narrativeTree").removeClass("editing")
+		
+		
+		//$(".new_narrativeTree").removeClass("editing")
+		//$(".new_cancelEditing").addClass("hidden");
 	} else {
 		$(".new_narrativeTree").addClass("editing")
+		$(".new_cancelEditing").removeClass("hidden");
+		$(".new_cancelEditing").css("display","block");
 	}
 	
 });
 /////
+
+
+
+///////
+$("body").delegate("#cancelEditing", "click", function() {
+	
+	if ($(".new_narrativeTree").hasClass("editing")){
+		$(".new_narrativeTree").removeClass("editing")
+		$(".new_cancelEditing").addClass("hidden");
+		$(".new_cancelEditing").css("display","none");
+	} else {
+		$(".new_narrativeTree").addClass("editing")
+		$(".new_cancelEditing").removeClass("hidden");
+		$(".new_cancelEditing").css("display","block");
+	}
+	
+});
+/////
+
+
 
 ///////
 $("body").delegate(".cancel_narrative", "click", function() {
@@ -349,6 +557,40 @@ $("body").delegate(".confirm_narrative", "click", function() {
 	
 });
 /////
+
+///////
+$("body").delegate(".new_ungroupButton", "click", function() {
+	
+	entity = $(this).attr("entity");
+	$(this).parent('div').parent('div').parent('li').remove();
+	
+});
+/////
+
+///////
+$("body").delegate(".new_removeKeyword", "click", function() {
+	
+	all_entity = $(this).attr("all_entity");
+	$(this).parent('div').remove();
+	
+	$(this).parent('div').parent('div').parent('div').parent('li').addClass("uncollapse");
+	merge_refined_entities(all_entity)
+	
+});
+/////
+
+///////
+$("body").delegate(".new_editKeywords", "click", function() {
+	
+	if($(".new_entity_selected").length > 1){
+		merge_search_refined_entities();
+	}else{
+		
+	}
+	
+});
+/////
+
 
 
 
@@ -390,6 +632,8 @@ function fetch_custom_narrative(date_start, date_end1){
 	
 	 $('.current_narrative_tree').addClass('hidden');
 	 $('#current_narrative_loader').removeClass('hidden');
+	 
+	 $("#notifications").addClass("hidden");
 	    
 	    $.ajax({
 			url: app_url+"subpages/more_narrative1.jsp",
@@ -411,6 +655,9 @@ function fetch_custom_narrative(date_start, date_end1){
 				$('#current_narrative_loader').addClass('hidden');
 				$("#search_narrative_tree").removeClass('hidden');
 				$("#search_narrative_tree").html(response);
+				
+				$(".new_notifications").removeClass("hidden");
+				
 				var img = $('.new_search_image');
 			    for(i=0; i<img.length; i++){
 			    	var id = img[i].id;
@@ -478,6 +725,10 @@ $('#searchBox').keydown(function(e) {
     	//backspace pressed
 		if($('#searchBox').val() == ""){
 			$('#searchBox').val("")
+			
+			$(".new_notifications").addClass("hidden");
+			$("#notifications").removeClass("hidden");
+			
 			$('.current_narrative_tree').removeClass('hidden');
 			$('#current_narrative_loader').addClass('hidden');
 			$("#search_narrative_tree").addClass("hidden");
@@ -494,6 +745,8 @@ $('#searchBox').keydown(function(e) {
 			
 			$('.current_narrative_tree').addClass('hidden');
 		    $('#current_narrative_loader').removeClass('hidden');
+		    
+		    $("#notifications").addClass("hidden");
 		    
 		    $.ajax({
 				url: app_url+"subpages/search_narrative1.jsp",
@@ -513,6 +766,9 @@ $('#searchBox').keydown(function(e) {
 					$('#current_narrative_loader').addClass('hidden');
 					$("#search_narrative_tree").removeClass('hidden');
 					$("#search_narrative_tree").html(response);
+					
+					$(".new_notifications").removeClass("hidden");
+					
 					var img = $('.new_search_image');
 				    for(i=0; i<img.length; i++){
 				    	var id = img[i].id;
