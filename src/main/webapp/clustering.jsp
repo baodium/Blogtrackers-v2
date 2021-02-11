@@ -175,6 +175,7 @@ Instant start = Instant.now();
 	String tracker_id = tid.toString();
 	//get postids from each cluster in tracker and save in JSONObject
 	ArrayList result = cluster._getClusters(tracker_id);
+	
 	System.out.println("done with clusters");
 
 	JSONObject res = new JSONObject(result.get(0).toString());

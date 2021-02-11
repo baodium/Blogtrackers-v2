@@ -23,7 +23,8 @@ Object level = (null == request.getParameter("level")) ? "" : request.getParamet
 Object tid = (null == request.getParameter("tid")) ? "" : request.getParameter("tid");
 Object search_value = (null == request.getParameter("search_value")) ? "" : request.getParameter("search_value");
 Object blog_ids = (null == request.getParameter("blog_ids")) ? "" : request.getParameter("blog_ids");
-
+Object date_start = (null == request.getParameter("date_start")) ? "" : request.getParameter("date_start");
+Object date_end = (null == request.getParameter("date_end")) ? "" : request.getParameter("date_end");
 
 
 DbConnection db = new DbConnection();
@@ -31,7 +32,8 @@ Narrative n = new Narrative();
 
 
 if(action.toString().equals("search_narrative")){
-	List<Narrative.Entity_> res = Narrative.search_(search_value.toString());
+	//List<Narrative.Entity_> res = Narrative.search_(search_value.toString(), date_start.toString(), date_end.toString());
+	List<Narrative.Entity_> res = Narrative.search_(search_value.toString(), "2000-01-01", "2020-01-01");
 	//JSONObject result = Narrative.search(search_value.toString());
 	//Object hits = result.getJSONObject("hits").getJSONArray("hits");
 	//JSONArray hit = new JSONArray(hits.toString());

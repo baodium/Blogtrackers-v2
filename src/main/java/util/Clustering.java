@@ -30,6 +30,7 @@ import org.json.JSONObject;
 import authentication.DbConnection;
 import javafx.util.Pair;
 import scala.Tuple2;
+import scala.annotation.meta.getter;
 
 /**
  * Servlet implementation class Clustering
@@ -44,10 +45,10 @@ public class Clustering extends HttpServlet {
 	/**
 	 * 
 	 */
-	
-	 Terms term = new Terms();
 
-	public  String _getResult(String url, JSONObject jsonObj) throws Exception {
+	Terms term = new Terms();
+
+	public String _getResult(String url, JSONObject jsonObj) throws Exception {
 		new ArrayList<String>();
 		JSONObject myResponse = new JSONObject();
 		String out = null;
@@ -89,7 +90,7 @@ public class Clustering extends HttpServlet {
 
 	}
 
-	public  int getShardSize(JSONObject query, String index) {
+	public int getShardSize(JSONObject query, String index) {
 		JSONObject myResponse = new JSONObject();
 		int result = 0;
 		try {
@@ -129,8 +130,8 @@ public class Clustering extends HttpServlet {
 		return result;
 	}
 
-	public  ArrayList<JSONObject> _buildSlicedScrollQuery(String ids, String from, String to, String type,
-			String index) throws Exception {
+	public ArrayList<JSONObject> _buildSlicedScrollQuery(String ids, String from, String to, String type, String index)
+			throws Exception {
 		JSONObject query = new JSONObject();
 
 		if (type.contentEquals("__ONLY__TERMS__BLOGSITE_IDS__")) {
@@ -203,8 +204,7 @@ public class Clustering extends HttpServlet {
 		return result;
 	}
 
-	public  List<JSONObject> getPosts(String ids, String from, String to, String type, String index)
-			throws Exception {
+	public List<JSONObject> getPosts(String ids, String from, String to, String type, String index) throws Exception {
 		List<JSONObject> jsonArray;
 		new HashMap<String, String>();
 
@@ -284,7 +284,7 @@ public class Clustering extends HttpServlet {
 		return result_;
 	}
 
-	public  String getBloggersMentioned(String postIds) throws Exception {
+	public String getBloggersMentioned(String postIds) throws Exception {
 		String result = null;
 		JSONObject query = new JSONObject("{\r\n" + "    \"size\": 0,\r\n" + "    \"query\": {\r\n"
 				+ "        \"terms\": {\r\n" + "            \"blogpost_id\": [" + postIds + "],\r\n"
@@ -401,21 +401,82 @@ public class Clustering extends HttpServlet {
 		return result;
 	}
 
-	public  ArrayList _getClusters(String tid) throws Exception {
+	public static ArrayList _getClusters(String tid) throws Exception {
 
 		DbConnection db = new DbConnection();
 		ArrayList result = new ArrayList();
+		ArrayList result2 = new ArrayList();
+		JSONObject clusters = new JSONObject();
 		try {
-			result = db.queryJSON("SELECT *  FROM clusters WHERE tid = '" + tid + "'");
+//			result = db.queryJSON("SELECT *  FROM clusters WHERE tid = '" + tid + "'");
+			JSONObject query = new JSONObject("{\r\n" + 
+					"    \"size\": 1000,\r\n" + 
+					"    \"query\": {\r\n" + 
+					"        \"term\": {\r\n" + 
+					"            \"tid.keyword\": {\r\n" + 
+					"                \"value\": "+tid+",\r\n" + 
+					"                \"boost\": 1.0\r\n" + 
+					"            }\r\n" + 
+					"        }\r\n" + 
+					"    },\r\n" + 
+					"    \"_source\": {\r\n" + 
+					"        \"includes\": [\r\n" + 
+					"            \"C10xy\",\r\n" + 
+					"            \"C1xy\",\r\n" + 
+					"            \"C2xy\",\r\n" + 
+					"            \"C3xy\",\r\n" + 
+					"            \"C4xy\",\r\n" + 
+					"            \"C5xy\",\r\n" + 
+					"            \"C6xy\",\r\n" + 
+					"            \"C7xy\",\r\n" + 
+					"            \"C8xy\",\r\n" + 
+					"            \"C9xy\",\r\n" + 
+					"            \"cluster_1\",\r\n" + 
+					"            \"cluster_10\",\r\n" + 
+					"            \"cluster_2\",\r\n" + 
+					"            \"cluster_3\",\r\n" + 
+					"            \"cluster_4\",\r\n" + 
+					"            \"cluster_5\",\r\n" + 
+					"            \"cluster_6\",\r\n" + 
+					"            \"cluster_7\",\r\n" + 
+					"            \"cluster_8\",\r\n" + 
+					"            \"cluster_9\",\r\n" + 
+					"            \"cluster_id\",\r\n" + 
+					"            \"last_modified_time\",\r\n" + 
+					"            \"status\",\r\n" + 
+					"            \"status_percentage\",\r\n" + 
+					"            \"svd\",\r\n" + 
+					"            \"tid\",\r\n" + 
+					"            \"total\"\r\n" + 
+					"        ],\r\n" + 
+					"        \"excludes\": []\r\n" + 
+					"    },\r\n" + 
+					"    \"sort\": [\r\n" + 
+					"        {\r\n" + 
+					"            \"_doc\": {\r\n" + 
+					"                \"order\": \"asc\"\r\n" + 
+					"            }\r\n" + 
+					"        }\r\n" + 
+					"    ]\r\n" + 
+					"}");
+			clusters = Blogposts._makeElasticRequest(query, "POST", "/clusters/_search");
+			Object hits = clusters.getJSONObject("hits").getJSONArray("hits");
+			JSONArray hits_array = new JSONArray(hits.toString());
+			for(int i = 0; i < hits_array.length(); i++) {
+				JSONObject source = hits_array.getJSONObject(i).getJSONObject("_source");
+				JSONObject source_ = new JSONObject();
+				source_.put("_source", source);
+				result2.add(source_.toString());
+			}
 
 		} catch (Exception e) {
 			return result;
 		}
-		return result;
+		return result2;
 
 	}
 
-	public  ArrayList _getSvd(String postids) throws Exception {
+	public ArrayList _getSvd(String postids) throws Exception {
 
 		DbConnection db = new DbConnection();
 		ArrayList result = new ArrayList();
@@ -430,7 +491,7 @@ public class Clustering extends HttpServlet {
 
 	}
 
-	public  JSONObject topTerms(List postDataAll, String limit) {
+	public JSONObject topTerms(List postDataAll, String limit) {
 		JSONObject res = new JSONObject();
 		JSONArray output = new JSONArray();
 
@@ -501,7 +562,7 @@ public class Clustering extends HttpServlet {
 		return res;
 	}
 
-	public  String getTopTermsFromBlogIds(String ids, String from, String to, String limit) throws Exception {
+	public String getTopTermsFromBlogIds(String ids, String from, String to, String limit) throws Exception {
 		JSONArray output = new JSONArray();
 		String query = "select n.term, sum(n.occurr) occurrence " + "from blogpost_terms_api, "
 				+ "json_table(terms_test, " + "'$[*]' columns( " + "term varchar(128) path '$.term', "
@@ -524,7 +585,7 @@ public class Clustering extends HttpServlet {
 		return output.toString();
 	}
 
-	public  String getTopTermsFromDashboard(String ids, String from, String to, String limit) throws Exception {
+	public String getTopTermsFromDashboard(String ids, String from, String to, String limit) throws Exception {
 		List postDataAll = DbConnection.queryJSON("select * from blogpost_terms where blogsiteid in  (" + ids
 				+ ") and date > \"" + from + "\" and date < \"" + to + "\"");
 		JSONObject o = topTerms(postDataAll, limit);
@@ -532,7 +593,7 @@ public class Clustering extends HttpServlet {
 		return o.get("output").toString();
 	}
 
-	public  String getTopTermsBlogger(String bloggers, String from, String to, String limit) throws Exception {
+	public String getTopTermsBlogger(String bloggers, String from, String to, String limit) throws Exception {
 		String result = null;
 
 		List postDataAll = DbConnection.queryJSON("select * from blogpost_terms where blogger = \"" + bloggers
@@ -557,36 +618,35 @@ public class Clustering extends HttpServlet {
 
 		return result;
 	}
-	
+
 	public static String filterPosts(String post_ids, String date_from, String date_to) throws SQLException {
 		String result = "";
 		StringBuilder wordList = new StringBuilder();
-		String query = "SELECT blogpost_id "
-				+ "FROM blogposts "
-				+ "WHERE blogpost_id in ("+post_ids+")"
-				+ " AND date > \""+date_from+"\" "
-				+ " AND date < \""+date_to+"\"";
-		
-		ResultSet post_result =  DbConnection.queryResultSet(query);
-		
-		while(post_result.next()){
+		String query = "SELECT blogpost_id " + "FROM blogposts " + "WHERE blogpost_id in (" + post_ids + ")"
+				+ " AND date > \"" + date_from + "\" " + " AND date < \"" + date_to + "\"";
+
+		ResultSet post_result = DbConnection.queryResultSet(query);
+
+		while (post_result.next()) {
 			wordList.append(post_result.getString("blogpost_id") + ",");
 		}
 		post_result.close();
-		if(wordList.length() > 0) {
+		if (wordList.length() > 0) {
 			return new String(wordList.deleteCharAt(wordList.length() - 1));
 		}
 		return "";
 	}
 
-	public static void main(String [] args) {
+	public static void main(String[] args) throws Exception {
 		try {
 			filterPosts("1,2,3,4,5,6", "2001-01-01", "2020-01-01");
+			_getClusters("366");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
+
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
